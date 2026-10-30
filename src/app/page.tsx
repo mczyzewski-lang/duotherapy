@@ -14,7 +14,7 @@ const STEPS = [
   { t: "Rozmowa telefoniczna", d: "Oddzwaniamy, wyjaśniamy, jak wygląda audyt, odpowiadamy na pytania i wspólnie decydujemy, czy to dobra forma pomocy teraz.", meta: "krótka rozmowa" },
   { t: "Poufny kwestionariusz", d: "Po potwierdzeniu udziału każda osoba dostaje własny, prywatny link. Odpowiadasz w swoim tempie, z możliwością zapisu i powrotu.", meta: "ok. 40–60 min" },
   { t: "Sesja online z psychologiem", d: "Wybierasz termin spośród zaproponowanych. Rozmowa pogłębia najważniejsze wątki – nie odtwarza kwestionariusza.", meta: "60 min indywidualnie · 90 min dla pary" },
-  { t: "Omówienie i raport", d: "Na koniec sesji: mechanizm konfliktu, mocne strony i proponowana ścieżka. Potem pisemny raport z następnymi krokami.", meta: "raport po sesji" },
+  { t: "Omówienie i podsumowanie", d: "Na koniec sesji: mechanizm konfliktu, mocne strony i proponowana ścieżka. Potem pisemne podsumowanie z następnymi krokami.", meta: "podsumowanie po sesji" },
 ];
 
 const DELIVERABLES = [
@@ -47,7 +47,7 @@ export default async function Landing({ searchParams }: { searchParams: Promise<
             <a href="#co-dalej" className="hover:text-forest">Co dalej</a>
             <a href="#faq" className="hover:text-forest">Pytania</a>
           </div>
-          <LinkButton href="#quiz" size="sm" variant="primary">Umów Audyt Relacji</LinkButton>
+          <LinkButton href="#quiz" size="sm" variant="primary" className="whitespace-nowrap">Umów <span className="hidden sm:inline">Audyt Relacji</span><span className="sm:hidden">audyt</span></LinkButton>
         </nav>
       </header>
 
@@ -56,7 +56,7 @@ export default async function Landing({ searchParams }: { searchParams: Promise<
         <section className="relative overflow-hidden">
           <div className="mx-auto grid max-w-6xl items-center gap-12 px-5 pb-16 pt-12 md:grid-cols-[1.1fr_0.9fr] md:pt-20">
             <div>
-              <p className="animate-rise text-sm font-semibold uppercase tracking-[0.18em] text-clay">Audyt Relacji DUO™</p>
+              <p className="animate-rise text-sm font-semibold uppercase tracking-[0.18em] text-clay">Audyt Relacji DUO®</p>
               <h1 className="animate-rise delay-1 mt-4 font-display text-[2.4rem] leading-[1.08] text-ink sm:text-5xl lg:text-[3.6rem]">
                 Nie musisz dziś wiedzieć, czy zostać, czy odejść. <span className="text-forest">Zacznij od zrozumienia Waszej relacji.</span>
               </h1>
@@ -198,7 +198,7 @@ export default async function Landing({ searchParams }: { searchParams: Promise<
                   <p className="text-sm text-muted">Cena</p>
                   {s.site.priceIndividual && <p className="mt-1 text-ink">Audyt indywidualny (60 min): <strong>{s.site.priceIndividual}</strong></p>}
                   {s.site.priceCouple && <p className="mt-1 text-ink">Audyt dla pary (90 min): <strong>{s.site.priceCouple}</strong></p>}
-                  <p className="mt-2 text-xs text-muted">Obejmuje kwestionariusze, sesję online i pisemny raport.</p>
+                  <p className="mt-2 text-xs text-muted">Obejmuje kwestionariusze, sesję online i pisemne podsumowanie.</p>
                 </div>
               )}
             </div>
@@ -240,7 +240,7 @@ export default async function Landing({ searchParams }: { searchParams: Promise<
               </article>
             </div>
             <p className="mt-5 rounded-2xl bg-linen px-6 py-4 text-sm text-ink">
-              Możesz też <strong>na razie nie wybierać dalszej pracy</strong>. Raport zostaje z Tobą – wrócisz do niego, kiedy będziesz gotowy lub gotowa.
+              Możesz też <strong>na razie nie wybierać dalszej pracy</strong>. Podsumowanie zostaje z Tobą – wrócisz do niego, kiedy będziesz gotowy lub gotowa.
             </p>
 
             <article className="mt-10 rounded-2xl border border-alert/20 bg-ivory p-7" aria-labelledby="sciezka-c">
@@ -278,7 +278,7 @@ export default async function Landing({ searchParams }: { searchParams: Promise<
               ["Osobno dla każdej osoby", "W audycie pary każde z Was ma własny link i kod dostępu. Odpowiedzi jednej osoby nie są pokazywane drugiej."],
               ["Tajemnica zawodowa", "Psycholog nie ujawnia treści jednej osoby drugiej bez zgody, z wyjątkiem sytuacji przewidzianych prawem."],
               ["Bez nagrywania", "Sesji nie nagrywamy ani nie transkrybujemy. Nie przekazujemy odpowiedzi do narzędzi analitycznych ani reklamowych."],
-              ["Raport tylko dla Was", "Raport trafia wyłącznie do osób uczestniczących – po zatwierdzeniu przez psychologa, nigdy automatycznie."],
+              ["Podsumowanie tylko dla Was", "Podsumowanie trafia wyłącznie do osób uczestniczących – po zatwierdzeniu przez psychologa, nigdy automatycznie."],
             ].map(([t, d]) => (
               <div key={t} className="rounded-2xl bg-white p-6 shadow-soft ring-1 ring-sand">
                 <Lock size={20} className="text-forest" aria-hidden />
@@ -364,7 +364,7 @@ export default async function Landing({ searchParams }: { searchParams: Promise<
               {s.site.contactEmail && <li><a href={`mailto:${s.site.contactEmail}`} className="hover:text-white">{s.site.contactEmail}</a></li>}
               <li><Link href="/app" className="hover:text-white">Panel specjalisty</Link></li>
             </ul>
-            <p className="mt-6 text-xs text-white/50">DUO™ · Audyt Relacji. Konsultacja psychologiczna – nie terapia, nie diagnoza, nie pomoc kryzysowa.</p>
+            <p className="mt-6 text-xs text-white/50">DUO® · Audyt Relacji. Konsultacja psychologiczna – nie terapia, nie diagnoza, nie pomoc kryzysowa.</p>
           </div>
         </div>
       </footer>

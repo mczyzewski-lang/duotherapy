@@ -56,7 +56,7 @@ export default async function SessionPage({ params }: { params: Promise<{ id: st
     <form action={sessionAction}>
       <input type="hidden" name="case_id" value={id} />
       <input type="hidden" name="op" value={op} />
-      <SubmitButton size="sm" variant={variant} className="w-full" confirm={op === "end" ? "Zakończyć sesję i przejść do raportu?" : undefined}>{label}</SubmitButton>
+      <SubmitButton size="sm" variant={variant} className="w-full" confirm={op === "end" ? "Zakończyć sesję i przejść do podsumowania?" : undefined}>{label}</SubmitButton>
     </form>
   );
   return (
@@ -76,7 +76,7 @@ export default async function SessionPage({ params }: { params: Promise<{ id: st
         notes={d.notes}
         names={d.people.map((p) => p.name)}
         startForm={form("start", d.c.session_ended_at ? "Sesja zakończona" : "Rozpocznij sesję", "clay")}
-        endForm={form("end", "Zakończ sesję i przejdź do raportu", "secondary")}
+        endForm={form("end", "Zakończ sesję i przejdź do podsumowania", "secondary")}
       />
     </>
   );

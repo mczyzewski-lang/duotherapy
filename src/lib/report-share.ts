@@ -1,4 +1,4 @@
-// Dostęp odbiorcy do udostępnionego raportu: link + kod (oba przechowywane jako hash).
+// Dostęp odbiorcy do udostępnionego podsumowania: link + kod (oba przechowywane jako hash).
 import { cookies } from "next/headers";
 import { audit } from "./audit";
 import { hashToken, newToken } from "./crypto";

@@ -1,6 +1,7 @@
-// Raport po Audycie Relacji – struktura zgodna z szablonem 04, szkic budowany lokalnie
-// (bez zewnętrznych usług) wyłącznie z danych sprawy, odpowiedzi osoby, która raport otrzyma,
-// oraz notatek psychologa oznaczonych jako dopuszczone do raportu.
+// Podsumowanie sesji – struktura zgodna z szablonem 04, szkic budowany lokalnie
+// (bez zewnętrznych usług) wyłącznie z danych sprawy, odpowiedzi osoby, która podsumowanie otrzyma,
+// oraz notatek psychologa oznaczonych jako dopuszczone do podsumowania.
+import { symbolSvg } from "./brand-mark";
 import { answerByKey, formatAnswer, type PersonData } from "./analysis";
 import type { Settings } from "./settings";
 
@@ -90,9 +91,9 @@ export interface DraftInput {
   therapist: string;
   /** Wszyscy uczestnicy (do metadanych). */
   participants: { name: string; birth?: string | null }[];
-  /** Osoby, których odpowiedzi można użyć w treści – tylko odbiorca raportu osobnego. */
+  /** Osoby, których odpowiedzi można użyć w treści – tylko odbiorca podsumowania osobnego. */
   ownData: PersonData | null;
-  /** Notatki dopuszczone do raportu (dla raportu wspólnego: tylko z flagą joint_ok). */
+  /** Notatki dopuszczone do podsumowania (dla podsumowania wspólnego: tylko z flagą joint_ok). */
   notes: { area: string | null; body: string; participantName: string | null }[];
   reason: string | null;
   riskFlag: boolean;
@@ -187,12 +188,12 @@ export function buildDraft(input: DraftInput): ReportContent {
     riskFlag: input.riskFlag,
     sourcesNote:
       input.audience === "joint"
-        ? "Raport wspólny: szkic nie zawiera odpowiedzi z indywidualnych kwestionariuszy. Użyto wyłącznie notatek oznaczonych „do raportu” i „może trafić do raportu wspólnego”."
-        : "Raport osobny: szkic może zawierać deklaracje wyłącznie osoby, która otrzyma raport, oraz notatki oznaczone „do raportu”.",
+        ? "Podsumowanie wspólne: szkic nie zawiera odpowiedzi z indywidualnych kwestionariuszy. Użyto wyłącznie notatek oznaczonych „do podsumowania” i „może trafić do podsumowania wspólnego”."
+        : "Podsumowanie osobne: szkic może zawierać deklaracje wyłącznie osoby, która otrzyma podsumowanie, oraz notatki oznaczone „do podsumowania”.",
   };
 }
 
-/** Pozostałe znaczniki do uzupełnienia – zatwierdzenie raportu jest zablokowane, dopóki istnieją. */
+/** Pozostałe znaczniki do uzupełnienia – zatwierdzenie podsumowania jest zablokowane, dopóki istnieją. */
 export function missingMarkers(c: ReportContent): string[] {
   const out: string[] = [];
   const chk = (label: string, s: string) => s.includes(MISSING) && out.push(label);
@@ -237,9 +238,25 @@ const esc = (s: string) => s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&
 const para = (s: string) => esc(s).replace(/\n/g, "<br>");
 const radio = (on: boolean, label: string) => `<span class="opt ${on ? "on" : ""}">${on ? "●" : "○"} ${esc(label)}</span>`;
 
+/** Nagłówki sekcji – ludzkim językiem, z zachowaniem struktury szablonu (04). */
+export function sectionTitles(c: Pick<ReportContent, "audience" | "caseKind">) {
+  const plural = c.audience === "joint";
+  return {
+    summary: "1. Najważniejsze w skrócie",
+    strengths: plural ? "2. Co Was wspiera" : "2. Co wspiera Twoją relację",
+    tensions: plural ? "3. Gdzie jest Wam najtrudniej" : "3. Gdzie jest najtrudniej",
+    mechanism: plural ? "4. Jak działa Wasz konflikt" : "4. Jak działa konflikt",
+    recommendations: "5. Co proponuję",
+    nextSteps: "6. Kolejne kroki",
+    important: "Pamiętaj",
+  };
+}
+
 export function renderReportHtml(c: ReportContent, s: Settings, opts: { fontCss?: string; draft?: boolean } = {}): string {
+  const plural = c.audience === "joint";
+  const t = sectionTitles(c);
   const sev = (v: Severity) => (["low", "moderate", "high"] as const).map((k) => radio(v === k, { low: "niskie", moderate: "umiarkowane", high: "wysokie" }[k])).join(" ");
-  const helplines = s.helplines.items.map((h) => `${esc(h.number)} (${esc(h.when.split(",")[0])})`).join(", ");
+  const helplines = s.helplines.items.map((h) => `<strong>${esc(h.number)}</strong> (${esc(h.when.split(",")[0])})`).join(", ");
   const pathBlock = (Object.keys(PATH_OPTIONS) as (keyof typeof PATH_OPTIONS)[])
     .map((k) => {
       const def = PATH_OPTIONS[k];
@@ -248,38 +265,51 @@ export function renderReportHtml(c: ReportContent, s: Settings, opts: { fontCss?
       return `<div class="path ${c.path.main === k ? "chosen" : ""}">${radio(c.path.main === k, def.label)}<div class="sub">${opts2}</div>${note}</div>`;
     })
     .join("");
-  return `<!doctype html><html lang="pl"><head><meta charset="utf-8"><title>Raport po Audycie Relacji</title>
+  const names = c.meta.participants.map((p) => esc(p.name.split(" ")[0])).join(" i ");
+  const opening = plural
+    ? `Dziękuję Wam za rozmowę i za otwartość, z jaką każde z Was opowiedziało swoją perspektywę. Poniżej znajdziecie najważniejsze rzeczy, o których rozmawialiśmy. Możecie wracać do nich w swoim tempie – razem albo osobno.`
+    : `Dziękuję za rozmowę i za otwartość. Poniżej znajdziesz najważniejsze rzeczy, o których rozmawialiśmy. Możesz wracać do nich w swoim tempie.`;
+  return `<!doctype html><html lang="pl"><head><meta charset="utf-8"><title>Podsumowanie sesji · DUO</title>
 <style>
 ${opts.fontCss ?? ""}
 @page { size: A4; margin: 18mm 16mm 20mm; }
 * { box-sizing: border-box; }
-body { font-family: "Inter Variable", Inter, system-ui, sans-serif; color: #1f2a2a; font-size: 10.5pt; line-height: 1.55; margin: 0; background: #fff; }
-h1, h2 { font-family: "Fraunces Variable", Fraunces, Georgia, serif; font-weight: 500; color: #1d4640; }
-h1 { font-size: 26pt; margin: 0 0 2pt; letter-spacing: -0.01em; }
-h2 { font-size: 14pt; margin: 22pt 0 8pt; padding-bottom: 4pt; border-bottom: 1px solid #e6dccd; break-after: avoid; }
-.brand { font-size: 9pt; letter-spacing: .16em; text-transform: uppercase; color: #a5583b; font-weight: 600; }
-.lead { color: #5a6563; font-size: 9.5pt; margin-top: 6pt; }
+body { font-family: "Inter Variable", Inter, system-ui, sans-serif; color: #2a2522; font-size: 10.5pt; line-height: 1.6; margin: 0; background: #fff; }
+h1, h2 { font-family: "Fraunces Variable", Fraunces, Georgia, serif; font-weight: 500; color: #36493d; }
+h1 { font-size: 28pt; margin: 18pt 0 2pt; letter-spacing: -0.01em; }
+h2 { font-size: 14.5pt; margin: 24pt 0 8pt; padding-bottom: 5pt; border-bottom: 1px solid #eadccb; break-after: avoid; }
+.brand { display: flex; align-items: center; gap: 10pt; }
+.brand svg { width: 52pt; height: auto; }
+.brand .wm { font-family: "Gilda Display", Georgia, serif; font-size: 18pt; letter-spacing: .06em; color: #36493d; line-height: 1; }
+.brand .tag { font-size: 6.5pt; letter-spacing: .32em; text-transform: uppercase; color: #4d4540; margin-top: 3pt; }
+.lead { color: #6a605a; font-size: 9.5pt; margin-top: 4pt; }
+.letter { background: #fbf9f5; border-left: 3px solid #a9512f; padding: 12pt 14pt; margin: 16pt 0 6pt; border-radius: 0 8pt 8pt 0; font-size: 11pt; }
+.letter p { margin: 0 0 6pt; }
 table { width: 100%; border-collapse: collapse; margin: 6pt 0; break-inside: avoid; }
-th, td { text-align: left; vertical-align: top; padding: 6pt 8pt; border-bottom: 1px solid #efe7db; }
-th { font-weight: 600; color: #3b4847; background: #f8f3ec; font-size: 9pt; }
-td.k { width: 32%; color: #4b5856; font-weight: 500; }
-.opt { white-space: nowrap; margin-right: 8pt; color: #6b7573; }
-.opt.on { color: #1d4640; font-weight: 600; }
+th, td { text-align: left; vertical-align: top; padding: 6pt 8pt; border-bottom: 1px solid #f1e8dc; }
+th { font-weight: 600; color: #4d4540; background: #f8f3ec; font-size: 9pt; }
+td.k { width: 32%; color: #4d4540; font-weight: 500; }
+.opt { white-space: nowrap; margin-right: 8pt; color: #8a807a; }
+.opt.on { color: #36493d; font-weight: 600; }
 ul, ol { padding-left: 16pt; margin: 4pt 0; }
 li { margin: 3pt 0; }
 .path { padding: 6pt 8pt; border-radius: 6pt; margin: 4pt 0; }
-.path.chosen { background: #eef3f0; }
+.path.chosen { background: #e5ece6; }
 .path .sub { margin: 3pt 0 0 14pt; font-size: 9.5pt; }
-.small { font-size: 8.5pt; color: #6b7573; }
-.box { background: #faf6f0; border: 1px solid #e6dccd; border-radius: 8pt; padding: 10pt 12pt; margin-top: 18pt; break-inside: avoid; }
-.missing { background: #fff3cd; }
-.draft { position: fixed; top: 40%; left: 0; right: 0; text-align: center; font-size: 60pt; color: rgba(165,88,59,.08); transform: rotate(-20deg); font-weight: 700; }
-.foot { margin-top: 14pt; font-size: 8.5pt; color: #6b7573; }
+.small { font-size: 8.5pt; color: #6a605a; }
+.box { background: #fbf9f5; border: 1px solid #eadccb; border-radius: 8pt; padding: 10pt 12pt; margin-top: 20pt; break-inside: avoid; }
+.sign { margin-top: 22pt; font-size: 11pt; }
+.sign .n { font-family: "Fraunces Variable", Georgia, serif; font-size: 13pt; color: #36493d; }
+.draft { position: fixed; top: 40%; left: 0; right: 0; text-align: center; font-size: 60pt; color: rgba(169,81,47,.08); transform: rotate(-20deg); font-weight: 700; }
+.foot { margin-top: 14pt; font-size: 8.5pt; color: #6a605a; }
 </style></head><body>
 ${opts.draft ? '<div class="draft">SZKIC – NIEZATWIERDZONY</div>' : ""}
-<div class="brand">DUO™ · Audyt Relacji</div>
-<h1>Raport po audycie</h1>
-<div class="lead">Raport jest poufny i przeznaczony wyłącznie dla ${c.audience === "joint" ? "osób uczestniczących" : "osoby uczestniczącej"} w audycie.${c.audience === "participant" && c.caseKind === "couple" ? " To raport osobny – zawiera wyłącznie treści przeznaczone dla jego odbiorcy." : ""}</div>
+<div class="brand">${symbolSvg("pdf")}<div><div class="wm">DUO®</div><div class="tag">Terapia małżeństw</div></div></div>
+<h1>Podsumowanie sesji</h1>
+<div class="lead">Audyt Relacji · ${esc(c.meta.sessionDate)} · poufne, tylko dla ${plural ? "Was" : "Ciebie"}${c.audience === "participant" && c.caseKind === "couple" ? " (podsumowanie osobne – zawiera wyłącznie treści przeznaczone dla Ciebie)" : ""}</div>
+
+<div class="letter"><p>Dzień dobry, ${names},</p><p>${opening}</p><p>To nie jest ocena ani diagnoza – to opis tego, co wspólnie zobaczyliśmy w dniu sesji.</p></div>
+
 <table>
 <tr><td class="k">Imię i nazwisko, wiek</td><td>${c.meta.participants.map((p) => `${esc(p.name)}, ${esc(p.age)}`).join("<br>")}</td></tr>
 <tr><td class="k">Data sesji</td><td>${esc(c.meta.sessionDate)}</td></tr>
@@ -288,46 +318,48 @@ ${opts.draft ? '<div class="draft">SZKIC – NIEZATWIERDZONY</div>' : ""}
 <tr><td class="k">Psycholog prowadzący</td><td>${esc(c.meta.therapist)}</td></tr>
 </table>
 
-<h2>1. Podsumowanie</h2>
+<h2>${t.summary}</h2>
 <p>${para(c.summary.text)}</p>
-<p><strong>Powód zgłoszenia:</strong> ${para(c.summary.reason)}</p>
-<p><strong>Etap decyzji:</strong> ${para(c.summary.decisionStage)}</p>
+<p><strong>${plural ? "Z czym przyszliście" : "Z czym przychodzisz"}:</strong> ${para(c.summary.reason)}</p>
+<p><strong>${plural ? "Gdzie jesteście teraz z decyzją" : "Gdzie jesteś teraz z decyzją"}:</strong> ${para(c.summary.decisionStage)}</p>
 
-<h2>2. Mocne strony relacji</h2>
+<h2>${t.strengths}</h2>
 <ul>${c.strengths.map((x) => `<li>${para(x)}</li>`).join("")}</ul>
 
-<h2>3. Obszary napięcia</h2>
+<h2>${t.tensions}</h2>
 <table><tr><th>Obszar</th><th>Co zauważam</th><th>Nasilenie</th></tr>
-${c.tensions.map((t) => `<tr><td class="k">${esc(t.label)}</td><td>${para(t.text)}</td><td>${sev(t.severity)}</td></tr>`).join("")}
+${c.tensions.map((x) => `<tr><td class="k">${esc(x.label)}</td><td>${para(x.text)}</td><td>${sev(x.severity)}</td></tr>`).join("")}
 </table>
 
-<h2>4. Mechanizm konfliktu</h2>
-<p><strong>${c.caseKind === "couple" ? "Wasz cykl" : "Cykl"} w jednym zdaniu:</strong> ${para(c.mechanism.oneLiner)}</p>
+<h2>${t.mechanism}</h2>
+<p><strong>${plural ? "Wasz cykl" : "Cykl"} w jednym zdaniu:</strong> ${para(c.mechanism.oneLiner)}</p>
 <table><tr><th>Element cyklu</th>${c.mechanism.columns.map((h) => `<th>${esc(h)}</th>`).join("")}</tr>
 ${c.mechanism.rows.map((r) => `<tr><td class="k">${esc(r.label)}</td>${r.values.map((v) => `<td>${para(v)}</td>`).join("")}</tr>`).join("")}
 </table>
-<p><strong>Zaobserwowane wzorce komunikacyjne:</strong> ${radio(c.mechanism.patterns.criticism, "krytyka")} ${radio(c.mechanism.patterns.contempt, "pogarda")} ${radio(c.mechanism.patterns.defensiveness, "defensywność")} ${radio(c.mechanism.patterns.stonewalling, "wycofanie (stonewalling)")}</p>
+<p><strong>Wzorce, które pojawiały się w rozmowie:</strong> ${radio(c.mechanism.patterns.criticism, "krytyka")} ${radio(c.mechanism.patterns.contempt, "pogarda")} ${radio(c.mechanism.patterns.defensiveness, "defensywność")} ${radio(c.mechanism.patterns.stonewalling, "wycofanie (stonewalling)")}</p>
 <p><strong>Komentarz:</strong> ${para(c.mechanism.patternsComment)}</p>
-<p><strong>Próby naprawy:</strong> ${para(c.mechanism.repair)}</p>
+<p><strong>Próby naprawy – co już działa, co nie dociera:</strong> ${para(c.mechanism.repair)}</p>
 
-<h2>5. Rekomendacje</h2>
+<h2>${t.recommendations}</h2>
 <ol>${c.recommendations.map((x) => `<li>${para(x)}</li>`).join("")}</ol>
-<p><strong>Rekomendowana ścieżka:</strong></p>
+<p><strong>Możliwa dalsza droga:</strong></p>
 ${pathBlock}
 <div class="path ${c.path.main === "none" ? "chosen" : ""}">${radio(c.path.main === "none", "na razie bez dalszej pracy")}</div>
-<p><strong>Uzasadnienie wyboru ścieżki:</strong> ${para(c.path.rationale)}</p>
-<p class="small">Rekomendacja jest propozycją. Decyzja o dalszej drodze zawsze należy do ${c.audience === "joint" ? "Was" : "Ciebie"}.</p>
+<p><strong>Dlaczego ta droga:</strong> ${para(c.path.rationale)}</p>
+<p class="small">To propozycja, nie zobowiązanie. Decyzja o dalszej drodze zawsze należy do ${plural ? "Was" : "Ciebie"}.</p>
 
-<h2>6. Następne kroki</h2>
+<h2>${t.nextSteps}</h2>
 <table><tr><th>Krok</th><th>Kto</th><th>Kiedy</th></tr>
 ${c.nextSteps.map((n) => `<tr><td>${para(n.what)}</td><td>${para(n.who)}</td><td>${para(n.when)}</td></tr>`).join("")}
 </table>
 
-<div class="box"><strong>Ważne</strong>
-<p>Raport opisuje sytuację z perspektywy osoby lub osób uczestniczących w audycie w dniu sesji. Nie jest diagnozą psychiatryczną ani opinią do celów sądowych. Jeśli Twoja sytuacja się pogorszy lub pojawi się zagrożenie bezpieczeństwa, skorzystaj z pomocy od razu:</p>
-${c.caseKind === "individual" ? "<p>Przy audycie indywidualnym: raport opiera się wyłącznie na perspektywie jednej osoby. Opisy zachowań, intencji i potrzeb partnera lub partnerki są interpretacją osoby uczestniczącej w audycie, a nie oceną ani diagnozą osoby nieobecnej.</p>" : ""}
+<div class="sign">Z serdecznością,<br><span class="n">${esc(c.meta.therapist)}</span></div>
+
+<div class="box"><strong>${t.important}</strong>
+<p>To podsumowanie opisuje sytuację z perspektywy osoby lub osób uczestniczących w audycie w dniu sesji. Nie jest diagnozą psychiatryczną ani opinią do celów sądowych. Jeśli Twoja sytuacja się pogorszy lub pojawi się zagrożenie bezpieczeństwa, skorzystaj z pomocy od razu:</p>
+${c.caseKind === "individual" ? "<p>Przy audycie indywidualnym: podsumowanie opiera się wyłącznie na perspektywie jednej osoby. Opisy zachowań, intencji i potrzeb partnera lub partnerki są interpretacją osoby uczestniczącej w audycie, a nie oceną ani diagnozą osoby nieobecnej.</p>" : ""}
 <p>${helplines}. Poza Polską: lokalny numer alarmowy kraju pobytu.</p>
 </div>
-<div class="foot">Audyt Relacji · Raport po audycie · ${esc(c.meta.sessionDate)}</div>
+<div class="foot">DUO® · Terapia małżeństw · Podsumowanie sesji Audytu Relacji · ${esc(c.meta.sessionDate)}</div>
 </body></html>`;
 }

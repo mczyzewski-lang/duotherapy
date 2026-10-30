@@ -79,22 +79,22 @@ describe("analiza jakościowa (wytyczne 03)", () => {
   });
 });
 
-describe("raport", () => {
+describe("podsumowanie", () => {
   const base = { sessionDate: new Date("2026-11-10"), therapist: "Psycholog", reason: null, riskFlag: false };
-  it("raport wspólny nie zawiera odpowiedzi z kwestionariuszy, tylko notatki dopuszczone", () => {
+  it("podsumowanie wspólne nie zawiera odpowiedzi z kwestionariuszy, tylko notatki dopuszczone", () => {
     const d = buildDraft({ ...base, audience: "joint", caseKind: "couple", participants: [{ name: "A" }, { name: "B" }], ownData: null, notes: [{ area: "communication", body: "Wspólna obserwacja", participantName: null }] });
     expect(d.mechanism.columns).toEqual(["A", "B"]);
     expect(d.mechanism.rows.every((r) => r.values.every((v) => v === MISSING))).toBe(true);
     expect(d.tensions[0].text).toContain("Wspólna obserwacja");
   });
-  it("raport indywidualny opisuje osobę nieobecną wyłącznie jako perspektywę uczestnika", () => {
+  it("podsumowanie indywidualne opisuje osobę nieobecną wyłącznie jako perspektywę uczestnika", () => {
     const own = person("Ewa", "individual_female", { "s3.trigger": "brak odpowiedzi na wiadomość", "s3.partner": "wychodzi z pokoju" });
     const d = buildDraft({ ...base, audience: "participant", caseKind: "individual", participants: [{ name: "Ewa" }], ownData: own, notes: [] });
     expect(d.mechanism.columns[1]).toMatch(/perspektywie uczestnika/);
     expect(d.mechanism.rows[0].values[0]).toContain("brak odpowiedzi na wiadomość");
     expect(d.mechanism.rows.find((r) => r.key === "behavior")!.values[1]).toBe("W opisie uczestnika: wychodzi z pokoju");
     expect(d.mechanism.rows.find((r) => r.key === "need")!.values[1]).toBe(MISSING); // brak fikcyjnych danych
-    expect(renderReportHtml(d, DEFAULT_SETTINGS)).toContain("Przy audycie indywidualnym: raport opiera się wyłącznie na perspektywie jednej osoby");
+    expect(renderReportHtml(d, DEFAULT_SETTINGS)).toContain("Przy audycie indywidualnym: podsumowanie opiera się wyłącznie na perspektywie jednej osoby");
   });
   it("zatwierdzenie blokują braki; przy zagrożeniu terapia par i mediacja są niedozwolone", () => {
     const d = buildDraft({ ...base, riskFlag: true, audience: "joint", caseKind: "couple", participants: [{ name: "A" }, { name: "B" }], ownData: null, notes: [] });
@@ -104,9 +104,9 @@ describe("raport", () => {
     d.path = { main: "safety", options: ["safety_plan"], rationale: "x" };
     expect(pathProblems(d)).toEqual([]);
   });
-  it("HTML raportu zawiera wszystkie części szablonu i numery pomocy", () => {
+  it("HTML podsumowania zawiera wszystkie części szablonu i numery pomocy", () => {
     const html = renderReportHtml(buildDraft({ ...base, audience: "joint", caseKind: "couple", participants: [{ name: "A" }, { name: "B" }], ownData: null, notes: [] }), DEFAULT_SETTINGS);
-    for (const h of ["1. Podsumowanie", "2. Mocne strony relacji", "3. Obszary napięcia", "4. Mechanizm konfliktu", "5. Rekomendacje", "6. Następne kroki", "Ważne", "116 123", "800 120 002", "na razie bez dalszej pracy"]) expect(html).toContain(h);
+    for (const h of ["Podsumowanie sesji", "1. Najważniejsze w skrócie", "2. Co Was wspiera", "3. Gdzie jest Wam najtrudniej", "4. Jak działa Wasz konflikt", "5. Co proponuję", "6. Kolejne kroki", "Pamiętaj", "Element cyklu", "Wasz cykl w jednym zdaniu", "Możliwa dalsza droga", "116 123", "800 120 002", "na razie bez dalszej pracy"]) expect(html).toContain(h);
     expect(html).not.toContain("<script");
   });
 });

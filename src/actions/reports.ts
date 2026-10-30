@@ -22,12 +22,12 @@ export async function createReportAction(fd: FormData) {
     const data = await loadCase(tx, caseId);
     if (!data) throw new Error("Brak dostępu");
     const { c, participants } = data;
-    if (c.kind === "individual" && audience === "joint") throw new Error("Audyt indywidualny ma raport osobny");
+    if (c.kind === "individual" && audience === "joint") throw new Error("Audyt indywidualny ma podsumowanie osobne");
     const people = await loadPeople(tx, participants as never);
     const own = forPid ? people.find((p) => p.participantId === forPid) ?? null : null;
     if (forPid && !own) throw new Error("Uczestnik nie należy do sprawy");
     const notes = (await loadNotes(tx, caseId)).filter(
-      // para: raport osobny tylko z notatek o adresacie lub dopuszczonych do wspólnego przekazania
+      // para: podsumowanie osobne tylko z notatek o adresacie lub dopuszczonych do wspólnego przekazania
       (n) => n.kind === "report" && (audience === "joint" ? n.joint_ok : c.kind === "individual" || n.participant_id === forPid || n.joint_ok),
     );
     const riskFlag = participants.some((p) => p.risk) || people.some((p) => screeningFlags(p).some((f) => f.trigger && f.value === "yes"));
@@ -97,8 +97,8 @@ export async function approveReportAction(reportId: string): Promise<{ ok: true 
 }
 
 /**
- * Udostępnienie zatwierdzonej wersji JEDNEJ osobie. Raport osobny – tylko jego adresatowi.
- * Raport wspólny – wymaga potwierdzenia, że zawiera wyłącznie treści zatwierdzone do wspólnego przekazania.
+ * Udostępnienie zatwierdzonej wersji JEDNEJ osobie. Podsumowanie osobne – tylko jego adresatowi.
+ * Podsumowanie wspólne – wymaga potwierdzenia, że zawiera wyłącznie treści zatwierdzone do wspólnego przekazania.
  */
 export async function shareReportAction(reportId: string, participantId: string, confirmDisclosure: boolean): Promise<{ url: string; code: string } | { error: string }> {
   const s = await requireStaff();
@@ -108,12 +108,12 @@ export async function shareReportAction(reportId: string, participantId: string,
                          (select version from report_versions where report_id = r.id and approved_at is not null order by version desc limit 1) as approved_no
                          from reports r where r.id = ${reportId}`;
     if (!r) return { error: "Brak dostępu." };
-    if (!r.approved_version) return { error: "Najpierw zatwierdź raport." };
+    if (!r.approved_version) return { error: "Najpierw zatwierdź podsumowanie." };
     if (r.approved_no !== r.last_version) return { error: "Po zatwierdzeniu zapisano nowszą wersję. Zatwierdź ją ponownie przed udostępnieniem." };
     const [p] = await tx`select id from participants where id = ${participantId} and case_id = ${r.case_id} and anonymized_at is null`;
     if (!p) return { error: "Uczestnik nie należy do tej sprawy." };
-    if (r.audience === "participant" && r.participant_id !== participantId) return { error: "Raport osobny może otrzymać wyłącznie jego adresat." };
-    if (r.audience === "joint" && !confirmDisclosure) return { error: "Potwierdź, że raport wspólny zawiera wyłącznie treści zatwierdzone do wspólnego przekazania." };
+    if (r.audience === "participant" && r.participant_id !== participantId) return { error: "Podsumowanie osobne może otrzymać wyłącznie jego adresat." };
+    if (r.audience === "joint" && !confirmDisclosure) return { error: "Potwierdź, że podsumowanie wspólne zawiera wyłącznie treści zatwierdzone do wspólnego przekazania." };
     const st = await readSettings(tx);
     const token = newToken();
     const code = newCode();

@@ -22,9 +22,9 @@ export interface NoteLite {
 export const NOTE_KIND: Record<NoteLite["kind"], string> = {
   private: "notatka prywatna psychologa",
   discussed: "ustalenie omówione na sesji",
-  report: "informacja dopuszczona do raportu",
+  report: "informacja dopuszczona do podsumowania",
 };
-export const TAGS: Record<string, string> = { to_check: "do sprawdzenia", important: "ważne do raportu", discussed: "omówione" };
+export const TAGS: Record<string, string> = { to_check: "do sprawdzenia", important: "ważne do podsumowania", discussed: "omówione" };
 
 export function NoteList({ notes, caseId }: { notes: NoteLite[]; caseId: string }) {
   const [pending, start] = useTransition();
@@ -35,7 +35,7 @@ export function NoteList({ notes, caseId }: { notes: NoteLite[]; caseId: string 
         <li key={n.id} className="rounded-xl bg-clay-soft/40 p-3 text-sm ring-1 ring-clay/15">
           <div className="flex flex-wrap items-center gap-1.5">
             <Badge tone={n.kind === "report" ? "forest" : n.kind === "discussed" ? "neutral" : "clay"}>{NOTE_KIND[n.kind]}</Badge>
-            {n.joint_ok && <Badge tone="ok">może trafić do raportu wspólnego</Badge>}
+            {n.joint_ok && <Badge tone="ok">może trafić do podsumowania wspólnego</Badge>}
             {n.tags.map((t) => <Badge key={t}>{TAGS[t]}</Badge>)}
             <span className="ml-auto text-xs text-muted">{n.author} · {new Date(n.created_at).toLocaleString("pl-PL", { dateStyle: "short", timeStyle: "short" })}</span>
             <button type="button" aria-label="Usuń notatkę" disabled={pending} className="text-muted hover:text-alert" onClick={() => confirm("Usunąć notatkę?") && start(() => deleteNoteAction(n.id, caseId))}>
@@ -87,7 +87,7 @@ export function NoteForm({ caseId, participantId, questionId, couple, stage, onS
           {Object.entries(NOTE_KIND).map(([k, l]) => <option key={k} value={k}>{l}</option>)}
         </select>
         {couple && kind === "report" && (
-          <label className="flex items-center gap-1"><input type="checkbox" checked={jointOk} onChange={(e) => setJointOk(e.target.checked)} className="accent-forest" /> może trafić do raportu wspólnego</label>
+          <label className="flex items-center gap-1"><input type="checkbox" checked={jointOk} onChange={(e) => setJointOk(e.target.checked)} className="accent-forest" /> może trafić do podsumowania wspólnego</label>
         )}
         {Object.entries(TAGS).map(([k, l]) => (
           <label key={k} className="flex items-center gap-1"><input type="checkbox" checked={tags.includes(k)} onChange={(e) => setTags((t) => (e.target.checked ? [...t, k] : t.filter((x) => x !== k)))} className="accent-forest" /> {l}</label>

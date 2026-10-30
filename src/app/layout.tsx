@@ -3,9 +3,9 @@ import "./globals.css";
 import { DemoBanner } from "@/components/ui";
 
 export const metadata: Metadata = {
-  title: { default: "DUO™ – Audyt Relacji", template: "%s · DUO™" },
+  title: { default: "DUO® – Audyt Relacji", template: "%s · DUO®" },
   description:
-    "Zrozum, co naprawdę dzieje się w Twojej relacji – i świadomie zdecyduj, co dalej. Audyt Relacji DUO™: poufny kwestionariusz i uporządkowana rozmowa z psychologiem online.",
+    "Zrozum, co naprawdę dzieje się w Twojej relacji – i świadomie zdecyduj, co dalej. Audyt Relacji DUO®: poufny kwestionariusz i uporządkowana rozmowa z psychologiem online.",
   robots: { index: true, follow: true },
 };
 

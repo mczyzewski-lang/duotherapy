@@ -58,7 +58,7 @@ export interface SectionDef {
   intro?: string;
   /** Legenda skali, np. "1 = zupełnie nie, 5 = całkowicie tak". */
   scaleLegend?: string;
-  /** Obszar analizy (komunikacja, bliskość...) – do podsumowania i raportu. */
+  /** Obszar analizy (komunikacja, bliskość...) – do analizy i podsumowania sesji. */
   area?: AreaKey;
   questions: QuestionDef[];
 }

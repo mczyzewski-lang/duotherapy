@@ -15,7 +15,7 @@ const LABELS: Record<string, string> = {
   leadMarketingConsent: "Zgoda marketingowa (opcjonalna)", version: "Wersja tekstów prawnych (zapisywana w rejestrze zgód)", approved: "Teksty zatwierdzone przez prawnika / IOD",
   priceIndividual: "Cena – audyt indywidualny (puste = ukryj)", priceCouple: "Cena – audyt dla pary (puste = ukryj)", contactPhone: "Telefon kontaktowy (puste = ukryj)",
   contactEmail: "E-mail kontaktowy (puste = ukryj)", vslUrl: "Film wyjaśniający usługę (adres embed youtube-nocookie / vimeo; puste = ukryj)", paymentUrl: "Link do płatności (https)", faq: "FAQ",
-  invitationDays: "Ważność linku do kwestionariusza (dni)", reportShareDays: "Ważność linku do raportu (dni)", requirePaymentBeforeQuestionnaire: "Wymagaj płatności przed kwestionariuszem",
+  invitationDays: "Ważność linku do kwestionariusza (dni)", reportShareDays: "Ważność linku do podsumowania (dni)", requirePaymentBeforeQuestionnaire: "Wymagaj płatności przed kwestionariuszem",
   items: "Numery pomocy", abroad: "Informacja dla osób poza Polską", verifiedNote: "Data weryfikacji numerów", disclaimer: "Zastrzeżenie",
 };
 
@@ -36,7 +36,7 @@ export default async function SettingsPage() {
             <h2 className="font-display text-xl text-ink">Mój profil</h2>
             <ActionForm action={therapistProfileAction as never} className="mt-4 space-y-3">
               <input type="hidden" name="therapist_id" value={d.me.id} />
-              <Field label="Imię i nazwisko (w raportach)"><Input name="display_name" defaultValue={d.me.display_name} /></Field>
+              <Field label="Imię i nazwisko (w podsumowaniach)"><Input name="display_name" defaultValue={d.me.display_name} /></Field>
               <Field label="Tytuł zawodowy"><Input name="title" defaultValue={d.me.title ?? ""} /></Field>
               <Field label="Krótki opis (strona główna)"><Textarea name="bio" defaultValue={d.me.bio ?? ""} /></Field>
               {s.user.role === "admin" && <label className="flex items-center gap-2 text-sm"><input type="checkbox" name="is_public" defaultChecked={d.me.is_public} className="accent-forest" /> pokaż na stronie głównej</label>}
@@ -73,7 +73,7 @@ export default async function SettingsPage() {
                 <li><strong className="text-ink">E-mail:</strong> brak – linki i kody kopiujesz ręcznie. Integracja wymaga umowy powierzenia i decyzji, by nie wysyłać treści wrażliwych.</li>
                 <li><strong className="text-ink">Płatności:</strong> link do płatności w sekcji „Strona i lejek”; status płatności oznaczasz ręcznie w karcie sprawy.</li>
                 <li><strong className="text-ink">Kalendarz:</strong> brak – terminy proponujesz w karcie sprawy, klient wybiera pod swoim linkiem.</li>
-                <li><strong className="text-ink">AI:</strong> wyłączone. Szkic raportu powstaje lokalnie z szablonu. Włączenie modelu AI wymaga DPIA, umowy powierzenia, przetwarzania w UE i wyraźnej zgody.</li>
+                <li><strong className="text-ink">AI:</strong> wyłączone. Szkic podsumowania powstaje lokalnie z szablonu. Włączenie modelu AI wymaga DPIA, umowy powierzenia, przetwarzania w UE i wyraźnej zgody.</li>
                 <li><strong className="text-ink">Analityka:</strong> brak skryptów analitycznych i reklamowych.</li>
               </ul>
             </Card>

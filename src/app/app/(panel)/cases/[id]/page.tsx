@@ -151,14 +151,14 @@ export default async function CasePage({ params }: { params: Promise<{ id: strin
 
           <Card className="p-6">
             <div className="flex flex-wrap items-center justify-between gap-3">
-              <h2 className="font-display text-xl text-ink">Raporty</h2>
+              <h2 className="font-display text-xl text-ink">Podsumowania sesji</h2>
               <LinkButton href={`/app/cases/${c.id}/session`} variant="secondary" size="sm"><Play size={15} aria-hidden /> Rozpocznij sesję</LinkButton>
             </div>
             {d.reports.length > 0 && (
               <ul className="mt-4 divide-y divide-sand/70">
                 {d.reports.map((r) => (
                   <li key={r.id} className="flex items-center justify-between gap-3 py-3 text-sm">
-                    <Link href={`/app/cases/${c.id}/reports/${r.id}`} className="flex items-center gap-2 font-medium text-forest"><FileText size={16} aria-hidden /> {r.audience === "joint" ? "Raport wspólny" : `Raport dla: ${r.for_name}`}</Link>
+                    <Link href={`/app/cases/${c.id}/reports/${r.id}`} className="flex items-center gap-2 font-medium text-forest"><FileText size={16} aria-hidden /> {r.audience === "joint" ? "Podsumowanie wspólne" : `Podsumowanie dla: ${r.for_name}`}</Link>
                     <span className="text-xs text-muted">wersja {r.v} · <Badge tone={r.status === "draft" ? "clay" : "ok"}>{{ draft: "szkic", approved: "zatwierdzony", shared: "udostępniony" }[r.status as string]}</Badge></span>
                   </li>
                 ))}
@@ -167,15 +167,15 @@ export default async function CasePage({ params }: { params: Promise<{ id: strin
             <form action={createReportAction} className="mt-4 flex flex-wrap items-end gap-2">
               <input type="hidden" name="case_id" value={c.id} />
               <label className="text-sm text-ink">
-                <span className="mb-1 block">Odbiorca raportu</span>
+                <span className="mb-1 block">Odbiorca podsumowania</span>
                 <Select name="audience_target" defaultValue={c.kind === "couple" ? "joint" : participants[0].id} className="min-w-64" id="audience" aria-label="Odbiorca">
-                  {c.kind === "couple" && <option value="joint">Raport wspólny (tylko treści zatwierdzone do wspólnego przekazania)</option>}
-                  {participants.map((p) => <option key={p.id} value={p.id}>Raport osobny: {p.display_name}</option>)}
+                  {c.kind === "couple" && <option value="joint">Podsumowanie wspólne (tylko treści zatwierdzone do wspólnego przekazania)</option>}
+                  {participants.map((p) => <option key={p.id} value={p.id}>Podsumowanie osobne: {p.display_name}</option>)}
                 </Select>
               </label>
-              <SubmitButton>Przygotuj raport Audytu Relacji</SubmitButton>
+              <SubmitButton>Przygotuj podsumowanie sesji</SubmitButton>
             </form>
-            {!lastReportOk && !c.session_ended_at && <p className="mt-2 text-xs text-muted">Zwykle raport przygotowuje się po zakończeniu sesji.</p>}
+            {!lastReportOk && !c.session_ended_at && <p className="mt-2 text-xs text-muted">Zwykle podsumowanie przygotowuje się po zakończeniu sesji.</p>}
           </Card>
         </div>
 

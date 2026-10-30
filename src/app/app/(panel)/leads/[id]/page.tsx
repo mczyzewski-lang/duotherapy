@@ -59,7 +59,7 @@ export default async function LeadPage({ params }: { params: Promise<{ id: strin
             <ol className="mt-3 list-decimal space-y-1.5 pl-5 text-sm leading-relaxed text-ink-soft">
               <li>Przedstaw się, sprawdź, czy to dobry i bezpieczny moment na rozmowę{lead.quiz?.discreet ? " (osoba prosi o dyskrecję)" : ""}.</li>
               <li>Zapytaj krótko, co skłoniło do zgłoszenia i czego osoba oczekuje.</li>
-              <li>Wyjaśnij audyt: jednorazowa konsultacja ({lead.mode === "couple" ? "90 minut dla pary, każda osoba wypełnia własny kwestionariusz" : "60 minut indywidualnie"}), poufne kwestionariusze ok. 40–60 min, raport i propozycja ścieżki.</li>
+              <li>Wyjaśnij audyt: jednorazowa konsultacja ({lead.mode === "couple" ? "90 minut dla pary, każda osoba wypełnia własny kwestionariusz" : "60 minut indywidualnie"}), poufne kwestionariusze ok. 40–60 min, podsumowanie i propozycja ścieżki.</li>
               <li>Podkreśl: to nie terapia ani diagnoza; rekomendacja jest propozycją, decyzja należy do klienta.</li>
               <li>Zapytaj o bezpieczeństwo. Przy sygnałach przemocy: bez wspólnej sesji – ścieżka bezpieczeństwa i numery pomocy.</li>
               <li>Ustal formę płatności{settings.site.paymentUrl ? " (link do płatności w ustawieniach)" : ""} i kolejne kroki: link do kwestionariusza z kodem przekazanym telefonicznie.</li>

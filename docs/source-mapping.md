@@ -1,4 +1,4 @@
-# Mapowanie materiałów źródłowych → aplikacja DUO™
+# Mapowanie materiałów źródłowych → aplikacja DUO®
 
 Materiały źródłowe (PDF) służyły wyłącznie jako baza wiedzy. **Pliki PDF nie są częścią repozytorium ani aplikacji** – treść została przeniesiona do struktur danych, interfejsu i logiki.
 
@@ -129,7 +129,7 @@ Wszystkie części: metadane (imię i nazwisko, wiek; data sesji; rodzaj; forma 
 
 ## PDF 07 – Ścieżka klienta → landing i raport
 
-Etapy (zgłoszenie → kwestionariusz → sesja 60/90 → ocena i rekomendacja) rozszerzone o lejek DUO™ (quiz → rozmowa telefoniczna → płatność i kwestionariusz → sesja → raport). Ścieżki A (terapia par, program odbudowy relacji), B (konstruktywny rozwód, opcjonalnie mediacja, terapia po rozstaniu), C (plan bezpieczeństwa, pomoc specjalistyczna, bez terapii par i mediacji) oraz zdanie „Rekomendacja jest propozycją. Decyzja o dalszej drodze zawsze należy do Ciebie.”
+Etapy (zgłoszenie → kwestionariusz → sesja 60/90 → ocena i rekomendacja) rozszerzone o lejek DUO® (quiz → rozmowa telefoniczna → płatność i kwestionariusz → sesja → raport). Ścieżki A (terapia par, program odbudowy relacji), B (konstruktywny rozwód, opcjonalnie mediacja, terapia po rozstaniu), C (plan bezpieczeństwa, pomoc specjalistyczna, bez terapii par i mediacji) oraz zdanie „Rekomendacja jest propozycją. Decyzja o dalszej drodze zawsze należy do Ciebie.”
 
 ## Decyzje i niejednoznaczności
 

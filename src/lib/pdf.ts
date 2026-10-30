@@ -1,4 +1,4 @@
-// Generowanie PDF raportu lokalnie (Chromium przez playwright-core) – bez zewnętrznych usług.
+// Generowanie PDF podsumowania lokalnie (Chromium przez playwright-core) – bez zewnętrznych usług.
 import { readFileSync } from "node:fs";
 import path from "node:path";
 import { chromium } from "playwright-core";

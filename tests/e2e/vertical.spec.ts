@@ -1,5 +1,5 @@
 // Pełny pionowy scenariusz: quiz → zgłoszenie → sprawa pary → dwa linki → dwa kwestionariusze →
-// odpowiedzi, rozbieżności, notatki → sesja → raport (edycja, zatwierdzenie, PDF) → udostępnienie jednej osobie.
+// odpowiedzi, rozbieżności, notatki → sesja → podsumowanie (edycja, zatwierdzenie, PDF) → udostępnienie jednej osobie.
 import { expect, test, type Browser, type Page } from "@playwright/test";
 
 const PASSWORD = "demo-duo-2026!";
@@ -196,9 +196,9 @@ test("pełny scenariusz audytu pary", async ({ page, browser, request }) => {
   await page.getByRole("button", { name: /Zakończ sesję/ }).click();
   await page.waitForURL(/tab=reports/);
 
-  // 8. Raport wspólny: szkic → uzupełnienie → zatwierdzenie → PDF → udostępnienie jednej osobie
-  await page.getByRole("button", { name: "Przygotuj raport Audytu Relacji" }).click();
-  await expect(page.getByRole("heading", { name: "Raport wspólny" })).toBeVisible();
+  // 8. Podsumowanie wspólne: szkic → uzupełnienie → zatwierdzenie → PDF → udostępnienie jednej osobie
+  await page.getByRole("button", { name: "Przygotuj podsumowanie sesji" }).click();
+  await expect(page.getByRole("heading", { name: "Podsumowanie wspólne" })).toBeVisible();
   await expect(page.getByText("Te opcje są zablokowane w tym raporcie")).toBeVisible();
   const fields = page.locator("textarea, input[aria-label^='Krok']");
   for (let i = 0; i < (await fields.count()); i++) {
@@ -213,8 +213,8 @@ test("pełny scenariusz audytu pary", async ({ page, browser, request }) => {
   await page.getByRole("checkbox", { name: "plan bezpieczeństwa" }).check();
   await page.getByRole("button", { name: "Zapisz wersję" }).click();
   await expect(page.getByText(/Zapisano wersję 2/)).toBeVisible();
-  await page.getByRole("button", { name: "Zatwierdź raport" }).click();
-  await expect(page.getByText("Raport zatwierdzony")).toBeVisible();
+  await page.getByRole("button", { name: "Zatwierdź podsumowanie" }).click();
+  await expect(page.getByText("Podsumowanie zatwierdzone")).toBeVisible();
 
   const pdfHref = await page.getByRole("link", { name: /Pobierz PDF/ }).getAttribute("href");
   const pdf = await page.request.get(pdfHref!);
@@ -222,9 +222,9 @@ test("pełny scenariusz audytu pary", async ({ page, browser, request }) => {
   expect((await pdf.body()).subarray(0, 4).toString()).toBe("%PDF");
 
   // bez potwierdzenia zakresu ujawnienia przycisk jest nieaktywny
-  await expect(page.getByRole("button", { name: "Wygeneruj link do raportu" })).toBeDisabled();
-  await page.getByRole("checkbox", { name: /Potwierdzam, że raport wspólny/ }).check();
-  await page.getByRole("button", { name: "Wygeneruj link do raportu" }).click();
+  await expect(page.getByRole("button", { name: "Wygeneruj link do podsumowania" })).toBeDisabled();
+  await page.getByRole("checkbox", { name: /Potwierdzam, że podsumowanie wspólne/ }).check();
+  await page.getByRole("button", { name: "Wygeneruj link do podsumowania" }).click();
   const shareUrl = (await page.getByTestId("share-url").innerText()).replace(/^https?:\/\/[^/]+/, "http://localhost:3100");
   const shareCode = await page.getByTestId("share-code").innerText();
 
@@ -232,14 +232,14 @@ test("pełny scenariusz audytu pary", async ({ page, browser, request }) => {
   const vp = await viewer.newPage();
   await vp.goto(shareUrl);
   await vp.waitForLoadState("networkidle");
-  await expect(vp.getByRole("heading", { name: /Twój raport/ })).toBeVisible();
-  await vp.getByLabel("Kod dostępu do raportu").fill(shareCode);
-  await vp.getByRole("button", { name: "Otwórz raport" }).click();
+  await expect(vp.getByRole("heading", { name: /Twoje podsumowanie/ })).toBeVisible();
+  await vp.getByLabel("Kod dostępu do podsumowania").fill(shareCode);
+  await vp.getByRole("button", { name: "Otwórz podsumowanie" }).click();
   await expect(vp.getByRole("link", { name: "Pobierz PDF" })).toBeVisible();
-  const frame = vp.frameLocator("iframe[title='Raport']");
-  await expect(frame.getByRole("heading", { name: "Raport po audycie" })).toBeVisible();
+  const frame = vp.frameLocator("iframe[title='Podsumowanie']");
+  await expect(frame.getByRole("heading", { name: "Podsumowanie sesji" })).toBeVisible();
   await expect(frame.getByText("Treść uzupełniona przez psychologa").first()).toBeVisible();
-  // raport wspólny nie zawiera odpowiedzi z indywidualnych kwestionariuszy
+  // podsumowanie wspólne nie zawiera odpowiedzi z indywidualnych kwestionariuszy
   await expect(frame.getByText("Odpowiedź opisowa")).toHaveCount(0);
 
   await a.ctx.close();

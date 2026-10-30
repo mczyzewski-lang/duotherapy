@@ -1,4 +1,4 @@
-// Podstawowe komponenty interfejsu DUO™ (styl w duchu shadcn/ui, bez zależności zewnętrznych).
+// Podstawowe komponenty interfejsu DUO® (styl w duchu shadcn/ui, bez zależności zewnętrznych).
 import clsx from "clsx";
 import Link from "next/link";
 import type { ComponentProps, ReactNode } from "react";
@@ -84,19 +84,7 @@ export function Alert({ tone = "info", title, children, className }: { tone?: "i
   );
 }
 
-export function Logo({ className, light }: { className?: string; light?: boolean }) {
-  return (
-    <span className={clsx("inline-flex items-center gap-2", className)}>
-      <svg width="34" height="22" viewBox="0 0 34 22" aria-hidden>
-        <circle cx="11" cy="11" r="9.5" fill="none" stroke={light ? "#fff" : "var(--color-forest)"} strokeWidth="2" />
-        <circle cx="23" cy="11" r="9.5" fill="none" stroke="var(--color-clay)" strokeWidth="2" />
-      </svg>
-      <span className={clsx("font-display text-xl font-semibold tracking-tight", light ? "text-white" : "text-forest")}>
-        DUO<sup className="ml-0.5 text-[0.55em] font-sans font-medium">™</sup>
-      </span>
-    </span>
-  );
-}
+export { Logo } from "./brand";
 
 export function DemoBanner() {
   return (

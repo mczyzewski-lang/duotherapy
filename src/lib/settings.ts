@@ -59,11 +59,11 @@ export const DEFAULT_SETTINGS: Settings = {
     retentionPolicy: "",
     privacyPolicy: "",
     questionnaireNotice:
-      "Administratorem Twoich danych osobowych jest: {administrator}. Dane z kwestionariusza, w tym informacje o zdrowiu, przetwarzam wyłącznie w celu przeprowadzenia Audytu Relacji i przygotowania raportu, na podstawie Twojej wyraźnej zgody (art. 6 ust. 1 lit. a oraz art. 9 ust. 2 lit. a RODO). Obowiązuje mnie tajemnica zawodowa psychologa. Nie udostępniam danych osobom trzecim, w tym drugiej osobie w związku, bez Twojej zgody, z wyjątkiem sytuacji przewidzianych prawem (np. bezpośrednie zagrożenie życia). Masz prawo dostępu do danych, ich sprostowania, usunięcia, ograniczenia przetwarzania oraz wycofania zgody w dowolnym momencie, bez wpływu na zgodność z prawem wcześniejszego przetwarzania. Przysługuje Ci skarga do Prezesa Urzędu Ochrony Danych Osobowych.",
+      "Administratorem Twoich danych osobowych jest: {administrator}. Dane z kwestionariusza, w tym informacje o zdrowiu, przetwarzam wyłącznie w celu przeprowadzenia Audytu Relacji i przygotowania podsumowania, na podstawie Twojej wyraźnej zgody (art. 6 ust. 1 lit. a oraz art. 9 ust. 2 lit. a RODO). Obowiązuje mnie tajemnica zawodowa psychologa. Nie udostępniam danych osobom trzecim, w tym drugiej osobie w związku, bez Twojej zgody, z wyjątkiem sytuacji przewidzianych prawem (np. bezpośrednie zagrożenie życia). Masz prawo dostępu do danych, ich sprostowania, usunięcia, ograniczenia przetwarzania oraz wycofania zgody w dowolnym momencie, bez wpływu na zgodność z prawem wcześniejszego przetwarzania. Przysługuje Ci skarga do Prezesa Urzędu Ochrony Danych Osobowych.",
     leadContactConsent:
-      "Wyrażam zgodę na kontakt telefoniczny lub e-mailowy w sprawie mojego zgłoszenia na Audyt Relacji DUO™.",
+      "Wyrażam zgodę na kontakt telefoniczny lub e-mailowy w sprawie mojego zgłoszenia na Audyt Relacji DUO®.",
     leadMarketingConsent:
-      "Chcę otrzymywać od DUO™ okazjonalne informacje o materiałach i usługach (opcjonalnie, mogę zrezygnować w każdej chwili).",
+      "Chcę otrzymywać od DUO® okazjonalne informacje o materiałach i usługach (opcjonalnie, mogę zrezygnować w każdej chwili).",
     version: "2026-10-draft",
     approved: false,
   },
@@ -93,7 +93,7 @@ export const DEFAULT_SETTINGS: Settings = {
       },
       {
         q: "Czy dostanę wynik albo ocenę związku?",
-        a: "Nie ma tu punktacji ani prognoz. Otrzymasz opisowy raport: mocne strony, obszary napięcia, mechanizm konfliktu, rekomendacje i konkretne następne kroki.",
+        a: "Nie ma tu punktacji ani prognoz. Otrzymasz opisowe podsumowanie: mocne strony, obszary napięcia, mechanizm konfliktu, rekomendacje i konkretne następne kroki.",
       },
       {
         q: "Co, jeśli w związku jest przemoc albo jestem w kryzysie?",

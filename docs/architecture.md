@@ -1,4 +1,4 @@
-# DUO™ – architektura i mapa ekranów
+# DUO® – architektura i mapa ekranów
 
 ## Produkty
 
@@ -7,7 +7,7 @@
 3. **Panel `/app`** – logowanie (hasło + TOTP), pulpit, pipeline zgłoszeń, sprawy, karta sprawy, odpowiedzi z notatkami, porównanie pary, tryb sesji, raporty, kwestionariusze (edytor wersji), ustawienia, dziennik audytowy.
 4. **Raport dla klienta `/r/[token]`** – link + kod → podgląd i PDF zatwierdzonej wersji.
 
-## Lejek DUO™
+## Lejek DUO®
 
 ```
 Landing + quiz ──► Zgłoszenie (leads.stage = new)

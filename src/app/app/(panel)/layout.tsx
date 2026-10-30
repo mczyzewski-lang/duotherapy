@@ -5,7 +5,7 @@ import { requireStaff } from "@/lib/auth";
 import { logoutAction } from "../(auth)/actions";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: { default: "Panel", template: "%s · Panel DUO™" }, robots: { index: false, follow: false } };
+export const metadata = { title: { default: "Panel", template: "%s · Panel DUO®" }, robots: { index: false, follow: false } };
 
 export default async function PanelLayout({ children }: { children: React.ReactNode }) {
   const s = await requireStaff();

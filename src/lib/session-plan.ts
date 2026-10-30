@@ -67,7 +67,7 @@ export const INDIVIDUAL_PLAN: Stage[] = [
       "Co zrobi Pan/Pani z wynikami audytu, jeśli druga osoba nie zechce nic zmieniać?",
     ],
   },
-  { key: "closing", from: 55, to: 60, title: "Zamknięcie", goal: "pytania, termin raportu (zalecane do 5 dni roboczych), forma kontaktu" },
+  { key: "closing", from: 55, to: 60, title: "Zamknięcie", goal: "pytania, termin podsumowania (zalecane do 5 dni roboczych), forma kontaktu" },
 ];
 
 export const COUPLE_PLAN: Stage[] = [
@@ -135,7 +135,7 @@ export const COUPLE_PLAN: Stage[] = [
       "Rekomendowana ścieżka (jedna z trzech) i 1-3 pierwsze kroki. Zawsze podaj opcję „nic teraz nie wybieram”.",
     ],
   },
-  { key: "closing", from: 85, to: 90, title: "Zamknięcie", goal: "pytania, termin raportu (zalecane do 5 dni roboczych), forma kontaktu" },
+  { key: "closing", from: 85, to: 90, title: "Zamknięcie", goal: "pytania, termin podsumowania (zalecane do 5 dni roboczych), forma kontaktu" },
 ];
 
 export const SESSION_CONDITIONS = [

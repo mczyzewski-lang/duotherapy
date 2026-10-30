@@ -1,31 +1,33 @@
 @import "tailwindcss";
 @import "@fontsource-variable/fraunces";
 @import "@fontsource-variable/inter";
+@import "@fontsource/gilda-display/latin-400.css";
+@import "@fontsource/gilda-display/latin-ext-400.css";
 
 /*
-  Paleta DUO™ – spokój, ciepło, zaufanie.
-  Kość słoniowa i len (bezpieczna, jasna przestrzeń), głęboka zieleń-morska (stabilność, zaufanie),
-  glina/terakota (ciepło, bliskość), róż pudrowy (czułość). Kontrasty tekstu ≥ 4.5:1 (WCAG AA).
+  Paleta DUO® – z logo marki: terakota (ciepło, bliskość), szałwiowa zieleń (spokój, zaufanie),
+  piasek (wspólna przestrzeń – „misa” w znaku), ciepła kość słoniowa. Kontrasty tekstu ≥ 4.5:1 (WCAG AA).
 */
 @theme {
   --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
   --font-serif: "Fraunces Variable", ui-serif, Georgia, serif;
+  --font-wordmark: "Gilda Display", "Fraunces Variable", Georgia, serif;
 
-  --color-ivory: #fbf8f3;
-  --color-linen: #f3ece2;
-  --color-sand: #e8dccb;
-  --color-sand-dark: #d6c6b0;
-  --color-ink: #1d2827;
-  --color-ink-soft: #46524f;
-  --color-muted: #5f6b68;
-  --color-forest: #1f4a44;
-  --color-forest-600: #275c55;
-  --color-forest-800: #163631;
-  --color-sage: #8fa99c;
-  --color-sage-soft: #e3ebe6;
-  --color-clay: #a7573a;
-  --color-clay-soft: #f4e2d9;
-  --color-rose: #ecd5cb;
+  --color-ivory: #fbf9f5;
+  --color-linen: #f4eee6;
+  --color-sand: #eadccb;
+  --color-sand-dark: #d5c2ad;
+  --color-ink: #2a2522;
+  --color-ink-soft: #4d4540;
+  --color-muted: #6a605a;
+  --color-forest: #36493d;
+  --color-forest-600: #46604f;
+  --color-forest-800: #26352c;
+  --color-sage: #97ac9c;
+  --color-sage-soft: #e5ece6;
+  --color-clay: #a9512f;
+  --color-clay-soft: #f5e3d8;
+  --color-rose: #ecd5c6;
   --color-alert: #8a2c1d;
   --color-alert-soft: #f8e4df;
   --color-ok: #2d6a4f;
@@ -83,6 +85,12 @@ body {
 }
 .animate-breathe { animation: breathe 7s ease-in-out infinite; }
 .animate-breathe-rev { animation: breathe 7s ease-in-out infinite reverse; }
+@keyframes breathe-slow {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+.animate-breathe-slow { animation: breathe-slow 8s ease-in-out infinite; }
+.font-wordmark { font-family: var(--font-wordmark); }
 
 .skip-link {
   position: absolute; left: 1rem; top: -4rem; z-index: 100;

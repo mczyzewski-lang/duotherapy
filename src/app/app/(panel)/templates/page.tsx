@@ -17,7 +17,7 @@ export default async function Templates() {
   const keys = [...new Set(rows.map((r) => r.key))];
   return (
     <>
-      <PageTitle title="Kwestionariusze" sub="Wersjonowane szablony. Sprawa zachowuje wersję przypiętą przy jej zakładaniu – publikacja nowej wersji nie zmienia starych odpowiedzi ani raportów." />
+      <PageTitle title="Kwestionariusze" sub="Wersjonowane szablony. Sprawa zachowuje wersję przypiętą przy jej zakładaniu – publikacja nowej wersji nie zmienia starych odpowiedzi ani podsumowanieów." />
       <div className="grid gap-5 lg:grid-cols-2">
         {keys.map((k) => {
           const vs = rows.filter((r) => r.key === k);

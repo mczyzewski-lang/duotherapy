@@ -1,4 +1,4 @@
-# DUO™ – Audyt Relacji
+# DUO® – Terapia małżeństw · Audyt Relacji
 
 > Zrozum, co naprawdę dzieje się w Twojej relacji – i świadomie zdecyduj, co dalej.
 
@@ -9,6 +9,12 @@ Audyt jest jednorazową, ustrukturyzowaną konsultacją. **Nie jest** terapią p
 - Architektura i mapa ekranów: [`docs/architecture.md`](docs/architecture.md)
 - Mapowanie materiałów źródłowych na aplikację: [`docs/source-mapping.md`](docs/source-mapping.md)
 - Lista kontrolna przed produkcją: [`docs/production-readiness.md`](docs/production-readiness.md)
+
+## Marka
+
+Znak DUO® (dwie postaci i misa – wspólna przestrzeń rozmowy) jest odtworzony wektorowo w `src/lib/brand-mark.ts` i używany w nagłówku, stopce, ilustracji hero, dokumencie PDF oraz jako favicon (`src/app/icon.svg`, `src/app/apple-icon.png` – generowane przez `npm run brand:assets`). Paleta pochodzi z logo: terakota, szałwiowa zieleń, piasek, ciepła kość słoniowa.
+
+Dokument końcowy dla klientów nazywa się **„Podsumowanie sesji”** (nie „raport”) i jest pisany ludzkim językiem: powitanie, sekcje „Najważniejsze w skrócie”, „Co Was wspiera”, „Gdzie jest Wam najtrudniej”, „Jak działa Wasz konflikt”, „Co proponuję”, „Kolejne kroki”, podpis psychologa i ramka „Pamiętaj”. Struktura merytoryczna odpowiada szablonowi 04. W kodzie i bazie pozostają techniczne nazwy `report*`.
 
 ## Wymagania
 

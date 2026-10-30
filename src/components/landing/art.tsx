@@ -1,37 +1,22 @@
-// Autorskie ilustracje DUO™ – abstrakcyjne, spokojne formy (dwa okręgi = dwie perspektywy).
+import { BrandSymbol } from "@/components/brand";
+
+// Ilustracje DUO® oparte na znaku marki (dwie osoby i wspólna przestrzeń rozmowy).
 
 export function HeroArt() {
   return (
-    <svg viewBox="0 0 480 420" className="h-auto w-full" role="img" aria-label="Dwa przenikające się okręgi – dwie perspektywy jednej relacji">
-      <defs>
-        <radialGradient id="ga" cx="40%" cy="40%" r="70%">
-          <stop offset="0%" stopColor="#e3ebe6" />
-          <stop offset="100%" stopColor="#c9d8cf" />
-        </radialGradient>
-        <radialGradient id="gb" cx="60%" cy="45%" r="70%">
-          <stop offset="0%" stopColor="#f6e7df" />
-          <stop offset="100%" stopColor="#ecd5cb" />
-        </radialGradient>
-      </defs>
-      <rect x="0" y="0" width="480" height="420" rx="36" fill="#f3ece2" />
-      <g className="animate-breathe">
-        <circle cx="185" cy="210" r="128" fill="url(#ga)" opacity="0.95" />
-      </g>
-      <g className="animate-breathe-rev">
-        <circle cx="295" cy="210" r="128" fill="url(#gb)" opacity="0.85" style={{ mixBlendMode: "multiply" }} />
-      </g>
-      <path d="M240 108 C 270 150, 270 270, 240 312 C 210 270, 210 150, 240 108 Z" fill="#1f4a44" opacity="0.12" />
-      <circle cx="185" cy="210" r="128" fill="none" stroke="#1f4a44" strokeWidth="1.5" opacity="0.5" />
-      <circle cx="295" cy="210" r="128" fill="none" stroke="#a7573a" strokeWidth="1.5" opacity="0.55" />
-      <g fontFamily="Inter Variable, sans-serif" fontSize="13" fill="#1d2827">
-        <rect x="40" y="52" rx="14" width="150" height="40" fill="#fff" opacity="0.92" />
-        <text x="58" y="77">Twoja perspektywa</text>
-        <rect x="292" y="330" rx="14" width="150" height="40" fill="#fff" opacity="0.92" />
-        <text x="310" y="355">Jego / jej perspektywa</text>
-        <rect x="178" y="190" rx="14" width="124" height="40" fill="#1f4a44" />
-        <text x="199" y="215" fill="#fff">Wspólna mapa</text>
-      </g>
-    </svg>
+    <figure className="relative mx-auto aspect-[480/420] w-full max-w-[520px]" aria-label="Znak DUO: dwie osoby i wspólna przestrzeń rozmowy między nimi">
+      <div className="absolute inset-0 rounded-[2.25rem] bg-gradient-to-br from-linen via-ivory to-sage-soft/70" aria-hidden />
+      <div className="absolute left-[14%] top-[12%] h-[45%] w-[45%] rounded-full bg-clay-soft/70 blur-3xl" aria-hidden />
+      <div className="absolute bottom-[12%] right-[10%] h-[40%] w-[40%] rounded-full bg-sage-soft blur-3xl" aria-hidden />
+      <div className="absolute inset-x-[12%] top-[24%]">
+        <BrandSymbol id="hero" className="animate-breathe-slow h-auto w-full drop-shadow-[0_18px_30px_rgba(54,73,61,0.12)]" />
+      </div>
+      <figcaption className="pointer-events-none absolute inset-0 text-[13px] text-ink">
+        <span className="absolute left-[6%] top-[9%] rounded-full bg-white/90 px-3.5 py-1.5 shadow-soft">Twoja perspektywa</span>
+        <span className="absolute right-[6%] top-[9%] rounded-full bg-white/90 px-3.5 py-1.5 shadow-soft">Jej / jego perspektywa</span>
+        <span className="absolute bottom-[10%] left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-forest px-4 py-1.5 text-white shadow-soft">Wspólna przestrzeń rozmowy</span>
+      </figcaption>
+    </figure>
   );
 }
 
@@ -44,7 +29,7 @@ export function StepIcon({ n }: { n: number }) {
 }
 
 export function PathArt({ tone }: { tone: "forest" | "clay" | "alert" }) {
-  const c = { forest: "#1f4a44", clay: "#a7573a", alert: "#8a2c1d" }[tone];
+  const c = { forest: "#36493d", clay: "#a9512f", alert: "#8a2c1d" }[tone];
   return (
     <svg viewBox="0 0 64 32" className="h-8 w-16" aria-hidden>
       {tone === "forest" && (

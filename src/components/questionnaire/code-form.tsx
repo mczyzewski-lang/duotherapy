@@ -11,7 +11,7 @@ export function CodeForm({ token, firstName }: { token: string; firstName: strin
   const [pending, start] = useTransition();
   return (
     <div className="mt-8 animate-rise rounded-3xl bg-white p-6 shadow-soft ring-1 ring-sand sm:p-10">
-      <p className="text-sm font-semibold uppercase tracking-[0.16em] text-clay">Audyt Relacji DUO™</p>
+      <p className="text-sm font-semibold uppercase tracking-[0.16em] text-clay">Audyt Relacji DUO®</p>
       <h1 className="mt-3 font-display text-3xl leading-tight text-ink sm:text-4xl">Cześć, {firstName}. To bezpieczna przestrzeń, w której możesz opisać swoją perspektywę.</h1>
       <p className="mt-4 leading-relaxed text-ink-soft">
         Dla Twojego bezpieczeństwa link działa razem z 6-cyfrowym kodem dostępu, który przekazał Ci psycholog prowadzący (np. telefonicznie). Dzięki temu nikt, kto

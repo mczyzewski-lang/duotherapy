@@ -46,7 +46,7 @@ export default async function AnswersPage({ params, searchParams }: { params: Pr
         </form>
         <Badge className="ml-auto">{d.person.version.title} · wersja {d.person.version.version}</Badge>
       </div>
-      {d.c.kind === "couple" && <Alert tone="info" className="mb-6">Odpowiedzi tej osoby są poufne wobec drugiej osoby. Treść może trafić do wspólnego raportu tylko przez notatkę oznaczoną „może trafić do raportu wspólnego” – po uzyskaniu zgody.</Alert>}
+      {d.c.kind === "couple" && <Alert tone="info" className="mb-6">Odpowiedzi tej osoby są poufne wobec drugiej osoby. Treść może trafić do wspólnego podsumowania tylko przez notatkę oznaczoną „może trafić do podsumowania wspólnego” – po uzyskaniu zgody.</Alert>}
       <Card className="mb-8 p-6">
         <h2 className="font-display text-xl text-ink">Sygnały do pogłębienia</h2>
         <p className="mt-1 text-xs text-muted">Wg wytycznych (rozdz. 7): skale autorskie i jakościowe, bez norm i bez diagnozy. Wskazują tematy do rozmowy, nie wnioski.</p>

@@ -5,7 +5,7 @@ import { CheckCircle2, Copy, Download, Eye, Plus, Save, Share2, Trash2 } from "l
 import { useMemo, useState, useTransition } from "react";
 import { approveReportAction, saveReportAction, shareReportAction } from "@/actions/reports";
 import { Alert, Badge, Button, Card } from "@/components/ui";
-import { MISSING, PATH_OPTIONS, UNSAFE_WITH_RISK, missingMarkers, renderReportHtml, type PathKey, type ReportContent, type Severity } from "@/lib/report";
+import { MISSING, PATH_OPTIONS, UNSAFE_WITH_RISK, missingMarkers, renderReportHtml, sectionTitles, type PathKey, type ReportContent, type Severity } from "@/lib/report";
 import type { Settings } from "@/lib/settings";
 
 const area = "w-full rounded-xl bg-white px-3 py-2 text-[15px] leading-relaxed ring-1 ring-sand-dark focus:outline-none focus:ring-2 focus:ring-forest";
@@ -49,6 +49,7 @@ export function ReportEditor(p: {
     setDirty(true);
   };
   const missing = useMemo(() => missingMarkers(c), [c]);
+  const T_ = sectionTitles(c);
   const html = useMemo(() => (preview ? renderReportHtml(c, { helplines: p.helplines } as Settings, { draft: approved !== version || dirty }) : ""), [preview, c, p.helplines, approved, version, dirty]);
   const isApproved = approved === version && !dirty;
 
@@ -94,16 +95,16 @@ export function ReportEditor(p: {
         </Card>
 
         <Card className="space-y-4 p-6">
-          <h2 className="font-display text-xl text-ink">1. Podsumowanie</h2>
+          <h2 className="font-display text-xl text-ink">{T_.summary}</h2>
           <T label="Podsumowanie (3-5 zdań, język opisowy, bez ocen i diagnoz)" value={c.summary.text} rows={6} onChange={(v) => upd((n) => void (n.summary.text = v))} />
           <T label="Powód zgłoszenia" value={c.summary.reason} rows={2} onChange={(v) => upd((n) => void (n.summary.reason = v))} />
           <T label="Etap decyzji" value={c.summary.decisionStage} rows={2} onChange={(v) => upd((n) => void (n.summary.decisionStage = v))} />
         </Card>
 
-        <ListCard title="2. Mocne strony relacji" items={c.strengths} onChange={(items) => upd((n) => void (n.strengths = items))} />
+        <ListCard title={T_.strengths} items={c.strengths} onChange={(items) => upd((n) => void (n.strengths = items))} />
 
         <Card className="space-y-4 p-6">
-          <h2 className="font-display text-xl text-ink">3. Obszary napięcia</h2>
+          <h2 className="font-display text-xl text-ink">{T_.tensions}</h2>
           {c.tensions.map((t, i) => (
             <div key={t.area} className="space-y-2 rounded-xl bg-ivory p-4 ring-1 ring-sand">
               <T label={`${t.label} – co zauważam`} value={t.text} onChange={(v) => upd((n) => void (n.tensions[i].text = v))} />
@@ -122,7 +123,7 @@ export function ReportEditor(p: {
         </Card>
 
         <Card className="space-y-4 p-6">
-          <h2 className="font-display text-xl text-ink">4. Mechanizm konfliktu</h2>
+          <h2 className="font-display text-xl text-ink">{T_.mechanism}</h2>
           <T label={c.caseKind === "couple" ? "Wasz cykl w jednym zdaniu" : "Cykl w jednym zdaniu"} value={c.mechanism.oneLiner} rows={2} onChange={(v) => upd((n) => void (n.mechanism.oneLiner = v))} />
           <div className="overflow-x-auto">
             <table className="w-full min-w-[560px] text-sm">
@@ -156,10 +157,10 @@ export function ReportEditor(p: {
           <T label="Próby naprawy: co już działa, co nie dociera" value={c.mechanism.repair} rows={2} onChange={(v) => upd((n) => void (n.mechanism.repair = v))} />
         </Card>
 
-        <ListCard title="5. Rekomendacje" items={c.recommendations} ordered onChange={(items) => upd((n) => void (n.recommendations = items))} />
+        <ListCard title={T_.recommendations} items={c.recommendations} ordered onChange={(items) => upd((n) => void (n.recommendations = items))} />
 
         <Card className="space-y-4 p-6">
-          <h2 className="font-display text-xl text-ink">Rekomendowana ścieżka</h2>
+          <h2 className="font-display text-xl text-ink">Możliwa dalsza droga (rekomendowana ścieżka)</h2>
           <p className="text-sm text-muted">Wybór należy do psychologa. Rekomendacja jest propozycją – decyzja należy do klientów.</p>
           <div className="space-y-3">
             {(Object.keys(PATH_OPTIONS) as Exclude<PathKey, null | "none">[]).map((k) => (
@@ -190,7 +191,7 @@ export function ReportEditor(p: {
         </Card>
 
         <Card className="space-y-3 p-6">
-          <h2 className="font-display text-xl text-ink">6. Następne kroki</h2>
+          <h2 className="font-display text-xl text-ink">{T_.nextSteps}</h2>
           {c.nextSteps.map((st, i) => (
             <div key={i} className="grid gap-2 sm:grid-cols-[1fr_160px_140px_auto]">
               <input aria-label={`Krok ${i + 1}`} className={clsx(area, hl(st.what))} value={st.what} placeholder="Krok" onChange={(e) => upd((n) => void (n.nextSteps[i].what = e.target.value))} />
@@ -201,7 +202,7 @@ export function ReportEditor(p: {
           ))}
           <Button size="sm" variant="secondary" onClick={() => upd((n) => void n.nextSteps.push({ what: "", who: "", when: "" }))}><Plus size={14} aria-hidden /> Dodaj krok</Button>
         </Card>
-        <p className="text-sm text-muted">Sekcja „Ważne” (zastrzeżenia i numery pomocy) jest dodawana automatycznie zgodnie z szablonem i nie podlega edycji.</p>
+        <p className="text-sm text-muted">Sekcja „Pamiętaj” (zastrzeżenia i numery pomocy) oraz powitanie i podpis są dodawane automatycznie zgodnie z szablonem i nie podlega edycji.</p>
       </div>
 
       <aside className="space-y-4 xl:sticky xl:top-6 xl:self-start">
@@ -209,7 +210,7 @@ export function ReportEditor(p: {
           <p className="text-sm text-ink">Wersja {version}{dirty && " + niezapisane zmiany"}</p>
           <p>{isApproved ? <Badge tone="ok"><CheckCircle2 size={12} aria-hidden /> zatwierdzona</Badge> : <Badge tone="clay">szkic</Badge>}</p>
           <Button className="w-full" onClick={save} disabled={pending || !dirty}><Save size={16} aria-hidden /> Zapisz wersję</Button>
-          <Button className="w-full" variant="secondary" onClick={() => setPreview((x) => !x)}><Eye size={16} aria-hidden /> {preview ? "Ukryj podgląd" : "Podgląd raportu"}</Button>
+          <Button className="w-full" variant="secondary" onClick={() => setPreview((x) => !x)}><Eye size={16} aria-hidden /> {preview ? "Ukryj podgląd" : "Podgląd podsumowania"}</Button>
           <a className={clsx("inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full px-5 text-[15px] font-medium ring-1 ring-sand-dark", dirty ? "pointer-events-none opacity-50" : "bg-white text-forest hover:bg-linen")} href={`/api/reports/${p.reportId}/pdf`}>
             <Download size={16} aria-hidden /> Pobierz PDF (wersja {version})
           </a>
@@ -225,11 +226,11 @@ export function ReportEditor(p: {
                 if ("error" in r) setMsg({ tone: "alert", text: r.error });
                 else {
                   setApproved(version);
-                  setMsg({ tone: "ok", text: "Raport zatwierdzony. Możesz go teraz udostępnić." });
+                  setMsg({ tone: "ok", text: "Podsumowanie zatwierdzone. Możesz je teraz udostępnić." });
                 }
               })}
             >
-              <CheckCircle2 size={16} aria-hidden /> Zatwierdź raport
+              <CheckCircle2 size={16} aria-hidden /> Zatwierdź podsumowanie
             </Button>
           </div>
         </Card>
@@ -246,14 +247,14 @@ export function ReportEditor(p: {
           {p.audience === "joint" && (
             <label className="flex items-start gap-2 text-xs text-ink">
               <input type="checkbox" className="mt-0.5 accent-forest" checked={confirmJoint} onChange={(e) => setConfirmJoint(e.target.checked)} />
-              Potwierdzam, że raport wspólny zawiera wyłącznie treści zatwierdzone do wspólnego przekazania i nie ujawnia poufnych odpowiedzi ani rozmów indywidualnych bez odnotowanej zgody.
+              Potwierdzam, że podsumowanie wspólne zawiera wyłącznie treści zatwierdzone do wspólnego przekazania i nie ujawnia poufnych odpowiedzi ani rozmów indywidualnych bez odnotowanej zgody.
             </label>
           )}
           <Button className="w-full" size="sm" disabled={!isApproved || pending || (p.audience === "joint" && !confirmJoint)} onClick={() => start(async () => {
             const r = await shareReportAction(p.reportId, shareTo, confirmJoint);
             if ("error" in r) setMsg({ tone: "alert", text: r.error });
             else setShare(r);
-          })}>Wygeneruj link do raportu</Button>
+          })}>Wygeneruj link do podsumowania</Button>
           {share && (
             <div className="space-y-2 rounded-xl bg-sage-soft/50 p-3 text-sm" role="status">
               <p className="text-xs font-medium text-forest">Widoczne tylko teraz:</p>
@@ -268,7 +269,7 @@ export function ReportEditor(p: {
 
       {preview && (
         <div className="xl:col-span-2">
-          <iframe title="Podgląd raportu" srcDoc={html} sandbox="" className="h-[1100px] w-full rounded-2xl bg-white shadow-soft ring-1 ring-sand" />
+          <iframe title="Podgląd podsumowania" srcDoc={html} sandbox="" className="h-[1100px] w-full rounded-2xl bg-white shadow-soft ring-1 ring-sand" />
         </div>
       )}
     </div>

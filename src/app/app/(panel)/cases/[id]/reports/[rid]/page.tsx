@@ -10,7 +10,7 @@ import { decrypt } from "@/lib/crypto";
 import type { ReportContent } from "@/lib/report";
 import { readSettings } from "@/lib/settings";
 
-export const metadata = { title: "Raport" };
+export const metadata = { title: "Podsumowanie" };
 
 export default async function ReportPage({ params }: { params: Promise<{ id: string; rid: string }> }) {
   const { id, rid } = await params;
@@ -33,8 +33,8 @@ export default async function ReportPage({ params }: { params: Promise<{ id: str
     <>
       <p className="mb-2 text-sm"><Link href={`/app/cases/${id}`} className="text-forest">← {d.r.ref}</Link></p>
       <PageTitle
-        title={d.r.audience === "joint" ? "Raport wspólny" : `Raport osobny: ${recipients[0]?.display_name ?? ""}`}
-        sub="Raport po Audycie Relacji – struktura zgodna z szablonem. Każdy zapis tworzy nową wersję; udostępnić można tylko wersję zatwierdzoną."
+        title={d.r.audience === "joint" ? "Podsumowanie wspólne" : `Podsumowanie osobne: ${recipients[0]?.display_name ?? ""}`}
+        sub="Podsumowanie sesji – struktura zgodna z szablonem. Każdy zapis tworzy nową wersję; udostępnić można tylko wersję zatwierdzoną."
       />
       <ReportEditor
         reportId={rid}

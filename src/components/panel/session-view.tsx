@@ -185,9 +185,9 @@ function StageNotepad({ caseId, stage, couple, pad, onPad }: { caseId: string; s
         <select aria-label="Rodzaj notatki" value={kind} onChange={(e) => change({ kind: e.target.value as NoteLite["kind"] })} className="rounded-lg bg-ivory px-2 py-1 ring-1 ring-sand">
           <option value="private">notatka prywatna</option>
           <option value="discussed">ustalenie omówione na sesji</option>
-          <option value="report">dopuszczona do raportu</option>
+          <option value="report">dopuszczona do podsumowania</option>
         </select>
-        {couple && kind === "report" && <label className="flex items-center gap-1"><input type="checkbox" className="accent-forest" checked={jointOk} onChange={(e) => change({ jointOk: e.target.checked })} /> do raportu wspólnego</label>}
+        {couple && kind === "report" && <label className="flex items-center gap-1"><input type="checkbox" className="accent-forest" checked={jointOk} onChange={(e) => change({ jointOk: e.target.checked })} /> do podsumowania wspólnego</label>}
         {Object.entries(TAGS).map(([k, l]) => (
           <label key={k} className="flex items-center gap-1"><input type="checkbox" className="accent-forest" checked={tags.includes(k)} onChange={(e) => change({ tags: e.target.checked ? [...tags, k] : tags.filter((x) => x !== k) })} /> {l}</label>
         ))}

@@ -12,9 +12,9 @@ export const CASE_STATUSES = [
   ["questionnaire_partial", "Ankieta częściowo wypełniona"],
   ["ready_for_session", "Gotowe do sesji"],
   ["session_done", "Sesja odbyta"],
-  ["report_in_progress", "Raport w przygotowaniu"],
-  ["report_approved", "Raport zatwierdzony"],
-  ["report_shared", "Raport udostępniony"],
+  ["report_in_progress", "Podsumowanie w przygotowaniu"],
+  ["report_approved", "Podsumowanie zatwierdzone"],
+  ["report_shared", "Podsumowanie udostępnione"],
   ["closed", "Zamknięte"],
 ] as const;
 export type CaseStatus = (typeof CASE_STATUSES)[number][0];
@@ -62,7 +62,7 @@ export async function createCase(
   return c.id;
 }
 
-/** Automatyczne przejścia w początkowych etapach (dalsze etapy ustawia psycholog / raport). */
+/** Automatyczne przejścia w początkowych etapach (dalsze etapy ustawia psycholog / podsumowanie). */
 export async function recomputeStatus(tx: Tx, caseId: string) {
   const [c] = await tx`select status from cases where id = ${caseId}`;
   if (!c || rank(c.status) > rank("ready_for_session")) return;

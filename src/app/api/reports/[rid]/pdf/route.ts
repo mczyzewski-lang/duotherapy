@@ -1,4 +1,4 @@
-// PDF najnowszej wersji raportu – tylko dla uprawnionego specjalisty. Generowany lokalnie.
+// PDF najnowszej wersji podsumowania – tylko dla uprawnionego specjalisty. Generowany lokalnie.
 import { NextResponse } from "next/server";
 import { asStaff, requireStaff } from "@/lib/auth";
 import { audit } from "@/lib/audit";
@@ -22,6 +22,6 @@ export async function GET(_: Request, { params }: { params: Promise<{ rid: strin
   const content = decrypt<ReportContent>(d.v.content_enc)!;
   const pdf = await htmlToPdf(renderReportHtml(content, d.settings, { fontCss: embeddedFontCss(), draft: !d.v.approved_at }));
   return new NextResponse(new Uint8Array(pdf), {
-    headers: { "content-type": "application/pdf", "content-disposition": `attachment; filename="raport-audyt-relacji-v${d.v.version}.pdf"`, "cache-control": "no-store" },
+    headers: { "content-type": "application/pdf", "content-disposition": `attachment; filename="podsumowanie-audyt-relacji-v${d.v.version}.pdf"`, "cache-control": "no-store" },
   });
 }
