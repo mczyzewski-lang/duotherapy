@@ -19,7 +19,10 @@ DATA_ENCRYPTION_KEY=<openssl rand -base64 32>
 TOKEN_SECRET=<openssl rand -base64 32>
 DEMO_MODE=true
 REQUIRE_MFA=false
+PORT=3000
 ```
+
+`PORT=3000` musi zgadzać się z portem ustawionym przy domenie (*Settings → Networking → Port 3000*). Puste `DUO_APP_DB_PASSWORD`, `DATA_ENCRYPTION_KEY` lub `TOKEN_SECRET` zatrzymają wdrożenie z czytelnym komunikatem w *Deploy Logs*.
 
 - `APP_URL` jest opcjonalne – bez niego aplikacja użyje domeny Railway (`RAILWAY_PUBLIC_DOMAIN`). Ustaw je przy własnej domenie, np. `https://duo.twojadomena.pl`.
 - **`DATA_ENCRYPTION_KEY` nie zmieniaj po zapisaniu danych** – utrata/zmiana klucza uniemożliwia odczyt odpowiedzi, notatek i podsumowań. Zachowaj kopię w menedżerze haseł.
