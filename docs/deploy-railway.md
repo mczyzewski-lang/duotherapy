@@ -1,6 +1,6 @@
 # Wdrożenie na Railway
 
-Zestaw: usługa **Postgres** + usługa **duotherapy** (z repozytorium GitHub). Railway buduje obraz z `Dockerfile` (z Chromium do PDF) według `railway.json`; przed każdym startem uruchamia `npm run db:deploy` (migracje + szablony kwestionariuszy, a w trybie DEMO także dane demonstracyjne – idempotentnie).
+Zestaw: usługa **Postgres** + usługa **duotherapy** (z repozytorium GitHub). Railway buduje obraz z `Dockerfile` (z Chromium do PDF) według `railway.json`; przy każdym starcie kontenera uruchamia `npm run db:deploy` (migracje + szablony kwestionariuszy, a w trybie DEMO także dane demonstracyjne – idempotentnie).
 
 ## Dlaczego dwa adresy bazy
 
@@ -28,6 +28,10 @@ PORT=3000
 - **`DATA_ENCRYPTION_KEY` nie zmieniaj po zapisaniu danych** – utrata/zmiana klucza uniemożliwia odczyt odpowiedzi, notatek i podsumowań. Zachowaj kopię w menedżerze haseł.
 - Wolumen `duotherapy-volume` nie jest potrzebny (aplikacja nie zapisuje plików na dysku) – można go usunąć.
 - Usługa potrzebuje publicznej domeny: *Settings → Networking → Generate Domain*.
+
+## Diagnostyka
+
+Otwórz `https://<domena>/api/health` – pokazuje stan konfiguracji, połączenia z bazą (rola `duo_app`), migracji i szablonów, bez sekretów. Szczegóły błędów: *Deployments → View logs*.
 
 ## Tryb DEMO → produkcja
 

@@ -21,5 +21,5 @@ ENV NODE_ENV=production CHROMIUM_PATH=/usr/bin/chromium
 COPY --from=build --chown=node:node /app ./
 USER node
 EXPOSE 3000
-# Migracje i seed uruchamia Railway przed startem (preDeployCommand w railway.json).
-CMD ["npm", "start"]
+# Przy każdym starcie: kontrola konfiguracji, migracje i seed (idempotentne), potem serwer.
+CMD ["sh", "-c", "npm run db:deploy && npm start"]
