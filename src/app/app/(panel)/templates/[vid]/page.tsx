@@ -8,8 +8,8 @@ import { asStaff, requireStaff } from "@/lib/auth";
 import { loadVersion, type QuestionRow } from "@/lib/templates";
 
 export const metadata = { title: "Edytor kwestionariusza" };
-const TYPES = ["text", "textarea", "date", "email", "phone", "country_city", "single", "multi", "scale5", "screening", "consent", "signature", "info"];
-const TYPE_LABEL: Record<string, string> = { text: "krótka odpowiedź", textarea: "długa odpowiedź", date: "data", email: "e-mail", phone: "telefon", country_city: "kraj i miasto", single: "pojedynczy wybór", multi: "wielokrotny wybór", scale5: "skala 1–5", screening: "nie / tak / wolę omówić", consent: "zgoda", signature: "oświadczenie (podpis)", info: "blok informacyjny" };
+const TYPES = ["text", "textarea", "date", "email", "phone", "country_city", "children", "single", "multi", "scale5", "screening", "consent", "signature", "info"];
+const TYPE_LABEL: Record<string, string> = { text: "krótka odpowiedź", textarea: "długa odpowiedź", date: "data", email: "e-mail", phone: "telefon", country_city: "kraj i miasto", children: "lista dzieci (imię, wiek)", single: "pojedynczy wybór", multi: "wielokrotny wybór", scale5: "skala 1–5", screening: "nie / tak / wolę omówić", consent: "zgoda", signature: "oświadczenie (podpis)", info: "blok informacyjny" };
 
 function QuestionForm({ v, q, sectionKey }: { v: string; q?: QuestionRow; sectionKey?: string }) {
   return (

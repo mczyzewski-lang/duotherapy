@@ -117,6 +117,13 @@ describe("RLS: uprawnienia specjalistów i ról", () => {
     await expect(withActor({ kind: "admin", userId: admin[0].id, therapistId: null }, (tx) => tx`update questions set prompt = 'zmiana' where key = 's2.1'`)).rejects.toThrow(/niezmienne/);
   });
 
+  it("seed szablonów jest idempotentny (bez zmian w kodzie – bez nowej wersji)", async () => {
+    const { sourceTemplates } = await import("@/questionnaires");
+    const { seedTemplate } = await import("@/lib/templates");
+    const r = await system((tx) => seedTemplate(tx, sourceTemplates()[2]));
+    expect(r).toBe("unchanged");
+  });
+
   it("dziennik audytowy jest tylko do dopisywania", async () => {
     await withActor(t1, (tx) => tx`insert into audit_logs (actor_kind, action, entity) values ('user', 'test', 'x')`);
     await expect(withActor(t1, (tx) => tx`delete from audit_logs`)).rejects.toThrow();

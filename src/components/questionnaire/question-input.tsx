@@ -2,7 +2,7 @@
 
 // Pole odpowiedzi dopasowane do typu pytania. Używane w kwestionariuszu i przy korekcie w panelu.
 import clsx from "clsx";
-import { Check } from "lucide-react";
+import { Check, Plus, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import type { AnswerState, AnswerValue, Option } from "@/questionnaires/types";
 
@@ -88,6 +88,28 @@ export function QuestionInput({ q, a, onChange, compact }: { q: QView; a?: AStat
             Miasto
             <input className={clsx(inputCls, "mt-1")} autoComplete="address-level2" value={v.city} onChange={(e) => set({ ...v, city: e.target.value })} />
           </label>
+        </div>
+      );
+      break;
+    }
+    case "children": {
+      const list = (val as { children: { name: string; age: string }[] } | null)?.children ?? [];
+      const rows = list.length ? list : [{ name: "", age: "" }];
+      const put = (next: { name: string; age: string }[]) => set({ children: next });
+      body = na ? null : (
+        <div className="space-y-2" role="group" aria-labelledby={labelId}>
+          {rows.map((c, i) => (
+            <div key={i} className="grid grid-cols-[1fr_6.5rem_auto] items-center gap-2">
+              <input aria-label={`Imię dziecka ${i + 1}`} placeholder="Imię" className={inputCls} value={c.name} onChange={(e) => put(rows.map((x, j) => (j === i ? { ...x, name: e.target.value } : x)))} />
+              <input aria-label={`Wiek dziecka ${i + 1}`} placeholder="Wiek" inputMode="numeric" className={inputCls} value={c.age} onChange={(e) => put(rows.map((x, j) => (j === i ? { ...x, age: e.target.value } : x)))} />
+              <button type="button" aria-label={`Usuń dziecko ${i + 1}`} className="grid h-11 w-11 place-items-center rounded-xl text-muted hover:bg-linen hover:text-alert disabled:opacity-0" disabled={rows.length === 1 && !c.name && !c.age} onClick={() => put(rows.length === 1 ? [] : rows.filter((_, j) => j !== i))}>
+                <X size={16} aria-hidden />
+              </button>
+            </div>
+          ))}
+          <button type="button" className="inline-flex min-h-11 items-center gap-1.5 rounded-xl px-3 text-sm font-medium text-forest hover:bg-linen" onClick={() => put([...rows, { name: "", age: "" }])}>
+            <Plus size={16} aria-hidden /> Dodaj dziecko
+          </button>
         </div>
       );
       break;
@@ -246,7 +268,7 @@ export function QuestionInput({ q, a, onChange, compact }: { q: QView; a?: AStat
       {q.allowNA && (
         <label className="inline-flex items-center gap-2 text-sm text-ink-soft">
           <input type="checkbox" className="h-4 w-4 accent-forest" checked={na} onChange={(e) => onChange(e.target.checked ? { state: "not_applicable", value: null } : { state: "answered", value: null })} />
-          nie dotyczy
+          {q.type === "children" ? "nie mamy dzieci" : "nie dotyczy"}
         </label>
       )}
     </div>

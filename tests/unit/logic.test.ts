@@ -4,7 +4,7 @@ import { buildDraft, missingMarkers, MISSING, pathProblems, renderReportHtml } f
 import { DEFAULT_SETTINGS } from "@/lib/settings";
 import type { LoadedVersion } from "@/lib/templates";
 import { sourceTemplates } from "@/questionnaires";
-import { isVisible, validateAnswer } from "@/questionnaires/validate";
+import { HAS_CHILDREN, isVisible, NA_MARK, validateAnswer } from "@/questionnaires/validate";
 
 // Wersja "w pamięci" (bez bazy) – identyfikatory pytań = klucze.
 function version(key: string): LoadedVersion {
@@ -48,6 +48,16 @@ describe("walidacja odpowiedzi", () => {
     const q = { type: "multi" as const, options: [{ value: "a", label: "A" }, { value: "b", label: "B" }] };
     expect(validateAnswer(q, "answered", { choices: ["a"], primary: "b" }).ok).toBe(false);
     expect(validateAnswer(q, "answered", { choices: ["a", "b"], primary: "b" }).ok).toBe(true);
+  });
+  it("lista dzieci i warunek „są dzieci”", () => {
+    const q = { type: "children" as const, allowNA: true };
+    expect(validateAnswer(q, "answered", { children: [{ name: "Ola", age: "7" }] }).ok).toBe(true);
+    expect(validateAnswer(q, "answered", { children: "x" }).ok).toBe(false);
+    const si = { questionKey: "m.children", anyOf: [HAS_CHILDREN] };
+    expect(isVisible(si, { "m.children": { children: [{ name: "Ola", age: "7" }] } })).toBe(true);
+    expect(isVisible(si, { "m.children": { children: [] } })).toBe(false);
+    expect(isVisible(si, { "m.children": NA_MARK })).toBe(false);
+    expect(isVisible(si, {})).toBe(true); // brak odpowiedzi – pytanie zostaje
   });
   it("warunek wyświetlania", () => {
     const si = { questionKey: "sit.why_alone", anyOf: ["partner_refuses"] };

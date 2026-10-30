@@ -131,6 +131,13 @@ Wszystkie części: metadane (imię i nazwisko, wiek; data sesji; rodzaj; forma 
 
 Etapy (zgłoszenie → kwestionariusz → sesja 60/90 → ocena i rekomendacja) rozszerzone o lejek DUO® (quiz → rozmowa telefoniczna → płatność i kwestionariusz → sesja → raport). Ścieżki A (terapia par, program odbudowy relacji), B (konstruktywny rozwód, opcjonalnie mediacja, terapia po rozstaniu), C (plan bezpieczeństwa, pomoc specjalistyczna, bez terapii par i mediacji) oraz zdanie „Rekomendacja jest propozycją. Decyzja o dalszej drodze zawsze należy do Ciebie.”
 
+## Zmiany wprowadzone na prośbę właściciela usługi (odstępstwa od PDF)
+
+- **Czas wypełniania**: „około 15-25 minut” zamiast „40-60 minut” (akapit „Zanim zaczniesz”, ekran powitalny, landing).
+- **Dzieci (liczba i wiek)**: pole typu „lista dzieci” – imię i wiek każdego dziecka, z opcją „nie mamy dzieci”.
+- **„Czy macie dzieci, których dotyczy ta sytuacja?”** (Twoja sytuacja, pyt. 2): wyświetlane tylko, gdy w metryczce wpisano dzieci (nie powtarzamy pytania osobom bez dzieci).
+- Zmiany treści w kodzie są publikowane automatycznie jako nowa wersja szablonu przy wdrożeniu (`seedTemplate`, odcisk `source_hash`); sprawy założone wcześniej zachowują swoją wersję. Jeśli administrator edytował szablon w panelu, zmiany z kodu nie są nadpisywane (komunikat w logach).
+
 ## Decyzje i niejednoznaczności
 
 - **Numeracja**: w PDF pytania otwarte w każdej części mają osobną numerację „1.” (osobne listy). W aplikacji numer wyświetlany jest tylko przy skalach i przesiewie (na nie powołują się wytyczne); klucze pytań zachowują jednoznaczność.

@@ -4,6 +4,7 @@
 // a każdą różnicę zapisujemy jawnie przez g(męska, żeńska). Strony podajemy przez p(M, K).
 
 import type { QuestionDef, SectionDef, TemplateDef } from "./types";
+import { HAS_CHILDREN } from "./validate";
 
 export type Gender = "male" | "female";
 
@@ -70,7 +71,7 @@ export function profileSection(b: Builder): SectionDef {
         ],
         source: src(2),
       },
-      { key: "m.children", type: "text", prompt: "Dzieci (liczba i wiek)", group: "Związek", allowNA: true, source: src(2) },
+      { key: "m.children", type: "children", prompt: "Dzieci (liczba i wiek)", hint: "Dodaj każde dziecko – imię i wiek.", group: "Związek", allowNA: true, source: src(2) },
       {
         key: "m.therapy",
         type: "single",
@@ -615,6 +616,8 @@ export function buildIndividual(gender: Gender): TemplateDef {
           { value: "no", label: "nie" },
         ],
         tags: ["children"],
+        // pokazywane, gdy w metryczce wpisano dzieci (decyzja właściciela usługi – bez powtarzania pytania osobom bez dzieci)
+        showIf: { questionKey: "m.children", anyOf: [HAS_CHILDREN] },
         source: { file, page: 3 },
       },
       {
@@ -646,7 +649,7 @@ export function buildIndividual(gender: Gender): TemplateDef {
     needsVerification: false,
     intro: [
       "Kwestionariusz przygotowuje Cię do indywidualnej sesji Audytu Relacji online. Jest przeznaczony dla osoby, która przychodzi na audyt sama.",
-      "Wypełnienie zajmuje około 40-60 minut. Sesja audytu indywidualnego trwa 60 minut. Rób to w spokoju, w miejscu, w którym nikt nie czyta Ci przez ramię.",
+      "Wypełnienie zajmuje około 15-25 minut. Sesja audytu indywidualnego trwa 60 minut. Rób to w spokoju, w miejscu, w którym nikt nie czyta Ci przez ramię.",
       g(
         "Ten audyt dotyczy związku, ale patrzymy na niego z Twojej perspektywy. Pytania o partnerkę dotyczą tego, jak Ty ją widzisz i jak rozumiesz jej słowa. Nie oceniamy osoby, której nie ma na sesji.",
         "Ten audyt dotyczy związku, ale patrzymy na niego z Twojej perspektywy. Pytania o partnera dotyczą tego, jak Ty go widzisz i jak rozumiesz jego słowa. Nie oceniamy osoby, której nie ma na sesji.",

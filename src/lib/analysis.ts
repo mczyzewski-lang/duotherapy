@@ -191,6 +191,10 @@ export function formatAnswer(q: Pick<QuestionRow, "type" | "options">, a?: Answe
       const m = v as { choices: string[]; primary?: string; detail?: string };
       return m.choices.map((c) => (c === m.primary ? `${label(c)} (główny)` : label(c))).join("; ") + (m.detail ? ` – ${m.detail}` : "");
     }
+    case "children": {
+      const c = (v as { children: { name: string; age: string }[] }).children.filter((x) => x.name.trim() || x.age.trim());
+      return c.length ? c.map((x) => [x.name.trim(), x.age.trim() && `${x.age.trim()} l.`].filter(Boolean).join(", ")).join("; ") : "—";
+    }
     case "country_city": {
       const c = v as { country: string; city: string };
       return [c.country, c.city].filter(Boolean).join(", ");

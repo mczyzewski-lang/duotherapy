@@ -10,6 +10,7 @@
 // Lista kontrolna: docs/source-mapping.md → "Elementy wymagające ręcznej weryfikacji".
 
 import type { SectionDef, TemplateDef } from "./types";
+import { HAS_CHILDREN } from "./validate";
 import {
   boundariesSection,
   builder,
@@ -72,6 +73,7 @@ export function buildCouple(gender: Gender): TemplateDef {
           { value: "no", label: "nie" },
         ],
         tags: ["children"],
+        showIf: { questionKey: "m.children", anyOf: [HAS_CHILDREN] },
         source: { file: b.file, page: 0 },
       },
       {
@@ -105,7 +107,7 @@ export function buildCouple(gender: Gender): TemplateDef {
       "Plik źródłowy 01/02 nie został dostarczony. Szablon roboczy zbudowany z pozycji wspólnych z wersją indywidualną. Przed użyciem z prawdziwymi klientami porównaj z PDF i opublikuj poprawioną wersję w edytorze szablonów.",
     intro: [
       "Kwestionariusz przygotowuje Cię do wspólnej sesji Audytu Relacji online (90 minut). Każde z Was wypełnia go osobno, na własnym, prywatnym linku.",
-      "Wypełnienie zajmuje około 40-60 minut. Rób to w spokoju, w miejscu, w którym nikt nie czyta Ci przez ramię – także druga osoba w związku.",
+      "Wypełnienie zajmuje około 15-25 minut. Rób to w spokoju, w miejscu, w którym nikt nie czyta Ci przez ramię – także druga osoba w związku.",
       g(
         "Twoje odpowiedzi nie są pokazywane partnerce. Psycholog nie ujawnia treści jednej osoby drugiej bez zgody.",
         "Twoje odpowiedzi nie są pokazywane partnerowi. Psycholog nie ujawnia treści jednej osoby drugiej bez zgody.",

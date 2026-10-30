@@ -36,6 +36,9 @@ export function validateAnswer(q: QuestionLike, state: AnswerState, value: unkno
     case "country_city":
       schema = z.object({ country: text(100), city: text(100) });
       break;
+    case "children":
+      schema = z.object({ children: z.array(z.object({ name: text(80), age: text(20) })).max(15) });
+      break;
     case "scale5":
       schema = z.number().int().min(1).max(5);
       break;
@@ -75,6 +78,12 @@ export function validateAnswer(q: QuestionLike, state: AnswerState, value: unkno
 export function isVisible(showIf: ShowIf | null | undefined, answersByKey: Record<string, AnswerValue | undefined>): boolean {
   if (!showIf) return true;
   const v = answersByKey[showIf.questionKey];
+  // specjalny warunek: „są dzieci” – ukryj tylko przy jawnym „nie mamy dzieci” lub pustej liście
+  if (showIf.anyOf.includes(HAS_CHILDREN)) {
+    if (v === NA_MARK) return false;
+    if (v && typeof v === "object" && "children" in v) return v.children.some((c) => c.name.trim() || c.age.trim());
+    return true;
+  }
   if (v && typeof v === "object" && "choice" in v) return showIf.anyOf.includes(v.choice);
   if (v && typeof v === "object" && "choices" in v) return v.choices.some((c) => showIf.anyOf.includes(c));
   if (typeof v === "string") return showIf.anyOf.includes(v);
@@ -87,8 +96,12 @@ export function isEmptyAnswer(type: QuestionType, value: AnswerValue): boolean {
   if (typeof value === "string") return value.trim() === "";
   if (type === "country_city" && typeof value === "object" && "country" in value) return !value.country.trim() && !value.city.trim();
   if (type === "multi" && typeof value === "object" && "choices" in value) return value.choices.length === 0;
+  if (type === "children" && typeof value === "object" && "children" in value) return !value.children.some((c) => c.name.trim() || c.age.trim());
   if (type === "consent" && typeof value === "object" && "granted" in value) return !value.granted;
   return false;
 }
 
 export const RISK_TRIGGER_TAG = "risk-trigger";
+export const HAS_CHILDREN = "__has_children";
+/** Znacznik odpowiedzi „nie dotyczy” w mapie odpowiedzi (do warunków wyświetlania). */
+export const NA_MARK = "__na";

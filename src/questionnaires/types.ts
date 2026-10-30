@@ -8,6 +8,7 @@ export type QuestionType =
   | "email"
   | "phone"
   | "country_city" // kraj + miasto (dobór numerów pomocy, strefa czasowa)
+  | "children" // lista dzieci: imię + wiek
   | "single" // pojedynczy wybór (opcjonalnie z "inny:")
   | "multi" // wielokrotny wybór (opcjonalnie z "inny:" i wskazaniem głównego)
   | "scale5" // skala 1–5
@@ -104,6 +105,7 @@ export type AnswerValue =
   | { choice: string; detail?: string }
   | { choices: string[]; primary?: string; detail?: string }
   | { country: string; city: string }
+  | { children: { name: string; age: string }[] }
   | { name: string; date: string }
   | { granted: boolean }
   | null;

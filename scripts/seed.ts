@@ -14,7 +14,11 @@ async function main() {
   const sql = postgres(url, { onnotice: () => {} });
   try {
     await sql.begin(async (tx) => {
-      for (const t of sourceTemplates()) await seedTemplate(tx as never, t);
+      for (const t of sourceTemplates()) {
+        const r = await seedTemplate(tx as never, t);
+        if (r === "upgraded") console.log(`  ↑ ${t.key}: opublikowano nową wersję z kodu`);
+        if (r === "kept-admin-edit") console.log(`  ! ${t.key}: szablon edytowany w panelu – zmiany z kodu NIE zostały opublikowane`);
+      }
     });
     console.log("✓ szablony kwestionariuszy");
 
@@ -91,6 +95,7 @@ async function seedDemoCases(sql: postgres.Sql, therapistUserId: string) {
       else if (q.type === "multi") v = { choices: [q.options[0].value, q.options[1].value], primary: q.options[1].value };
       else if (q.type === "consent") v = { granted: true };
       else if (q.type === "signature") v = { name, date: new Date().toISOString().slice(0, 10) };
+      else if (q.type === "children") v = { children: [{ name: "Zosia (DEMO)", age: "6" }] };
       else if (q.type === "country_city") v = { country: "Polska", city: "Kraków" };
       else if (q.key === "m.name") v = name;
       else if (texts[q.key]) v = texts[q.key];

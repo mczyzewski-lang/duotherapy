@@ -280,7 +280,7 @@ h1 { font-size: 28pt; margin: 18pt 0 2pt; letter-spacing: -0.01em; }
 h2 { font-size: 14.5pt; margin: 24pt 0 8pt; padding-bottom: 5pt; border-bottom: 1px solid #eadccb; break-after: avoid; }
 .brand { display: flex; align-items: center; gap: 10pt; }
 .brand svg { width: 52pt; height: auto; }
-.brand .wm { font-family: "Gilda Display", Georgia, serif; font-size: 18pt; letter-spacing: .06em; color: #36493d; line-height: 1; }
+.brand .wm { font-family: "Fraunces Variable", Georgia, serif; font-weight: 500; font-size: 18pt; letter-spacing: .04em; color: #36493d; line-height: 1; }
 .brand .tag { font-size: 6.5pt; letter-spacing: .32em; text-transform: uppercase; color: #4d4540; margin-top: 3pt; }
 .lead { color: #6a605a; font-size: 9.5pt; margin-top: 4pt; }
 .letter { background: #fbf9f5; border-left: 3px solid #a9512f; padding: 12pt 14pt; margin: 16pt 0 6pt; border-radius: 0 8pt 8pt 0; font-size: 11pt; }

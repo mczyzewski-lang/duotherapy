@@ -16,7 +16,7 @@ Landing + quiz ──► Zgłoszenie (leads.stage = new)
    │                   ▼
    │             Załóż sprawę (cases) ─► uczestnicy (1 lub 2) z przypiętą wersją kwestionariusza
    │                   ▼
-   │             Link + kod dla każdej osoby ─► kwestionariusz (40–60 min)
+   │             Link + kod dla każdej osoby ─► kwestionariusz (15–25 min)
    │                   ▼
    │             Terminy: psycholog proponuje, klient wybiera, psycholog potwierdza
    │                   ▼

@@ -13,7 +13,7 @@ export const dynamic = "force-dynamic";
 const STEPS = [
   { t: "Krótki test", d: "2 minuty online. Opowiadasz w kilku kliknięciach, co się dzieje – bez podawania szczegółów wrażliwych.", meta: "ok. 2 min" },
   { t: "Rozmowa telefoniczna", d: "Oddzwaniamy, wyjaśniamy, jak wygląda audyt, odpowiadamy na pytania i wspólnie decydujemy, czy to dobra forma pomocy teraz.", meta: "krótka rozmowa" },
-  { t: "Poufny kwestionariusz", d: "Po potwierdzeniu udziału każda osoba dostaje własny, prywatny link. Odpowiadasz w swoim tempie, z możliwością zapisu i powrotu.", meta: "ok. 40–60 min" },
+  { t: "Poufny kwestionariusz", d: "Po potwierdzeniu udziału każda osoba dostaje własny, prywatny link. Odpowiadasz w swoim tempie, z możliwością zapisu i powrotu.", meta: "ok. 15–25 min" },
   { t: "Sesja online z psychologiem", d: "Wybierasz termin spośród zaproponowanych. Rozmowa pogłębia najważniejsze wątki – nie odtwarza kwestionariusza.", meta: "60 min indywidualnie · 90 min dla pary" },
   { t: "Omówienie i podsumowanie", d: "Na koniec sesji: mechanizm konfliktu, mocne strony i proponowana ścieżka. Potem pisemne podsumowanie z następnymi krokami.", meta: "podsumowanie po sesji" },
 ];

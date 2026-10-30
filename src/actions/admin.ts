@@ -10,7 +10,7 @@ import { saveSettingsSection, type Settings } from "@/lib/settings";
 import { createDraft, insertQuestion, publishDraft } from "@/lib/templates";
 
 type R = { error?: string; ok?: string } | undefined;
-const QUESTION_TYPES = ["text", "textarea", "date", "email", "phone", "country_city", "single", "multi", "scale5", "screening", "consent", "signature", "info"] as const;
+const QUESTION_TYPES = ["text", "textarea", "date", "email", "phone", "country_city", "children", "single", "multi", "scale5", "screening", "consent", "signature", "info"] as const;
 
 export async function createDraftAction(fd: FormData) {
   const s = await requireStaff("admin");

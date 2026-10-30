@@ -6,7 +6,7 @@ import type { TemplateDef } from "@/questionnaires/types";
 
 // sekcja: [liczba pozycji, sekwencja typów]
 const INDIVIDUAL_MANIFEST: Record<string, [number, string]> = {
-  profile: [13, "text date email phone country_city text single text single text single textarea date"],
+  profile: [13, "text date email phone country_city text single text single children single textarea date"],
   consent: [1, "consent"],
   situation: [5, "single textarea single single multi"],
   safety: [9, "screening screening screening screening screening screening screening screening info"],

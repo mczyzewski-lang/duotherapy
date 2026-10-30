@@ -1,5 +1,6 @@
 // Wersjonowane szablony kwestionariuszy w bazie.
 import type { AreaKey, Option, QuestionType, ShowIf, TemplateDef } from "@/questionnaires/types";
+import { createHash } from "node:crypto";
 import type { Tx } from "./db";
 
 export interface QuestionRow {
@@ -49,19 +50,35 @@ export interface LoadedVersion {
   sections: LoadedSection[];
 }
 
-export async function seedTemplate(tx: Tx, def: TemplateDef) {
+/** Odcisk definicji źródłowej (treść, kolejność, typy) – do wykrywania zmian w kodzie. */
+export function templateHash(def: TemplateDef): string {
+  return createHash("sha256").update(JSON.stringify(def)).digest("hex").slice(0, 16);
+}
+
+/**
+ * Seed / aktualizacja szablonu z definicji w kodzie.
+ * - brak wersji → wersja 1;
+ * - definicja zmieniła się, a opublikowana wersja pochodzi z kodu (nie z edytora) → nowa wersja, opublikowana.
+ * Sprawy zachowują wersję przypiętą przy zakładaniu, więc stare odpowiedzi i podsumowania się nie zmieniają.
+ */
+export async function seedTemplate(tx: Tx, def: TemplateDef): Promise<"created" | "upgraded" | "unchanged" | "kept-admin-edit"> {
   const [t] = await tx<{ id: string }[]>`
     insert into questionnaire_templates (key, audience, gender, name)
     values (${def.key}, ${def.audience}, ${def.gender}, ${def.title})
     on conflict (key) do update set name = excluded.name returning id`;
-  const existing = await tx`select 1 from questionnaire_template_versions where template_id = ${t.id}`;
-  if (existing.length) return;
+  const hash = templateHash(def);
+  const [pub] = await tx`select id, version, created_by, source_hash from questionnaire_template_versions where template_id = ${t.id} and status = 'published'`;
+  const [{ max }] = await tx<{ max: number | null }[]>`select max(version)::int as max from questionnaire_template_versions where template_id = ${t.id}`;
+  if (pub && pub.source_hash === hash) return "unchanged";
+  if (pub && pub.created_by) return "kept-admin-edit";
   const sections: SectionMeta[] = def.sections.map(({ questions: _q, ...meta }) => meta);
+  const version = (max ?? 0) + 1;
   const [v] = await tx<{ id: string }[]>`
     insert into questionnaire_template_versions
-      (template_id, version, status, title, intro, outro, sections, source_file, needs_verification, verification_note, change_note)
-    values (${t.id}, 1, 'draft', ${def.title}, ${tx.json(def.intro)}, ${def.outro ?? null}, ${tx.json(sections as never)},
-            ${def.sourceFile}, ${def.needsVerification}, ${def.verificationNote ?? null}, 'Wersja 1 – import z materiałów źródłowych')
+      (template_id, version, status, title, intro, outro, sections, source_file, needs_verification, verification_note, change_note, source_hash)
+    values (${t.id}, ${version}, 'draft', ${def.title}, ${tx.json(def.intro)}, ${def.outro ?? null}, ${tx.json(sections as never)},
+            ${def.sourceFile}, ${def.needsVerification}, ${def.verificationNote ?? null},
+            ${version === 1 ? "Wersja 1 – import z materiałów źródłowych" : "Aktualizacja treści z kodu aplikacji"}, ${hash})
     returning id`;
   let ord = 0;
   for (const s of def.sections) {
@@ -69,7 +86,9 @@ export async function seedTemplate(tx: Tx, def: TemplateDef) {
       await insertQuestion(tx, v.id, s.key, ord++, q);
     }
   }
+  await tx`update questionnaire_template_versions set status = 'archived' where template_id = ${t.id} and status = 'published'`;
   await tx`update questionnaire_template_versions set status = 'published', published_at = now() where id = ${v.id}`;
+  return version === 1 ? "created" : "upgraded";
 }
 
 async function insertQuestion(tx: Tx, versionId: string, sectionKey: string, ord: number, q: object) {

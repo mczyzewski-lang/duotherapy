@@ -1,8 +1,6 @@
 @import "tailwindcss";
 @import "@fontsource-variable/fraunces";
 @import "@fontsource-variable/inter";
-@import "@fontsource/gilda-display/latin-400.css";
-@import "@fontsource/gilda-display/latin-ext-400.css";
 
 /*
   Paleta DUO® – z logo marki: terakota (ciepło, bliskość), szałwiowa zieleń (spokój, zaufanie),
@@ -11,7 +9,7 @@
 @theme {
   --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
   --font-serif: "Fraunces Variable", ui-serif, Georgia, serif;
-  --font-wordmark: "Gilda Display", "Fraunces Variable", Georgia, serif;
+  --font-wordmark: "Fraunces Variable", ui-serif, Georgia, serif;
 
   --color-ivory: #fbf9f5;
   --color-linen: #f4eee6;
@@ -90,7 +88,7 @@ body {
   50% { transform: translateY(-6px); }
 }
 .animate-breathe-slow { animation: breathe-slow 8s ease-in-out infinite; }
-.font-wordmark { font-family: var(--font-wordmark); }
+.font-wordmark { font-family: var(--font-wordmark); font-optical-sizing: auto; letter-spacing: 0.04em; }
 
 .skip-link {
   position: absolute; left: 1rem; top: -4rem; z-index: 100;

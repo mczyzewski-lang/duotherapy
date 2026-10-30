@@ -39,7 +39,7 @@ export function Logo({ className, light, compact, id = "logo" }: { className?: s
     <span className={clsx("inline-flex items-center gap-2.5", className)}>
       <BrandSymbol id={id} className={compact ? "h-6 w-auto" : "h-8 w-auto"} />
       <span className="flex flex-col leading-none">
-        <span className={clsx("font-wordmark tracking-[0.06em]", compact ? "text-xl" : "text-[1.65rem]", light ? "text-white" : "text-forest")}>
+        <span className={clsx("font-wordmark font-medium", compact ? "text-xl" : "text-[1.65rem]", light ? "text-white" : "text-forest")}>
           DUO<sup className="ml-0.5 align-super font-sans text-[0.4em] font-normal">®</sup>
         </span>
         {!compact && (

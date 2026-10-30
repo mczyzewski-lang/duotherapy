@@ -9,7 +9,7 @@ import { SafetyBox } from "@/components/safety-box";
 import { Alert, Button } from "@/components/ui";
 import type { Settings } from "@/lib/settings";
 import type { AnswerValue } from "@/questionnaires/types";
-import { isVisible } from "@/questionnaires/validate";
+import { isVisible, NA_MARK } from "@/questionnaires/validate";
 import { QuestionInput, type AState, type QView } from "./question-input";
 
 export interface QData {
@@ -77,14 +77,24 @@ export function Questionnaire({ data }: { data: QData }) {
   const allQ = useMemo(() => data.version.sections.flatMap((s) => s.questions), [data]);
   const byKey = useMemo(() => {
     const m: Record<string, AnswerValue> = {};
-    for (const q of allQ) if (answers[q.id]?.state === "answered") m[q.key] = answers[q.id].value;
+    for (const q of allQ) {
+      if (answers[q.id]?.state === "answered") m[q.key] = answers[q.id].value;
+      else if (answers[q.id]?.state === "not_applicable") m[q.key] = NA_MARK;
+    }
     return m;
   }, [answers, allQ]);
   const screens = useMemo(() => buildScreens(data, byKey), [data, byKey]);
   const firstUnanswered = useMemo(() => {
     if (data.status === "not_started") return 0;
-    const i = screens.findIndex((s) => s.kind === "questions" && s.questions.some((q) => !answers[q.id]));
-    return i > 0 ? i : 1;
+    // wznów za ostatnim ekranem, na którym jest jakakolwiek odpowiedź (pominięte pytania opcjonalne nie cofają)
+    let last = -1;
+    screens.forEach((s, i) => {
+      if (s.kind === "questions" && s.questions.some((q) => answers[q.id])) last = i;
+    });
+    if (last < 0) return 1;
+    const s = screens[last];
+    const complete = s.kind === "questions" && s.questions.every((q) => answers[q.id]);
+    return Math.min(complete ? last + 1 : last, screens.length - 1);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   const [idx, setIdx] = useState(locked ? screens.length - 1 : firstUnanswered);
@@ -206,8 +216,12 @@ export function Questionnaire({ data }: { data: QData }) {
             <h1 ref={headingRef} tabIndex={-1} className="font-display text-3xl leading-tight text-ink outline-none sm:text-4xl">
               Cześć, {data.firstName}. To bezpieczna przestrzeń, w której możesz opisać swoją perspektywę.
             </h1>
+            <p className="mt-5 leading-relaxed text-ink-soft">
+              Wiemy, jak ważna jest ta sprawa w Twoim życiu. Dlatego kwestionariusz jest dokładny – żeby nie zostawiać miejsca na domysły i żeby psycholog jeszcze
+              przed spotkaniem miał pełen obraz Twojej sytuacji. Dzięki temu na sesji możecie od razu przejść do tego, co najważniejsze.
+            </p>
             <ul className="mt-6 grid gap-3 text-[15px] text-ink-soft sm:grid-cols-2">
-              <li className="rounded-2xl bg-ivory p-4 ring-1 ring-sand"><strong className="block text-ink">Około 40–60 minut</strong>Możesz robić przerwy – każda odpowiedź zapisuje się automatycznie.</li>
+              <li className="rounded-2xl bg-ivory p-4 ring-1 ring-sand"><strong className="block text-ink">Około 15–25 minut</strong>Możesz robić przerwy – każda odpowiedź zapisuje się automatycznie.</li>
               <li className="rounded-2xl bg-ivory p-4 ring-1 ring-sand"><strong className="block text-ink">Zapisz i wróć później</strong>Otwórz ten sam link i wpisz kod – zaczniesz tam, gdzie {data.gender === "male" ? "skończyłeś" : "skończyłaś"}.</li>
               <li className="rounded-2xl bg-ivory p-4 ring-1 ring-sand"><strong className="block text-ink">Odpowiadaj samodzielnie</strong>W spokojnym miejscu, w którym nikt nie czyta Ci przez ramię{data.kind === "couple" ? " – także druga osoba w związku" : ""}.</li>
               <li className="rounded-2xl bg-ivory p-4 ring-1 ring-sand"><strong className="block text-ink">Poufnie</strong>{data.kind === "couple" ? "Twoje odpowiedzi widzi tylko psycholog – nie druga osoba." : "Twoje odpowiedzi widzi tylko psycholog prowadzący."}</li>
@@ -233,8 +247,11 @@ export function Questionnaire({ data }: { data: QData }) {
           <div className="space-y-8">
             <header>
               <p className="text-sm font-medium text-clay">{section.title}</p>
-              <h1 ref={headingRef} tabIndex={-1} className="sr-only outline-none">{screen.title ?? section.title}</h1>
-              {screen.title && screen.title !== section.title && <p className="mt-1 font-display text-2xl text-ink">{screen.title}</p>}
+              {screen.title && screen.title !== section.title ? (
+                <h1 ref={headingRef} tabIndex={-1} className="mt-1 font-display text-2xl text-ink outline-none">{screen.title}</h1>
+              ) : (
+                <h1 ref={headingRef} tabIndex={-1} className="sr-only outline-none">{section.title}</h1>
+              )}
               {section.intro && screen.questions[0] === section.questions.find((q) => isVisible(q.showIf, byKey)) && (
                 <p className="mt-3 leading-relaxed text-ink-soft">{section.intro}</p>
               )}
