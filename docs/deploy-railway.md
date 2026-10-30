@@ -29,6 +29,16 @@ PORT=3000
 - Wolumen `duotherapy-volume` nie jest potrzebny (aplikacja nie zapisuje plików na dysku) – można go usunąć.
 - Usługa potrzebuje publicznej domeny: *Settings → Networking → Generate Domain*.
 
+## Powiadomienia o pytaniach ze strony (opcjonalne)
+
+Pytania z formularza „Masz pytania? Napisz do mnie” trafiają do panelu (*Wiadomości*). Żeby dostawać e-mail o nowej wiadomości (bez jej treści), dodaj:
+
+```
+SMTP_URL=smtps://uzytkownik:haslo@smtp.dostawca.pl:465
+NOTIFY_EMAIL=adres@na-ktory-wyslac.pl
+SMTP_FROM=adres-nadawcy@twojadomena.pl
+```
+
 ## Builder
 
 Ustaw *Settings → Build → Builder: Dockerfile* (obraz zawiera Chromium do PDF). Jeśli Railway używa automatycznego buildera (Railpack, widoczne np. jako `node@24`), aplikacja też ruszy, bo `npm start` sam uruchamia migracje – ale generowanie PDF wymaga wtedy zmiennych `RAILPACK_DEPLOY_APT_PACKAGES=chromium` i `CHROMIUM_PATH=/usr/bin/chromium`.

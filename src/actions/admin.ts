@@ -151,7 +151,7 @@ export async function saveSettingsAction(_: R, fd: FormData): Promise<R> {
   const schemas: Record<keyof Settings, z.ZodType> = {
     legal: z.object({
       controllerName: z.string(), controllerContact: z.string(), dpoContact: z.string(), processingLocation: z.string(), retentionPolicy: z.string(),
-      privacyPolicy: z.string(), questionnaireNotice: z.string().min(20), leadContactConsent: z.string().min(10), leadMarketingConsent: z.string().min(10),
+      privacyPolicy: z.string(), questionnaireNotice: z.string().min(20), leadContactConsent: z.string().min(10), leadMarketingConsent: z.string().min(10), inquiryConsent: z.string().min(10),
       version: z.string().min(1), approved: z.boolean(),
     }),
     site: z.object({

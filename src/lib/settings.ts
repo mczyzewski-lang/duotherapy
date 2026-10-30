@@ -20,6 +20,8 @@ export interface Settings {
     questionnaireNotice: string;
     leadContactConsent: string;
     leadMarketingConsent: string;
+    /** Zgoda w formularzu „Masz pytania?”. */
+    inquiryConsent: string;
     /** Wersja tekstów (zapisywana w rejestrze zgód). Zmień przy każdej zmianie treści. */
     version: string;
     /** Teksty zatwierdzone przez prawnika / IOD. Bez tego (poza trybem DEMO) kwestionariusz jest zablokowany. */
@@ -64,6 +66,7 @@ export const DEFAULT_SETTINGS: Settings = {
       "Wyrażam zgodę na kontakt telefoniczny lub e-mailowy w sprawie mojego zgłoszenia na Audyt Relacji DUO®.",
     leadMarketingConsent:
       "Chcę otrzymywać od DUO® okazjonalne informacje o materiałach i usługach (opcjonalnie, mogę zrezygnować w każdej chwili).",
+    inquiryConsent: "Wyrażam zgodę na kontakt e-mailowy w odpowiedzi na moje pytanie.",
     version: "2026-10-draft",
     approved: false,
   },

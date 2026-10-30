@@ -2,6 +2,7 @@ import { ArrowRight, Check, Clock, FileText, Heart, Lock, MessageCircle, Phone, 
 import Link from "next/link";
 import { HeroArt, PathArt, StepIcon } from "@/components/landing/art";
 import { INTENTS } from "@/components/landing/intents";
+import { AskDialog } from "@/components/landing/ask-dialog";
 import { Quiz } from "@/components/landing/quiz";
 import { TherapistSection } from "@/components/landing/therapist";
 import { LinkButton, Logo } from "@/components/ui";
@@ -312,8 +313,11 @@ export default async function Landing({ searchParams }: { searchParams: Promise<
             <div className="mt-10">
               <Quiz initialIntent={initialIntent} consentText={s.legal.leadContactConsent} marketingText={s.legal.leadMarketingConsent} />
             </div>
+            <div className="mt-8 text-center">
+              <AskDialog consentText={s.legal.inquiryConsent} />
+            </div>
             {s.site.contactPhone && (
-              <p className="mt-6 flex items-center justify-center gap-2 text-sm text-ink-soft">
+              <p className="mt-4 flex items-center justify-center gap-2 text-sm text-ink-soft">
                 <Phone size={15} aria-hidden /> Wolisz zadzwonić? <a href={`tel:${s.site.contactPhone.replace(/\s/g, "")}`} className="font-medium text-forest">{s.site.contactPhone}</a>
               </p>
             )}
@@ -322,19 +326,10 @@ export default async function Landing({ searchParams }: { searchParams: Promise<
       </main>
 
       <footer className="bg-forest-800 text-white/80">
-        <div className="mx-auto grid max-w-6xl gap-10 px-5 py-14 md:grid-cols-3">
+        <div className="mx-auto grid max-w-6xl gap-10 px-5 py-14 md:grid-cols-2">
           <div>
             <Logo light />
             <p className="mt-4 text-sm leading-relaxed">Zrozum, co naprawdę dzieje się w Twojej relacji – i świadomie zdecyduj, co dalej.</p>
-          </div>
-          <div className="text-sm">
-            <p className="font-medium text-white">Pilna pomoc</p>
-            <ul className="mt-3 space-y-1.5">
-              {s.helplines.items.map((h) => (
-                <li key={h.number}><a href={`tel:${h.number.replace(/\s/g, "")}`} className="font-semibold text-white">{h.number}</a> – {h.when.split("(")[0]}</li>
-              ))}
-            </ul>
-            <p className="mt-3 text-xs text-white/60">{s.helplines.disclaimer}</p>
           </div>
           <div className="text-sm">
             <p className="font-medium text-white">Informacje</p>

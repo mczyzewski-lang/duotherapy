@@ -107,6 +107,13 @@ describe("RLS: uprawnienia specjalistów i ról", () => {
     await expect(withActor({ kind: "public" }, (tx) => tx`insert into leads (name, email, mode, intent, preferred_contact, stage) values ('x', 'x@x.pl', 'couple', 'unsure', 'email', 'paid')`)).rejects.toThrow(/row-level security/);
   });
 
+  it("wiadomości ze strony: publicznie tylko zapis, odczyt wyłącznie dla zespołu", async () => {
+    await withActor({ kind: "public" }, (tx) => tx`insert into inquiries (name, email, message_enc, consent_text, consent_version) values ('X', 'x@x.pl', 'enc', 'zgoda', 'v')`);
+    expect(await withActor({ kind: "public" }, (tx) => tx`select * from inquiries`)).toHaveLength(0);
+    expect(await withActor(A(), (tx) => tx`select * from inquiries`)).toHaveLength(0);
+    expect((await withActor(t2, (tx) => tx`select * from inquiries`)).length).toBeGreaterThan(0);
+  });
+
   it("psycholog nie może edytować szablonów (tylko administrator)", async () => {
     const r = await withActor(t1, (tx) => tx`update questionnaire_template_versions set change_note = 'x' returning id`);
     expect(r).toHaveLength(0);

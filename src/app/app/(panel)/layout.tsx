@@ -1,4 +1,4 @@
-import { ClipboardList, FileCog, Inbox, LayoutDashboard, LogOut, ScrollText, Settings } from "lucide-react";
+import { ClipboardList, FileCog, Inbox, LayoutDashboard, LogOut, Mail, ScrollText, Settings } from "lucide-react";
 import Link from "next/link";
 import { Logo } from "@/components/ui";
 import { requireStaff } from "@/lib/auth";
@@ -12,6 +12,7 @@ export default async function PanelLayout({ children }: { children: React.ReactN
   const nav = [
     { href: "/app", label: "Pulpit", icon: LayoutDashboard },
     { href: "/app/leads", label: "Zgłoszenia", icon: Inbox },
+    { href: "/app/inquiries", label: "Wiadomości", icon: Mail },
     { href: "/app/cases", label: "Sprawy", icon: ClipboardList },
     ...(s.user.role === "admin"
       ? [

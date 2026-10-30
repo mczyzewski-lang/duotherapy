@@ -15,6 +15,7 @@ export default async function Dashboard({ searchParams }: { searchParams: Promis
   const { err } = await searchParams;
   const s = await requireStaff();
   const d = await asStaff(s, async (tx) => ({
+    newInquiries: (await tx`select count(*)::int as n from inquiries where status = 'new'`)[0].n as number,
     leads: await tx`select id, name, mode, intent, created_at, stage from leads where stage in ('new', 'contacted') order by created_at desc limit 6`,
     risky: await listCases(tx, { risk: true, limit: 10 }),
     active: await listCases(tx, { limit: 12 }),
@@ -25,6 +26,9 @@ export default async function Dashboard({ searchParams }: { searchParams: Promis
   return (
     <>
       <PageTitle title={`Dzień dobry, ${s.user.name.split(" ")[0]}`} sub="Nowe zgłoszenia, aktywne sprawy i sprawy wymagające pilnego przeglądu." actions={<LinkButton href="/app/cases/new"><Plus size={17} aria-hidden /> Nowa sprawa</LinkButton>} />
+      {d.newInquiries > 0 && (
+        <Alert tone="info" className="mb-4">Nowe wiadomości ze strony: <strong>{d.newInquiries}</strong>. <Link href="/app/inquiries" className="font-medium underline">Przejdź do wiadomości</Link></Alert>
+      )}
       {err === "forbidden" && <Alert tone="warn" className="mb-4">Ta sekcja jest dostępna tylko dla administratora.</Alert>}
       {!d.settings.legal.approved && (
         <Alert tone="warn" className="mb-6" title="Teksty prawne niezatwierdzone">
