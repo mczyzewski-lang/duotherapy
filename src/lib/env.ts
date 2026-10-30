@@ -12,7 +12,10 @@ export const env = {
     return process.env.DEMO_MODE === "true";
   },
   get appUrl() {
-    return process.env.APP_URL ?? "http://localhost:3000";
+    if (process.env.APP_URL) return process.env.APP_URL;
+    // Railway udostępnia publiczną domenę usługi
+    if (process.env.RAILWAY_PUBLIC_DOMAIN) return `https://${process.env.RAILWAY_PUBLIC_DOMAIN}`;
+    return "http://localhost:3000";
   },
   get databaseUrl() {
     return required("DATABASE_URL", "postgres://duo_app:duo_app_dev@localhost:5432/duo");

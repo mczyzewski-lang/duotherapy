@@ -140,6 +140,10 @@ tests/unit, tests/e2e
 - PDF wymaga Chromium na serwerze.
 - Ceny, dane administratora, polityka prywatności, profile psychologów i film są puste – uzupełnia je administrator; puste sekcje są ukryte.
 
+## Wdrożenie (Railway)
+
+Instrukcja i zmienne: [`docs/deploy-railway.md`](docs/deploy-railway.md). Obraz: `Dockerfile` (Node 22 + Chromium), konfiguracja: `railway.json` (migracje przed startem, healthcheck). Migracje uruchomione jako superużytkownik automatycznie tworzą rolę aplikacji `duo_app` bez dostępu omijającego RLS.
+
 ## Przed produkcją
 
 Przejdź [`docs/production-readiness.md`](docs/production-readiness.md): decyzje prawne (administrator, podstawy, retencja, DPIA), umowy powierzenia, konfiguracja (`DEMO_MODE=false`, MFA, sekrety, TLS, role bazy), weryfikacja kwestionariuszy dla pary, przegląd bezpieczeństwa.

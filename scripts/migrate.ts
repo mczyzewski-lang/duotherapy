@@ -16,6 +16,7 @@ export async function migrate(dbUrl: string, reset = false) {
       if (process.env.NODE_ENV === "production" && process.env.DEMO_MODE !== "true") throw new Error("--reset jest zablokowany w produkcji");
       await sql.unsafe("drop schema if exists public cascade; create schema public;");
     }
+    await ensureAppRole(sql);
     await sql`create table if not exists schema_migrations (name text primary key, applied_at timestamptz not null default now())`;
     const dir = path.join(process.cwd(), "db/migrations");
     for (const f of readdirSync(dir).filter((f) => f.endsWith(".sql")).sort()) {
@@ -30,6 +31,26 @@ export async function migrate(dbUrl: string, reset = false) {
   } finally {
     await sql.end();
   }
+}
+
+/**
+ * Hostingi typu Railway udostępniają tylko konto superużytkownika, które omija RLS.
+ * Gdy migracje działają jako superużytkownik, tworzymy (lub aktualizujemy) rolę aplikacji "duo_app"
+ * z hasłem z DATABASE_URL – bez uprawnień superużytkownika i bez BYPASSRLS.
+ */
+async function ensureAppRole(sql: postgres.Sql) {
+  const appUrl = process.env.DATABASE_URL;
+  const [{ rolsuper }] = await sql`select rolsuper from pg_roles where rolname = current_user`;
+  if (!rolsuper || !appUrl) return;
+  const u = new URL(appUrl);
+  if (decodeURIComponent(u.username) !== "duo_app") throw new Error("DATABASE_URL musi używać roli duo_app (aplikacja nie może łączyć się jako superużytkownik)");
+  const password = decodeURIComponent(u.password);
+  if (password.length < 16) throw new Error("Hasło roli duo_app w DATABASE_URL musi mieć co najmniej 16 znaków");
+  const [{ exists }] = await sql`select exists (select 1 from pg_roles where rolname = 'duo_app') as exists`;
+  if (!exists) await sql.unsafe("create role duo_app");
+  const [{ q }] = await sql`select format('alter role duo_app with login nosuperuser nocreatedb nocreaterole nobypassrls password %L', ${password}::text) as q`;
+  await sql.unsafe(q);
+  console.log(exists ? "✓ rola duo_app zaktualizowana" : "✓ utworzono rolę duo_app");
 }
 
 if (process.argv[1]?.endsWith("migrate.ts")) {
