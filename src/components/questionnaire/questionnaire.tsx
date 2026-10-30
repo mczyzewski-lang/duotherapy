@@ -15,6 +15,7 @@ import { QuestionInput, type AState, type QView } from "./question-input";
 export interface QData {
   token: string;
   firstName: string;
+  gender: "male" | "female";
   status: "not_started" | "in_progress" | "submitted" | "reopened";
   kind: "individual" | "couple";
   version: {
@@ -207,7 +208,7 @@ export function Questionnaire({ data }: { data: QData }) {
             </h1>
             <ul className="mt-6 grid gap-3 text-[15px] text-ink-soft sm:grid-cols-2">
               <li className="rounded-2xl bg-ivory p-4 ring-1 ring-sand"><strong className="block text-ink">Około 40–60 minut</strong>Możesz robić przerwy – każda odpowiedź zapisuje się automatycznie.</li>
-              <li className="rounded-2xl bg-ivory p-4 ring-1 ring-sand"><strong className="block text-ink">Zapisz i wróć później</strong>Otwórz ten sam link i wpisz kod – zaczniesz tam, gdzie skończyłeś lub skończyłaś.</li>
+              <li className="rounded-2xl bg-ivory p-4 ring-1 ring-sand"><strong className="block text-ink">Zapisz i wróć później</strong>Otwórz ten sam link i wpisz kod – zaczniesz tam, gdzie {data.gender === "male" ? "skończyłeś" : "skończyłaś"}.</li>
               <li className="rounded-2xl bg-ivory p-4 ring-1 ring-sand"><strong className="block text-ink">Odpowiadaj samodzielnie</strong>W spokojnym miejscu, w którym nikt nie czyta Ci przez ramię{data.kind === "couple" ? " – także druga osoba w związku" : ""}.</li>
               <li className="rounded-2xl bg-ivory p-4 ring-1 ring-sand"><strong className="block text-ink">Poufnie</strong>{data.kind === "couple" ? "Twoje odpowiedzi widzi tylko psycholog – nie druga osoba." : "Twoje odpowiedzi widzi tylko psycholog prowadzący."}</li>
             </ul>

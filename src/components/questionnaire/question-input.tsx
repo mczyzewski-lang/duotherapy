@@ -3,6 +3,7 @@
 // Pole odpowiedzi dopasowane do typu pytania. Używane w kwestionariuszu i przy korekcie w panelu.
 import clsx from "clsx";
 import { Check } from "lucide-react";
+import { useEffect, useState } from "react";
 import type { AnswerState, AnswerValue, Option } from "@/questionnaires/types";
 
 export interface QView {
@@ -41,6 +42,13 @@ export function QuestionInput({ q, a, onChange, compact }: { q: QView; a?: AStat
       on ? "bg-forest text-white ring-forest" : "bg-white text-ink ring-sand-dark hover:ring-forest",
     );
 
+  // „Data wypełnienia” – uzupełniana automatycznie dzisiejszą datą (można zmienić)
+  const autoToday = q.key === "m.filled" && !a;
+  useEffect(() => {
+    if (autoToday) onChange({ state: "answered", value: localToday() });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [autoToday]);
+
   let body: React.ReactNode = null;
   switch (q.type) {
     case "text":
@@ -62,6 +70,10 @@ export function QuestionInput({ q, a, onChange, compact }: { q: QView; a?: AStat
       body = <textarea aria-labelledby={labelId} className={clsx(inputCls, compact ? "min-h-24" : "min-h-40", "leading-relaxed")} value={typeof val === "string" ? val : ""} onChange={(e) => set(e.target.value)} disabled={na} />;
       break;
     case "date":
+      if (q.key === "m.birth") {
+        body = <BirthDateInput labelId={labelId} value={typeof val === "string" ? val : ""} onChange={(v) => set(v)} />;
+        break;
+      }
       body = <input aria-labelledby={labelId} type="date" className={clsx(inputCls, "max-w-xs")} value={typeof val === "string" ? val : ""} onChange={(e) => set(e.target.value)} />;
       break;
     case "country_city": {
@@ -237,6 +249,60 @@ export function QuestionInput({ q, a, onChange, compact }: { q: QView; a?: AStat
           nie dotyczy
         </label>
       )}
+    </div>
+  );
+}
+
+function localToday(): string {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+
+const MONTHS = ["styczeń", "luty", "marzec", "kwiecień", "maj", "czerwiec", "lipiec", "sierpień", "wrzesień", "październik", "listopad", "grudzień"];
+
+function polishYears(n: number) {
+  if (n === 1) return "rok";
+  const d = n % 10, t = n % 100;
+  return d >= 2 && d <= 4 && (t < 12 || t > 14) ? "lata" : "lat";
+}
+
+/** Data urodzenia: trzy listy (dzień / miesiąc / rok) zamiast kalendarza – szybki wybór także na telefonie. */
+function BirthDateInput({ labelId, value, onChange }: { labelId: string; value: string; onChange: (v: string) => void }) {
+  const init = /^\d{4}-\d{2}-\d{2}$/.test(value) ? value.split("-").map(Number) : [0, 0, 0];
+  // częściowy wybór trzymamy lokalnie – zapisujemy dopiero pełną datę
+  const [cur, setCur] = useState({ y: init[0], m: init[1], d: init[2] });
+  const now = new Date().getFullYear();
+  const years = Array.from({ length: now - 16 - 1920 + 1 }, (_, i) => now - 16 - i);
+  const daysIn = cur.y && cur.m ? new Date(cur.y, cur.m, 0).getDate() : 31;
+  const update = (patch: Partial<typeof cur>) => {
+    const c = { ...cur, ...patch };
+    if (c.y && c.m && c.d) c.d = Math.min(c.d, new Date(c.y, c.m, 0).getDate());
+    setCur(c);
+    if (c.y && c.m && c.d) onChange(`${c.y}-${String(c.m).padStart(2, "0")}-${String(c.d).padStart(2, "0")}`);
+  };
+  let age: number | null = null;
+  if (cur.y && cur.m && cur.d) {
+    const t = new Date();
+    age = t.getFullYear() - cur.y - (t.getMonth() + 1 < cur.m || (t.getMonth() + 1 === cur.m && t.getDate() < cur.d) ? 1 : 0);
+  }
+  const sel = "rounded-xl bg-white px-3 py-2.5 text-[15px] ring-1 ring-sand-dark focus:outline-none focus:ring-2 focus:ring-forest";
+  return (
+    <div className="space-y-2">
+      <div className="grid max-w-md grid-cols-[5rem_1fr_6.5rem] gap-2" role="group" aria-labelledby={labelId}>
+        <select aria-label="Dzień" className={sel} value={cur.d || ""} onChange={(e) => update({ d: Number(e.target.value) })}>
+          <option value="">dzień</option>
+          {Array.from({ length: daysIn }, (_, i) => i + 1).map((n) => <option key={n} value={n}>{n}</option>)}
+        </select>
+        <select aria-label="Miesiąc" className={sel} value={cur.m || ""} onChange={(e) => update({ m: Number(e.target.value) })}>
+          <option value="">miesiąc</option>
+          {MONTHS.map((n, i) => <option key={n} value={i + 1}>{n}</option>)}
+        </select>
+        <select aria-label="Rok" className={sel} value={cur.y || ""} onChange={(e) => update({ y: Number(e.target.value) })}>
+          <option value="">rok</option>
+          {years.map((n) => <option key={n} value={n}>{n}</option>)}
+        </select>
+      </div>
+      {age !== null && <p className="text-sm text-muted">Wiek: {age} {polishYears(age)}</p>}
     </div>
   );
 }

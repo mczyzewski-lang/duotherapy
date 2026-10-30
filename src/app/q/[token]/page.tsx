@@ -69,6 +69,7 @@ export default async function QuestionnairePage({ params }: { params: Promise<{ 
   const q: QData = {
     token,
     firstName: String(p.display_name).split(" ")[0],
+    gender: p.gender,
     status: p.q_status,
     kind: p.kind,
     version: {
