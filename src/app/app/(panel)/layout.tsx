@@ -27,6 +27,9 @@ export default async function PanelLayout({ children }: { children: React.ReactN
         <div className="flex items-center justify-between px-5 py-4 lg:block">
           <Link href="/app" aria-label="Pulpit"><Logo /></Link>
           <p className="hidden text-xs text-muted lg:mt-1 lg:block">Panel specjalisty</p>
+          <form action={logoutAction} className="lg:hidden">
+            <button className="flex items-center gap-1.5 text-sm text-clay"><LogOut size={14} aria-hidden /> Wyloguj</button>
+          </form>
         </div>
         <nav aria-label="Panel" className="flex gap-1 overflow-x-auto px-3 pb-3 lg:flex-col lg:px-3">
           {nav.map(({ href, label, icon: Icon }) => (

@@ -212,9 +212,9 @@ export default async function CasePage({ params }: { params: Promise<{ id: strin
                 </li>
               ))}
             </ul>
-            <ActionForm action={addSlotAction as never} className="mt-3 flex gap-2">
+            <ActionForm action={addSlotAction as never} className="mt-3 flex flex-wrap gap-2">
               <input type="hidden" name="case_id" value={c.id} />
-              <Input type="datetime-local" name="starts_at" aria-label="Proponowany termin" />
+              <Input type="datetime-local" name="starts_at" aria-label="Proponowany termin" className="min-w-0 flex-1" />
               <SubmitButton size="sm" variant="secondary"><CalendarPlus size={15} aria-hidden /> Dodaj</SubmitButton>
             </ActionForm>
             <p className="mt-2 text-xs text-muted">Brak integracji z kalendarzem – terminy proponujesz tutaj, klient wybiera pod swoim linkiem, a Ty potwierdzasz.</p>

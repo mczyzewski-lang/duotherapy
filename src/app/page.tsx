@@ -162,7 +162,7 @@ export default async function Landing({ searchParams }: { searchParams: Promise<
           <div className="mx-auto max-w-6xl px-5 py-20">
             <h2 id="jtd" className="font-display text-3xl text-ink sm:text-4xl">Jak to działa?</h2>
             <p className="mt-3 max-w-2xl text-ink-soft">Pięć prostych etapów – od pierwszego kliknięcia do konkretnych następnych kroków.</p>
-            <ol className="mt-12 grid gap-5 md:grid-cols-5">
+            <ol className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-5">
               {STEPS.map((st, i) => (
                 <li key={st.t} className="relative rounded-2xl bg-white p-6 shadow-soft ring-1 ring-sand">
                   <StepIcon n={i + 1} />

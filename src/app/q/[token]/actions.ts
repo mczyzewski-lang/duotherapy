@@ -30,11 +30,16 @@ export async function saveAnswerAction(token: string, questionId: string, state:
     const pid = await participantOrThrow(token);
     if (!(await hit(`save:${pid}`, 600, 60))) return { ok: false as const, error: "Zbyt wiele zapisów naraz – spróbuj za chwilę." };
     return await withActor({ kind: "participant", participantId: pid }, async (tx) => {
+      const st = await readSettings(tx);
+      if (st.flow.requirePaymentBeforeQuestionnaire) {
+        const [c] = await tx`select c.payment_status from cases c join participants p on p.case_id = c.id where p.id = ${pid}`;
+        if (c?.payment_status === "unpaid") return { ok: false as const, error: "Kwestionariusz zostanie odblokowany po zaksięgowaniu płatności." };
+      }
       const [q] = await tx`select type from questions where id = ${questionId}`;
       const res = await saveAnswer(tx, { kind: "participant", participantId: pid }, pid, questionId, state, value);
       // zgody z kwestionariusza trafiają do rejestru zgód z wersją tekstu
       if (res.ok && q && (q.type === "consent" || q.type === "signature")) {
-        const s = await readSettings(tx);
+        const s = st;
         const [qq] = await tx`select prompt from questions where id = ${questionId}`;
         const granted = q.type === "consent" ? Boolean((value as { granted?: boolean })?.granted) : true;
         const snapshot = q.type === "consent" ? `${questionnaireNotice(s)}\n\n${qq.prompt}` : qq.prompt;
