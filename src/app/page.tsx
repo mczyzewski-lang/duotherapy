@@ -242,31 +242,6 @@ export default async function Landing({ searchParams }: { searchParams: Promise<
             <p className="mt-5 rounded-2xl bg-linen px-6 py-4 text-sm text-ink">
               Możesz też <strong>na razie nie wybierać dalszej pracy</strong>. Podsumowanie zostaje z Tobą – wrócisz do niego, kiedy będziesz gotowy lub gotowa.
             </p>
-
-            <article className="mt-10 rounded-2xl border border-alert/20 bg-ivory p-7" aria-labelledby="sciezka-c">
-              <div className="flex flex-col gap-6 md:flex-row md:items-start">
-                <div className="md:w-1/2">
-                  <PathArt tone="alert" />
-                  <h3 id="sciezka-c" className="mt-3 font-display text-2xl text-alert">C. Pilne wsparcie i bezpieczeństwo</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-ink-soft">
-                    Przy przemocy lub kryzysie psychicznym pierwszeństwo ma bezpieczeństwo: plan bezpieczeństwa i pomoc specjalistyczna – bez terapii par i bez mediacji.
-                    To nie jest jedna z ofert, tylko zasada, której zawsze się trzymamy.
-                  </p>
-                </div>
-                <div className="md:w-1/2">
-                  <p className="text-sm font-medium text-ink">Jeśli grozi Ci niebezpieczeństwo, nie czekaj na audyt:</p>
-                  <ul className="mt-3 space-y-2 text-sm">
-                    {s.helplines.items.map((h) => (
-                      <li key={h.number}>
-                        <a href={`tel:${h.number.replace(/\s/g, "")}`} className="font-display text-lg font-semibold text-forest">{h.number}</a>
-                        <span className="text-ink-soft"> – {h.when}</span>
-                      </li>
-                    ))}
-                  </ul>
-                  <p className="mt-3 text-xs text-muted">Poza Polską: lokalny numer alarmowy kraju pobytu (w UE 112) lub najbliższy szpitalny oddział ratunkowy.</p>
-                </div>
-              </div>
-            </article>
           </div>
         </section>
 
