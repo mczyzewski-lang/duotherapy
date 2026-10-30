@@ -9,9 +9,25 @@ loadEnv();
 const url = process.env.DATABASE_OWNER_URL;
 if (!url) throw new Error("Ustaw DATABASE_OWNER_URL");
 
+/** Na Railway sieć prywatna bywa gotowa kilka sekund po starcie kontenera – ponawiamy połączenie. */
+async function waitForDb(sql: postgres.Sql) {
+  for (let i = 1; ; i++) {
+    try {
+      await sql`select 1`;
+      return;
+    } catch (e) {
+      const err = e as { code?: string; message?: string };
+      if (i >= 30) throw e;
+      console.log(`… baza niedostępna (${err.code ?? err.message}), ponawiam za 2 s [${i}/30]`);
+      await new Promise((r) => setTimeout(r, 2000));
+    }
+  }
+}
+
 export async function migrate(dbUrl: string, reset = false) {
-  const sql = postgres(dbUrl, { onnotice: () => {} });
+  const sql = postgres(dbUrl, { onnotice: () => {}, connect_timeout: 10 });
   try {
+    await waitForDb(sql);
     if (reset) {
       if (process.env.NODE_ENV === "production" && process.env.DEMO_MODE !== "true") throw new Error("--reset jest zablokowany w produkcji");
       await sql.unsafe("drop schema if exists public cascade; create schema public;");
@@ -54,7 +70,7 @@ async function ensureAppRole(sql: postgres.Sql) {
 }
 
 if (process.argv[1]?.endsWith("migrate.ts")) {
-  migrate(url, process.argv.includes("--reset")).catch((e) => {
+  migrate(url, process.argv.includes("--reset")).then(() => console.log("✓ migracje")).catch((e) => {
     console.error(e);
     process.exit(1);
   });
