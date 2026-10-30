@@ -3,7 +3,7 @@
 // Krótki quiz kwalifikacyjny (2 minuty) zakończony formularzem zgłoszenia.
 // Nie ocenia relacji i nie stawia diagnozy – personalizuje rozmowę telefoniczną.
 import clsx from "clsx";
-import { ArrowLeft, ArrowRight, Check, ShieldCheck } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check } from "lucide-react";
 import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { submitLead, type LeadInput } from "@/app/actions/lead";
@@ -46,23 +46,22 @@ interface ContactForm {
   website: string;
 }
 
-const STEPS = ["Kto", "Sytuacja", "Co obciąża", "Staż", "Bezpieczeństwo", "Kiedy", "Kontakt"];
+const STEPS = ["Kto", "Sytuacja", "Co obciąża", "Staż", "Kiedy", "Kontakt"];
 
-export function Quiz({ initialIntent, consentText, marketingText, helplines }: { initialIntent?: Intent; consentText: string; marketingText: string; helplines: { number: string; when: string }[] }) {
+export function Quiz({ initialIntent, consentText, marketingText }: { initialIntent?: Intent; consentText: string; marketingText: string }) {
   const [step, setStep] = useState(0);
   const [mode, setMode] = useState<"couple" | "individual" | null>(null);
   const [intent, setIntent] = useState<Intent | null>(initialIntent ?? null);
   const [concerns, setConcerns] = useState<string[]>([]);
   const [length, setLength] = useState<string>("");
   const [children, setChildren] = useState<string>("");
-  const [safe, setSafe] = useState<"yes" | "not_always" | "skip" | null>(null);
   const [when, setWhen] = useState<string>("");
   const [done, setDone] = useState<string | null>(null);
   const [serverError, setServerError] = useState<string | null>(null);
   const [pending, start] = useTransition();
   const form = useForm<ContactForm>({ defaultValues: { preferredContact: "phone", contactConsent: false, marketingConsent: false, discreet: false, website: "" } });
 
-  const canNext = [mode, intent, concerns.length > 0, length && children, safe, when, true][step];
+  const canNext = [mode, intent, concerns.length > 0, length && children, when, true][step];
   const next = () => setStep((s) => Math.min(s + 1, STEPS.length - 1));
   const back = () => setStep((s) => Math.max(s - 1, 0));
 
@@ -212,47 +211,6 @@ export function Quiz({ initialIntent, consentText, marketingText, helplines }: {
 
         {step === 4 && (
           <fieldset>
-            <legend className="font-display text-2xl text-ink sm:text-3xl">Czy czujesz się teraz bezpiecznie w tej relacji?</legend>
-            <p className="mt-2 text-sm text-muted">Tej odpowiedzi nie zapisujemy. Pytamy, żeby od razu pokazać Ci właściwe wsparcie, jeśli jest potrzebne.</p>
-            <div className="mt-6 grid gap-3 sm:grid-cols-3">
-              {(
-                [
-                  ["yes", "Tak"],
-                  ["not_always", "Nie zawsze"],
-                  ["skip", "Wolę nie odpowiadać"],
-                ] as const
-              ).map(([v, l]) => (
-                <button type="button" key={v} aria-pressed={safe === v} className={tile(safe === v)} onClick={() => setSafe(v)}>
-                  {l}
-                </button>
-              ))}
-            </div>
-            {safe === "not_always" && (
-              <div className="mt-6 animate-rise rounded-2xl bg-alert-soft/60 p-5 ring-1 ring-alert/20" role="status">
-                <p className="flex items-center gap-2 font-medium text-ink">
-                  <ShieldCheck size={18} className="text-alert" aria-hidden /> Dziękujemy, że o tym mówisz. Twoje bezpieczeństwo jest najważniejsze.
-                </p>
-                <p className="mt-2 text-sm leading-relaxed text-ink-soft">
-                  Jeśli grozi Ci niebezpieczeństwo, nie czekaj na audyt. Przy przemocy nie prowadzimy wspólnych sesji ani mediacji – pomożemy znaleźć właściwe wsparcie.
-                </p>
-                <ul className="mt-3 grid gap-1.5 text-sm">
-                  {helplines.map((h) => (
-                    <li key={h.number}>
-                      <a className="font-semibold text-forest underline-offset-4 hover:underline" href={`tel:${h.number.replace(/\s/g, "")}`}>
-                        {h.number}
-                      </a>{" "}
-                      <span className="text-ink-soft">– {h.when}</span>
-                    </li>
-                  ))}
-                </ul>
-                <p className="mt-3 text-xs text-muted">Poza Polską: lokalny numer alarmowy kraju pobytu (w UE: 112).</p>
-              </div>
-            )}
-          </fieldset>
-        )}
-
-        {step === 5 && (
-          <fieldset>
             <legend className="font-display text-2xl text-ink sm:text-3xl">Kiedy chcesz zacząć?</legend>
             <div className="mt-6 grid gap-3">
               {WHEN.map(([v, l]) => (
@@ -264,7 +222,7 @@ export function Quiz({ initialIntent, consentText, marketingText, helplines }: {
           </fieldset>
         )}
 
-        {step === 6 && (
+        {step === 5 && (
           <form onSubmit={onSubmit} noValidate className="space-y-5">
             <div>
               <h3 className="font-display text-2xl text-ink sm:text-3xl">Gdzie możemy się odezwać?</h3>
@@ -324,7 +282,7 @@ export function Quiz({ initialIntent, consentText, marketingText, helplines }: {
         <Button type="button" variant="ghost" onClick={back} disabled={step === 0} aria-label="Wstecz">
           <ArrowLeft size={18} aria-hidden /> Wstecz
         </Button>
-        {step < 6 && (
+        {step < STEPS.length - 1 && (
           <Button type="button" onClick={next} disabled={!canNext}>
             Dalej <ArrowRight size={18} aria-hidden />
           </Button>

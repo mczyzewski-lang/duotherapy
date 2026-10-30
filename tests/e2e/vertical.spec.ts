@@ -96,9 +96,6 @@ test("pełny scenariusz audytu pary", async ({ page, browser, request }) => {
   await page.getByRole("button", { name: "5–10 lat" }).click();
   await page.getByRole("button", { name: "Tak", exact: true }).click();
   await page.getByRole("button", { name: "Dalej" }).click();
-  await page.getByRole("button", { name: "Nie zawsze" }).click();
-  await expect(page.getByText("Twoje bezpieczeństwo jest najważniejsze")).toBeVisible();
-  await page.getByRole("button", { name: "Dalej" }).click();
   await page.getByRole("button", { name: "Jak najszybciej" }).click();
   await page.getByRole("textbox", { name: "Imię" }).fill("Ola Testowa");
   await page.getByRole("textbox", { name: "E-mail" }).fill("ola@example.test");

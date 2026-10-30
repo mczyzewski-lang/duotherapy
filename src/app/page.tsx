@@ -3,6 +3,7 @@ import Link from "next/link";
 import { HeroArt, PathArt, StepIcon } from "@/components/landing/art";
 import { INTENTS } from "@/components/landing/intents";
 import { Quiz } from "@/components/landing/quiz";
+import { TherapistSection } from "@/components/landing/therapist";
 import { LinkButton, Logo } from "@/components/ui";
 import { withActor } from "@/lib/db";
 import { readSettings } from "@/lib/settings";
@@ -44,6 +45,7 @@ export default async function Landing({ searchParams }: { searchParams: Promise<
           <div className="hidden items-center gap-7 text-sm text-ink-soft md:flex">
             <a href="#jak-to-dziala" className="hover:text-forest">Jak to działa</a>
             <a href="#co-otrzymasz" className="hover:text-forest">Co otrzymasz</a>
+            <a href="#o-mnie" className="hover:text-forest">Kto prowadzi</a>
             <a href="#co-dalej" className="hover:text-forest">Co dalej</a>
             <a href="#faq" className="hover:text-forest">Pytania</a>
           </div>
@@ -214,6 +216,8 @@ export default async function Landing({ searchParams }: { searchParams: Promise<
           </div>
         </section>
 
+        <TherapistSection />
+
         {/* CO DALEJ */}
         <section id="co-dalej" className="scroll-mt-20 bg-white" aria-labelledby="dalej">
           <div className="mx-auto max-w-6xl px-5 py-20">
@@ -303,10 +307,10 @@ export default async function Landing({ searchParams }: { searchParams: Promise<
             <p className="text-center text-sm font-semibold uppercase tracking-[0.18em] text-clay">Pierwszy krok</p>
             <h2 id="quiz-h" className="mt-3 text-center font-display text-3xl text-ink sm:text-4xl">Opowiedz nam krótko, co się dzieje</h2>
             <p className="mx-auto mt-3 max-w-xl text-center text-ink-soft">
-              Sześć krótkich pytań i kontakt. Oddzwonimy, wyjaśnimy wszystko spokojnie i razem zdecydujemy, czy audyt to dobry krok teraz.
+              Kilka krótkich pytań i kontakt. Oddzwonimy, wyjaśnimy wszystko spokojnie i razem zdecydujemy, czy audyt to dobry krok teraz.
             </p>
             <div className="mt-10">
-              <Quiz initialIntent={initialIntent} consentText={s.legal.leadContactConsent} marketingText={s.legal.leadMarketingConsent} helplines={s.helplines.items} />
+              <Quiz initialIntent={initialIntent} consentText={s.legal.leadContactConsent} marketingText={s.legal.leadMarketingConsent} />
             </div>
             {s.site.contactPhone && (
               <p className="mt-6 flex items-center justify-center gap-2 text-sm text-ink-soft">
