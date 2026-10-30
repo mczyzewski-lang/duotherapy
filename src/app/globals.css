@@ -1,0 +1,95 @@
+@import "tailwindcss";
+@import "@fontsource-variable/fraunces";
+@import "@fontsource-variable/inter";
+
+/*
+  Paleta DUO™ – spokój, ciepło, zaufanie.
+  Kość słoniowa i len (bezpieczna, jasna przestrzeń), głęboka zieleń-morska (stabilność, zaufanie),
+  glina/terakota (ciepło, bliskość), róż pudrowy (czułość). Kontrasty tekstu ≥ 4.5:1 (WCAG AA).
+*/
+@theme {
+  --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Fraunces Variable", ui-serif, Georgia, serif;
+
+  --color-ivory: #fbf8f3;
+  --color-linen: #f3ece2;
+  --color-sand: #e8dccb;
+  --color-sand-dark: #d6c6b0;
+  --color-ink: #1d2827;
+  --color-ink-soft: #46524f;
+  --color-muted: #5f6b68;
+  --color-forest: #1f4a44;
+  --color-forest-600: #275c55;
+  --color-forest-800: #163631;
+  --color-sage: #8fa99c;
+  --color-sage-soft: #e3ebe6;
+  --color-clay: #a7573a;
+  --color-clay-soft: #f4e2d9;
+  --color-rose: #ecd5cb;
+  --color-alert: #8a2c1d;
+  --color-alert-soft: #f8e4df;
+  --color-ok: #2d6a4f;
+
+  --radius-xl2: 1.25rem;
+  --shadow-soft: 0 1px 2px rgb(29 40 39 / 0.04), 0 8px 24px -8px rgb(29 40 39 / 0.12);
+}
+
+:root {
+  color-scheme: light;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--color-ivory);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  font-feature-settings: "ss01", "cv11";
+  text-rendering: optimizeLegibility;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-clay);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+.font-display {
+  font-family: var(--font-serif);
+  font-optical-sizing: auto;
+  letter-spacing: -0.015em;
+}
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: none; }
+}
+.animate-rise { animation: rise 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+.delay-1 { animation-delay: 0.08s; }
+.delay-2 { animation-delay: 0.16s; }
+.delay-3 { animation-delay: 0.24s; }
+
+@keyframes breathe {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(6px); }
+}
+.animate-breathe { animation: breathe 7s ease-in-out infinite; }
+.animate-breathe-rev { animation: breathe 7s ease-in-out infinite reverse; }
+
+.skip-link {
+  position: absolute; left: 1rem; top: -4rem; z-index: 100;
+  background: var(--color-forest); color: white; padding: 0.6rem 1rem; border-radius: 0.6rem;
+}
+.skip-link:focus { top: 1rem; }
+
+@media print {
+  .no-print { display: none !important; }
+}
