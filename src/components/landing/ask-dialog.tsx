@@ -8,7 +8,7 @@ import { Alert, Button, Field, Input, Textarea } from "@/components/ui";
 
 export function AskDialog({ consentText }: { consentText: string }) {
   const ref = useRef<HTMLDialogElement>(null);
-  const [f, setF] = useState({ name: "", email: "", message: "", consent: false, website: "" });
+  const [f, setF] = useState({ name: "", email: "", phone: "", message: "", consent: false, website: "" });
   const [err, setErr] = useState<{ text: string; field?: string } | null>(null);
   const [done, setDone] = useState(false);
   const [pending, start] = useTransition();
@@ -36,7 +36,7 @@ export function AskDialog({ consentText }: { consentText: string }) {
             <div className="mt-6 text-center" role="status">
               <span className="mx-auto grid h-12 w-12 place-items-center rounded-full bg-sage-soft text-forest"><Check aria-hidden /></span>
               <p className="mt-4 font-display text-xl text-ink">Dziękuję, wiadomość dotarła.</p>
-              <p className="mt-2 text-ink-soft">Odpowiem na podany adres e-mail najszybciej, jak to możliwe.</p>
+              <p className="mt-2 text-ink-soft">Odpowiem e-mailem lub telefonicznie najszybciej, jak to możliwe.</p>
               <Button className="mt-6" variant="secondary" onClick={close}>Zamknij</Button>
             </div>
           ) : (
@@ -62,6 +62,9 @@ export function AskDialog({ consentText }: { consentText: string }) {
                   <Input id="ask-email" type="email" autoComplete="email" value={f.email} onChange={(e) => setF({ ...f, email: e.target.value })} />
                 </Field>
               </div>
+              <Field label="Telefon" htmlFor="ask-phone" hint="Opcjonalnie – jeśli wolisz, żebym oddzwoniła." error={err?.field === "phone" ? err.text : undefined}>
+                <Input id="ask-phone" type="tel" autoComplete="tel" placeholder="+48 600 000 000" value={f.phone} onChange={(e) => setF({ ...f, phone: e.target.value })} />
+              </Field>
               <Field label="Twoje pytanie" htmlFor="ask-msg" required error={err?.field === "message" ? err.text : undefined}>
                 <Textarea id="ask-msg" className="min-h-32" maxLength={3000} value={f.message} onChange={(e) => setF({ ...f, message: e.target.value })} />
               </Field>
@@ -70,7 +73,7 @@ export function AskDialog({ consentText }: { consentText: string }) {
                 <input type="checkbox" className="mt-1 h-4 w-4 accent-forest" checked={f.consent} onChange={(e) => setF({ ...f, consent: e.target.checked })} />
                 <span>{consentText} <span className="text-clay">*</span></span>
               </label>
-              {err && !["name", "email", "message"].includes(err.field ?? "") && <Alert tone="alert">{err.text}</Alert>}
+              {err && !["name", "email", "phone", "message"].includes(err.field ?? "") && <Alert tone="alert">{err.text}</Alert>}
               <div className="flex justify-end gap-2">
                 <Button type="button" variant="ghost" onClick={close}>Anuluj</Button>
                 <Button type="submit" variant="clay" disabled={pending}>{pending ? "Wysyłanie…" : "Wyślij wiadomość"}</Button>

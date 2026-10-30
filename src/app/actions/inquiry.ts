@@ -13,6 +13,7 @@ import { readSettings } from "@/lib/settings";
 const Schema = z.object({
   name: z.string().trim().min(2, "Podaj imię.").max(80),
   email: z.string().trim().email("Podaj poprawny adres e-mail.").max(200),
+  phone: z.string().trim().max(40).regex(/^[+\d\s()-]*$/, "Podaj numer w formacie +48 600 000 000.").optional().default(""),
   message: z.string().trim().min(5, "Napisz kilka słów.").max(3000, "Wiadomość jest za długa (maks. 3000 znaków)."),
   consent: z.literal(true, { error: "Zgoda jest potrzebna, żebyśmy mogli odpowiedzieć." }),
   website: z.string().max(0).optional(), // honeypot
@@ -26,8 +27,8 @@ export async function sendInquiry(input: z.input<typeof Schema>): Promise<{ ok: 
   const id = randomUUID();
   await withActor({ kind: "public" }, async (tx) => {
     const s = await readSettings(tx);
-    await tx`insert into inquiries (id, name, email, message_enc, consent_text, consent_version)
-             values (${id}, ${r.data.name}, ${r.data.email}, ${encrypt(r.data.message)}, ${s.legal.inquiryConsent}, ${s.legal.version})`;
+    await tx`insert into inquiries (id, name, email, phone, message_enc, consent_text, consent_version)
+             values (${id}, ${r.data.name}, ${r.data.email}, ${r.data.phone || null}, ${encrypt(r.data.message)}, ${s.legal.inquiryConsent}, ${s.legal.version})`;
     await audit(tx, { kind: "public" }, "inquiry_created", "inquiry", id);
   });
   await notifyTeam("DUO – nowe pytanie ze strony", "Na stronie pojawiło się nowe pytanie. Treść jest dostępna wyłącznie w panelu.");

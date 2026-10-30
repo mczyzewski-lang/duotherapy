@@ -66,7 +66,7 @@ export const DEFAULT_SETTINGS: Settings = {
       "Wyrażam zgodę na kontakt telefoniczny lub e-mailowy w sprawie mojego zgłoszenia na Audyt Relacji DUO®.",
     leadMarketingConsent:
       "Chcę otrzymywać od DUO® okazjonalne informacje o materiałach i usługach (opcjonalnie, mogę zrezygnować w każdej chwili).",
-    inquiryConsent: "Wyrażam zgodę na kontakt e-mailowy w odpowiedzi na moje pytanie.",
+    inquiryConsent: "Wyrażam zgodę na kontakt e-mailowy lub telefoniczny w odpowiedzi na moje pytanie.",
     version: "2026-10-draft",
     approved: false,
   },

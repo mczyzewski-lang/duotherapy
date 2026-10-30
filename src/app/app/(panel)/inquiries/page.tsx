@@ -1,4 +1,4 @@
-import { Mail } from "lucide-react";
+import { Mail, Phone } from "lucide-react";
 import { inquiryStatusAction } from "@/actions/inquiries";
 import { SubmitButton } from "@/components/form-bits";
 import { Alert, Badge, Card, PageTitle } from "@/components/ui";
@@ -31,7 +31,7 @@ export default async function InquiriesPage({ searchParams }: { searchParams: Pr
             <Card key={r.id} className="p-5">
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div>
-                  <p className="font-medium text-ink">{r.name} <span className="font-normal text-muted">· {r.email}</span></p>
+                  <p className="font-medium text-ink">{r.name} <span className="font-normal text-muted">· {r.email}{r.phone && <> · <a href={`tel:${r.phone.replace(/\s/g, "")}`} className="text-forest">{r.phone}</a></>}</span></p>
                   <p className="text-xs text-muted">{new Date(r.created_at).toLocaleString("pl-PL")}{r.handler ? ` · ${LABEL[r.status]}: ${r.handler}` : ""}</p>
                 </div>
                 <Badge tone={r.status === "new" ? "clay" : r.status === "answered" ? "ok" : "neutral"}>{LABEL[r.status]}</Badge>
@@ -39,6 +39,7 @@ export default async function InquiriesPage({ searchParams }: { searchParams: Pr
               <p className="mt-3 whitespace-pre-wrap text-[15px] leading-relaxed text-ink">{msg}</p>
               <div className="mt-4 flex flex-wrap items-center gap-2">
                 <a href={reply} className="inline-flex min-h-9 items-center gap-1.5 rounded-full bg-forest px-4 text-sm font-medium text-white hover:bg-forest-600"><Mail size={15} aria-hidden /> Odpowiedz e-mailem</a>
+                {r.phone && <a href={`tel:${r.phone.replace(/\s/g, "")}`} className="inline-flex min-h-9 items-center gap-1.5 rounded-full px-4 text-sm font-medium text-forest ring-1 ring-sand-dark hover:bg-linen"><Phone size={15} aria-hidden /> Zadzwoń</a>}
                 {(["answered", "archived", "new"] as const).filter((x) => x !== r.status).map((st) => (
                   <form key={st} action={inquiryStatusAction}>
                     <input type="hidden" name="id" value={r.id} />
