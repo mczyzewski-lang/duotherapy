@@ -1,6 +1,6 @@
 # Wdrożenie na Railway
 
-Zestaw: usługa **Postgres** + usługa **duotherapy** (z repozytorium GitHub). Railway buduje obraz z `Dockerfile` (z Chromium do PDF) według `railway.json`; przy każdym starcie kontenera uruchamia `npm run db:deploy` (migracje + szablony kwestionariuszy, a w trybie DEMO także dane demonstracyjne – idempotentnie).
+Zestaw: usługa **Postgres** + usługa **duotherapy** (z repozytorium GitHub). Railway buduje obraz z `Dockerfile` (z Chromium do PDF) według `railway.json`; przy każdym starcie (`npm start`) uruchamia `npm run db:deploy` (migracje + szablony kwestionariuszy, a w trybie DEMO także dane demonstracyjne – idempotentnie).
 
 ## Dlaczego dwa adresy bazy
 
@@ -28,6 +28,10 @@ PORT=3000
 - **`DATA_ENCRYPTION_KEY` nie zmieniaj po zapisaniu danych** – utrata/zmiana klucza uniemożliwia odczyt odpowiedzi, notatek i podsumowań. Zachowaj kopię w menedżerze haseł.
 - Wolumen `duotherapy-volume` nie jest potrzebny (aplikacja nie zapisuje plików na dysku) – można go usunąć.
 - Usługa potrzebuje publicznej domeny: *Settings → Networking → Generate Domain*.
+
+## Builder
+
+Ustaw *Settings → Build → Builder: Dockerfile* (obraz zawiera Chromium do PDF). Jeśli Railway używa automatycznego buildera (Railpack, widoczne np. jako `node@24`), aplikacja też ruszy, bo `npm start` sam uruchamia migracje – ale generowanie PDF wymaga wtedy zmiennych `RAILPACK_DEPLOY_APT_PACKAGES=chromium` i `CHROMIUM_PATH=/usr/bin/chromium`.
 
 ## Diagnostyka
 
