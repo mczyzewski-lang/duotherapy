@@ -6,6 +6,7 @@ import { TherapistSection } from "@/components/landing/therapist";
 import { LandingTracker, QuizCta } from "@/components/mapa/cta";
 import { HeroMap, MapaFlow, Roads } from "@/components/mapa/flow";
 import { MapaEyebrow } from "@/components/mapa/mark";
+import { MapaLogo } from "@/components/brand";
 import { Logo } from "@/components/ui";
 import { getSettings } from "@/lib/settings";
 
@@ -34,7 +35,11 @@ export default async function Landing() {
       <LandingTracker />
       <header className="sticky top-0 z-40 border-b border-sand/60 bg-ivory/90 backdrop-blur">
         <nav className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-3" aria-label="Główna">
-          <Link href="/" aria-label="DUO – strona główna"><Logo /></Link>
+          <Link href="/" aria-label="DUO – Mapa Relacji – strona główna" className="flex items-center gap-4">
+            <Logo />
+            <span className="hidden h-8 w-px bg-sand-dark lg:block" aria-hidden />
+            <MapaLogo compact id="nav-mapa" className="hidden lg:inline-flex" />
+          </Link>
           <div className="hidden items-center gap-7 text-sm text-ink-soft md:flex">
             <a href="#mapa" className="hover:text-forest">Mapa Relacji</a>
             <a href="#jak" className="hover:text-forest">Jak to działa</a>
@@ -186,7 +191,10 @@ export default async function Landing() {
       <footer className="bg-forest-800 text-white/80">
         <div className="mx-auto grid max-w-6xl gap-10 px-5 py-14 md:grid-cols-2">
           <div>
-            <Logo light />
+            <div className="flex flex-wrap items-center gap-5">
+              <Logo light id="foot-duo" />
+              <MapaLogo light id="foot-mapa" />
+            </div>
             <p className="mt-4 max-w-sm text-sm leading-relaxed">Mapa Relacji – zrozum, w jakim miejscu jesteście, i świadomie zdecyduj, co dalej.</p>
           </div>
           <div className="text-sm">

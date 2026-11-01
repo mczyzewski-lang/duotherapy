@@ -1,9 +1,8 @@
 import { X } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { MapaIcon } from "@/components/mapa/mark";
 import { MapaQuiz } from "@/components/mapa/quiz";
-import { BrandSymbol } from "@/components/brand";
+import { BrandSymbol, MapaLogo } from "@/components/brand";
 import { getSettings } from "@/lib/settings";
 
 export const dynamic = "force-dynamic";
@@ -22,7 +21,7 @@ export default async function StartPage() {
           <Link href="/" className="flex items-center gap-2.5" aria-label="DUO – strona główna">
             <BrandSymbol id="start" className="h-6 w-auto" />
             <span className="h-5 w-px bg-sand-dark" aria-hidden />
-            <span className="flex items-center gap-1.5 font-display text-[17px] text-ink"><MapaIcon className="h-4" /> Mapa Relacji</span>
+            <MapaLogo compact id="start-logo" />
           </Link>
           <Link href="/" aria-label="Zamknij quiz i wróć na stronę główną" className="grid h-11 w-11 place-items-center rounded-full text-muted hover:bg-linen">
             <X size={20} aria-hidden />

@@ -3,7 +3,8 @@
 // Wizualizacja Mapy Relacji: TU JESTEŚCIE → MAPA RELACJI → trzy możliwe drogi.
 // Drogi to możliwości do rozważenia po konsultacji – nie wynik quizu i nie rekomendacja.
 import clsx from "clsx";
-import { ArrowRight, ChevronDown, Compass, HeartHandshake, MapPin, Split } from "lucide-react";
+import { ArrowRight, ChevronDown, MapPin } from "lucide-react";
+import { RoadGlyph } from "@/components/brand";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
@@ -12,8 +13,7 @@ export const ROADS = [
     key: "rebuild",
     short: "Odbudowa relacji",
     title: "Chcemy spróbować jeszcze raz",
-    icon: HeartHandshake,
-    tone: "clay",
+    tone: "rose",
     text: "Jeśli oboje lub jedno z Was widzi szansę na odbudowę, pomagamy zrozumieć trudności i rozpocząć pracę nad komunikacją, zaufaniem oraz bliskością.",
     services: ["Terapia par", "Program Odbudowa Więzi", "Indywidualne wsparcie psychologiczne"],
     cta: "Poznaj drogę odbudowy",
@@ -22,8 +22,7 @@ export const ROADS = [
     key: "clarity",
     short: "Czas na zrozumienie i decyzję",
     title: "Jeszcze nie wiemy, co dalej",
-    icon: Compass,
-    tone: "sand",
+    tone: "clay",
     text: "Nie musicie podejmować decyzji pod presją. Pomagamy uporządkować emocje, potrzeby i możliwości, aby świadomie zdecydować, co będzie dla Was właściwe.",
     services: ["Konsultacje decyzyjne", "Rozmowa z psychologiem", "Indywidualna lub wspólna praca nad zrozumieniem relacji"],
     cta: "Zobacz, jak uzyskać jasność",
@@ -32,7 +31,6 @@ export const ROADS = [
     key: "separate",
     short: "Świadome rozstanie",
     title: "Chcemy rozstać się z szacunkiem",
-    icon: Split,
     tone: "forest",
     text: "Jeżeli decyzja o rozstaniu już zapadła, pomagamy przejść przez ten etap spokojniej, z większym zrozumieniem i bez niepotrzebnej eskalacji konfliktu.",
     services: [
@@ -46,6 +44,7 @@ export const ROADS = [
 ] as const;
 
 const TONE = {
+  rose: { dot: "bg-[#e07f78]", soft: "bg-[#fbe4e0]", text: "text-[#b9524b]", stroke: "#e07f78", ring: "ring-[#f0c2bb]" },
   clay: { dot: "bg-clay", soft: "bg-clay-soft", text: "text-clay", stroke: "#a9512f", ring: "ring-clay/30" },
   sand: { dot: "bg-[#b89b7f]", soft: "bg-linen", text: "text-[#7d6450]", stroke: "#b89b7f", ring: "ring-sand-dark" },
   forest: { dot: "bg-forest-600", soft: "bg-sage-soft", text: "text-forest", stroke: "#46604f", ring: "ring-sage/50" },
@@ -92,7 +91,7 @@ export function HeroMap() {
             key={k}
             d={`M262 190 C 320 190, 340 ${e.y}, 400 ${e.y}`}
             fill="none"
-            stroke={[TONE.clay.stroke, TONE.sand.stroke, TONE.forest.stroke][k]}
+            stroke={[TONE.rose.stroke, TONE.clay.stroke, TONE.forest.stroke][k]}
             strokeWidth={active === k ? 4.5 : 3}
             strokeLinecap="round"
             className={clsx("map-line transition-[stroke-width]", inView && "map-line-on")}
@@ -107,7 +106,7 @@ export function HeroMap() {
           <path d="M2 14h7" /><circle cx="12" cy="14" r="2.5" /><path d="M14 12.5 C 18 10, 20 6, 26 5" /><path d="M14.5 14 H 26" /><path d="M14 15.5 C 18 18, 20 22, 26 23" />
         </g>
         {ends.map((e, k) => (
-          <circle key={k} cx="404" cy={e.y} r={active === k ? 9 : 7} fill={[TONE.clay.stroke, TONE.sand.stroke, TONE.forest.stroke][k]} className="transition-all" />
+          <circle key={k} cx="404" cy={e.y} r={active === k ? 9 : 7} fill={[TONE.rose.stroke, TONE.clay.stroke, TONE.forest.stroke][k]} className="transition-all" />
         ))}
       </svg>
       <div className="pointer-events-none absolute inset-0 text-[13px]">
@@ -170,7 +169,7 @@ export function MapaFlow() {
               return (
                 <li key={r.key} className={clsx("reveal", inView && "reveal-on")} style={{ transitionDelay: `${0.35 + k * 0.12}s` }}>
                   <a href={`#droga-${r.key}`} className={clsx("flex items-center gap-3 rounded-2xl bg-white px-4 py-3.5 shadow-soft ring-1 transition hover:-translate-y-0.5", t.ring)}>
-                    <span className={clsx("grid h-10 w-10 shrink-0 place-items-center rounded-full", t.soft, t.text)}><r.icon size={19} aria-hidden /></span>
+                    <span className={clsx("grid h-10 w-10 shrink-0 place-items-center rounded-full", t.soft)}><RoadGlyph road={r.key} id={`flow-${r.key}`} className="h-5 w-5" /></span>
                     <span className="flex-1">
                       <span className="block text-[11px] font-semibold uppercase tracking-[0.16em] text-muted">Droga {k + 1}</span>
                       <span className="font-medium text-ink">{r.short}</span>
@@ -198,7 +197,7 @@ export function Roads() {
         return (
           <article key={r.key} id={`droga-${r.key}`} className={clsx("scroll-mt-24 flex flex-col rounded-3xl bg-white p-6 shadow-soft ring-1 transition", isOpen ? "ring-forest" : "ring-sand")}>
             <div className="flex items-center gap-3">
-              <span className={clsx("grid h-12 w-12 place-items-center rounded-2xl", t.soft, t.text)}><r.icon size={22} aria-hidden /></span>
+              <span className={clsx("grid h-12 w-12 place-items-center rounded-2xl", t.soft)}><RoadGlyph road={r.key} id={`road-${r.key}`} className="h-7 w-7" /></span>
               <span className="text-[11px] font-semibold uppercase tracking-[0.16em] text-muted">Droga {k + 1} · {r.short}</span>
             </div>
             <h3 className="mt-4 font-display text-[1.45rem] leading-snug text-ink">„{r.title}”</h3>
