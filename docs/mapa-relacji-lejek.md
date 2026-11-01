@@ -62,8 +62,8 @@ Ochrona: walidacja telefonu, pułapka na boty (ukryte pole + minimalny czas wype
 
 - **Cena i warianty** Mapy Relacji – *Ustawienia → Strona i lejek* (pojawią się w FAQ). Do tego czasu strona mówi uczciwie: „koszt przedstawi konsultant”.
 - **Czas oddzwonienia** – tylko jeśli jest realnie gwarantowany (*Czas oddzwonienia*); bez tego nie podajemy terminu.
-- **Program „Odbudowa Więzi”, konsultacje decyzyjne, oferta Nowego Etapu** – nazwy pokazane jako możliwe dalsze wsparcie; potwierdź, że usługi istnieją, i uzupełnij linki/opis, gdy będą gotowe.
-- **Powiązanie DUO – Nowy Etap** – treść informacji o powiązaniu marek do zatwierdzenia (prawnik); obecnie: marka powiązana, skorzystanie dobrowolne, bez wpływu na rekomendacje psychologa.
+- **Program „Odbudowa Więzi”, konsultacje decyzyjne** – nazwy pokazane jako możliwe dalsze wsparcie; potwierdź, że usługi istnieją, i uzupełnij linki/opis, gdy będą gotowe.
+- **Droga rozstania** – landing nie wymienia Nowego Etapu; mówi tylko, że pomagamy wskazać najlepszą drogę rozstania lub rozwodu. Jeśli konsultant lub psycholog proponuje ofertę Nowego Etapu (marka powiązana), powinien przy tym poinformować o powiązaniu marek i dobrowolności – treść do zatwierdzenia (prawnik).
 - **Konsultant DUO** – kto dzwoni (rola, scenariusz rozmowy w karcie zgłoszenia), w jakich godzinach.
 - **Domena maparelacji.pl** – wystarczy podpiąć jako kolejną domenę usługi (Railway → Networking → Custom Domain) i ustawić `APP_URL`.
 - **Wydatki reklamowe i koszt realizacji** – do kalkulatora CAC/marży w panelu Lejek.

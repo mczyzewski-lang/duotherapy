@@ -32,13 +32,12 @@ export const ROADS = [
     short: "Świadome rozstanie",
     title: "Chcemy rozstać się z szacunkiem",
     tone: "forest",
-    text: "Jeżeli decyzja o rozstaniu już zapadła, pomagamy przejść przez ten etap spokojniej, z większym zrozumieniem i bez niepotrzebnej eskalacji konfliktu.",
+    text: "Jeżeli myślicie o rozstaniu albo decyzja już zapadła, pomożemy wskazać najlepszą dla Was drogę rozstania lub rozwodu – tak, by przejść przez ten etap spokojniej, z większym zrozumieniem i bez niepotrzebnej eskalacji konfliktu.",
     services: [
       "Konsultacja psychologiczna dotycząca rozstania",
-      "Pomoc w przygotowaniu do rozmowy",
-      "Możliwość poznania osobnej oferty mediacji i rozwodu online realizowanej przez Nowy Etap",
+      "Pomoc w wyborze drogi rozstania lub rozwodu, która najlepiej pasuje do Waszej sytuacji",
+      "Przygotowanie do trudnych rozmów – także o dzieciach",
     ],
-    note: "Nowy Etap to marka powiązana z DUO. Skorzystanie z niej jest całkowicie dobrowolne, nie jest warunkiem żadnej usługi DUO i nie wpływa na rekomendacje psychologa.",
     cta: "Poznaj spokojną drogę rozstania",
   },
 ] as const;
@@ -219,7 +218,6 @@ export function Roads() {
                   <li key={s} className="flex gap-2 text-[15px] text-ink-soft"><span className={clsx("mt-2 h-1.5 w-1.5 shrink-0 rounded-full", t.dot)} aria-hidden />{s}</li>
                 ))}
               </ul>
-              {"note" in r && <p className="mt-3 rounded-xl bg-linen p-3 text-xs leading-relaxed text-ink-soft">{r.note}</p>}
               <p className="mt-3 text-xs text-muted">To jedna z możliwości do rozważenia po konsultacji. Wybór drogi zawsze należy do Was.</p>
               <Link href="/start" className="mt-4 inline-flex min-h-11 items-center gap-1.5 rounded-full bg-forest px-5 text-sm font-medium text-white">
                 Zacznij od 6 krótkich pytań <ArrowRight size={15} aria-hidden />

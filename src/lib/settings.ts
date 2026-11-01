@@ -105,7 +105,7 @@ export const DEFAULT_SETTINGS: Settings = {
       },
       {
         q: "Co, jeśli zdecydujemy się rozstać?",
-        a: "Pomożemy przejść przez ten etap spokojniej: przygotować się do rozmowy, zadbać o dzieci, jeśli je macie, i nie eskalować konfliktu. Osobną ofertę mediacji i rozwodu online prowadzi Nowy Etap – marka powiązana z DUO. Skorzystanie z niej jest całkowicie dobrowolne i nie wpływa na rekomendacje psychologa.",
+        a: "Pomożemy wskazać najlepszą dla Was drogę rozstania lub rozwodu i przejść przez ten etap spokojniej: przygotować się do rozmowy, zadbać o dzieci, jeśli je macie, i nie eskalować konfliktu.",
       },
       {
         q: "Ile trwa przygotowanie Mapy Relacji?",
