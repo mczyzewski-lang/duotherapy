@@ -38,7 +38,7 @@ export default async function Landing() {
           <Link href="/" aria-label="DUO – Mapa Relacji – strona główna" className="flex items-center gap-4">
             <Logo />
             <span className="hidden h-8 w-px bg-sand-dark lg:block" aria-hidden />
-            <MapaLogo compact id="nav-mapa" className="hidden lg:inline-flex" />
+            <span className="hidden lg:block"><MapaLogo compact id="nav-mapa" /></span>
           </Link>
           <div className="hidden items-center gap-7 text-sm text-ink-soft md:flex">
             <a href="#mapa" className="hover:text-forest">Mapa Relacji</a>
