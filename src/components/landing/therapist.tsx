@@ -35,7 +35,7 @@ export function TherapistSection() {
           </h2>
           <div className="mt-6 space-y-4 leading-relaxed text-ink-soft">
             <p>
-              Pracuję z osobami w kryzysie związku, przed rozstaniem i po nim – szczególnie z mężczyznami i przedsiębiorcami. Razem przyglądamy się emocjom, komunikacji i
+              Pracuję z osobami w kryzysie związku, przed rozstaniem i po nim. Razem przyglądamy się emocjom, komunikacji i
               utrwalonym wzorcom, które prowadzą do oddalenia i powtarzających się konfliktów, żeby można było świadomie z nich wyjść.
             </p>
             <p>
