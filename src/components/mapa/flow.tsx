@@ -4,7 +4,7 @@
 // Drogi to możliwości do rozważenia po konsultacji – nie wynik quizu i nie rekomendacja.
 import clsx from "clsx";
 import { ArrowRight, ChevronDown, MapPin } from "lucide-react";
-import { RoadGlyph } from "@/components/brand";
+import { MapaSymbol, RoadGlyph } from "@/components/brand";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
@@ -100,11 +100,11 @@ export function HeroMap() {
         ))}
         <circle cx="70" cy="300" r="9" fill="#a9512f" />
         <circle cx="70" cy="300" r="18" fill="#a9512f" opacity="0.15" className="motion-safe:animate-ping" style={{ transformOrigin: "70px 300px", animationDuration: "3s" }} />
-        <circle cx="246" cy="190" r="30" fill="#36493d" />
-        <circle cx="246" cy="190" r="40" fill="none" stroke="#36493d" strokeOpacity="0.2" strokeWidth="1.5" />
-        <g transform="translate(232 176)" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round">
-          <path d="M2 14h7" /><circle cx="12" cy="14" r="2.5" /><path d="M14 12.5 C 18 10, 20 6, 26 5" /><path d="M14.5 14 H 26" /><path d="M14 15.5 C 18 18, 20 22, 26 23" />
-        </g>
+        <circle cx="246" cy="190" r="32" fill="#fff" stroke="#36493d" strokeWidth="2.5" />
+        <circle cx="246" cy="190" r="42" fill="none" stroke="#36493d" strokeOpacity="0.2" strokeWidth="1.5" />
+        <svg x="221" y="182.5" width="50" height="15" viewBox="0 0 112 32">
+          <MapaSymbol id="hero-node" />
+        </svg>
         {ends.map((e, k) => (
           <circle key={k} cx="404" cy={e.y} r={active === k ? 9 : 7} fill={[TONE.rose.stroke, TONE.clay.stroke, TONE.forest.stroke][k]} className="transition-all" />
         ))}
@@ -123,9 +123,12 @@ export function HeroMap() {
               onFocus={() => setActive(k)}
               onBlur={() => setActive(null)}
               onClick={() => document.getElementById(`droga-${ROADS[k].key}`)?.scrollIntoView({ behavior: "smooth", block: "center" })}
-              className={clsx("max-w-[7.5rem] rounded-xl bg-white/95 px-3 py-2 text-left leading-tight text-ink shadow-soft ring-1 transition", active === k ? "ring-forest" : "ring-sand")}
+              className={clsx("flex max-w-[9.5rem] items-center gap-2 rounded-xl bg-white/95 py-2 pl-2 pr-3 text-left leading-tight text-ink shadow-soft ring-1 transition", active === k ? "ring-forest" : "ring-sand")}
             >
-              {e.label}
+              <span className={clsx("grid h-7 w-7 shrink-0 place-items-center rounded-full", TONE[ROADS[k].tone].soft)}>
+                <RoadGlyph road={ROADS[k].key} id={`hero-${ROADS[k].key}`} className="h-4 w-4" />
+              </span>
+              <span>{e.label}</span>
             </button>
           </li>
         ))}
@@ -151,10 +154,8 @@ export function MapaFlow() {
         </li>
         <li className={clsx("reveal relative mx-auto w-full max-w-sm rounded-[2rem] bg-forest p-7 text-center text-white shadow-soft", inView && "reveal-on")} style={{ transitionDelay: "0.15s" }}>
           <span className="absolute -inset-2 -z-10 rounded-[2.4rem] bg-forest/10" aria-hidden />
-          <span className="mx-auto grid h-12 w-12 place-items-center rounded-full bg-white/10">
-            <svg viewBox="0 0 30 28" className="h-6 w-auto" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" aria-hidden>
-              <path d="M2 14h7" /><circle cx="12" cy="14" r="2.5" /><path d="M14 12.5 C 18 10, 20 6, 26 5" /><path d="M14.5 14 H 26" /><path d="M14 15.5 C 18 18, 20 22, 26 23" />
-            </svg>
+          <span className="mx-auto inline-flex items-center rounded-full bg-white px-4 py-2.5 shadow-soft">
+            <MapaSymbol id="flow-node" className="h-6 w-auto" />
           </span>
           <p className="mt-4 font-display text-2xl uppercase tracking-[0.08em]">Mapa Relacji</p>
           <p className="mt-2 text-white/80">Zrozumienie. Perspektywa. Możliwe kierunki.</p>

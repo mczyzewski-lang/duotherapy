@@ -1,7 +1,7 @@
 // Znak marki DUO®: dwie postaci i misa między nimi (przestrzeń wspólnej rozmowy).
 // Wektorowe odwzorowanie logo – ostre w każdym rozmiarze (nagłówek, favicon, PDF).
 import clsx from "clsx";
-import { BODY_LEFT, BOWL, BRAND, MAPA, MAPA_ARROW_LEFT, MAPA_ARROW_RIGHT, MAPA_GLASS_BOTTOM, MAPA_GLASS_TOP, MAPA_HEART } from "@/lib/brand-mark";
+import { BODY_LEFT, BOWL, BRAND, MAPA, MAPA_ARROW_LEFT, MAPA_ARROW_RIGHT, MAPA_GLASS_BOTTOM, MAPA_GLASS_TOP, MAPA_HEART, roadFor, type Road } from "@/lib/brand-mark";
 
 export { mapaSymbolSvg, symbolSvg } from "@/lib/brand-mark";
 
@@ -96,7 +96,7 @@ export function MapaLogo({ className, light, compact, id = "mapa-logo" }: { clas
 }
 
 /** Pojedyncze symbole trzech dróg (do kart i ikon). */
-export function RoadGlyph({ road, className, id }: { road: "rebuild" | "clarity" | "separate"; className?: string; id?: string }) {
+export function RoadGlyph({ road, className, id }: { road: Road; className?: string; id?: string }) {
   const gid = `${id ?? "road"}-${road}`;
   const [a, b] = road === "rebuild" ? MAPA.heart : road === "clarity" ? MAPA.hourglass : MAPA.split;
   return (
@@ -122,4 +122,10 @@ export function RoadGlyph({ road, className, id }: { road: "rebuild" | "clarity"
       )}
     </svg>
   );
+}
+
+/** Znak drogi przy zgłoszeniu (segment z pyt. 1 quizu lub intencja); brak znaku, gdy nie ma odpowiednika. */
+export function LeadRoad({ lead, className = "h-3.5 w-3.5 shrink-0" }: { lead: { segment?: string | null; intent?: string | null }; className?: string }) {
+  const road = roadFor(lead.segment) ?? roadFor(lead.intent);
+  return road ? <RoadGlyph road={road} id={`lead-${road}`} className={className} /> : null;
 }

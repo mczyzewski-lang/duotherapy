@@ -47,3 +47,26 @@ export function mapaSymbolSvg(id = "mapa"): string {
 <g transform="translate(40 0)"><path d="${MAPA_GLASS_TOP}" fill="url(#${id}-g)"/><path d="${MAPA_GLASS_BOTTOM}" fill="url(#${id}-g)" opacity="0.85"/></g>
 <g transform="translate(80 0)" stroke-linejoin="round" stroke-width="1.6"><path d="${MAPA_ARROW_LEFT}" fill="url(#${id}-s)" stroke="url(#${id}-s)"/><path d="${MAPA_ARROW_RIGHT}" fill="url(#${id}-s)" stroke="url(#${id}-s)"/></g></svg>`;
 }
+
+export type Road = "rebuild" | "clarity" | "separate";
+
+/** Surowy SVG pojedynczego znaku drogi (32×32) – do PDF/HTML poza Reactem. */
+export function roadGlyphSvg(road: Road, id = "road", size = 12): string {
+  const gid = `${id}-${road}`;
+  const [a, b] = road === "rebuild" ? MAPA.heart : road === "clarity" ? MAPA.hourglass : MAPA.split;
+  const body =
+    road === "rebuild"
+      ? `<path d="${MAPA_HEART}" fill="url(#${gid})"/>`
+      : road === "clarity"
+        ? `<path d="${MAPA_GLASS_TOP}" fill="url(#${gid})"/><path d="${MAPA_GLASS_BOTTOM}" fill="url(#${gid})" opacity="0.85"/>`
+        : `<g stroke-linejoin="round" stroke-width="1.6"><path d="${MAPA_ARROW_LEFT}" fill="url(#${gid})" stroke="url(#${gid})"/><path d="${MAPA_ARROW_RIGHT}" fill="url(#${gid})" stroke="url(#${gid})"/></g>`;
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="${size}" height="${size}" style="vertical-align:-1.5pt" aria-hidden="true"><defs><linearGradient id="${gid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${a}"/><stop offset="1" stop-color="${b}"/></linearGradient></defs>${body}</svg>`;
+}
+
+/** Która z trzech dróg odpowiada odpowiedzi/segmentowi (null = brak odpowiednika, np. bezpieczeństwo). */
+export function roadFor(key: string | null | undefined): Road | null {
+  if (key === "rebuild") return "rebuild";
+  if (key === "unsure" || key === "clarity") return "clarity";
+  if (key === "separate") return "separate";
+  return null;
+}

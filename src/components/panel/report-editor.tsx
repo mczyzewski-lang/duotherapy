@@ -5,6 +5,8 @@ import { CheckCircle2, Copy, Download, Eye, Plus, Save, Share2, Trash2 } from "l
 import { useMemo, useState, useTransition } from "react";
 import { approveReportAction, saveReportAction, shareReportAction } from "@/actions/reports";
 import { Alert, Badge, Button, Card } from "@/components/ui";
+import { RoadGlyph } from "@/components/brand";
+import { roadFor } from "@/lib/brand-mark";
 import { MISSING, PATH_OPTIONS, UNSAFE_WITH_RISK, missingMarkers, renderReportHtml, sectionTitles, type PathKey, type ReportContent, type Severity } from "@/lib/report";
 import type { Settings } from "@/lib/settings";
 
@@ -167,6 +169,7 @@ export function ReportEditor(p: {
               <div key={k} className={clsx("rounded-xl p-4 ring-1", c.path.main === k ? "bg-sage-soft/50 ring-forest" : "bg-ivory ring-sand")}>
                 <label className="flex items-center gap-2 font-medium text-ink">
                   <input type="radio" name="path" className="accent-forest" checked={c.path.main === k} onChange={() => upd((n) => { n.path.main = k; n.path.options = []; })} /> {PATH_OPTIONS[k].label}
+                  {roadFor(k) && <RoadGlyph road={roadFor(k)!} id={`ed-${k}`} className="ml-auto h-5 w-5" />}
                 </label>
                 {c.path.main === k && (
                   <div className="mt-2 flex flex-wrap gap-3 pl-6 text-sm">

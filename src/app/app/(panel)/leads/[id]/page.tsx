@@ -1,3 +1,4 @@
+import { LeadRoad } from "@/components/brand";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { leadDetailsAction, leadNoteAction, leadStageAction } from "@/actions/leads";
@@ -75,7 +76,7 @@ export default async function LeadPage({ params }: { params: Promise<{ id: strin
               </>
             ) : (
               <dl className="mt-4 grid gap-x-6 gap-y-3 text-sm sm:grid-cols-2">
-                <div><dt className="text-muted">Intencja</dt><dd>{INTENT_LABEL[lead.intent] ?? "—"}</dd></div>
+                <div><dt className="text-muted">Intencja</dt><dd className="flex items-center gap-1.5"><LeadRoad lead={{ intent: lead.intent }} />{INTENT_LABEL[lead.intent] ?? "—"}</dd></div>
                 <div><dt className="text-muted">Co obciąża</dt><dd>{(lead.quiz?.concerns ?? []).map((c: string) => CONCERN_LABEL[c]).join(", ") || "—"}</dd></div>
                 <div><dt className="text-muted">Staż</dt><dd>{LEN[lead.quiz?.length] ?? "—"}</dd></div>
                 <div><dt className="text-muted">Kiedy</dt><dd>{WHEN[lead.quiz?.when] ?? "—"}</dd></div>

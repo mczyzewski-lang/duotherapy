@@ -1,3 +1,4 @@
+import { LeadRoad } from "@/components/brand";
 import { AlertTriangle, ArrowRight, Plus } from "lucide-react";
 import Link from "next/link";
 import { CasesTable } from "@/components/panel/cases-table";
@@ -65,7 +66,7 @@ export default async function Dashboard({ searchParams }: { searchParams: Promis
               <Link key={l.id} href={`/app/leads/${l.id}`} className="flex items-center justify-between gap-3 p-4 hover:bg-ivory">
                 <span>
                   <span className="block font-medium text-ink">{l.name}</span>
-                  <span className="text-xs text-muted">{l.mode === "couple" ? "razem" : l.mode === "individual" ? "samodzielnie" : "forma nieustalona"} · {leadSummary(l)}</span>
+                  <span className="flex items-center gap-1.5 text-xs text-muted"><LeadRoad lead={l} />{l.mode === "couple" ? "razem" : l.mode === "individual" ? "samodzielnie" : "forma nieustalona"} · {leadSummary(l)}</span>
                 </span>
                 <Badge tone={l.stage === "new" ? "clay" : "neutral"}>{l.stage === "new" ? "nowe" : "kontakt"}</Badge>
                 <ArrowRight size={15} className="text-muted" aria-hidden />

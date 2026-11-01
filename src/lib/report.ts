@@ -1,7 +1,7 @@
 // Podsumowanie sesji – struktura zgodna z szablonem 04, szkic budowany lokalnie
 // (bez zewnętrznych usług) wyłącznie z danych sprawy, odpowiedzi osoby, która podsumowanie otrzyma,
 // oraz notatek psychologa oznaczonych jako dopuszczone do podsumowania.
-import { symbolSvg } from "./brand-mark";
+import { roadFor, roadGlyphSvg, symbolSvg } from "./brand-mark";
 import { answerByKey, formatAnswer, type PersonData } from "./analysis";
 import type { Settings } from "./settings";
 
@@ -262,7 +262,9 @@ export function renderReportHtml(c: ReportContent, s: Settings, opts: { fontCss?
       const def = PATH_OPTIONS[k];
       const opts2 = def.options.map(([o, l]) => radio(c.path.main === k && c.path.options.includes(o), l)).join(" ");
       const note = k === "safety" ? `<div class="small">Przy przemocy nie rekomenduje się terapii par ani mediacji.</div>` : "";
-      return `<div class="path ${c.path.main === k ? "chosen" : ""}">${radio(c.path.main === k, def.label)}<div class="sub">${opts2}</div>${note}</div>`;
+      const road = roadFor(k);
+      const glyph = road ? `<span class="glyph">${roadGlyphSvg(road, "rp", 13)}</span>` : "";
+      return `<div class="path ${c.path.main === k ? "chosen" : ""}">${glyph}${radio(c.path.main === k, def.label)}<div class="sub">${opts2}</div>${note}</div>`;
     })
     .join("");
   const names = c.meta.participants.map((p) => esc(p.name.split(" ")[0])).join(" i ");
@@ -296,6 +298,7 @@ li { margin: 3pt 0; }
 .path { padding: 6pt 8pt; border-radius: 6pt; margin: 4pt 0; }
 .path.chosen { background: #e5ece6; }
 .path .sub { margin: 3pt 0 0 14pt; font-size: 9.5pt; }
+.path .glyph { float: right; }
 .small { font-size: 8.5pt; color: #6a605a; }
 .box { background: #fbf9f5; border: 1px solid #eadccb; border-radius: 8pt; padding: 10pt 12pt; margin-top: 20pt; break-inside: avoid; }
 .sign { margin-top: 22pt; font-size: 11pt; }
