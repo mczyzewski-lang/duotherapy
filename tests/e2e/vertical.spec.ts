@@ -83,32 +83,37 @@ async function openAsParticipant(browser: Browser, url: string, code: string) {
 }
 
 test("pełny scenariusz audytu pary", async ({ page, browser, request }) => {
-  // 1. Landing + quiz
-  await page.goto("/");
+  // 1. Landing (wariant A) → quiz Mapy Relacji → prośba o telefon (z UTM)
+  await page.goto("/?hero=A&utm_source=instagram&utm_medium=reels&utm_campaign=e2e");
   await page.waitForLoadState("networkidle");
-  await expect(page.getByRole("heading", { level: 1 })).toContainText("Nie musisz dziś wiedzieć");
-  await page.goto("/?intent=unsure#quiz");
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Nie wiesz, co dalej z Waszą relacją?");
+  await page.getByRole("link", { name: /Sprawdź, gdzie dziś jesteście/ }).first().click();
+  await page.waitForURL(/\/start/);
   await page.waitForLoadState("networkidle");
-  await page.getByRole("button", { name: /Przyjdziemy we dwoje/ }).click();
-  await page.getByRole("button", { name: /Nie wiemy, czy zostać razem/ }).click();
-  await page.getByRole("button", { name: /Te same kłótnie/ }).click();
-  await page.getByRole("button", { name: "Dalej" }).click();
-  await page.getByRole("button", { name: "5–10 lat" }).click();
-  await page.getByRole("button", { name: "Tak", exact: true }).click();
-  await page.getByRole("button", { name: "Dalej" }).click();
-  await page.getByRole("button", { name: "Jak najszybciej" }).click();
-  await page.getByRole("textbox", { name: "Imię" }).fill("Ola Testowa");
-  await page.getByRole("textbox", { name: "E-mail" }).fill("ola@example.test");
-  await page.getByRole("textbox", { name: "Telefon" }).fill("+48 600 100 200");
-  await page.getByRole("checkbox", { name: /Wyrażam zgodę na kontakt/ }).check();
-  await page.getByRole("button", { name: "Wyślij zgłoszenie" }).click();
-  await expect(page.getByText("Zgłoszenie zostało przyjęte")).toBeVisible();
+  for (const pick of ["Nie wiem już, co dalej", "Nie potrafimy spokojnie", "Tak, oboje chcemy", "Dlaczego ciągle", "Od ponad roku", "Razem z partnerem"]) {
+    await page.getByRole("radio", { name: new RegExp(pick) }).click();
+    await page.waitForTimeout(400);
+  }
+  await expect(page.getByRole("heading", { name: "Pierwszy krok już za Tobą" })).toBeVisible();
+  await expect(page.getByText("nie diagnoza ani gotowa Mapa Relacji")).toBeVisible();
+  await page.waitForTimeout(2600); // ochrona przed botami: formularz wysłany zbyt szybko jest ignorowany
+  await page.getByLabel("Imię").fill("Ola Testowa");
+  await page.getByLabel("Numer telefonu").fill("12");
+  await page.getByRole("checkbox", { name: /Proszę o kontakt telefoniczny/ }).check();
+  await page.getByRole("button", { name: /Poproś o telefon/ }).click();
+  await expect(page.getByText(/Podaj poprawny numer telefonu/)).toBeVisible();
+  await page.getByLabel("Numer telefonu").fill("600 100 200");
+  await page.getByLabel(/E-mail/).fill("ola@example.test");
+  await page.getByRole("button", { name: /Poproś o telefon/ }).click();
+  await expect(page.getByRole("heading", { name: /Otrzymaliśmy Twoją prośbę o kontakt/ })).toBeVisible();
 
   // 2. Psycholog: pipeline → sprawa pary
   await login(page);
   await page.goto("/app/leads");
   await page.waitForLoadState("networkidle");
   await page.getByRole("link", { name: "Ola Testowa" }).click();
+  await expect(page.getByText("instagram / reels / e2e")).toBeVisible();
+  await expect(page.getByText("Razem z partnerem lub partnerką.")).toBeVisible();
   await page.getByLabel("Imię (do powitania)").first().fill("Ola");
   await page.locator("#p2_name").fill("Tomek");
   await page.getByRole("button", { name: "Załóż sprawę" }).click();
@@ -234,7 +239,7 @@ test("pełny scenariusz audytu pary", async ({ page, browser, request }) => {
   await vp.getByRole("button", { name: "Otwórz podsumowanie" }).click();
   await expect(vp.getByRole("link", { name: "Pobierz PDF" })).toBeVisible();
   const frame = vp.frameLocator("iframe[title='Podsumowanie']");
-  await expect(frame.getByRole("heading", { name: "Podsumowanie sesji" })).toBeVisible();
+  await expect(frame.getByRole("heading", { name: "Mapa Relacji" })).toBeVisible();
   await expect(frame.getByText("Treść uzupełniona przez psychologa").first()).toBeVisible();
   // podsumowanie wspólne nie zawiera odpowiedzi z indywidualnych kwestionariuszy
   await expect(frame.getByText("Odpowiedź opisowa")).toHaveCount(0);
@@ -268,7 +273,7 @@ test("audyt indywidualny: link nie działa po cofnięciu, drugi psycholog nie wi
   await p.getByLabel("Kod dostępu").fill(code);
   await p.getByRole("button", { name: "Otwórz kwestionariusz" }).click();
   await expect(p.getByRole("button", { name: "Zaczynamy" })).toBeVisible();
-  await expect(p.getByText("Kwestionariusz Audytu Relacji, wersja indywidualna")).toHaveCount(0); // tytuł dopiero na ekranie "Zanim zaczniesz"
+  await expect(p.getByText("Kwestionariusz Mapy Relacji, wersja indywidualna")).toHaveCount(0); // tytuł dopiero na ekranie "Zanim zaczniesz"
 
   // cofnięcie linku odcina dostęp
   await page.reload();

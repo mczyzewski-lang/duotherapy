@@ -13,8 +13,8 @@ const LABELS: Record<string, string> = {
   processingLocation: "Lokalizacja przetwarzania", retentionPolicy: "Okres przechowywania danych (polityka retencji)", privacyPolicy: "Polityka prywatności (pełna treść)",
   questionnaireNotice: "Klauzula informacyjna w kwestionariuszu ({administrator} = dane administratora)", leadContactConsent: "Zgoda na kontakt (formularz zgłoszenia)",
   leadMarketingConsent: "Zgoda marketingowa (opcjonalna)", inquiryConsent: "Zgoda w formularzu „Masz pytania?”", version: "Wersja tekstów prawnych (zapisywana w rejestrze zgód)", approved: "Teksty zatwierdzone przez prawnika / IOD",
-  priceIndividual: "Cena – audyt indywidualny (puste = ukryj)", priceCouple: "Cena – audyt dla pary (puste = ukryj)", contactPhone: "Telefon kontaktowy (puste = ukryj)",
-  contactEmail: "E-mail kontaktowy (puste = ukryj)", vslUrl: "Film wyjaśniający usługę (adres embed youtube-nocookie / vimeo; puste = ukryj)", paymentUrl: "Link do płatności (https)", faq: "FAQ",
+  priceIndividual: "Cena – Mapa Relacji indywidualnie (puste = ukryj)", priceCouple: "Cena – Mapa Relacji dla pary (puste = ukryj)", contactPhone: "Telefon kontaktowy (puste = ukryj)",
+  contactEmail: "E-mail kontaktowy (puste = ukryj)", vslUrl: "Film wyjaśniający usługę (adres embed youtube-nocookie / vimeo; puste = ukryj)", paymentUrl: "Link do płatności (https)", callbackPromise: "Czas oddzwonienia pokazywany po zgłoszeniu (tylko jeśli realnie gwarantowany; puste = brak)", funnelTracking: "Pomiar lejka (zdarzenia bez treści odpowiedzi)", faq: "FAQ",
   invitationDays: "Ważność linku do kwestionariusza (dni)", reportShareDays: "Ważność linku do podsumowania (dni)", requirePaymentBeforeQuestionnaire: "Wymagaj płatności przed kwestionariuszem",
   items: "Numery pomocy", abroad: "Informacja dla osób poza Polską", verifiedNote: "Data weryfikacji numerów", disclaimer: "Zastrzeżenie",
 };

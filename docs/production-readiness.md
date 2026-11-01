@@ -15,6 +15,8 @@
 - [ ] Zasada „sekretów” przy audycie pary – jednolity tekst przekazywany klientom.
 - [ ] Zatwierdzenie tekstów prawnych → przełącznik „Teksty zatwierdzone” (bez niego, poza trybem DEMO, kwestionariusz jest zablokowany).
 
+- [ ] Lejek Mapy Relacji: treść zgody na kontakt telefoniczny w sprawie oferty, zakres i okres przechowywania odpowiedzi z quizu, informacja o pomiarze lejka i ciasteczku testu A/B w polityce prywatności (ocena wymogu zgody), informacja o powiązaniu DUO – Nowy Etap (`docs/mapa-relacji-lejek.md`).
+
 ## 2. Umowy powierzenia i dostawcy
 
 - [ ] Hosting aplikacji i bazy w UE/EOG; umowa powierzenia (art. 28 RODO).

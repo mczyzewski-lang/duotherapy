@@ -10,6 +10,10 @@ Audyt jest jednorazową, ustrukturyzowaną konsultacją. **Nie jest** terapią p
 - Mapowanie materiałów źródłowych na aplikację: [`docs/source-mapping.md`](docs/source-mapping.md)
 - Lista kontrolna przed produkcją: [`docs/production-readiness.md`](docs/production-readiness.md)
 
+## Mapa Relacji – lejek sprzedażowy
+
+Strona główna prowadzi do krótkiego quizu (`/start`, 6 pytań) zakończonego wstępnym podsumowaniem i prośbą o telefon. Zgłoszenia trafiają do CRM (Zgłoszenia), a pomiar lejka (pierwszopartyjny, bez treści odpowiedzi) i test A/B nagłówka – do panelu **Lejek**. Szczegóły i lista danych do uzupełnienia: [`docs/mapa-relacji-lejek.md`](docs/mapa-relacji-lejek.md).
+
 ## Marka
 
 Znak DUO® (dwie postaci i misa – wspólna przestrzeń rozmowy) jest odtworzony wektorowo w `src/lib/brand-mark.ts` i używany w nagłówku, stopce, ilustracji hero, dokumencie PDF oraz jako favicon (`src/app/icon.svg`, `src/app/apple-icon.png` – generowane przez `npm run brand:assets`). Paleta pochodzi z logo: terakota, szałwiowa zieleń, piasek, ciepła kość słoniowa.

@@ -15,5 +15,5 @@ export async function GET(_: Request, { params }: { params: Promise<{ token: str
   if (!rep) return NextResponse.json({ error: "Brak dostępu" }, { status: 403 });
   await withActor({ kind: "report_viewer", shareId: rep.shareId }, (tx) => audit(tx, { kind: "report_viewer", shareId: rep.shareId }, "report_share_pdf", "report_share", rep.shareId));
   const pdf = await htmlToPdf(renderReportHtml(decrypt<ReportContent>(rep.content_enc)!, await getSettings(), { fontCss: embeddedFontCss() }));
-  return new NextResponse(new Uint8Array(pdf), { headers: { "content-type": "application/pdf", "content-disposition": 'attachment; filename="podsumowanie-audyt-relacji.pdf"', "cache-control": "no-store" } });
+  return new NextResponse(new Uint8Array(pdf), { headers: { "content-type": "application/pdf", "content-disposition": 'attachment; filename="podsumowanie-mapa-relacji.pdf"', "cache-control": "no-store" } });
 }

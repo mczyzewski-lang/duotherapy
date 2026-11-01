@@ -88,8 +88,8 @@ describe("szablony kwestionariuszy", () => {
     const m = byKey(all.find((t) => t.key === "individual_male")!);
     const f = byKey(all.find((t) => t.key === "individual_female")!);
     expect(Object.keys(m)).toEqual(Object.keys(f));
-    expect(m["sit.why_alone"].prompt).toBe("Dlaczego przychodzisz na audyt sam?");
-    expect(f["sit.why_alone"].prompt).toBe("Dlaczego przychodzisz na audyt sama?");
+    expect(m["sit.why_alone"].prompt).toBe("Dlaczego przychodzisz na konsultację sam?");
+    expect(f["sit.why_alone"].prompt).toBe("Dlaczego przychodzisz na konsultację sama?");
     expect(m["s1.2"].prompt).toBe("Czy boisz się swojej partnerki lub jej reakcji?");
     expect(f["s1.2"].prompt).toBe("Czy boisz się swojego partnera lub jego reakcji?");
     expect(m["s10.4"].prompt).toContain("wyczerpany");

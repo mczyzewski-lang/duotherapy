@@ -158,6 +158,7 @@ export async function saveSettingsAction(_: R, fd: FormData): Promise<R> {
       priceIndividual: z.string(), priceCouple: z.string(), contactPhone: z.string(), contactEmail: z.string(),
       vslUrl: z.string().refine((v) => !v || /^https:\/\/(www\.youtube-nocookie\.com|player\.vimeo\.com)\//.test(v), "Wideo: dozwolone adresy youtube-nocookie.com lub player.vimeo.com"),
       paymentUrl: z.string().refine((v) => !v || v.startsWith("https://"), "Link do płatności musi zaczynać się od https://"),
+      callbackPromise: z.string().max(120), funnelTracking: z.boolean(),
       faq: z.array(z.object({ q: z.string().min(3), a: z.string().min(3) })),
     }),
     flow: z.object({ invitationDays: z.number().int().min(1).max(90), reportShareDays: z.number().int().min(1).max(365), requirePaymentBeforeQuestionnaire: z.boolean() }),

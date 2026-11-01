@@ -19,7 +19,7 @@ export function CaseHeader({ c, participants, active }: { c: Record<string, any>
         <Badge tone="forest">{statusLabel(c.status)}</Badge>
         {c.is_demo && <Badge tone="clay">DEMO</Badge>}
       </div>
-      <p className="mt-1 text-sm text-muted">{c.ref} · {c.kind === "couple" ? "audyt dla pary · 90 min" : "audyt indywidualny · 60 min"} · prowadzi: {c.therapist_name}</p>
+      <p className="mt-1 text-sm text-muted">{c.ref} · {c.kind === "couple" ? "para · 90 min" : "indywidualnie · 60 min"} · prowadzi: {c.therapist_name}</p>
       {risk.length > 0 && (
         <Alert tone="alert" className="mt-4" title={<span className="flex items-center gap-2"><AlertTriangle size={16} aria-hidden /> Wymaga pilnego przeglądu przed sesją</span>}>
           {risk.map((p) => p.display_name).join(", ")} – odpowiedź „tak” w pytaniach przesiewowych (Cz. 1, pyt. 1-4 lub 7). Wytyczne: kontakt przed sesją lub krótka rozmowa przesiewowa na jej początku. Przy podejrzeniu przemocy nie prowadź wspólnej sesji. To nie jest automatyczna ocena ryzyka.

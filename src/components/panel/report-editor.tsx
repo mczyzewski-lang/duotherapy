@@ -73,7 +73,7 @@ export function ReportEditor(p: {
           </Alert>
         )}
         {c.caseKind === "individual" && (
-          <Alert tone="info">Audyt indywidualny: opisuj zachowania i intencje partnera/partnerki wyłącznie jako perspektywę uczestnika. Nie uzupełniaj brakujących danych o osobie nieobecnej.</Alert>
+          <Alert tone="info">Konsultacja indywidualna: opisuj zachowania i intencje partnera/partnerki wyłącznie jako perspektywę uczestnika. Nie uzupełniaj brakujących danych o osobie nieobecnej.</Alert>
         )}
         <Alert tone="info">
           {c.sourcesNote} Oznaczenia w treści: <em>Deklaracja</em> – słowa klienta, <em>Obserwacja psychologa</em> – Twoje notatki. Fragmenty <code className="rounded bg-clay-soft px-1">{MISSING}</code> wymagają uzupełnienia przed zatwierdzeniem.
@@ -91,7 +91,7 @@ export function ReportEditor(p: {
             <T label="Data sesji" value={c.meta.sessionDate} rows={1} onChange={(v) => upd((n) => void (n.meta.sessionDate = v))} />
             <T label="Psycholog prowadzący" value={c.meta.therapist} rows={1} onChange={(v) => upd((n) => void (n.meta.therapist = v))} />
           </div>
-          <p className="text-sm text-muted">Rodzaj: {c.caseKind === "couple" ? "audyt dla pary, 90 minut" : "audyt indywidualny, 60 minut"} (z danych sprawy)</p>
+          <p className="text-sm text-muted">Rodzaj: {c.caseKind === "couple" ? "konsultacja dla pary, 90 minut" : "konsultacja indywidualna, 60 minut"} (z danych sprawy)</p>
         </Card>
 
         <Card className="space-y-4 p-6">

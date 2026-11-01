@@ -187,7 +187,7 @@ export default async function CasePage({ params }: { params: Promise<{ id: strin
               <Field label="Status sprawy" htmlFor="status"><Select id="status" name="status" defaultValue={c.status}>{CASE_STATUSES.map(([k, l]) => <option key={k} value={k}>{l}</option>)}</Select></Field>
               <Field label="Płatność" htmlFor="pay"><Select id="pay" name="payment_status" defaultValue={c.payment_status}><option value="unpaid">nieopłacone</option><option value="paid">opłacone</option><option value="waived">bez opłaty</option></Select></Field>
               <Field label="Notatka o płatności" htmlFor="pn"><Input id="pn" name="payment_note" defaultValue={c.payment_note ?? ""} /></Field>
-              <Field label="Cel audytu" htmlFor="goal"><Textarea id="goal" name="goal" defaultValue={c.goal ?? ""} className="min-h-20" /></Field>
+              <Field label="Cel" htmlFor="goal"><Textarea id="goal" name="goal" defaultValue={c.goal ?? ""} className="min-h-20" /></Field>
               {c.kind === "couple" && (
                 <Field label="Zasada sekretów (ustalona na początku)" htmlFor="sr"><Select id="sr" name="secrets_rule" defaultValue={c.secrets_rule ?? ""}><option value="">nie ustalono</option><option value="no_secrets">bez sekretów</option><option value="secrets_allowed">sekrety dozwolone</option></Select></Field>
               )}

@@ -200,7 +200,7 @@ export function Questionnaire({ data }: { data: QData }) {
       {showSafety && (
         <div className="mt-4 animate-rise">
           <Alert tone="alert" title="Dziękujemy, że o tym piszesz.">
-            Psycholog zobaczy tę odpowiedź przed sesją i może skontaktować się z Tobą wcześniej. Jeśli w tej chwili jesteś w niebezpieczeństwie, nie czekaj na audyt –
+            Psycholog zobaczy tę odpowiedź przed sesją i może skontaktować się z Tobą wcześniej. Jeśli w tej chwili jesteś w niebezpieczeństwie, nie czekaj na konsultację –
             skorzystaj z pomocy poniżej. Twoje odpowiedzi nie są przekazywane drugiej osobie.
           </Alert>
           <SafetyBox helplines={data.helplines} abroad={abroad} compact className="mt-3" />
@@ -371,7 +371,7 @@ function PaymentInfo({ url }: { url: string }) {
     <Alert tone="warn" className="mt-6" title="Płatność przed wypełnieniem kwestionariusza">
       {url ? (
         <>
-          Opłać audyt przez <a className="font-medium underline" href={url} target="_blank" rel="noopener noreferrer">bezpieczny link do płatności</a>. Po zaksięgowaniu psycholog odblokuje
+          Opłać Mapę Relacji przez <a className="font-medium underline" href={url} target="_blank" rel="noopener noreferrer">bezpieczny link do płatności</a>. Po zaksięgowaniu psycholog odblokuje
           kwestionariusz.
         </>
       ) : (

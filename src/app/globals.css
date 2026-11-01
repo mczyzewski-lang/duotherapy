@@ -88,6 +88,21 @@ body {
   50% { transform: translateY(-6px); }
 }
 .animate-breathe-slow { animation: breathe-slow 8s ease-in-out infinite; }
+/* Mapa Relacji – animacje ujawniania i linii (wyłączone przy prefers-reduced-motion) */
+.map-line { stroke-dasharray: 600; stroke-dashoffset: 600; }
+.map-line-on { animation: draw 1.4s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+@keyframes draw { to { stroke-dashoffset: 0; } }
+path.map-line[stroke-dasharray="6 7"] { stroke-dasharray: 6 7; stroke-dashoffset: 0; }
+.reveal { opacity: 0; transform: translateY(14px); transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1); }
+.reveal-on { opacity: 1; transform: none; }
+.grow-line { transform: scaleY(0); transition: transform 0.8s ease; }
+.grow-line-on { transform: scale(1); }
+@media (min-width: 1024px) { .grow-line { transform: scaleX(0); } .grow-line-on { transform: scale(1); } }
+@media (prefers-reduced-motion: reduce) {
+  .map-line { stroke-dashoffset: 0; }
+  .reveal { opacity: 1; transform: none; }
+  .grow-line { transform: none; }
+}
 .font-wordmark { font-family: var(--font-wordmark); font-optical-sizing: auto; letter-spacing: 0.04em; }
 
 .skip-link {

@@ -4,7 +4,7 @@ import { CasesTable } from "@/components/panel/cases-table";
 import { Alert, Badge, Card, LinkButton, PageTitle } from "@/components/ui";
 import { asStaff, requireStaff } from "@/lib/auth";
 import { CASE_STATUSES } from "@/lib/cases";
-import { INTENT_LABEL } from "@/lib/leads";
+import { leadSummary } from "@/lib/leads";
 import { listCases } from "@/lib/queries";
 import { readSettings } from "@/lib/settings";
 import { env } from "@/lib/env";
@@ -16,7 +16,7 @@ export default async function Dashboard({ searchParams }: { searchParams: Promis
   const s = await requireStaff();
   const d = await asStaff(s, async (tx) => ({
     newInquiries: (await tx`select count(*)::int as n from inquiries where status = 'new'`)[0].n as number,
-    leads: await tx`select id, name, mode, intent, created_at, stage from leads where stage in ('new', 'contacted') order by created_at desc limit 6`,
+    leads: await tx`select id, name, mode, intent, segment, created_at, stage from leads where stage in ('new', 'contacted') order by created_at desc limit 6`,
     risky: await listCases(tx, { risk: true, limit: 10 }),
     active: await listCases(tx, { limit: 12 }),
     counts: await tx`select status, count(*)::int as n from cases group by status`,
@@ -65,7 +65,7 @@ export default async function Dashboard({ searchParams }: { searchParams: Promis
               <Link key={l.id} href={`/app/leads/${l.id}`} className="flex items-center justify-between gap-3 p-4 hover:bg-ivory">
                 <span>
                   <span className="block font-medium text-ink">{l.name}</span>
-                  <span className="text-xs text-muted">{l.mode === "couple" ? "para" : "indywidualnie"} · {INTENT_LABEL[l.intent]}</span>
+                  <span className="text-xs text-muted">{l.mode === "couple" ? "razem" : l.mode === "individual" ? "samodzielnie" : "forma nieustalona"} · {leadSummary(l)}</span>
                 </span>
                 <Badge tone={l.stage === "new" ? "clay" : "neutral"}>{l.stage === "new" ? "nowe" : "kontakt"}</Badge>
                 <ArrowRight size={15} className="text-muted" aria-hidden />

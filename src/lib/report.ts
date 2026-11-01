@@ -166,7 +166,7 @@ export function buildDraft(input: DraftInput): ReportContent {
     },
     summary: {
       text: [MISSING + " 3-5 zdań: z czym przyszliście, co jest teraz najważniejsze. Język opisowy, bez ocen i diagnoz.", ...general.map((n) => `Obserwacja psychologa: ${n.body}`)].join("\n"),
-      reason: input.reason ? `Deklaracja: ${input.reason}` : goal !== MISSING ? `Cel audytu wskazany w kwestionariuszu: ${goal}` : MISSING,
+      reason: input.reason ? `Deklaracja: ${input.reason}` : goal !== MISSING ? `Cel wskazany w kwestionariuszu: ${goal}` : MISSING,
       decisionStage: who,
     },
     strengths: [MISSING],
@@ -269,7 +269,7 @@ export function renderReportHtml(c: ReportContent, s: Settings, opts: { fontCss?
   const opening = plural
     ? `Dziękuję Wam za rozmowę i za otwartość, z jaką każde z Was opowiedziało swoją perspektywę. Poniżej znajdziecie najważniejsze rzeczy, o których rozmawialiśmy. Możecie wracać do nich w swoim tempie – razem albo osobno.`
     : `Dziękuję za rozmowę i za otwartość. Poniżej znajdziesz najważniejsze rzeczy, o których rozmawialiśmy. Możesz wracać do nich w swoim tempie.`;
-  return `<!doctype html><html lang="pl"><head><meta charset="utf-8"><title>Podsumowanie sesji · DUO</title>
+  return `<!doctype html><html lang="pl"><head><meta charset="utf-8"><title>Mapa Relacji · DUO</title>
 <style>
 ${opts.fontCss ?? ""}
 @page { size: A4; margin: 18mm 16mm 20mm; }
@@ -305,16 +305,16 @@ li { margin: 3pt 0; }
 </style></head><body>
 ${opts.draft ? '<div class="draft">SZKIC – NIEZATWIERDZONY</div>' : ""}
 <div class="brand">${symbolSvg("pdf")}<div><div class="wm">DUO®</div><div class="tag">Terapia małżeństw</div></div></div>
-<h1>Podsumowanie sesji</h1>
-<div class="lead">Audyt Relacji · ${esc(c.meta.sessionDate)} · poufne, tylko dla ${plural ? "Was" : "Ciebie"}${c.audience === "participant" && c.caseKind === "couple" ? " (podsumowanie osobne – zawiera wyłącznie treści przeznaczone dla Ciebie)" : ""}</div>
+<h1>Mapa Relacji</h1>
+<div class="lead">Podsumowanie sesji · ${esc(c.meta.sessionDate)} · poufne, tylko dla ${plural ? "Was" : "Ciebie"}${c.audience === "participant" && c.caseKind === "couple" ? " (podsumowanie osobne – zawiera wyłącznie treści przeznaczone dla Ciebie)" : ""}</div>
 
 <div class="letter"><p>Dzień dobry, ${names},</p><p>${opening}</p><p>To nie jest ocena ani diagnoza – to opis tego, co wspólnie zobaczyliśmy w dniu sesji.</p></div>
 
 <table>
 <tr><td class="k">Imię i nazwisko, wiek</td><td>${c.meta.participants.map((p) => `${esc(p.name)}, ${esc(p.age)}`).join("<br>")}</td></tr>
 <tr><td class="k">Data sesji</td><td>${esc(c.meta.sessionDate)}</td></tr>
-<tr><td class="k">Rodzaj audytu</td><td>${radio(c.caseKind === "couple", "audyt dla pary")} ${radio(c.caseKind === "individual", "audyt indywidualny")}</td></tr>
-<tr><td class="k">Forma</td><td>sesja online, ${radio(c.meta.minutes === 60, "60 minut (audyt indywidualny)")} ${radio(c.meta.minutes === 90, "90 minut (audyt dla pary)")}</td></tr>
+<tr><td class="k">Rodzaj konsultacji</td><td>${radio(c.caseKind === "couple", "konsultacja dla pary")} ${radio(c.caseKind === "individual", "konsultacja indywidualna")}</td></tr>
+<tr><td class="k">Forma</td><td>sesja online, ${radio(c.meta.minutes === 60, "60 minut (konsultacja indywidualna)")} ${radio(c.meta.minutes === 90, "90 minut (konsultacja dla pary)")}</td></tr>
 <tr><td class="k">Psycholog prowadzący</td><td>${esc(c.meta.therapist)}</td></tr>
 </table>
 
@@ -356,10 +356,10 @@ ${c.nextSteps.map((n) => `<tr><td>${para(n.what)}</td><td>${para(n.who)}</td><td
 <div class="sign">Z serdecznością,<br><span class="n">${esc(c.meta.therapist)}</span></div>
 
 <div class="box"><strong>${t.important}</strong>
-<p>To podsumowanie opisuje sytuację z perspektywy osoby lub osób uczestniczących w audycie w dniu sesji. Nie jest diagnozą psychiatryczną ani opinią do celów sądowych. Jeśli Twoja sytuacja się pogorszy lub pojawi się zagrożenie bezpieczeństwa, skorzystaj z pomocy od razu:</p>
-${c.caseKind === "individual" ? "<p>Przy audycie indywidualnym: podsumowanie opiera się wyłącznie na perspektywie jednej osoby. Opisy zachowań, intencji i potrzeb partnera lub partnerki są interpretacją osoby uczestniczącej w audycie, a nie oceną ani diagnozą osoby nieobecnej.</p>" : ""}
+<p>To podsumowanie opisuje sytuację z perspektywy osoby lub osób uczestniczących w konsultacji w dniu sesji. Nie jest diagnozą psychiatryczną ani opinią do celów sądowych. Jeśli Twoja sytuacja się pogorszy lub pojawi się zagrożenie bezpieczeństwa, skorzystaj z pomocy od razu:</p>
+${c.caseKind === "individual" ? "<p>Przy konsultacji indywidualnej: podsumowanie opiera się wyłącznie na perspektywie jednej osoby. Opisy zachowań, intencji i potrzeb partnera lub partnerki są interpretacją osoby uczestniczącej w konsultacji, a nie oceną ani diagnozą osoby nieobecnej.</p>" : ""}
 <p>${helplines}. Poza Polską: lokalny numer alarmowy kraju pobytu.</p>
 </div>
-<div class="foot">DUO® · Terapia małżeństw · Podsumowanie sesji Audytu Relacji · ${esc(c.meta.sessionDate)}</div>
+<div class="foot">DUO® · Terapia małżeństw · Mapa Relacji – podsumowanie sesji · ${esc(c.meta.sessionDate)}</div>
 </body></html>`;
 }

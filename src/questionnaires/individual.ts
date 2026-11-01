@@ -1,4 +1,4 @@
-// Kwestionariusz Audytu Relacji, wersja indywidualna.
+// Kwestionariusz Mapy Relacji, wersja indywidualna.
 // Źródło: 05_kwestionariusz_indywidualny_dla_niego (M), 06_kwestionariusz_indywidualny_dla_niej (K).
 // Wersje różnią się wyłącznie formami gramatycznymi – budujemy je z jednej definicji,
 // a każdą różnicę zapisujemy jawnie przez g(męska, żeńska). Strony podajemy przez p(M, K).
@@ -113,7 +113,7 @@ export function consentSection(b: Builder): SectionDef {
         key: "c.processing",
         type: "consent",
         prompt:
-          "Wyrażam zgodę na przetwarzanie moich danych osobowych, w tym danych dotyczących zdrowia, w celu przeprowadzenia Audytu Relacji.",
+          "Wyrażam zgodę na przetwarzanie moich danych osobowych, w tym danych dotyczących zdrowia, w celu przygotowania Mapy Relacji.",
         hint: "Treść klauzuli informacyjnej (administrator danych, podstawy prawne, prawa) pochodzi z ustawień usługi i jest zapisywana razem z wersją w rejestrze zgód. Data zgody zapisuje się automatycznie.",
         required: true,
         source: { file: b.file, page: 2, note: "Pola 'Data' i 'Podpis' zastąpione rejestrem zgody z datą i wersją tekstu." },
@@ -140,7 +140,7 @@ export function screeningSection(b: Builder): SectionDef {
     title: "Część 1. Pytania przesiewowe o bezpieczeństwo",
     area: "safety",
     intro:
-      "Te pytania zadaję każdej osobie. Pomagają ustalić, czy Audyt Relacji jest teraz właściwą formą pomocy, czy najpierw potrzebne jest inne wsparcie.",
+      "Te pytania zadaję każdej osobie. Pomagają ustalić, czy Mapa Relacji jest teraz właściwą formą pomocy, czy najpierw potrzebne jest inne wsparcie.",
     questions: [
       q(1, "Czy ktoś w związku popychał, uderzył, szarpał lub w inny sposób fizycznie skrzywdził drugą osobę?", 3, ["risk-trigger", "violence"]),
       q(2, g("Czy boisz się swojej partnerki lub jej reakcji?", "Czy boisz się swojego partnera lub jego reakcji?"), 3, ["risk-trigger", "fear"]),
@@ -532,7 +532,7 @@ export function readinessSection(b: Builder): SectionDef {
         10,
         { tags: ["partner-perspective"] },
       ),
-      open(b, "s10.o2", "Co chcesz wynieść z audytu niezależnie od tego, czy związek przetrwa?", 10, { tags: ["goal"] }),
+      open(b, "s10.o2", "Co chcesz wynieść z konsultacji niezależnie od tego, czy związek przetrwa?", 10, { tags: ["goal"] }),
     ],
   };
 }
@@ -562,17 +562,17 @@ export function buildIndividual(gender: Gender): TemplateDef {
 
   const situation: SectionDef = {
     key: "situation",
-    title: "Twoja sytuacja i cel audytu",
+    title: "Twoja sytuacja i cel konsultacji",
     area: "situation",
     questions: [
       {
         key: "sit.why_alone",
         sourceNumber: "1",
         type: "single",
-        prompt: g("Dlaczego przychodzisz na audyt sam?", "Dlaczego przychodzisz na audyt sama?"),
+        prompt: g("Dlaczego przychodzisz na konsultację sam?", "Dlaczego przychodzisz na konsultację sama?"),
         options: [
           { value: "partner_refuses", label: g("Partnerka nie chce uczestniczyć.", "Partner nie chce uczestniczyć.") },
-          { value: "partner_unaware", label: g("Partnerka nie wie, że korzystam z audytu.", "Partner nie wie, że korzystam z audytu.") },
+          { value: "partner_unaware", label: g("Partnerka nie wie, że korzystam z konsultacji.", "Partner nie wie, że korzystam z konsultacji.") },
           { value: "first_myself", label: g("Wolę najpierw sam uporządkować swoją sytuację.", "Wolę najpierw sama uporządkować swoją sytuację.") },
           { value: "separated", label: "Jesteśmy już po rozstaniu lub w trakcie." },
           { value: "other", label: "Inny powód:", detailLabel: "Inny powód:" },
@@ -624,7 +624,7 @@ export function buildIndividual(gender: Gender): TemplateDef {
         key: "sit.goal",
         sourceNumber: "3",
         type: "multi",
-        prompt: "Co jest Twoim głównym celem audytu? (możesz zaznaczyć więcej niż jedno, a główny cel podkreśl)",
+        prompt: "Co jest Twoim głównym celem konsultacji? (możesz zaznaczyć więcej niż jedno, a główny cel podkreśl)",
         primaryPick: "Który cel jest główny?",
         options: [
           { value: "assess", label: "ocena, czy ten związek mi służy" },
@@ -642,17 +642,17 @@ export function buildIndividual(gender: Gender): TemplateDef {
 
   return {
     key: gender === "male" ? "individual_male" : "individual_female",
-    title: "Kwestionariusz Audytu Relacji, wersja indywidualna",
+    title: "Kwestionariusz Mapy Relacji, wersja indywidualna",
     audience: "individual",
     gender,
     sourceFile: file,
     needsVerification: false,
     intro: [
-      "Kwestionariusz przygotowuje Cię do indywidualnej sesji Audytu Relacji online. Jest przeznaczony dla osoby, która przychodzi na audyt sama.",
-      "Wypełnienie zajmuje około 15-25 minut. Sesja audytu indywidualnego trwa 60 minut. Rób to w spokoju, w miejscu, w którym nikt nie czyta Ci przez ramię.",
+      "Kwestionariusz przygotowuje Cię do indywidualnej konsultacji Mapy Relacji online. Jest przeznaczony dla osoby, która przychodzi na konsultację sama.",
+      "Wypełnienie zajmuje około 15-25 minut. Konsultacja indywidualna trwa 60 minut. Rób to w spokoju, w miejscu, w którym nikt nie czyta Ci przez ramię.",
       g(
-        "Ten audyt dotyczy związku, ale patrzymy na niego z Twojej perspektywy. Pytania o partnerkę dotyczą tego, jak Ty ją widzisz i jak rozumiesz jej słowa. Nie oceniamy osoby, której nie ma na sesji.",
-        "Ten audyt dotyczy związku, ale patrzymy na niego z Twojej perspektywy. Pytania o partnera dotyczą tego, jak Ty go widzisz i jak rozumiesz jego słowa. Nie oceniamy osoby, której nie ma na sesji.",
+        "Mapa Relacji dotyczy związku, ale patrzymy na niego z Twojej perspektywy. Pytania o partnerkę dotyczą tego, jak Ty ją widzisz i jak rozumiesz jej słowa. Nie oceniamy osoby, której nie ma na sesji.",
+        "Mapa Relacji dotyczy związku, ale patrzymy na niego z Twojej perspektywy. Pytania o partnera dotyczą tego, jak Ty go widzisz i jak rozumiesz jego słowa. Nie oceniamy osoby, której nie ma na sesji.",
       ),
       "Nie ma dobrych ani złych odpowiedzi. Największą wartość ma szczerość wobec siebie, także w pytaniach o Twój własny udział w trudnościach.",
       "Skale są autorskie i służą do rozmowy na sesji. Nie są testem diagnostycznym.",
@@ -678,7 +678,7 @@ export function buildIndividual(gender: Gender): TemplateDef {
       readinessSection(b),
       declarationSection(
         b,
-        "Rozumiem, że Audyt Relacji jest konsultacją psychologiczną, a nie terapią ani pomocą kryzysową, oraz że opiera się na mojej perspektywie. Wiem, gdzie szukać pilnej pomocy, jeśli będzie potrzebna.",
+        "Rozumiem, że Mapa Relacji jest konsultacją psychologiczną, a nie terapią ani pomocą kryzysową, oraz że opiera się na mojej perspektywie. Wiem, gdzie szukać pilnej pomocy, jeśli będzie potrzebna.",
       ),
     ],
   };

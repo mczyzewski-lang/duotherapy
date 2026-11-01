@@ -3,9 +3,9 @@ import "./globals.css";
 import { DemoBanner } from "@/components/ui";
 
 export const metadata: Metadata = {
-  title: { default: "DUO® – Audyt Relacji", template: "%s · DUO®" },
+  title: { default: "Mapa Relacji – DUO® | Nie wiesz, co dalej z Waszą relacją?", template: "%s · DUO®" },
   description:
-    "Zrozum, co naprawdę dzieje się w Twojej relacji – i świadomie zdecyduj, co dalej. Audyt Relacji DUO®: poufny kwestionariusz i uporządkowana rozmowa z psychologiem online.",
+    "Nie musisz dziś wiedzieć, co dalej. Mapa Relacji DUO® pomaga zrozumieć, w jakim miejscu jesteście – z psychologiem, indywidualnie lub razem. Zacznij od 6 krótkich pytań.",
   robots: { index: true, follow: true },
 };
 

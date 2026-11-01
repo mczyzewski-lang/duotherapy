@@ -104,7 +104,7 @@ describe("podsumowanie", () => {
     expect(d.mechanism.rows[0].values[0]).toContain("brak odpowiedzi na wiadomość");
     expect(d.mechanism.rows.find((r) => r.key === "behavior")!.values[1]).toBe("W opisie uczestnika: wychodzi z pokoju");
     expect(d.mechanism.rows.find((r) => r.key === "need")!.values[1]).toBe(MISSING); // brak fikcyjnych danych
-    expect(renderReportHtml(d, DEFAULT_SETTINGS)).toContain("Przy audycie indywidualnym: podsumowanie opiera się wyłącznie na perspektywie jednej osoby");
+    expect(renderReportHtml(d, DEFAULT_SETTINGS)).toContain("Przy konsultacji indywidualnej: podsumowanie opiera się wyłącznie na perspektywie jednej osoby");
   });
   it("zatwierdzenie blokują braki; przy zagrożeniu terapia par i mediacja są niedozwolone", () => {
     const d = buildDraft({ ...base, riskFlag: true, audience: "joint", caseKind: "couple", participants: [{ name: "A" }, { name: "B" }], ownData: null, notes: [] });

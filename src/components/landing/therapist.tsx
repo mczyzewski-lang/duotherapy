@@ -29,7 +29,7 @@ export function TherapistSection() {
         </figure>
 
         <div>
-          <p className="text-sm font-semibold uppercase tracking-[0.18em] text-clay">Kim jestem i jak pomagam</p>
+          <p className="text-sm font-semibold uppercase tracking-[0.18em] text-clay">Kto pomaga?</p>
           <h2 id="o-mnie-h" className="mt-3 font-display text-3xl leading-tight text-ink sm:text-4xl">
             Nazywam się Klaudia Bosek. Jestem psychologiem i psychoterapeutką relacji.
           </h2>
@@ -44,8 +44,8 @@ export function TherapistSection() {
               jak i formalne.
             </p>
           </div>
-          <blockquote className="mt-6 border-l-2 border-clay pl-4 font-display text-lg leading-snug text-ink">
-            „Trwała zmiana zaczyna się od zrozumienia własnych mechanizmów – ale wymaga też konkretnych narzędzi.”
+          <blockquote className="mt-6 rounded-2xl bg-white p-5 font-display text-xl leading-snug text-ink shadow-soft ring-1 ring-sand">
+            „Nie jesteśmy tu po stronie męża ani żony. Jesteśmy po stronie lepszego zrozumienia Waszej sytuacji.”
           </blockquote>
 
           <ul className="mt-8 grid grid-cols-3 gap-4">

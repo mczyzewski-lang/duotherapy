@@ -13,7 +13,7 @@ import { COUPLE_PLAN, INDIVIDUAL_PLAN, SESSION_CONDITIONS } from "@/lib/session-
 export const metadata = { title: "Tryb sesji" };
 
 const KEY_ANSWERS: [string, string][] = [
-  ["sit.goal", "Cel audytu"],
+  ["sit.goal", "Cel"],
   ["sit.who_considers", "Kto rozważa rozstanie"],
   ["s2.o1", "Ostatnia poważna kłótnia"],
   ["s3.trigger", "Typowy wyzwalacz"],
@@ -22,7 +22,7 @@ const KEY_ANSWERS: [string, string][] = [
   ["s3.action", "Co robię"],
   ["s9.o1", "Najważniejsze potrzeby"],
   ["s10.position", "Gdzie jestem teraz"],
-  ["s10.o2", "Co chcę wynieść z audytu"],
+  ["s10.o2", "Co chcę wynieść z konsultacji"],
 ];
 
 export default async function SessionPage({ params }: { params: Promise<{ id: string }> }) {

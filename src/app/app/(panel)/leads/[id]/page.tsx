@@ -6,7 +6,9 @@ import { NewCaseFields } from "@/components/panel/new-case-fields";
 import { createCaseAction } from "@/actions/cases";
 import { Alert, Badge, Card, Field, Input, PageTitle, Select, Textarea } from "@/components/ui";
 import { asStaff, requireStaff } from "@/lib/auth";
-import { CONCERN_LABEL, INTENT_LABEL, LEAD_STAGES } from "@/lib/leads";
+import { CONCERN_LABEL, INTENT_LABEL, LEAD_STAGES, PREFERRED_TIME_LABEL } from "@/lib/leads";
+import { decrypt } from "@/lib/crypto";
+import { optionLabel, QUIZ } from "@/lib/mapa-quiz";
 import { readSettings } from "@/lib/settings";
 
 export const metadata = { title: "Zgłoszenie" };
@@ -30,6 +32,7 @@ export default async function LeadPage({ params }: { params: Promise<{ id: strin
   });
   if (!d) notFound();
   const { lead, acts, consents, therapists, settings } = d;
+  const quiz = lead.quiz_enc ? decrypt<Record<string, string>>(lead.quiz_enc) : null;
   const stageLabel = LEAD_STAGES.find(([k]) => k === lead.stage)?.[1];
   const fmtDT = (x: Date | null) => (x ? new Date(new Date(x).getTime() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16) : "");
   return (
@@ -39,19 +42,45 @@ export default async function LeadPage({ params }: { params: Promise<{ id: strin
       <div className="grid gap-6 xl:grid-cols-[1fr_380px]">
         <div className="space-y-6">
           <Card className="p-6">
-            <h2 className="font-display text-lg text-ink">Dane i quiz</h2>
+            <h2 className="font-display text-lg text-ink">Kontakt</h2>
             <dl className="mt-4 grid gap-x-6 gap-y-3 text-sm sm:grid-cols-2">
-              <div><dt className="text-muted">E-mail</dt><dd><a href={`mailto:${lead.email}`} className="text-forest">{lead.email}</a></dd></div>
-              <div><dt className="text-muted">Telefon</dt><dd>{lead.phone ? <a href={`tel:${lead.phone}`} className="text-forest">{lead.phone}</a> : "—"}</dd></div>
-              <div><dt className="text-muted">Preferowany kontakt</dt><dd>{{ phone: "telefon", sms: "SMS", email: "e-mail" }[lead.preferred_contact as string]}{lead.quiz?.discreet && <Badge tone="clay" className="ml-2">dyskretnie – bez wiadomości głosowych</Badge>}</dd></div>
-              <div><dt className="text-muted">Rodzaj</dt><dd>{lead.mode === "couple" ? "para (90 min)" : "indywidualnie (60 min)"}</dd></div>
-              <div><dt className="text-muted">Intencja</dt><dd>{INTENT_LABEL[lead.intent]}</dd></div>
-              <div><dt className="text-muted">Co obciąża</dt><dd>{(lead.quiz?.concerns ?? []).map((c: string) => CONCERN_LABEL[c]).join(", ") || "—"}</dd></div>
-              <div><dt className="text-muted">Staż</dt><dd>{LEN[lead.quiz?.length] ?? "—"}</dd></div>
-              <div><dt className="text-muted">Dzieci</dt><dd>{lead.quiz?.children === "yes" ? "tak" : lead.quiz?.children === "no" ? "nie" : "—"}</dd></div>
-              <div><dt className="text-muted">Kiedy</dt><dd>{WHEN[lead.quiz?.when] ?? "—"}</dd></div>
+              <div><dt className="text-muted">Telefon</dt><dd>{lead.phone ? <a href={`tel:${lead.phone}`} className="text-base font-medium text-forest">{lead.phone}</a> : "—"}</dd></div>
+              <div><dt className="text-muted">E-mail</dt><dd>{lead.email ? <a href={`mailto:${lead.email}`} className="text-forest">{lead.email}</a> : "—"}</dd></div>
+              <div><dt className="text-muted">Kiedy dzwonić</dt><dd>{PREFERRED_TIME_LABEL[lead.preferred_time] ?? "dowolna pora"}{lead.quiz?.discreet && <Badge tone="clay" className="ml-2">dyskretnie</Badge>}</dd></div>
+              <div><dt className="text-muted">Pierwszy krok</dt><dd>{lead.mode === "couple" ? "razem z partnerem/partnerką" : lead.mode === "individual" ? "samodzielnie" : "nie ustalono"}</dd></div>
               <div><dt className="text-muted">Zgody</dt><dd>{consents.map((c) => <span key={c.kind} className="block">{c.kind === "lead_contact" ? "kontakt" : "marketing"}: {c.granted ? "tak" : "nie"} <span className="text-xs text-muted">(wersja {c.text_version})</span></span>)}</dd></div>
+              <div>
+                <dt className="text-muted">Źródło</dt>
+                <dd>
+                  {[lead.attribution?.utm_source, lead.attribution?.utm_medium, lead.attribution?.utm_campaign].filter(Boolean).join(" / ") || lead.attribution?.referrer || "bezpośrednio"}
+                  {lead.ab_variant && <Badge className="ml-2">nagłówek {lead.ab_variant}</Badge>}
+                </dd>
+              </div>
             </dl>
+          </Card>
+
+          <Card className="p-6">
+            <h2 className="font-display text-lg text-ink">Odpowiedzi z quizu</h2>
+            {quiz ? (
+              <>
+                <p className="mt-1 text-xs text-muted">Wstępne odpowiedzi osoby – nie diagnoza. Widoczne tylko dla zespołu (szyfrowane).</p>
+                <dl className="mt-4 space-y-3 text-sm">
+                  {QUIZ.map((q) => (
+                    <div key={q.id}>
+                      <dt className="text-muted">{q.title}</dt>
+                      <dd className="font-medium text-ink">{optionLabel(q.id, quiz[q.id])}</dd>
+                    </div>
+                  ))}
+                </dl>
+              </>
+            ) : (
+              <dl className="mt-4 grid gap-x-6 gap-y-3 text-sm sm:grid-cols-2">
+                <div><dt className="text-muted">Intencja</dt><dd>{INTENT_LABEL[lead.intent] ?? "—"}</dd></div>
+                <div><dt className="text-muted">Co obciąża</dt><dd>{(lead.quiz?.concerns ?? []).map((c: string) => CONCERN_LABEL[c]).join(", ") || "—"}</dd></div>
+                <div><dt className="text-muted">Staż</dt><dd>{LEN[lead.quiz?.length] ?? "—"}</dd></div>
+                <div><dt className="text-muted">Kiedy</dt><dd>{WHEN[lead.quiz?.when] ?? "—"}</dd></div>
+              </dl>
+            )}
           </Card>
 
           <Card className="p-6">
@@ -59,7 +88,7 @@ export default async function LeadPage({ params }: { params: Promise<{ id: strin
             <ol className="mt-3 list-decimal space-y-1.5 pl-5 text-sm leading-relaxed text-ink-soft">
               <li>Przedstaw się, sprawdź, czy to dobry i bezpieczny moment na rozmowę{lead.quiz?.discreet ? " (osoba prosi o dyskrecję)" : ""}.</li>
               <li>Zapytaj krótko, co skłoniło do zgłoszenia i czego osoba oczekuje.</li>
-              <li>Wyjaśnij audyt: jednorazowa konsultacja ({lead.mode === "couple" ? "90 minut dla pary, każda osoba wypełnia własny kwestionariusz" : "60 minut indywidualnie"}), poufne kwestionariusze ok. 15–25 min, podsumowanie i propozycja ścieżki.</li>
+              <li>Wyjaśnij Mapę Relacji: poufne kwestionariusze (ok. 15–25 min), konsultacja z psychologiem ({lead.mode === "couple" ? "90 minut wspólnie, każda osoba wypełnia własny kwestionariusz" : "60 minut indywidualnie lub 90 minut wspólnie"}), pisemne podsumowanie z możliwymi kierunkami. Podaj cenę i warianty.</li>
               <li>Podkreśl: to nie terapia ani diagnoza; rekomendacja jest propozycją, decyzja należy do klienta.</li>
               <li>Zapytaj o bezpieczeństwo. Przy sygnałach przemocy: bez wspólnej sesji – ścieżka bezpieczeństwa i numery pomocy.</li>
               <li>Ustal formę płatności{settings.site.paymentUrl ? " (link do płatności w ustawieniach)" : ""} i kolejne kroki: link do kwestionariusza z kodem przekazanym telefonicznie.</li>
@@ -115,7 +144,7 @@ export default async function LeadPage({ params }: { params: Promise<{ id: strin
               <ActionForm action={createCaseAction as never} className="mt-4 space-y-4">
                 <input type="hidden" name="lead_id" value={lead.id} />
                 <input type="hidden" name="intent" value={lead.intent} />
-                <NewCaseFields defaultKind={lead.mode} defaultName={lead.name} defaultEmail={lead.email} defaultPhone={lead.phone ?? ""} therapists={therapists.map((t) => ({ id: t.id, name: t.display_name }))} defaultTherapist={lead.assigned_therapist_id ?? s.user.therapistId ?? ""} isAdmin={s.user.role === "admin"} />
+                <NewCaseFields defaultKind={lead.mode} defaultName={lead.name} defaultEmail={lead.email ?? ""} defaultPhone={lead.phone ?? ""} therapists={therapists.map((t) => ({ id: t.id, name: t.display_name }))} defaultTherapist={lead.assigned_therapist_id ?? s.user.therapistId ?? ""} isAdmin={s.user.role === "admin"} />
                 <SubmitButton className="w-full">Załóż sprawę</SubmitButton>
               </ActionForm>
             )}

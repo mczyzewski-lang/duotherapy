@@ -114,6 +114,14 @@ describe("RLS: uprawnienia specjalistów i ról", () => {
     expect((await withActor(t2, (tx) => tx`select * from inquiries`)).length).toBeGreaterThan(0);
   });
 
+  it("zdarzenia lejka: publicznie tylko zapis (bez odczytu), zespół widzi agregaty", async () => {
+    await withActor({ kind: "public" }, (tx) => tx`insert into funnel_events (event, anon_id) values ('landing_view', 'abcdef123456')`);
+    expect(await withActor({ kind: "public" }, (tx) => tx`select * from funnel_events`)).toHaveLength(0);
+    expect(await withActor(A(), (tx) => tx`select * from funnel_events`)).toHaveLength(0);
+    expect((await withActor(t2, (tx) => tx`select * from funnel_events`)).length).toBeGreaterThan(0);
+    await expect(withActor({ kind: "public" }, (tx) => tx`insert into funnel_events (event, anon_id) values ('cokolwiek', 'abcdef123456')`)).rejects.toThrow();
+  });
+
   it("psycholog nie może edytować szablonów (tylko administrator)", async () => {
     const r = await withActor(t1, (tx) => tx`update questionnaire_template_versions set change_note = 'x' returning id`);
     expect(r).toHaveLength(0);

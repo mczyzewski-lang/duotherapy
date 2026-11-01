@@ -1,4 +1,4 @@
-// Kwestionariusz Audytu Relacji dla pary (każda osoba wypełnia osobno).
+// Kwestionariusz Mapy Relacji dla pary (każda osoba wypełnia osobno).
 //
 // UWAGA – WYMAGA WERYFIKACJI: pliki źródłowe 01_kwestionariusz_dla_niego.pdf oraz
 // 02_kwestionariusz_dla_niej.pdf NIE zostały dostarczone. Do czasu ich otrzymania szablony
@@ -45,7 +45,7 @@ export function buildCouple(gender: Gender): TemplateDef {
 
   const situation: SectionDef = {
     key: "situation",
-    title: "Twoja sytuacja i cel audytu",
+    title: "Twoja sytuacja i cel konsultacji",
     area: "situation",
     questions: [
       {
@@ -80,7 +80,7 @@ export function buildCouple(gender: Gender): TemplateDef {
         key: "sit.goal",
         sourceNumber: "3",
         type: "multi",
-        prompt: "Co jest Twoim głównym celem audytu? (możesz zaznaczyć więcej niż jedno, a główny cel podkreśl)",
+        prompt: "Co jest Twoim głównym celem konsultacji? (możesz zaznaczyć więcej niż jedno, a główny cel podkreśl)",
         primaryPick: "Który cel jest główny?",
         options: [
           { value: "assess", label: "ocena, czy ten związek mi służy" },
@@ -98,7 +98,7 @@ export function buildCouple(gender: Gender): TemplateDef {
 
   return {
     key: gender === "male" ? "couple_male" : "couple_female",
-    title: "Kwestionariusz Audytu Relacji dla pary",
+    title: "Kwestionariusz Mapy Relacji dla pary",
     audience: "couple",
     gender,
     sourceFile: b.file,
@@ -106,7 +106,7 @@ export function buildCouple(gender: Gender): TemplateDef {
     verificationNote:
       "Plik źródłowy 01/02 nie został dostarczony. Szablon roboczy zbudowany z pozycji wspólnych z wersją indywidualną. Przed użyciem z prawdziwymi klientami porównaj z PDF i opublikuj poprawioną wersję w edytorze szablonów.",
     intro: [
-      "Kwestionariusz przygotowuje Cię do wspólnej sesji Audytu Relacji online (90 minut). Każde z Was wypełnia go osobno, na własnym, prywatnym linku.",
+      "Kwestionariusz przygotowuje Cię do wspólnej konsultacji Mapy Relacji online (90 minut). Każde z Was wypełnia go osobno, na własnym, prywatnym linku.",
       "Wypełnienie zajmuje około 15-25 minut. Rób to w spokoju, w miejscu, w którym nikt nie czyta Ci przez ramię – także druga osoba w związku.",
       g(
         "Twoje odpowiedzi nie są pokazywane partnerce. Psycholog nie ujawnia treści jednej osoby drugiej bez zgody.",
@@ -133,7 +133,7 @@ export function buildCouple(gender: Gender): TemplateDef {
       fromIndividual(
         declarationSection(
           b,
-          "Rozumiem, że Audyt Relacji jest konsultacją psychologiczną, a nie terapią ani pomocą kryzysową, oraz że opiera się na mojej perspektywie. Wiem, gdzie szukać pilnej pomocy, jeśli będzie potrzebna.",
+          "Rozumiem, że Mapa Relacji jest konsultacją psychologiczną, a nie terapią ani pomocą kryzysową, oraz że opiera się na mojej perspektywie. Wiem, gdzie szukać pilnej pomocy, jeśli będzie potrzebna.",
         ),
       ),
     ],

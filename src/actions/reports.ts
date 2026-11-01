@@ -22,7 +22,7 @@ export async function createReportAction(fd: FormData) {
     const data = await loadCase(tx, caseId);
     if (!data) throw new Error("Brak dostępu");
     const { c, participants } = data;
-    if (c.kind === "individual" && audience === "joint") throw new Error("Audyt indywidualny ma podsumowanie osobne");
+    if (c.kind === "individual" && audience === "joint") throw new Error("Konsultacja indywidualna ma podsumowanie osobne");
     const people = await loadPeople(tx, participants as never);
     const own = forPid ? people.find((p) => p.participantId === forPid) ?? null : null;
     if (forPid && !own) throw new Error("Uczestnik nie należy do sprawy");

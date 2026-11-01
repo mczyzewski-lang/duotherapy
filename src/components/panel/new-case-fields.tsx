@@ -24,7 +24,7 @@ export function NewCaseFields(p: { defaultKind?: string; defaultName?: string; d
   return (
     <>
       <fieldset>
-        <legend className="text-sm font-medium text-ink">Rodzaj audytu</legend>
+        <legend className="text-sm font-medium text-ink">Rodzaj konsultacji</legend>
         <div className="mt-2 grid grid-cols-2 gap-2">
           {[["individual", "Indywidualny · 60 min"], ["couple", "Para · 90 min"]].map(([v, l]) => (
             <label key={v} className={`cursor-pointer rounded-xl px-3 py-2.5 text-center text-sm ring-1 ${kind === v ? "bg-forest text-white ring-forest" : "bg-white ring-sand-dark"}`}>
@@ -36,7 +36,7 @@ export function NewCaseFields(p: { defaultKind?: string; defaultName?: string; d
       {person(1)}
       {kind === "couple" && person(2)}
       {kind === "couple" && <p className="text-xs text-muted">Każda osoba dostanie osobny link i kod. Odpowiedzi nie są widoczne dla drugiej osoby.</p>}
-      <Field label="Cel audytu / powód zgłoszenia" htmlFor="goal"><Textarea id="goal" name="goal" className="min-h-20" /></Field>
+      <Field label="Cel / powód zgłoszenia" htmlFor="goal"><Textarea id="goal" name="goal" className="min-h-20" /></Field>
       <Field label="Psycholog prowadzący" htmlFor="therapist_id">
         <Select id="therapist_id" name="therapist_id" defaultValue={p.defaultTherapist} disabled={!p.isAdmin}>
           {p.therapists.map((t) => <option key={t.id} value={t.id}>{t.name}</option>)}

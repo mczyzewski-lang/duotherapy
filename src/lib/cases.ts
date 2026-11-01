@@ -40,8 +40,8 @@ export async function createCase(
   actor: Actor & { userId: string },
   input: { kind: "individual" | "couple"; therapistId: string; participants: NewParticipant[]; goal?: string; intent?: string | null; leadId?: string | null; isDemo?: boolean },
 ): Promise<string> {
-  if (input.kind === "couple" && input.participants.length !== 2) throw new Error("Audyt pary wymaga dwóch uczestników");
-  if (input.kind === "individual" && input.participants.length !== 1) throw new Error("Audyt indywidualny ma jednego uczestnika");
+  if (input.kind === "couple" && input.participants.length !== 2) throw new Error("Konsultacja dla pary wymaga dwóch uczestników");
+  if (input.kind === "individual" && input.participants.length !== 1) throw new Error("Konsultacja indywidualna ma jednego uczestnika");
   const year = new Date().getFullYear();
   const [{ n }] = await tx<{ n: number }[]>`select count(*)::int + 1 as n from cases where ref like ${`DUO-${year}-%`}`;
   const ref = `DUO-${year}-${String(n).padStart(4, "0")}${input.isDemo ? "-DEMO" : ""}`;

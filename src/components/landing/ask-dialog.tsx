@@ -53,7 +53,7 @@ export function AskDialog({ consentText }: { consentText: string }) {
                 });
               }}
             >
-              <p className="text-sm text-muted">Zapytaj o audyt, przebieg spotkania czy sprawy organizacyjne. Nie musisz opisywać szczegółów swojej sytuacji.</p>
+              <p className="text-sm text-muted">Zapytaj o Mapę Relacji, przebieg spotkania czy sprawy organizacyjne. Nie musisz opisywać szczegółów swojej sytuacji.</p>
               <div className="grid gap-4 sm:grid-cols-2">
                 <Field label="Imię" htmlFor="ask-name" required error={err?.field === "name" ? err.text : undefined}>
                   <Input id="ask-name" autoComplete="given-name" value={f.name} onChange={(e) => setF({ ...f, name: e.target.value })} />

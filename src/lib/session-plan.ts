@@ -10,13 +10,13 @@ export interface Stage {
 }
 
 export const INDIVIDUAL_PLAN: Stage[] = [
-  { key: "contract", from: 0, to: 5, title: "Kontrakt i bezpieczeństwo", goal: "zasady, poufność, granice audytu, potwierdzenie przesiewu" },
+  { key: "contract", from: 0, to: 5, title: "Kontrakt i bezpieczeństwo", goal: "zasady, poufność, granice konsultacji, potwierdzenie przesiewu" },
   {
     key: "reason",
     from: 5,
     to: 15,
     title: "Powód zgłoszenia i cel",
-    goal: '"Dlaczego teraz?", punkty zwrotne, cel audytu z kwestionariusza',
+    goal: '"Dlaczego teraz?", punkty zwrotne, cel z kwestionariusza',
     questions: ["Co mówi o tym, dlaczego nie chce przyjść? Co może się za tym kryć poza odmową?"],
   },
   {
@@ -64,14 +64,14 @@ export const INDIVIDUAL_PLAN: Stage[] = [
       "Mechanizm konfliktu w jednym zdaniu.",
       "Czy związek służy i jaka jest gotowość.",
       "Rekomendowana ścieżka (jedna z trzech) i 1-3 pierwsze kroki. Zawsze podaj opcję „nic teraz nie wybieram”.",
-      "Co zrobi Pan/Pani z wynikami audytu, jeśli druga osoba nie zechce nic zmieniać?",
+      "Co zrobi Pan/Pani z wnioskami z konsultacji, jeśli druga osoba nie zechce nic zmieniać?",
     ],
   },
   { key: "closing", from: 55, to: 60, title: "Zamknięcie", goal: "pytania, termin podsumowania (zalecane do 5 dni roboczych), forma kontaktu" },
 ];
 
 export const COUPLE_PLAN: Stage[] = [
-  { key: "contract", from: 0, to: 5, title: "Kontrakt i bezpieczeństwo (wspólnie)", goal: "zasady, poufność, zasada sekretów, granice audytu" },
+  { key: "contract", from: 0, to: 5, title: "Kontrakt i bezpieczeństwo (wspólnie)", goal: "zasady, poufność, zasada sekretów, granice konsultacji" },
   {
     key: "individual",
     from: 5,

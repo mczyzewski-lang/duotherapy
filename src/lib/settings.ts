@@ -36,6 +36,10 @@ export interface Settings {
     vslUrl: string;
     /** Link do płatności (np. wygenerowany w systemie płatności). Puste = informacja, że link prześlemy. */
     paymentUrl: string;
+    /** Obietnica czasu oddzwonienia, np. „w ciągu 1 dnia roboczego”. Puste = nie podajemy czasu. */
+    callbackPromise: string;
+    /** Pierwszopartyjne zdarzenia lejka (bez treści odpowiedzi). */
+    funnelTracking: boolean;
     faq: { q: string; a: string }[];
   };
   flow: {
@@ -61,9 +65,8 @@ export const DEFAULT_SETTINGS: Settings = {
     retentionPolicy: "",
     privacyPolicy: "",
     questionnaireNotice:
-      "Administratorem Twoich danych osobowych jest: {administrator}. Dane z kwestionariusza, w tym informacje o zdrowiu, przetwarzam wyłącznie w celu przeprowadzenia Audytu Relacji i przygotowania podsumowania, na podstawie Twojej wyraźnej zgody (art. 6 ust. 1 lit. a oraz art. 9 ust. 2 lit. a RODO). Obowiązuje mnie tajemnica zawodowa psychologa. Nie udostępniam danych osobom trzecim, w tym drugiej osobie w związku, bez Twojej zgody, z wyjątkiem sytuacji przewidzianych prawem (np. bezpośrednie zagrożenie życia). Masz prawo dostępu do danych, ich sprostowania, usunięcia, ograniczenia przetwarzania oraz wycofania zgody w dowolnym momencie, bez wpływu na zgodność z prawem wcześniejszego przetwarzania. Przysługuje Ci skarga do Prezesa Urzędu Ochrony Danych Osobowych.",
-    leadContactConsent:
-      "Wyrażam zgodę na kontakt telefoniczny lub e-mailowy w sprawie mojego zgłoszenia na Audyt Relacji DUO®.",
+      "Administratorem Twoich danych osobowych jest: {administrator}. Dane z kwestionariusza, w tym informacje o zdrowiu, przetwarzam wyłącznie w celu przygotowania Mapy Relacji i podsumowania sesji, na podstawie Twojej wyraźnej zgody (art. 6 ust. 1 lit. a oraz art. 9 ust. 2 lit. a RODO). Obowiązuje mnie tajemnica zawodowa psychologa. Nie udostępniam danych osobom trzecim, w tym drugiej osobie w związku, bez Twojej zgody, z wyjątkiem sytuacji przewidzianych prawem (np. bezpośrednie zagrożenie życia). Masz prawo dostępu do danych, ich sprostowania, usunięcia, ograniczenia przetwarzania oraz wycofania zgody w dowolnym momencie, bez wpływu na zgodność z prawem wcześniejszego przetwarzania. Przysługuje Ci skarga do Prezesa Urzędu Ochrony Danych Osobowych.",
+    leadContactConsent: "Proszę o kontakt telefoniczny w sprawie Mapy Relacji. Wiem, że moje dane zostaną użyte wyłącznie w tym celu.",
     leadMarketingConsent:
       "Chcę otrzymywać od DUO® okazjonalne informacje o materiałach i usługach (opcjonalnie, mogę zrezygnować w każdej chwili).",
     inquiryConsent: "Wyrażam zgodę na kontakt e-mailowy lub telefoniczny w odpowiedzi na moje pytanie.",
@@ -77,30 +80,44 @@ export const DEFAULT_SETTINGS: Settings = {
     contactEmail: "",
     vslUrl: "",
     paymentUrl: "",
+    callbackPromise: "",
+    funnelTracking: true,
     faq: [
       {
-        q: "Czy Audyt Relacji to terapia par?",
-        a: "Nie. To jednorazowa, ustrukturyzowana konsultacja: 60 minut przy audycie indywidualnym lub 90 minut dla pary. Jej celem jest mapa sytuacji i świadomy wybór dalszej drogi. Jeśli zdecydujecie się na dalszą pracę, może nią być terapia par – ale nie musi.",
+        q: "Czy mogę rozpocząć samodzielnie?",
+        a: "Tak. Quiz, rozmowę i całą Mapę Relacji możesz przejść sam lub sama. Jeśli później druga osoba zechce dołączyć, wypełni własny, poufny kwestionariusz.",
       },
       {
-        q: "Partner lub partnerka nie chce przyjść. Czy mogę przyjść sam lub sama?",
-        a: "Tak. Audyt indywidualny pomaga uporządkować relację z Twojej perspektywy i zobaczyć, co w niej zależy od Ciebie. Nie oceniamy osoby, której nie ma na sesji.",
+        q: "Czy partner musi zgodzić się na konsultację?",
+        a: "Na konsultację indywidualną – nie. Wspólna konsultacja wymaga udziału i zgody obu osób. Nie kontaktujemy się z drugą osobą bez Twojej wiedzy.",
       },
       {
-        q: "Czy druga osoba zobaczy moje odpowiedzi?",
-        a: "Nie. Każda osoba wypełnia kwestionariusz na własnym, prywatnym linku. Psycholog nie ujawnia treści jednej osoby drugiej bez zgody.",
+        q: "Czy Mapa Relacji jest terapią?",
+        a: "Nie. To jednorazowy, uporządkowany proces: kwestionariusze, konsultacja z psychologiem i pisemne podsumowanie. Pomaga zrozumieć sytuację i możliwe kierunki. Terapia może być jednym z nich – ale nie musi.",
       },
       {
-        q: "Czy psycholog powie nam, czy mamy się rozstać?",
-        a: "Nie. Psycholog pokazuje mechanizmy, zasoby i możliwe drogi, a rekomendacja jest propozycją. Decyzja zawsze należy do Was.",
+        q: "Czy psycholog powie nam, czy powinniśmy się rozwieść?",
+        a: "Nie. Psycholog pokaże, co dzieje się między Wami, co Was wspiera i jakie widzi możliwe kierunki. Decyzja zawsze należy do Was – nie jesteśmy ani po stronie ratowania związku za wszelką cenę, ani po stronie rozstania.",
       },
       {
-        q: "Czy dostanę wynik albo ocenę związku?",
-        a: "Nie ma tu punktacji ani prognoz. Otrzymasz opisowe podsumowanie: mocne strony, obszary napięcia, mechanizm konfliktu, rekomendacje i konkretne następne kroki.",
+        q: "Co, jeśli chcemy spróbować odbudować związek?",
+        a: "Mapa Relacji pomoże zobaczyć, od czego zacząć. Dalszą drogą może być terapia par, program Odbudowa Więzi albo wsparcie indywidualne – wybór należy do Was.",
       },
       {
-        q: "Co, jeśli w związku jest przemoc albo jestem w kryzysie?",
-        a: "Bezpieczeństwo jest na pierwszym miejscu. Audyt nie jest pomocą kryzysową. W nagłej sytuacji dzwoń pod 112. Przy przemocy nie prowadzimy wspólnej sesji ani mediacji – pomożemy znaleźć właściwe wsparcie.",
+        q: "Co, jeśli zdecydujemy się rozstać?",
+        a: "Pomożemy przejść przez ten etap spokojniej: przygotować się do rozmowy, zadbać o dzieci, jeśli je macie, i nie eskalować konfliktu. Osobną ofertę mediacji i rozwodu online prowadzi Nowy Etap – marka powiązana z DUO. Skorzystanie z niej jest całkowicie dobrowolne i nie wpływa na rekomendacje psychologa.",
+      },
+      {
+        q: "Ile trwa przygotowanie Mapy Relacji?",
+        a: "Kwestionariusz zajmuje około 15–25 minut, a konsultacja z psychologiem 60 minut indywidualnie lub 90 minut dla pary. Termin konsultacji i przekazania podsumowania ustalamy wspólnie podczas rozmowy telefonicznej.",
+      },
+      {
+        q: "Ile kosztuje proces?",
+        a: "Krótki quiz jest bezpłatny. Mapa Relacji to płatna usługa – konsultant przedstawi koszt i dostępne warianty w rozmowie, zanim podejmiesz jakąkolwiek decyzję.",
+      },
+      {
+        q: "Czy nasze informacje są poufne?",
+        a: "Tak. Każda osoba wypełnia kwestionariusz na własnym linku z kodem dostępu. Odpowiedzi są szyfrowane, widzi je tylko psycholog prowadzący i nie przekazujemy ich drugiej osobie bez zgody. Odpowiedzi z quizu nie trafiają do narzędzi reklamowych.",
       },
     ],
   },
@@ -127,7 +144,7 @@ export const DEFAULT_SETTINGS: Settings = {
     abroad:
       "Jeśli mieszkasz poza Polską: polskie infolinie mogą być niedostępne lub płatne z zagranicy. W nagłej sytuacji dzwoń na lokalny numer alarmowy kraju, w którym jesteś (w Unii Europejskiej to 112), lub zgłoś się na najbliższy szpitalny oddział ratunkowy. Warto zawczasu sprawdzić i zapisać lokalne numery pomocy.",
     verifiedNote: "Numery zweryfikowane na stronach gov.pl i niebieskalinia.info w październiku 2026 r.",
-    disclaimer: "Audyt Relacji nie jest formą pomocy kryzysowej ani interwencji i nie zastępuje leczenia psychiatrycznego.",
+    disclaimer: "Mapa Relacji nie jest formą pomocy kryzysowej ani interwencji i nie zastępuje leczenia psychiatrycznego.",
   },
 };
 

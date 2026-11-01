@@ -2,7 +2,7 @@ import Link from "next/link";
 import { leadStageAction } from "@/actions/leads";
 import { Badge, PageTitle } from "@/components/ui";
 import { asStaff, requireStaff } from "@/lib/auth";
-import { CONCERN_LABEL, INTENT_LABEL, LEAD_STAGES } from "@/lib/leads";
+import { CONCERN_LABEL, LEAD_STAGES, leadSummary } from "@/lib/leads";
 
 export const metadata = { title: "Zgłoszenia" };
 
@@ -27,8 +27,10 @@ export default async function LeadsPage() {
                   {col.map((l) => (
                     <li key={l.id} className="rounded-xl bg-white p-3 text-sm shadow-soft ring-1 ring-sand">
                       <Link href={`/app/leads/${l.id}`} className="font-medium text-forest hover:underline">{l.name}</Link>
-                      <p className="mt-0.5 text-xs text-muted">{l.mode === "couple" ? "para" : "indywidualnie"} · {new Date(l.created_at).toLocaleDateString("pl-PL")}</p>
-                      <p className="mt-1.5 text-xs text-ink-soft">{INTENT_LABEL[l.intent]}</p>
+                      {l.phone && <a href={`tel:${l.phone}`} className="block text-xs text-ink">{l.phone}</a>}
+                      {l.attribution?.utm_source && <Badge className="mt-1">{l.attribution.utm_source}{l.attribution.utm_campaign ? ` · ${l.attribution.utm_campaign}` : ""}</Badge>}
+                      <p className="mt-0.5 text-xs text-muted">{l.mode === "couple" ? "razem" : l.mode === "individual" ? "samodzielnie" : "forma nieustalona"} · {new Date(l.created_at).toLocaleDateString("pl-PL")}</p>
+                      <p className="mt-1.5 text-xs text-ink-soft">{leadSummary(l)}</p>
                       {(l.quiz?.concerns ?? []).length > 0 && <p className="mt-1 text-xs text-muted">{l.quiz.concerns.map((c: string) => CONCERN_LABEL[c]).join(", ")}</p>}
                       {l.call_at && <Badge tone="forest" className="mt-2">📞 {new Date(l.call_at).toLocaleString("pl-PL", { dateStyle: "short", timeStyle: "short" })}</Badge>}
                       {l.quiz?.discreet && <Badge tone="clay" className="mt-2">dyskretny kontakt</Badge>}

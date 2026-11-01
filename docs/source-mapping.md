@@ -133,6 +133,7 @@ Etapy (zgłoszenie → kwestionariusz → sesja 60/90 → ocena i rekomendacja) 
 
 ## Zmiany wprowadzone na prośbę właściciela usługi (odstępstwa od PDF)
 
+- **Nazwa produktu**: „Audyt Relacji” → „Mapa Relacji” we wszystkich treściach dla klienta (kwestionariusze, zgody, podsumowanie); „audyt” → „konsultacja”.
 - **Czas wypełniania**: „około 15-25 minut” zamiast „40-60 minut” (akapit „Zanim zaczniesz”, ekran powitalny, landing).
 - **Dzieci (liczba i wiek)**: pole typu „lista dzieci” – imię i wiek każdego dziecka, z opcją „nie mamy dzieci”.
 - **„Czy macie dzieci, których dotyczy ta sytuacja?”** (Twoja sytuacja, pyt. 2): wyświetlane tylko, gdy w metryczce wpisano dzieci (nie powtarzamy pytania osobom bez dzieci).
