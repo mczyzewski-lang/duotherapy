@@ -6,7 +6,7 @@ import clsx from "clsx";
 import { ArrowRight, ChevronDown, MapPin } from "lucide-react";
 import { MapaSymbol, RoadGlyph } from "@/components/brand";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 
 export const ROADS = [
   {
@@ -48,6 +48,17 @@ const TONE = {
   sand: { dot: "bg-[#b89b7f]", soft: "bg-linen", text: "text-[#7d6450]", stroke: "#b89b7f", ring: "ring-sand-dark" },
   forest: { dot: "bg-forest-600", soft: "bg-sage-soft", text: "text-forest", stroke: "#46604f", ring: "ring-sage/50" },
 } as const;
+
+/** Widoczne „lub” między drogami – to jedna z dróg, nie wszystkie naraz. */
+function Or({ vertical = true, className }: { vertical?: boolean; className?: string }) {
+  return (
+    <span aria-hidden className={clsx("flex items-center justify-center gap-2", vertical ? "flex-row" : "flex-col", className)}>
+      <span className={clsx("bg-sand-dark/70", vertical ? "h-px w-8" : "h-8 w-px")} />
+      <span className="rounded-full bg-linen px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-ink-soft ring-1 ring-sand">lub</span>
+      <span className={clsx("bg-sand-dark/70", vertical ? "h-px w-8" : "h-8 w-px")} />
+    </span>
+  );
+}
 
 /** Ujawnianie przy przewinięciu (z poszanowaniem prefers-reduced-motion). */
 function useInView<T extends Element>() {
@@ -114,7 +125,8 @@ export function HeroMap() {
       </div>
       <ul className="absolute right-[2%] top-0 flex h-full flex-col justify-between py-[9%] text-[13px]">
         {ends.map((e, k) => (
-          <li key={k}>
+          <li key={k} className="relative">
+            {k > 0 && <span aria-hidden className="absolute -top-[2.1rem] left-1/2 -translate-x-1/2 rounded-full bg-linen px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-soft ring-1 ring-sand">lub</span>}
             <button
               type="button"
               onMouseEnter={() => setActive(k)}
@@ -163,11 +175,13 @@ export function MapaFlow() {
           <span className={clsx("block h-12 w-0.5 origin-top bg-gradient-to-b from-forest to-sand-dark lg:h-0.5 lg:w-12 lg:origin-left lg:bg-gradient-to-r", "grow-line", inView && "grow-line-on")} style={{ transitionDelay: "0.3s" }} />
         </li>
         <li>
-          <ul className="grid gap-3">
+          <ul className="grid gap-1.5">
             {ROADS.map((r, k) => {
               const t = TONE[r.tone];
               return (
-                <li key={r.key} className={clsx("reveal", inView && "reveal-on")} style={{ transitionDelay: `${0.35 + k * 0.12}s` }}>
+                <Fragment key={r.key}>
+                {k > 0 && <li role="presentation" className={clsx("reveal", inView && "reveal-on")} style={{ transitionDelay: `${0.3 + k * 0.12}s` }}><Or /></li>}
+                <li className={clsx("reveal", inView && "reveal-on")} style={{ transitionDelay: `${0.35 + k * 0.12}s` }}>
                   <a href={`#droga-${r.key}`} className={clsx("flex items-center gap-3 rounded-2xl bg-white px-4 py-3.5 shadow-soft ring-1 transition hover:-translate-y-0.5", t.ring)}>
                     <span className={clsx("grid h-10 w-10 shrink-0 place-items-center rounded-full", t.soft)}><RoadGlyph road={r.key} id={`flow-${r.key}`} className="h-5 w-5" /></span>
                     <span className="flex-1">
@@ -177,6 +191,7 @@ export function MapaFlow() {
                     <ArrowRight size={16} className="text-muted" aria-hidden />
                   </a>
                 </li>
+                </Fragment>
               );
             })}
           </ul>
@@ -190,12 +205,19 @@ export function MapaFlow() {
 export function Roads() {
   const [open, setOpen] = useState<string | null>(null);
   return (
-    <div className="grid items-start gap-4 lg:grid-cols-3">
+    <div className="grid items-start gap-3 lg:grid-cols-[1fr_auto_1fr_auto_1fr] lg:gap-2">
       {ROADS.map((r, k) => {
         const t = TONE[r.tone];
         const isOpen = open === r.key;
         return (
-          <article key={r.key} id={`droga-${r.key}`} className={clsx("scroll-mt-24 flex flex-col rounded-3xl bg-white p-6 shadow-soft ring-1 transition", isOpen ? "ring-forest" : "ring-sand")}>
+          <Fragment key={r.key}>
+          {k > 0 && (
+            <>
+              <Or className="lg:hidden" />
+              <Or vertical={false} className="hidden self-start pt-24 lg:flex" />
+            </>
+          )}
+          <article id={`droga-${r.key}`} className={clsx("scroll-mt-24 flex flex-col rounded-3xl bg-white p-6 shadow-soft ring-1 transition", isOpen ? "ring-forest" : "ring-sand")}>
             <div className="flex items-center gap-3">
               <span className={clsx("grid h-12 w-12 place-items-center rounded-2xl", t.soft)}><RoadGlyph road={r.key} id={`road-${r.key}`} className="h-7 w-7" /></span>
               <span className="text-[11px] font-semibold uppercase tracking-[0.16em] text-muted">Droga {k + 1} · {r.short}</span>
@@ -224,6 +246,7 @@ export function Roads() {
               </Link>
             </div>
           </article>
+          </Fragment>
         );
       })}
     </div>
