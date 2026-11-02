@@ -4,7 +4,7 @@ import Link from "next/link";
 import { AskDialog } from "@/components/landing/ask-dialog";
 import { TherapistSection } from "@/components/landing/therapist";
 import { LandingTracker, QuizCta } from "@/components/mapa/cta";
-import { HeroMap, MapaFlow, Roads } from "@/components/mapa/flow";
+import { HeroMap, HeroMapVertical, MapaFlow, Roads } from "@/components/mapa/flow";
 import { MapaEyebrow } from "@/components/mapa/mark";
 import { MapaLogo } from "@/components/brand";
 import { Logo } from "@/components/ui";
@@ -54,11 +54,6 @@ export default async function Landing() {
       <main id="main">
         {/* 1. HERO */}
         <section className="relative overflow-hidden">
-          <svg className="pointer-events-none absolute -right-28 -top-6 h-[260px] w-[260px] opacity-[0.22] md:hidden" viewBox="0 0 200 200" aria-hidden>
-            <path d="M10 170 C 60 170, 70 100, 110 100 C 140 100, 150 40, 195 30" fill="none" stroke="#a9512f" strokeWidth="1.5" strokeDasharray="4 6" />
-            <path d="M110 100 C 140 100, 160 100, 195 100" fill="none" stroke="#c4a98d" strokeWidth="1.5" />
-            <path d="M110 100 C 140 100, 150 160, 195 170" fill="none" stroke="#46604f" strokeWidth="1.5" />
-          </svg>
           <div className="relative mx-auto grid max-w-6xl items-center gap-12 px-5 pb-14 pt-8 md:grid-cols-[1.05fr_0.95fr] md:pb-20 md:pt-16">
             <div>
               <MapaEyebrow className="animate-rise" />
@@ -77,6 +72,9 @@ export default async function Landing() {
                 <Users size={18} className="mt-0.5 shrink-0 text-forest" aria-hidden />
                 Możesz zacząć samodzielnie. Nie potrzebujesz zgody ani udziału partnera do wypełnienia wstępnego quizu.
               </p>
+            </div>
+            <div className="md:hidden">
+              <HeroMapVertical />
             </div>
             <div className="hidden md:block">
               <HeroMap />

@@ -148,6 +148,72 @@ export function HeroMap() {
   );
 }
 
+/** Mapa w hero (telefon): ta sama mapa pionowo – ścieżka w dół i rozwidlenie na trzy drogi. */
+export function HeroMapVertical() {
+  const { ref, inView } = useInView<HTMLDivElement>();
+  const xs = [56, 170, 284];
+  const tones = [TONE.rose.stroke, TONE.clay.stroke, TONE.forest.stroke];
+  return (
+    <div ref={ref} className="relative mx-auto w-full max-w-[420px] rounded-[2rem] bg-gradient-to-br from-white via-ivory to-linen p-3 pb-4 shadow-soft ring-1 ring-sand">
+      <div className="relative">
+        <svg viewBox="0 0 340 300" className="h-auto w-full" role="img" aria-label="Mapa Relacji: od miejsca, w którym jesteście dziś, przez zrozumienie sytuacji, do jednej z trzech możliwych dróg">
+          <defs>
+            <pattern id="grid-v" width="24" height="24" patternUnits="userSpaceOnUse">
+              <circle cx="1" cy="1" r="1" fill="#e2d4c2" />
+            </pattern>
+          </defs>
+          <rect x="0" y="0" width="340" height="300" rx="20" fill="url(#grid-v)" opacity="0.7" />
+          <path d="M170 64 C 130 88, 210 108, 170 128" fill="none" stroke="#36493d" strokeWidth="2.5" strokeDasharray="6 7" />
+          {xs.map((x, k) => (
+            <path
+              key={k}
+              d={`M170 190 C 170 236, ${x} 228, ${x} 282`}
+              fill="none"
+              stroke={tones[k]}
+              strokeWidth={3}
+              strokeLinecap="round"
+              className={clsx("map-line", inView && "map-line-on")}
+              style={{ animationDelay: `${0.3 + k * 0.15}s` }}
+            />
+          ))}
+          <circle cx="170" cy="56" r="8" fill="#a9512f" />
+          <circle cx="170" cy="56" r="16" fill="#a9512f" opacity="0.15" className="motion-safe:animate-ping" style={{ transformOrigin: "170px 56px", animationDuration: "3s" }} />
+          <circle cx="170" cy="160" r="30" fill="#fff" stroke="#36493d" strokeWidth="2.5" />
+          <circle cx="170" cy="160" r="40" fill="none" stroke="#36493d" strokeOpacity="0.2" strokeWidth="1.5" />
+          <svg x="146" y="153" width="48" height="14" viewBox="0 0 112 32">
+            <MapaSymbol id="hero-v-node" />
+          </svg>
+          {xs.map((x, k) => (
+            <circle key={k} cx={x} cy="284" r="6" fill={tones[k]} />
+          ))}
+        </svg>
+        <div className="pointer-events-none absolute inset-0">
+          <span className="absolute left-1/2 top-[3%] -translate-x-1/2 whitespace-nowrap rounded-full bg-white px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-clay shadow-soft ring-1 ring-sand">Tu jesteście dzisiaj</span>
+          <span className="absolute left-[62%] top-[53.3%] -translate-y-1/2 whitespace-nowrap rounded-full bg-forest px-2.5 py-1 text-[11px] max-[359px]:px-2 max-[359px]:text-[10px] font-medium text-white shadow-soft">Mapa Relacji</span>
+          {[33.5, 66.5].map((l) => (
+            <span key={l} aria-hidden className="absolute top-[88%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-linen px-2 py-0.5 text-[9.5px] font-semibold uppercase tracking-[0.16em] text-ink-soft ring-1 ring-sand" style={{ left: `${l}%` }}>lub</span>
+          ))}
+        </div>
+      </div>
+      <ul className="-mt-1 grid grid-cols-3 gap-2">
+        {ROADS.map((r) => (
+          <li key={r.key}>
+            <a
+              href={`#droga-${r.key}`}
+              className={clsx("flex h-full flex-col items-center gap-1.5 rounded-2xl bg-white px-1.5 py-2.5 text-center text-[12.5px] leading-tight text-ink shadow-soft ring-1", TONE[r.tone].ring)}
+            >
+              <span className={clsx("grid h-8 w-8 place-items-center rounded-full", TONE[r.tone].soft)}>
+                <RoadGlyph road={r.key} id={`hero-v-${r.key}`} className="h-4 w-4" />
+              </span>
+              {r.short}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
 /** Sekcja „Mapa Relacji”: pełny przebieg – pionowo na telefonie, poziomo na desktopie. */
 export function MapaFlow() {
   const { ref, inView } = useInView<HTMLDivElement>();

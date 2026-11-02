@@ -86,7 +86,7 @@ export function MapaLogo({ className, light, compact, id = "mapa-logo" }: { clas
       <span className="flex flex-col leading-none">
         <span className={clsx("font-wordmark font-medium", compact ? "text-lg" : "text-[1.45rem]", light ? "text-white" : "text-forest")}>Mapa Relacji</span>
         {!compact && (
-          <span className={clsx("mt-1 whitespace-nowrap text-[0.5rem] font-medium uppercase tracking-[0.3em] sm:text-[0.55rem]", light ? "text-white/70" : "text-ink-soft")}>
+          <span className={clsx("mt-1 whitespace-nowrap text-[0.5rem] font-medium uppercase tracking-[0.3em] max-[359px]:tracking-[0.18em] sm:text-[0.55rem]", light ? "text-white/70" : "text-ink-soft")}>
             od DUO<sup className="text-[0.8em]">®</sup> · terapia małżeństw
           </span>
         )}
