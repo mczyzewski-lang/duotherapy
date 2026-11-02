@@ -132,3 +132,26 @@ path.map-line[stroke-dasharray="6 7"] { stroke-dasharray: 6 7; stroke-dashoffset
 @media (prefers-reduced-motion: reduce) {
   .reveal-box, .reveal-box .draw, .reveal-box .pop, .reveal-box .fade, .reveal-box > .grid > * { opacity: 1 !important; transform: none !important; stroke-dashoffset: 0 !important; animation: none !important; }
 }
+
+/* /prezentacja-dla-psychologow – wydruk / PDF: tylko slajdy, jeden slajd na stronę A4 poziomo. */
+@media print {
+  @page { size: A4 landscape; margin: 0; }
+  .np-page { background: #fff !important; }
+  .np-page .np-nav, .np-page .np-ads, .np-page .np-cover-meta, .np-page .np-divider, .skip-link { display: none !important; }
+  .np-page main { max-width: none !important; padding: 0 !important; }
+  .np-page #panel-prezentacja { display: block !important; }
+  .np-deck, .np-deck > * { display: block !important; margin: 0 !important; }
+  .np-deck > * + * { margin-top: 0 !important; }
+  .np-slide {
+    width: 297mm; height: 210mm; aspect-ratio: auto !important; border-radius: 0 !important; box-shadow: none !important; border: 0 !important;
+    padding: 16mm 22mm !important; break-after: page; break-inside: avoid;
+    -webkit-print-color-adjust: exact; print-color-adjust: exact;
+  }
+  .np-slide * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
+@media print {
+  .np-deck > :last-child .np-slide { break-after: auto; }
+}
+@media print {
+  .np-slide > header, .np-slide > div, .np-slide > footer { zoom: 1.3; }
+}
