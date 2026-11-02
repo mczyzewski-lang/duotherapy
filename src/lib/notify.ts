@@ -18,3 +18,16 @@ export async function notifyTeam(subject: string, text: string): Promise<boolean
     return false;
   }
 }
+
+/** Wiadomość do klienta (np. potwierdzenie zakupu). Bez treści wrażliwych – tylko informacja i link. */
+export async function notifyCustomer(to: string, subject: string, text: string): Promise<boolean> {
+  if (!process.env.SMTP_URL || !to) return false;
+  try {
+    const t = nodemailer.createTransport(process.env.SMTP_URL);
+    await t.sendMail({ from: process.env.SMTP_FROM || process.env.NOTIFY_EMAIL, to, subject, text });
+    return true;
+  } catch (e) {
+    console.error("Wiadomość do klienta nie została wysłana:", (e as Error).message);
+    return false;
+  }
+}

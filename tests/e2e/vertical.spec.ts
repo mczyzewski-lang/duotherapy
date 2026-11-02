@@ -113,7 +113,9 @@ test("pełny scenariusz audytu pary", async ({ page, browser, request }) => {
   await page.getByLabel("Numer telefonu").fill("600 100 200");
   await page.getByLabel(/E-mail/).fill("ola@example.test");
   await page.getByRole("button", { name: /Poproś o telefon/ }).click();
-  await expect(page.getByRole("heading", { name: /Otrzymaliśmy Twoją prośbę o kontakt/ })).toBeVisible();
+  // po prośbie o kontakt: strona z wiadomością od Klaudii i ofertą (bez zakupu – zostaje w kontakcie telefonicznym)
+  await expect(page.getByRole("heading", { name: /Dziękujemy za Twoje odpowiedzi, Ola/ })).toBeVisible();
+  await expect(page.locator("#oferta").getByText("670 zł").first()).toBeVisible();
 
   // 2. Psycholog: pipeline → sprawa pary
   await login(page);
@@ -299,4 +301,87 @@ test("audyt indywidualny: link nie działa po cofnięciu, drugi psycholog nie wi
   expect(res?.status()).toBe(404);
   await ctx.close();
   await other.close();
+});
+
+test("zakup online: strona VSL → płatność (atrapa operatora) → termin → kwestionariusz; CRM bez telefonu sprzedażowego", async ({ page, browser }) => {
+  // psycholog dodaje wolne terminy
+  const staff = await browser.newPage();
+  await login(staff);
+  await staff.goto("/app/terminy");
+  await staff.waitForLoadState("networkidle");
+  const day = new Date(Date.now() + 3 * 86400_000).toISOString().slice(0, 10);
+  await staff.getByLabel("Dzień").fill(day);
+  await staff.getByLabel("Godziny rozpoczęcia").fill("10:00, 15:30");
+  await staff.getByRole("button", { name: "Dodaj terminy" }).click();
+  await expect(staff.getByText(/Dodano terminy: 2/)).toBeVisible();
+
+  // klient: quiz → prośba o kontakt → strona VSL
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/start");
+  await page.waitForLoadState("networkidle");
+  for (const pick of ["Oddaliliśmy się", "Brakuje nam bliskości", "Raczej nie", "Czy możemy jeszcze", "Od kilku miesięcy", "Samodzielnie"]) {
+    await page.getByRole("radio", { name: new RegExp(pick) }).click();
+    await page.waitForTimeout(400);
+  }
+  await page.waitForTimeout(2600);
+  await page.getByLabel("Imię").fill("Kasia Kupująca");
+  await page.getByLabel("Numer telefonu").fill("600 300 400");
+  await page.getByRole("checkbox", { name: /Proszę o kontakt telefoniczny/ }).check();
+  await page.getByRole("button", { name: /Poproś o telefon/ }).click();
+  await expect(page.getByRole("heading", { name: /Dziękujemy za Twoje odpowiedzi, Kasia/ })).toBeVisible();
+  await page.waitForLoadState("networkidle");
+
+  // podsumowanie zamówienia: bez akceptacji regulaminu i zgody nie da się przejść dalej
+  await page.getByRole("button", { name: /Zamawiam Mapę Relacji — 670 zł/ }).click();
+  await expect(page.getByRole("heading", { name: "Podsumowanie zamówienia" })).toBeVisible();
+  await expect(page.getByRole("button", { name: /Przejdź do bezpiecznej płatności/ })).toBeDisabled();
+  await page.getByRole("checkbox", { name: /Akceptuję/ }).check();
+  await page.getByRole("checkbox", { name: /Żądam rozpoczęcia/ }).check();
+
+  // 1. próba: powrót z bramki bez płacenia → płatność przerwana, nic nie oznaczone jako opłacone
+  await page.getByRole("button", { name: /Przejdź do bezpiecznej płatności/ }).click();
+  await page.waitForURL(/localhost:3199\/pay\//);
+  await page.getByRole("button", { name: "Wróć do sklepu" }).click();
+  await page.waitForURL(/twoja-mapa/);
+  await expect(page.getByText(/Płatność nie została dokończona/)).toBeVisible();
+
+  // 2. próba: ta sama sesja płatności (bez dublowania zamówienia) → zapłata
+  await page.getByRole("button", { name: /Zamawiam Mapę Relacji/ }).click();
+  await page.getByRole("checkbox", { name: /Akceptuję/ }).check();
+  await page.getByRole("checkbox", { name: /Żądam rozpoczęcia/ }).check();
+  await page.getByRole("button", { name: /Przejdź do bezpiecznej płatności/ }).click();
+  await page.waitForURL(/localhost:3199\/pay\//);
+  await page.getByRole("button", { name: "Zapłać" }).click();
+  await page.waitForURL(/\/zamowienie\//);
+  await expect(page.getByRole("heading", { name: /Dziękujemy za zamówienie, Kasia/ })).toBeVisible();
+
+  // odświeżenie strony nie zmienia stanu; wybór terminu i wersji kwestionariusza
+  await page.reload();
+  await page.waitForLoadState("networkidle");
+  await page.getByRole("button", { name: /^10:00/ }).first().click();
+  await page.getByRole("button", { name: "Dla kobiety" }).click();
+  await page.getByRole("button", { name: "Rezerwuję termin" }).click();
+  await expect(page.getByRole("heading", { name: /Wszystko gotowe, Kasia/ })).toBeVisible();
+  const code = (await page.getByTestId("access-code").textContent())?.trim() ?? "";
+  expect(code).toMatch(/^\d{6}$/);
+
+  // kwestionariusz zgodnie z dotychczasowym przebiegiem: link + kod
+  await page.getByRole("link", { name: "Otwórz kwestionariusz" }).click();
+  await page.waitForLoadState("networkidle");
+  await expect(page.getByRole("heading", { name: /To bezpieczna przestrzeń/ })).toBeVisible();
+  await page.getByLabel("Kod dostępu").fill(code);
+  await page.getByRole("button", { name: "Otwórz kwestionariusz" }).click();
+  await expect(page.getByRole("button", { name: "Zaczynamy" })).toBeVisible();
+
+  // CRM: opłacono online, sprawa założona, termin zajęty; bez telefonu sprzedażowego
+  await staff.goto("/app/leads");
+  await staff.waitForLoadState("networkidle");
+  await staff.getByRole("link", { name: "Kasia Kupująca" }).click();
+  const pay = staff.getByTestId("online-payment");
+  await expect(pay.getByText("Opłacono online").first()).toBeVisible();
+  await expect(pay.getByText(/bez telefonu sprzedażowego/)).toBeVisible();
+  await expect(pay.getByText(/Termin wybrany online/)).toBeVisible();
+  await staff.goto("/app/terminy");
+  await expect(staff.getByText("Kasia Kupująca")).toBeVisible();
+  await staff.close();
 });

@@ -9,7 +9,15 @@ export default defineConfig({
   workers: 1,
   globalSetup: "./tests/e2e/global-setup.ts",
   use: { actionTimeout: 20_000, navigationTimeout: 30_000, baseURL: `http://localhost:${PORT}`, locale: "pl-PL", trace: "retain-on-failure" },
-  webServer: {
+  webServer: [
+   {
+    // atrapa operatora płatności (osobny proces, poza aplikacją) – podpisane powiadomienia do aplikacji
+    command: "node tests/e2e/stripe-mock.mjs",
+    port: 3199,
+    reuseExistingServer: false,
+    env: { STRIPE_MOCK_PORT: "3199", STRIPE_WEBHOOK_SECRET: "whsec_e2e", APP_WEBHOOK: `http://localhost:${PORT}/api/payments/stripe/webhook` },
+   },
+   {
     command: `npx next build && npx next start -p ${PORT}`,
     port: PORT,
     reuseExistingServer: true,
@@ -20,6 +28,10 @@ export default defineConfig({
       DEMO_MODE: "true",
       APP_URL: `http://localhost:${PORT}`,
       NEXT_DIST_DIR: ".next-e2e",
+      STRIPE_SECRET_KEY: "sk_test_e2e",
+      STRIPE_WEBHOOK_SECRET: "whsec_e2e",
+      STRIPE_API_BASE: "http://localhost:3199",
     },
-  },
+   },
+  ],
 });

@@ -7,7 +7,9 @@ Reels / reklama (UTM) ─► strona główna (/) ─► „Sprawdź, gdzie dziś
    ─► quiz /start: 6 pytań, jedno na ekran, automatyczne przejście (ok. 2 min)
    ─► wstępne podsumowanie (parafraza odpowiedzi – bez ocen i prognoz)
    ─► „Porozmawiajmy o Twojej Mapie Relacji”: imię + telefon (+ e-mail, pora – opcjonalnie)
-   ─► potwierdzenie ─► CRM (panel → Zgłoszenia) ─► telefon konsultanta ─► zakup
+   ─► strona po quizie /twoja-mapa: film od Klaudii + oferta 670 zł ─► zakup online (Stripe) ─► wybór terminu ─► kwestionariusz
+       └─ bez zakupu ─► CRM (panel → Zgłoszenia) ─► telefon konsultanta (reguły czasu) ─► zakup po rozmowie
+   (szczegóły: docs/platnosci-i-vsl.md, scenariusz filmu: docs/vsl-scenariusz.md)
    ─► sprawa: kwestionariusze ─► konsultacja z psychologiem ─► Mapa Relacji (podsumowanie sesji)
 ```
 

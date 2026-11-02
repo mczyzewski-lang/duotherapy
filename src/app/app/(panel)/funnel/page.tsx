@@ -17,8 +17,8 @@ export default async function FunnelPage({ searchParams }: { searchParams: Promi
       select event, variant, count(distinct anon_id)::int as n from funnel_events where created_at >= ${since} group by 1, 2`;
     const steps = await tx<{ step: number; n: number }[]>`
       select step, count(distinct anon_id)::int as n from funnel_events where event = 'quiz_step_completed' and created_at >= ${since} group by 1 order by 1`;
-    const leads = await tx<{ stage: string; sale: number | null; ab_variant: string | null; src: string | null; camp: string | null; case_id: string | null; session_done: boolean; delivered: boolean }[]>`
-      select l.stage, l.sale_amount_pln as sale, l.ab_variant, l.attribution->>'utm_source' as src, l.attribution->>'utm_campaign' as camp, l.case_id,
+    const leads = await tx<{ stage: string; online: boolean; sale: number | null; ab_variant: string | null; src: string | null; camp: string | null; case_id: string | null; session_done: boolean; delivered: boolean }[]>`
+      select l.stage, exists (select 1 from orders o where o.lead_id = l.id and o.status = 'paid') as online, l.sale_amount_pln as sale, l.ab_variant, l.attribution->>'utm_source' as src, l.attribution->>'utm_campaign' as camp, l.case_id,
         coalesce(c.session_ended_at is not null, false) as session_done,
         exists (select 1 from reports r join report_shares sh on sh.report_id = r.id where r.case_id = l.case_id) as delivered
       from leads l left join cases c on c.id = l.case_id
@@ -120,6 +120,57 @@ export default async function FunnelPage({ searchParams }: { searchParams: Promi
             </div>
           </div>
         )}
+      </Card>
+
+      <Card className="mb-6 overflow-x-auto p-6" data-testid="vsl-funnel">
+        <h2 className="font-display text-xl text-ink">Strona po quizie (VSL) → zakup online</h2>
+        <p className="mt-1 text-xs text-muted">Zakup liczony wyłącznie po potwierdzeniu operatora płatności. Unikalne sesje przeglądarki.</p>
+        <table className="mt-4 w-full min-w-[560px] text-sm">
+          <thead className="text-left text-xs text-muted"><tr><th className="py-2">Etap</th><th>Konwersja</th><th>Hero A</th><th>Hero B</th></tr></thead>
+          <tbody className="divide-y divide-sand/60">
+            {(
+              [
+                ["Quiz ukończony → strona VSL", "quiz_completed", "vsl_page_view"],
+                ["Strona VSL → odtworzenie filmu", "vsl_page_view", "vsl_play"],
+                ["Film: 25% obejrzane", "vsl_play", "vsl_25_percent"],
+                ["Film: 50% obejrzane", "vsl_play", "vsl_50_percent"],
+                ["Film: 75% obejrzane", "vsl_play", "vsl_75_percent"],
+                ["Film: obejrzany do końca", "vsl_play", "vsl_completed"],
+                ["Strona VSL → „Zamawiam”", "vsl_page_view", "checkout_click"],
+                ["„Zamawiam” → rozpoczęta płatność", "checkout_click", "checkout_started"],
+                ["Rozpoczęta płatność → zakup", "checkout_started", "purchase_completed"],
+                ["Strona VSL → zakup (łącznie)", "vsl_page_view", "purchase_completed"],
+              ] as [string, string, string][]
+            ).map(([label, from, to]) => (
+              <tr key={label}>
+                <td className="py-2.5 text-ink">{label}</td>
+                <td><strong>{pct(count(to), count(from))}</strong> <span className="text-xs text-muted">({count(to)}/{count(from)})</span></td>
+                {variants.map((v) => <td key={v}>{pct(count(to, v), count(from, v))}</td>)}
+              </tr>
+            ))}
+            <tr><td className="py-2.5 text-ink">Płatności odrzucone</td><td>{count("purchase_failed")}</td><td /><td /></tr>
+          </tbody>
+        </table>
+        <h3 className="mt-6 text-sm font-medium text-ink">Kanał sprzedaży (zgłoszenia z okresu)</h3>
+        <table className="mt-2 w-full min-w-[560px] text-sm">
+          <thead className="text-left text-xs text-muted"><tr><th className="py-2">Kanał</th><th>Sprzedaże</th><th>% zgłoszeń</th><th>Przychód</th></tr></thead>
+          <tbody className="divide-y divide-sand/60">
+            {(
+              [
+                ["Online (bez rozmowy)", d.leads.filter((l) => l.online)],
+                ["Przez konsultanta (po rozmowie)", d.leads.filter((l) => !l.online && STAGE_RANK.indexOf(l.stage) >= STAGE_RANK.indexOf("paid"))],
+              ] as [string, typeof d.leads][]
+            ).map(([label, list]) => (
+              <tr key={label}>
+                <td className="py-2.5 text-ink">{label}</td>
+                <td className="font-medium">{list.length}</td>
+                <td>{pct(list.length, d.leads.length)}</td>
+                <td>{list.reduce((a, l) => a + (l.sale ?? 0), 0)} zł</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <p className="mt-2 text-xs text-muted">Brak zakupu online → kontakt telefoniczny → zakup po rozmowie: zgłoszenia z otwartą lub przerwaną płatnością pozostają w Zgłoszeniach z regułą „kiedy dzwonić”.</p>
       </Card>
 
       <Card className="mb-6 overflow-x-auto p-6">

@@ -1,4 +1,5 @@
 import { LeadRoad } from "@/components/brand";
+import { callStatus, fmtWarsaw, orderLabel } from "@/lib/orders";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { leadDetailsAction, leadNoteAction, leadStageAction } from "@/actions/leads";
@@ -29,10 +30,12 @@ export default async function LeadPage({ params }: { params: Promise<{ id: strin
       consents: await tx`select kind, granted, text_version, created_at from consents where lead_id = ${id} order by created_at`,
       therapists: await tx`select id, display_name from therapists order by display_name`,
       settings: await readSettings(tx),
+      orders: await tx`select o.*, b.starts_at as booked_at from orders o left join booking_slots b on b.order_id = o.id where o.lead_id = ${id} order by o.created_at desc`,
     };
   });
   if (!d) notFound();
-  const { lead, acts, consents, therapists, settings } = d;
+  const { lead, acts, consents, therapists, settings, orders } = d;
+  const cs = callStatus(lead as never, orders as never, settings.offer);
   const quiz = lead.quiz_enc ? decrypt<Record<string, string>>(lead.quiz_enc) : null;
   const stageLabel = LEAD_STAGES.find(([k]) => k === lead.stage)?.[1];
   const fmtDT = (x: Date | null) => (x ? new Date(new Date(x).getTime() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 16) : "");
@@ -119,6 +122,35 @@ export default async function LeadPage({ params }: { params: Promise<{ id: strin
         </div>
 
         <div className="space-y-6">
+          <Card className="p-6" data-testid="online-payment">
+            <h2 className="font-display text-lg text-ink">Płatność online</h2>
+            {cs.label && <p className={`mt-2 text-sm font-medium ${cs.kind === "call" ? "text-forest" : cs.kind === "paid" ? "text-ok" : "text-clay"}`}>{cs.label}</p>}
+            {orders.length === 0 ? (
+              <p className="mt-2 text-sm text-muted">Klient nie rozpoczął zakupu online. Może potrzebować rozmowy.</p>
+            ) : (
+              <ul className="mt-3 space-y-3 text-sm">
+                {orders.map((o) => (
+                  <li key={o.id} className="rounded-xl bg-ivory p-3 ring-1 ring-sand">
+                    <div className="flex items-center justify-between gap-2">
+                      <Badge tone={o.status === "paid" ? "forest" : o.status === "failed" ? "alert" : "clay"}>{orderLabel(o as never)}</Badge>
+                      <span className="font-medium">{o.amount_pln} zł</span>
+                    </div>
+                    <p className="mt-1.5 text-xs text-muted">
+                      rozpoczęto {new Date(o.created_at).toLocaleString("pl-PL")}
+                      {o.paid_at && ` · opłacono ${new Date(o.paid_at).toLocaleString("pl-PL")}`}
+                      {o.failed_reason && ` · ${o.failed_reason}`}
+                    </p>
+                    {o.status === "paid" && (
+                      <p className="mt-1 text-xs text-ink-soft">
+                        {o.booked_at ? `Termin wybrany online: ${fmtWarsaw(new Date(o.booked_at))}` : "Klient jeszcze nie wybrał terminu – w razie potrzeby zadzwoń i ustal go (bez rozmowy sprzedażowej)."}
+                        {o.case_id && <> · <Link className="font-medium text-forest underline" href={`/app/cases/${o.case_id}`}>sprawa</Link></>}
+                      </p>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </Card>
           <Card className="p-6">
             <h2 className="font-display text-lg text-ink">Etap i termin rozmowy</h2>
             <form action={leadStageAction} className="mt-4 flex gap-2">

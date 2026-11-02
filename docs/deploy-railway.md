@@ -39,6 +39,17 @@ NOTIFY_EMAIL=adres@na-ktory-wyslac.pl
 SMTP_FROM=adres-nadawcy@twojadomena.pl
 ```
 
+## Płatności online (sprzedaż Mapy Relacji po quizie)
+
+Bez tych zmiennych strona po quizie pokazuje ofertę, ale zakup online jest wyłączony (konsultant dzwoni). Najpierw klucze **testowe**:
+
+```
+STRIPE_SECRET_KEY=sk_test_...
+STRIPE_WEBHOOK_SECRET=whsec_...
+```
+
+Webhook w Stripe: `https://<domena>/api/payments/stripe/webhook` (zdarzenia `checkout.session.*`). Szczegóły i lista kontrolna: `docs/platnosci-i-vsl.md`.
+
 ## Builder
 
 Ustaw *Settings → Build → Builder: Dockerfile* (obraz zawiera Chromium do PDF). Jeśli Railway używa automatycznego buildera (Railpack, widoczne np. jako `node@24`), aplikacja też ruszy, bo `npm start` sam uruchamia migracje – ale generowanie PDF wymaga wtedy zmiennych `RAILPACK_DEPLOY_APT_PACKAGES=chromium` i `CHROMIUM_PATH=/usr/bin/chromium`.

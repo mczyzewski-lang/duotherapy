@@ -17,11 +17,13 @@
 
 - [ ] Lejek Mapy Relacji: treść zgody na kontakt telefoniczny w sprawie oferty, zakres i okres przechowywania odpowiedzi z quizu, informacja o pomiarze lejka i ciasteczku testu A/B w polityce prywatności (ocena wymogu zgody), informacja o powiązaniu DUO – Nowy Etap przekazywana przy ewentualnej propozycji tej oferty (`docs/mapa-relacji-lejek.md`).
 
+- [ ] Sprzedaż online Mapy Relacji (670 zł): regulamin i dane sprzedawcy zatwierdzone (Ustawienia → Oferta), treść zgody na rozpoczęcie usługi przed upływem 14 dni, status VAT, faktury; klucze Stripe najpierw w trybie testowym (`docs/platnosci-i-vsl.md`).
+
 ## 2. Umowy powierzenia i dostawcy
 
 - [ ] Hosting aplikacji i bazy w UE/EOG; umowa powierzenia (art. 28 RODO).
 - [ ] Kopie zapasowe (szyfrowane, w UE), testy odtwarzania.
-- [ ] Dostawca płatności (link do płatności) – umowa, zakres danych.
+- [ ] Operator płatności (Stripe) – umowa powierzenia, zakres danych (kwota, nazwa usługi, id zamówienia, e-mail; bez danych z quizu), webhook skonfigurowany na `/api/payments/stripe/webhook`.
 - [ ] Jeżeli zostanie dodana integracja e-mail/SMS: umowa powierzenia, **brak treści wrażliwych w wiadomościach** (tylko link, kod innym kanałem).
 - [ ] Platforma wideo do sesji – umowa, lokalizacja, brak nagrywania.
 - [ ] AI: obecnie **wyłączone**. Włączenie wymaga DPIA, umowy powierzenia, przetwarzania w UE, braku trenowania na danych, wyraźnej zgody klienta i przeglądu każdego szkicu przez psychologa.
@@ -58,7 +60,7 @@
 ## 6. Znane ograniczenia techniczne
 
 - Brak wysyłki e-mail/SMS – świadomie (linki i kody kopiuje psycholog).
-- Brak integracji z kalendarzem i płatnościami – terminy w aplikacji, status płatności ręcznie.
+- Płatność online tylko dla wariantu indywidualnego (Stripe); wariant dla pary i płatności po rozmowie – status ręcznie. Terminy: wolne terminy dodawane w panelu (bez synchronizacji z zewnętrznym kalendarzem).
 - Generowanie PDF wymaga Chromium na serwerze.
 - Brak MFA dla klientów (zastępuje je link + kod z innego kanału).
 - Brak automatycznych powiadomień dla psychologa o „tak” w przesiewie poza panelem (do decyzji: powiadomienie bez treści, np. „nowy alert w sprawie X”).

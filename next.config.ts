@@ -12,7 +12,9 @@ const securityHeaders = [
       "default-src 'self'",
       "script-src 'self' 'unsafe-inline'" + (process.env.NODE_ENV === "development" ? " 'unsafe-eval'" : ""),
       "style-src 'self' 'unsafe-inline'",
-      "img-src 'self' data:",
+      "img-src 'self' data: https:",
+      // film VSL i napisy mogą pochodzić z zewnętrznego hostingu wideo (adres w Ustawieniach → Oferta)
+      "media-src 'self' https:",
       "font-src 'self' data:",
       "connect-src 'self'",
       "frame-src https://www.youtube-nocookie.com https://player.vimeo.com",

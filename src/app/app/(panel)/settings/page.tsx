@@ -16,6 +16,12 @@ const LABELS: Record<string, string> = {
   priceIndividual: "Cena – Mapa Relacji indywidualnie (puste = ukryj)", priceCouple: "Cena – Mapa Relacji dla pary (puste = ukryj)", contactPhone: "Telefon kontaktowy (puste = ukryj)",
   contactEmail: "E-mail kontaktowy (puste = ukryj)", vslUrl: "Film wyjaśniający usługę (adres embed youtube-nocookie / vimeo; puste = ukryj)", paymentUrl: "Link do płatności (https)", callbackPromise: "Czas oddzwonienia pokazywany po zgłoszeniu (tylko jeśli realnie gwarantowany; puste = brak)", funnelTracking: "Pomiar lejka (zdarzenia bez treści odpowiedzi)", faq: "FAQ",
   invitationDays: "Ważność linku do kwestionariusza (dni)", reportShareDays: "Ważność linku do podsumowania (dni)", requirePaymentBeforeQuestionnaire: "Wymagaj płatności przed kwestionariuszem",
+  pricePln: "Cena Mapy Relacji online (zł)", productName: "Nazwa produktu (na płatności)", onlineSales: "Sprzedaż online na stronie po quizie",
+  vslVideoUrl: "Film VSL – plik wideo (https, mp4/webm; puste = zastępnik z transkrypcją)", vslPosterUrl: "Film VSL – obraz startowy (https:// lub /ścieżka)", vslCaptionsUrl: "Film VSL – napisy PL (.vtt)",
+  sellerInfo: "Dane sprzedawcy w podsumowaniu zamówienia (firma, adres, NIP)", termsText: "Regulamin usługi (pełna treść; puste = projekt, tylko DEMO)", termsVersion: "Wersja regulaminu (zapisywana przy zamówieniu)",
+  termsApproved: "Regulamin zatwierdzony przez prawnika (wymagane do sprzedaży poza DEMO)", startConsentText: "Treść zgody na rozpoczęcie usługi przed upływem 14 dni",
+  callDelayMinutes: "Telefon do osób bez zakupu – najwcześniej po (min) od zgłoszenia", callHours: "Godziny pracy konsultantów (np. 9-18)", callDays: "Dni pracy konsultantów (1 = pon, np. 1-5)",
+  checkoutGraceMinutes: "Nie dzwoń przez (min) od rozpoczęcia płatności", minBookingHours: "Rezerwacja online – najwcześniej za (godz.)",
   items: "Numery pomocy", abroad: "Informacja dla osób poza Polską", verifiedNote: "Data weryfikacji numerów", disclaimer: "Zastrzeżenie",
 };
 
@@ -52,6 +58,13 @@ export default async function SettingsPage() {
               <SettingsForm section="legal" value={d.settings.legal as never} labels={LABELS} />
             </Card>
             <Card className="p-6"><h2 className="mb-4 font-display text-xl text-ink">Strona i lejek</h2><SettingsForm section="site" value={d.settings.site as never} labels={LABELS} /></Card>
+            <Card className="p-6">
+              <h2 className="mb-2 font-display text-xl text-ink">Oferta i płatności (strona po quizie)</h2>
+              <p className="mb-4 text-sm text-muted">
+                Operator płatności: {process.env.STRIPE_SECRET_KEY && process.env.STRIPE_WEBHOOK_SECRET ? <Badge tone="forest">Stripe skonfigurowany</Badge> : <Badge tone="clay">brak kluczy STRIPE_SECRET_KEY / STRIPE_WEBHOOK_SECRET</Badge>} – szczegóły w docs/platnosci-i-vsl.md.
+              </p>
+              <SettingsForm section="offer" value={d.settings.offer as never} labels={LABELS} />
+            </Card>
             <Card className="p-6"><h2 className="mb-4 font-display text-xl text-ink">Przebieg</h2><SettingsForm section="flow" value={d.settings.flow as never} labels={LABELS} /></Card>
             <Card className="p-6"><h2 className="mb-4 font-display text-xl text-ink">Numery pomocy</h2><SettingsForm section="helplines" value={d.settings.helplines as never} labels={LABELS} /></Card>
             <Card className="p-6">

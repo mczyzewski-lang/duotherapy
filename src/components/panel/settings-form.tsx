@@ -17,7 +17,7 @@ export function SettingsForm({ section, value, labels }: { section: string; valu
       <input type="hidden" name="section" value={section} />
       <input type="hidden" name="json" value={JSON.stringify(v)} />
       {Object.entries(v).map(([k, val]) => (
-        <Editor key={k} label={labels[k] ?? k} value={val} onChange={(nv) => setV({ ...v, [k]: nv })} long={typeof val === "string" && (val.length > 80 || /Policy|Notice|Consent|abroad|disclaimer/i.test(k))} />
+        <Editor key={k} label={labels[k] ?? k} value={val} onChange={(nv) => setV({ ...v, [k]: nv })} long={typeof val === "string" && (val.length > 80 || /Policy|Notice|Consent|abroad|disclaimer|termsText|sellerInfo/i.test(k))} />
       ))}
       {state?.error && <Alert tone="alert">{state.error}</Alert>}
       {state?.ok && <Alert tone="ok">{state.ok}</Alert>}

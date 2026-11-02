@@ -5,9 +5,10 @@ import { randomUUID } from "node:crypto";
 import { cookies } from "next/headers";
 import { z } from "zod";
 import { audit } from "@/lib/audit";
-import { encrypt } from "@/lib/crypto";
+import { encrypt, hashToken, newToken } from "@/lib/crypto";
 import { withActor } from "@/lib/db";
 import { ATTRIBUTION_KEYS, isValidAnswers, normalizePhone, QUIZ_VERSION } from "@/lib/mapa-quiz";
+import { setLeadCookie } from "@/lib/lead-session";
 import { notifyTeam } from "@/lib/notify";
 import { hit } from "@/lib/rate-limit";
 import { clientIp } from "@/lib/request";
@@ -51,13 +52,16 @@ export async function submitLead(input: LeadInput): Promise<LeadResult> {
   const mode = a.q6 === "solo" ? "individual" : a.q6 === "together" ? "couple" : null;
   const intent = a.q1 === "separate" ? "separate" : a.q1 === "unsure" ? "unsure" : "rebuild";
 
+  // token powiązania tej przeglądarki ze zgłoszeniem (strona po quizie) – w bazie tylko hash
+  const accessToken = newToken();
+  const anon = d.anonId && /^[a-zA-Z0-9]{8,64}$/.test(d.anonId) ? d.anonId : null;
   await withActor({ kind: "public" }, async (tx) => {
     const s = await readSettings(tx);
     const lead = { id: randomUUID() }; // bez RETURNING – rola publiczna nie ma prawa odczytu zgłoszeń
     await tx`
-      insert into leads (id, name, email, phone, mode, intent, preferred_contact, quiz, quiz_enc, quiz_version, segment, preferred_time, attribution, ab_variant)
+      insert into leads (id, name, email, phone, mode, intent, preferred_contact, quiz, quiz_enc, quiz_version, segment, preferred_time, attribution, ab_variant, access_token_hash, anon_id)
       values (${lead.id}, ${d.name}, ${d.email || null}, ${phone}, ${mode}, ${intent}, 'phone', ${tx.json({})}, ${encrypt(a)}, ${QUIZ_VERSION},
-              ${a.q1}, ${d.preferredTime || null}, ${tx.json(attribution)}, ${ab})`;
+              ${a.q1}, ${d.preferredTime || null}, ${tx.json(attribution)}, ${ab}, ${hashToken(accessToken)}, ${anon})`;
     await tx`insert into consents (lead_id, kind, granted, text_version, text_snapshot)
              values (${lead.id}, 'lead_contact', true, ${s.legal.version}, ${s.legal.leadContactConsent})`;
     await tx`insert into consents (lead_id, kind, granted, text_version, text_snapshot)
@@ -69,6 +73,7 @@ export async function submitLead(input: LeadInput): Promise<LeadResult> {
     }
     await audit(tx, { kind: "public" }, "lead_created", "lead", lead.id);
   });
+  await setLeadCookie(accessToken);
   await notifyTeam("DUO – nowa prośba o telefon (Mapa Relacji)", "Nowa osoba prosi o kontakt w sprawie Mapy Relacji. Szczegóły w panelu: Zgłoszenia.");
   return { ok: true };
 }

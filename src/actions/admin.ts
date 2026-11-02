@@ -161,6 +161,17 @@ export async function saveSettingsAction(_: R, fd: FormData): Promise<R> {
       callbackPromise: z.string().max(120), funnelTracking: z.boolean(),
       faq: z.array(z.object({ q: z.string().min(3), a: z.string().min(3) })),
     }),
+    offer: z.object({
+      pricePln: z.number().int().min(1).max(100000), productName: z.string().min(3).max(120), onlineSales: z.boolean(),
+      vslVideoUrl: z.string().refine((v) => !v || /^https:\/\/\S+$/.test(v), "Wideo: adres musi zaczynać się od https://"),
+      vslPosterUrl: z.string().refine((v) => !v || /^(https:\/\/|\/)\S+$/.test(v), "Obraz startowy: adres https:// lub ścieżka /…"),
+      vslCaptionsUrl: z.string().refine((v) => !v || /^(https:\/\/|\/)\S+\.vtt(\?\S*)?$/.test(v), "Napisy: plik .vtt (https:// lub /…)"),
+      sellerInfo: z.string().max(600), termsText: z.string().max(40000), termsVersion: z.string().min(1).max(40), termsApproved: z.boolean(),
+      startConsentText: z.string().min(20).max(800),
+      callDelayMinutes: z.number().int().min(0).max(10080), callHours: z.string().regex(/^\d{1,2}-\d{1,2}$/, "Godziny pracy w formacie 9-18"),
+      callDays: z.string().regex(/^[1-7]-[1-7]$/, "Dni pracy w formacie 1-5 (1 = poniedziałek)"),
+      checkoutGraceMinutes: z.number().int().min(0).max(1440), minBookingHours: z.number().int().min(0).max(336),
+    }),
     flow: z.object({ invitationDays: z.number().int().min(1).max(90), reportShareDays: z.number().int().min(1).max(365), requirePaymentBeforeQuestionnaire: z.boolean() }),
     helplines: z.object({ items: z.array(z.object({ number: z.string().min(2), when: z.string(), availability: z.string() })).min(1), abroad: z.string(), verifiedNote: z.string(), disclaimer: z.string() }),
   };

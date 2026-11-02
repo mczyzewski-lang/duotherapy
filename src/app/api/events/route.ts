@@ -2,14 +2,14 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { withActor } from "@/lib/db";
-import { FUNNEL_EVENTS } from "@/lib/mapa-quiz";
+import { FUNNEL_EVENTS, SERVER_ONLY_EVENTS } from "@/lib/mapa-quiz";
 import { hit } from "@/lib/rate-limit";
 import { clientIp } from "@/lib/request";
 import { readSettings } from "@/lib/settings";
 
 const Schema = z.object({
-  // lead_submitted zapisuje wyłącznie serwer (po faktycznym zapisie zgłoszenia)
-  event: z.enum(FUNNEL_EVENTS).refine((e) => e !== "lead_submitted"),
+  // zgłoszenie, start płatności i zakup zapisuje wyłącznie serwer (po faktycznym zapisie / potwierdzeniu operatora)
+  event: z.enum(FUNNEL_EVENTS).refine((e) => !(SERVER_ONLY_EVENTS as readonly string[]).includes(e)),
   step: z.number().int().min(1).max(6).optional(),
   anonId: z.string().regex(/^[a-zA-Z0-9]{8,64}$/),
   variant: z.enum(["A", "B"]).nullable().optional(),

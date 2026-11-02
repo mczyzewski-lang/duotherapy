@@ -145,7 +145,19 @@ export const FUNNEL_EVENTS = [
   "lead_form_viewed",
   "lead_submitted",
   "lead_submission_error",
+  "vsl_page_view",
+  "vsl_play",
+  "vsl_25_percent",
+  "vsl_50_percent",
+  "vsl_75_percent",
+  "vsl_completed",
+  "checkout_click",
+  "checkout_started",
+  "purchase_completed",
+  "purchase_failed",
 ] as const;
+/** Zdarzenia zapisywane wyłącznie przez serwer (po faktycznym zapisie / potwierdzeniu operatora płatności). */
+export const SERVER_ONLY_EVENTS = ["lead_submitted", "checkout_started", "purchase_completed", "purchase_failed"] as const;
 export type FunnelEvent = (typeof FUNNEL_EVENTS)[number];
 
 /** Normalizacja numeru (PL domyślnie): zwraca format +48XXXXXXXXX lub null. */

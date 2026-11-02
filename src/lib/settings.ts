@@ -42,6 +42,32 @@ export interface Settings {
     funnelTracking: boolean;
     faq: { q: string; a: string }[];
   };
+  /** Sprzedaż Mapy Relacji online (strona VSL po quizie). Jedna oferta, jedna cena. */
+  offer: {
+    pricePln: number;
+    productName: string;
+    onlineSales: boolean;
+    /** Plik wideo (https, mp4/webm) – odtwarzacz z napisami. Puste = elegancki zastępnik z transkrypcją. */
+    vslVideoUrl: string;
+    vslPosterUrl: string;
+    /** Napisy WebVTT (pl). Najlepiej z tej samej domeny co wideo (CORS). */
+    vslCaptionsUrl: string;
+    /** Dane sprzedawcy pokazywane w podsumowaniu zamówienia (firma, adres, NIP). */
+    sellerInfo: string;
+    /** Regulamin usługi. Puste = projekt regulaminu (tylko w trybie DEMO). */
+    termsText: string;
+    termsVersion: string;
+    termsApproved: boolean;
+    startConsentText: string;
+    /** Telefon do osób bez zakupu: nie wcześniej niż X minut po zgłoszeniu, w godzinach i dniach pracy konsultantów. */
+    callDelayMinutes: number;
+    callHours: string;
+    callDays: string;
+    /** Ile minut po rozpoczęciu płatności nie dzwonimy (klient może być w trakcie płacenia). */
+    checkoutGraceMinutes: number;
+    /** Najkrótszy czas od teraz do terminu, który można zarezerwować online (godziny). */
+    minBookingHours: number;
+  };
   flow: {
     invitationDays: number;
     reportShareDays: number;
@@ -109,7 +135,7 @@ export const DEFAULT_SETTINGS: Settings = {
       },
       {
         q: "Ile kosztuje pełna Mapa Relacji?",
-        a: "Quiz na stronie jest bezpłatny. Mapa Relacji to płatna usługa, a jej cena zależy od wariantu – indywidualnie czy we dwoje. Konsultant przedstawi cenę i zakres w rozmowie, zanim podejmiesz jakąkolwiek decyzję. Rozmowa do niczego nie zobowiązuje.",
+        a: "Quiz na stronie jest bezpłatny. Mapa Relacji w wariancie indywidualnym kosztuje 670 zł – obejmuje kwestionariusz, godzinną konsultację online z psychologiem i pisemne podsumowanie. Możesz ją zamówić od razu po quizie albo po rozmowie z konsultantem. Wariant dla pary (konsultacja 90 minut, dwa kwestionariusze) omówisz z konsultantem.",
       },
       {
         q: "Czy moje odpowiedzi i informacje są poufne?",
@@ -128,6 +154,25 @@ export const DEFAULT_SETTINGS: Settings = {
         a: "Pomożemy wskazać najlepszą dla Was drogę rozstania lub rozwodu i przejść przez ten etap spokojniej: przygotować się do rozmowy, zadbać o dzieci, jeśli je macie, i nie eskalować konfliktu.",
       },
     ],
+  },
+  offer: {
+    pricePln: 670,
+    productName: "Mapa Relacji – konsultacja indywidualna",
+    onlineSales: true,
+    vslVideoUrl: "",
+    vslPosterUrl: "",
+    vslCaptionsUrl: "",
+    sellerInfo: "",
+    termsText: "",
+    termsVersion: "2026-11-projekt",
+    termsApproved: false,
+    startConsentText:
+      "Żądam rozpoczęcia świadczenia usługi przed upływem 14 dni od zawarcia umowy. Przyjmuję do wiadomości, że po pełnym wykonaniu usługi utracę prawo do odstąpienia od umowy, a jeśli odstąpię wcześniej, zapłacę za część usługi wykonaną do chwili odstąpienia.",
+    callDelayMinutes: 60,
+    callHours: "9-18",
+    callDays: "1-5",
+    checkoutGraceMinutes: 30,
+    minBookingHours: 12,
   },
   flow: {
     invitationDays: 14,

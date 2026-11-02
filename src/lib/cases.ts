@@ -37,7 +37,7 @@ export interface NewParticipant {
 
 export async function createCase(
   tx: Tx,
-  actor: Actor & { userId: string },
+  actor: Actor,
   input: { kind: "individual" | "couple"; therapistId: string; participants: NewParticipant[]; goal?: string; intent?: string | null; leadId?: string | null; isDemo?: boolean },
 ): Promise<string> {
   if (input.kind === "couple" && input.participants.length !== 2) throw new Error("Konsultacja dla pary wymaga dwóch uczestników");
@@ -48,7 +48,7 @@ export async function createCase(
   const [c] = await tx<{ id: string }[]>`
     insert into cases (ref, kind, therapist_id, goal, intent, session_minutes, lead_id, created_by, is_demo)
     values (${ref}, ${input.kind}, ${input.therapistId}, ${input.goal ?? null}, ${input.intent ?? null}, ${input.kind === "couple" ? 90 : 60},
-            ${input.leadId ?? null}, ${actor.userId}, ${input.isDemo ?? false})
+            ${input.leadId ?? null}, ${"userId" in actor ? actor.userId : null}, ${input.isDemo ?? false})
     returning id`;
   let pos = 1;
   for (const p of input.participants) {

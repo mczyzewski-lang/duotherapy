@@ -5,6 +5,7 @@
 import clsx from "clsx";
 import { ArrowLeft, Check, ClipboardList, Compass, FileText, Loader2, MessagesSquare, Phone, ShieldCheck } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, useTransition } from "react";
 import { submitLead } from "@/app/actions/lead";
 import { SampleReportLink } from "@/components/mapa/report-preview";
@@ -137,6 +138,8 @@ function Summary({
   const [f, setF] = useState({ name: "", phone: "", email: "", preferredTime: "", contactConsent: false, marketingConsent: false, website: "" });
   const [err, setErr] = useState<{ text: string; field?: string } | null>(null);
   const [pending, start] = useTransition();
+  const [leaving, setLeaving] = useState(false);
+  const router = useRouter();
   const formRef = useRef<HTMLFormElement>(null);
   const shownAt = useRef(Date.now());
 
@@ -173,7 +176,10 @@ function Summary({
           startedAt: shownAt.current,
           website: f.website,
         });
-        if (r.ok) onDone();
+        if (r.ok) {
+          setLeaving(true);
+          router.push("/twoja-mapa");
+        }
         else {
           setErr({ text: r.error, field: r.field });
           track("lead_submission_error");
@@ -281,9 +287,9 @@ function Summary({
             <span>{marketingText}</span>
           </label>
           {err && !["name", "phone", "email", "contactConsent"].includes(err.field ?? "") && <Alert tone="alert">{err.text}</Alert>}
-          <button type="submit" disabled={pending} className="flex min-h-14 w-full items-center justify-center gap-2 rounded-full bg-clay px-6 text-[16px] font-semibold text-white shadow-soft transition hover:brightness-110 disabled:opacity-60">
-            {pending ? <Loader2 size={18} className="animate-spin" aria-hidden /> : <Phone size={18} aria-hidden />}
-            {pending ? "Wysyłanie…" : "Poproś o telefon w sprawie Mapy Relacji"}
+          <button type="submit" disabled={pending || leaving} className="flex min-h-14 w-full items-center justify-center gap-2 rounded-full bg-clay px-6 text-[16px] font-semibold text-white shadow-soft transition hover:brightness-110 disabled:opacity-60">
+            {pending || leaving ? <Loader2 size={18} className="animate-spin" aria-hidden /> : <Phone size={18} aria-hidden />}
+            {pending || leaving ? "Wysyłanie…" : "Poproś o telefon w sprawie Mapy Relacji"}
           </button>
           <p className="text-center text-xs leading-relaxed text-white/70">
             Krótki quiz jest bezpłatny. Pełna Mapa Relacji to osobna, płatna usługa. Poznasz szczegóły przed podjęciem decyzji.

@@ -16,7 +16,7 @@ export function participantCookieName(token: string) {
 }
 
 /** Tworzy nowy link (unieważnia poprzednie aktywne). Zwraca surowe dane – pokazywane psychologowi jednorazowo. */
-export async function createInvitation(tx: Tx, participantId: string, userId: string, days: number) {
+export async function createInvitation(tx: Tx, participantId: string, userId: string | null, days: number) {
   await tx`update invitations set revoked_at = now() where participant_id = ${participantId} and revoked_at is null`;
   const token = newToken();
   const code = newCode();

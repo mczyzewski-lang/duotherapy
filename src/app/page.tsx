@@ -30,7 +30,9 @@ export default async function Landing() {
   const v = (await cookies()).get("duo_hero2")?.value ?? (await headers()).get("x-duo-hero");
   // A – nacisk na emocjonalny problem; B – nacisk na konkretną wartość Mapy Relacji. Nagłówek ten sam.
   const variant = v === "B" ? "B" : "A";
-  const prices = [s.site.priceIndividual && ["Indywidualnie", s.site.priceIndividual], s.site.priceCouple && ["Dla pary", s.site.priceCouple]].filter(Boolean) as [string, string][];
+  // cena z ustawień strony; brak = cena oferty online (wariant indywidualny)
+  const individual = s.site.priceIndividual || (s.offer.pricePln ? `${s.offer.pricePln} zł` : "");
+  const prices = [individual && ["Indywidualnie", individual], s.site.priceCouple && ["Dla pary", s.site.priceCouple]].filter(Boolean) as [string, string][];
 
   return (
     <>
