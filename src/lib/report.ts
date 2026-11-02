@@ -238,6 +238,23 @@ const esc = (s: string) => s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&
 const para = (s: string) => esc(s).replace(/\n/g, "<br>");
 const radio = (on: boolean, label: string) => `<span class="opt ${on ? "on" : ""}">${on ? "●" : "○"} ${esc(label)}</span>`;
 
+// Przykład na stronie: wersja ekranowa (czytelna na telefonie) z wyraźnym oznaczeniem danych fikcyjnych.
+const SAMPLE_CSS = `
+.draft { color: rgba(169,81,47,.07); }
+.sample-bar { position: sticky; top: 0; z-index: 5; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 14px; padding: 10px 16px; background: #36493d; color: #fff; font-size: 13px; line-height: 1.35; }
+.sample-bar strong { font-weight: 600; }
+.sample-bar a { color: #fff; }
+.sample-bar .go { background: #a9512f; padding: 9px 16px; border-radius: 999px; text-decoration: none; font-weight: 600; white-space: nowrap; }
+@media screen {
+  body { font-size: 15.5px; line-height: 1.6; background: #f6f1ea; }
+  .page { max-width: 760px; margin: 0 auto; background: #fff; padding: 28px 22px 48px; box-shadow: 0 20px 50px -30px rgba(54,73,61,.35); }
+  h1 { font-size: 34px; } h2 { font-size: 21px; }
+  table { font-size: 14px; } th { font-size: 12.5px; } .opt { white-space: normal; display: inline-block; }
+}
+@media screen and (min-width: 700px) { .page { margin: 28px auto; border-radius: 14px; padding: 44px 52px 56px; } }
+@media screen and (max-width: 520px) { th, td { padding: 6px 5px; } td.k { width: auto; } }`;
+const SAMPLE_BAR = `<div class="sample-bar"><span><strong>Przykładowa Mapa Relacji</strong> · dane fikcyjne, struktura jak w prawdziwym podsumowaniu · <a href="/">wróć na stronę</a></span><a class="go" href="/start">Zacznij od 6 krótkich pytań →</a></div><div class="page">`;
+
 /** Nagłówki sekcji – ludzkim językiem, z zachowaniem struktury szablonu (04). */
 export function sectionTitles(c: Pick<ReportContent, "audience" | "caseKind">) {
   const plural = c.audience === "joint";
@@ -252,7 +269,7 @@ export function sectionTitles(c: Pick<ReportContent, "audience" | "caseKind">) {
   };
 }
 
-export function renderReportHtml(c: ReportContent, s: Settings, opts: { fontCss?: string; draft?: boolean } = {}): string {
+export function renderReportHtml(c: ReportContent, s: Settings, opts: { fontCss?: string; draft?: boolean; sample?: boolean } = {}): string {
   const plural = c.audience === "joint";
   const t = sectionTitles(c);
   const sev = (v: Severity) => (["low", "moderate", "high"] as const).map((k) => radio(v === k, { low: "niskie", moderate: "umiarkowane", high: "wysokie" }[k])).join(" ");
@@ -305,8 +322,10 @@ li { margin: 3pt 0; }
 .sign .n { font-family: "Fraunces Variable", Georgia, serif; font-size: 13pt; color: #36493d; }
 .draft { position: fixed; top: 40%; left: 0; right: 0; text-align: center; font-size: 60pt; color: rgba(169,81,47,.08); transform: rotate(-20deg); font-weight: 700; }
 .foot { margin-top: 14pt; font-size: 8.5pt; color: #6a605a; }
-</style></head><body>
+${opts.sample ? SAMPLE_CSS : ""}
+</style>${opts.sample ? '<meta name="robots" content="noindex"><meta name="viewport" content="width=device-width, initial-scale=1">' : ""}</head><body>
 ${opts.draft ? '<div class="draft">SZKIC – NIEZATWIERDZONY</div>' : ""}
+${opts.sample ? SAMPLE_BAR : ""}
 <div class="brand">${symbolSvg("pdf")}<div><div class="wm">DUO®</div><div class="tag">Terapia małżeństw</div></div></div>
 <h1>Mapa Relacji</h1>
 <div class="lead">Podsumowanie sesji · ${esc(c.meta.sessionDate)} · poufne, tylko dla ${plural ? "Was" : "Ciebie"}${c.audience === "participant" && c.caseKind === "couple" ? " (podsumowanie osobne – zawiera wyłącznie treści przeznaczone dla Ciebie)" : ""}</div>
@@ -364,5 +383,5 @@ ${c.caseKind === "individual" ? "<p>Przy konsultacji indywidualnej: podsumowanie
 <p>${helplines}. Poza Polską: lokalny numer alarmowy kraju pobytu.</p>
 </div>
 <div class="foot">DUO® · Terapia małżeństw · Mapa Relacji – podsumowanie sesji · ${esc(c.meta.sessionDate)}</div>
-</body></html>`;
+${opts.sample ? "</div>" : ""}</body></html>`;
 }

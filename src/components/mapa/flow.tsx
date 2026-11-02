@@ -3,7 +3,7 @@
 // Wizualizacja Mapy Relacji: TU JESTEŚCIE → MAPA RELACJI → trzy możliwe drogi.
 // Drogi to możliwości do rozważenia po konsultacji – nie wynik quizu i nie rekomendacja.
 import clsx from "clsx";
-import { ArrowRight, ChevronDown, MapPin } from "lucide-react";
+import { ArrowRight, ChevronDown } from "lucide-react";
 import { MapaSymbol, RoadGlyph } from "@/components/brand";
 import Link from "next/link";
 import { Fragment, useEffect, useRef, useState } from "react";
@@ -14,7 +14,7 @@ export const ROADS = [
     short: "Odbudowa relacji",
     title: "Chcemy spróbować jeszcze raz",
     tone: "rose",
-    text: "Jeśli oboje lub jedno z Was widzi szansę na odbudowę, pomagamy zrozumieć trudności i rozpocząć pracę nad komunikacją, zaufaniem oraz bliskością.",
+    text: "Pomagamy zrozumieć trudności i zacząć pracę nad komunikacją, zaufaniem i bliskością.",
     services: ["Terapia par", "Program Odbudowa Więzi", "Indywidualne wsparcie psychologiczne"],
     cta: "Poznaj drogę odbudowy",
   },
@@ -23,7 +23,7 @@ export const ROADS = [
     short: "Czas na zrozumienie i decyzję",
     title: "Jeszcze nie wiemy, co dalej",
     tone: "clay",
-    text: "Nie musicie podejmować decyzji pod presją. Pomagamy uporządkować emocje, potrzeby i możliwości, aby świadomie zdecydować, co będzie dla Was właściwe.",
+    text: "Bez presji porządkujemy emocje, potrzeby i możliwości – żeby decyzja była naprawdę Wasza.",
     services: ["Konsultacje decyzyjne", "Rozmowa z psychologiem", "Indywidualna lub wspólna praca nad zrozumieniem relacji"],
     cta: "Zobacz, jak uzyskać jasność",
   },
@@ -32,7 +32,7 @@ export const ROADS = [
     short: "Świadome rozstanie",
     title: "Chcemy rozstać się z szacunkiem",
     tone: "forest",
-    text: "Jeżeli myślicie o rozstaniu albo decyzja już zapadła, pomożemy wskazać najlepszą dla Was drogę rozstania lub rozwodu – tak, by przejść przez ten etap spokojniej, z większym zrozumieniem i bez niepotrzebnej eskalacji konfliktu.",
+    text: "Pomożemy wskazać najlepszą dla Was drogę rozstania lub rozwodu – spokojniej i bez niepotrzebnej eskalacji konfliktu.",
     services: [
       "Konsultacja psychologiczna dotycząca rozstania",
       "Pomoc w wyborze drogi rozstania lub rozwodu, która najlepiej pasuje do Waszej sytuacji",
@@ -210,59 +210,6 @@ export function HeroMapVertical() {
           </li>
         ))}
       </ul>
-    </div>
-  );
-}
-
-/** Sekcja „Mapa Relacji”: pełny przebieg – pionowo na telefonie, poziomo na desktopie. */
-export function MapaFlow() {
-  const { ref, inView } = useInView<HTMLDivElement>();
-  return (
-    <div ref={ref} className="relative">
-      <ol className="grid items-center gap-0 lg:grid-cols-[1fr_auto_1.1fr_auto_1.2fr]">
-        <li className={clsx("reveal rounded-3xl bg-white p-6 shadow-soft ring-1 ring-sand", inView && "reveal-on")}>
-          <p className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-clay"><MapPin size={15} aria-hidden /> Tu jesteście dzisiaj</p>
-          <p className="mt-3 leading-relaxed text-ink-soft">
-            Coś w relacji przestało działać. Być może trudno Wam rozmawiać, oddaliliście się od siebie albo nie wiecie, czy chcecie iść dalej razem.
-          </p>
-        </li>
-        <li aria-hidden className="flex justify-center py-2 lg:px-3 lg:py-0">
-          <span className={clsx("block h-12 w-0.5 origin-top bg-gradient-to-b from-clay to-forest lg:h-0.5 lg:w-12 lg:origin-left lg:bg-gradient-to-r", "grow-line", inView && "grow-line-on")} />
-        </li>
-        <li className={clsx("reveal relative mx-auto w-full max-w-sm rounded-[2rem] bg-forest p-7 text-center text-white shadow-soft", inView && "reveal-on")} style={{ transitionDelay: "0.15s" }}>
-          <span className="absolute -inset-2 -z-10 rounded-[2.4rem] bg-forest/10" aria-hidden />
-          <span className="mx-auto inline-flex items-center rounded-full bg-white px-4 py-2.5 shadow-soft">
-            <MapaSymbol id="flow-node" className="h-6 w-auto" />
-          </span>
-          <p className="mt-4 font-display text-2xl uppercase tracking-[0.08em]">Mapa Relacji</p>
-          <p className="mt-2 text-white/80">Zrozumienie. Perspektywa. Możliwe kierunki.</p>
-        </li>
-        <li aria-hidden className="flex justify-center py-2 lg:px-3 lg:py-0">
-          <span className={clsx("block h-12 w-0.5 origin-top bg-gradient-to-b from-forest to-sand-dark lg:h-0.5 lg:w-12 lg:origin-left lg:bg-gradient-to-r", "grow-line", inView && "grow-line-on")} style={{ transitionDelay: "0.3s" }} />
-        </li>
-        <li>
-          <ul className="grid gap-1.5">
-            {ROADS.map((r, k) => {
-              const t = TONE[r.tone];
-              return (
-                <Fragment key={r.key}>
-                {k > 0 && <li role="presentation" className={clsx("reveal", inView && "reveal-on")} style={{ transitionDelay: `${0.3 + k * 0.12}s` }}><Or /></li>}
-                <li className={clsx("reveal", inView && "reveal-on")} style={{ transitionDelay: `${0.35 + k * 0.12}s` }}>
-                  <a href={`#droga-${r.key}`} className={clsx("flex items-center gap-3 rounded-2xl bg-white px-4 py-3.5 shadow-soft ring-1 transition hover:-translate-y-0.5", t.ring)}>
-                    <span className={clsx("grid h-10 w-10 shrink-0 place-items-center rounded-full", t.soft)}><RoadGlyph road={r.key} id={`flow-${r.key}`} className="h-5 w-5" /></span>
-                    <span className="flex-1">
-                      <span className="block text-[11px] font-semibold uppercase tracking-[0.16em] text-muted">Droga {k + 1}</span>
-                      <span className="font-medium text-ink">{r.short}</span>
-                    </span>
-                    <ArrowRight size={16} className="text-muted" aria-hidden />
-                  </a>
-                </li>
-                </Fragment>
-              );
-            })}
-          </ul>
-        </li>
-      </ol>
     </div>
   );
 }

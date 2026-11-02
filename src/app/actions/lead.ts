@@ -46,7 +46,7 @@ export async function submitLead(input: LeadInput): Promise<LeadResult> {
 
   const a = d.answers;
   const attribution = Object.fromEntries(Object.entries(d.attribution).filter(([k]) => (ATTRIBUTION_KEYS as readonly string[]).includes(k)));
-  const variant = (await cookies()).get("duo_hero")?.value;
+  const variant = (await cookies()).get("duo_hero2")?.value;
   const ab = variant === "A" || variant === "B" ? variant : null;
   const mode = a.q6 === "solo" ? "individual" : a.q6 === "together" ? "couple" : null;
   const intent = a.q1 === "separate" ? "separate" : a.q1 === "unsure" ? "unsure" : "rebuild";

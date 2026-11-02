@@ -16,7 +16,9 @@ Reels / reklama (UTM) ─► strona główna (/) ─► „Sprawdź, gdzie dziś
 | Zdarzenie | Kiedy | Skąd |
 |---|---|---|
 | `landing_view` | wejście na stronę główną | przeglądarka |
-| `hero_cta_click` | klik „Sprawdź, gdzie dziś jesteście” w hero | przeglądarka |
+| `hero_cta_click` | klik „Zacznij od 6 krótkich pytań” w hero | przeglądarka |
+| `sticky_cta_click` | klik przyklejonego CTA na telefonie (pojawia się po przewinięciu hero) | przeglądarka |
+| `sample_report_open` | otwarcie przykładowej Mapy Relacji (`/mapa-relacji-przyklad`) | przeglądarka |
 | `quiz_started` | otwarcie quizu | przeglądarka |
 | `quiz_step_completed` | odpowiedź na pytanie N (tylko numer kroku) | przeglądarka |
 | `quiz_completed` | po 6. pytaniu | przeglądarka |
@@ -39,14 +41,22 @@ Pomiar można wyłączyć: *Ustawienia → Strona i lejek → Pomiar lejka*.
 | Consultation completed | sprawa: zakończona sesja |
 | Report delivered | sprawa: udostępnione podsumowanie |
 
-Panel **Lejek** (`/app/funnel`, menu „Lejek”, administrator) pokazuje metryki 1–5 dla 7/30/90 dni, porównanie wariantów A/B, odpływ na pytaniach, źródła UTM (leady → rozmowy → sprzedaże) oraz kalkulator CAC i marży (6–7) z wpisanych wydatków, ceny i kosztu realizacji.
+Panel **Lejek** (`/app/funnel`, menu „Lejek”, administrator) pokazuje metryki 1–5 dla 7/30/90 dni, porównanie wariantów A/B (także klik w przyklejone CTA i otwarcia przykładowej Mapy), odpływ na pytaniach, źródła UTM (leady → rozmowy → sprzedaże), przychód z faktycznie wpisanych kwot oraz kalkulator CAC, zwrotu z reklamy i marży (6–7).
 
-## Test A/B nagłówka
+**Wartość sprzedaży**: w karcie zgłoszenia (Etap i termin rozmowy) konsultant wpisuje faktyczną kwotę zakupu. Panel Lejek liczy z niej przychód i średnią sprzedaż (używaną jako cena w kalkulatorze, jeśli nie wpiszesz innej). Dodzwanialność = etap „Próba kontaktu” → „Rozmowa odbyta”.
 
-- A: „Nie wiesz, co dalej z Waszą relacją?”
-- B: „Ratować związek, dać sobie czas czy się rozstać? Zacznij od zrozumienia.”
+## Test A/B hero
 
-Wariant losuje `src/middleware.ts` (50/50) i zapamiętuje w ciasteczku `duo_hero` na 90 dni. Podgląd: `/?hero=A` lub `/?hero=B`. Wariant trafia do zdarzeń i do zgłoszenia (widoczny w CRM). Wnioski wyciągaj dopiero przy kilkuset wejściach na wariant.
+Nagłówek jest wspólny: „Ratować związek, dać sobie czas czy się rozstać? Zacznij od zrozumienia.” Warianty różnią się rozwinięciem:
+
+- A – nacisk na emocjonalny problem („Może chcesz jeszcze spróbować…”) + jedno zdanie o wartości,
+- B – nacisk na konkretną wartość: zdanie o Mapie Relacji + trzy elementy usługi (kwestionariusz, konsultacja, pisemne podsumowanie).
+
+Wariant losuje `src/middleware.ts` (50/50) i zapamiętuje w ciasteczku `duo_hero2` na 90 dni (od 2.11.2026 – zmiana nazwy ciasteczka rozlosowała odwiedzających od nowa; zdarzenia sprzed tej daty dotyczą starych nagłówków). Podgląd: `/?hero=A` lub `/?hero=B`. Wariant trafia do zdarzeń i do zgłoszenia. Wnioski wyciągaj dopiero przy kilkuset wejściach na wariant – i patrz na sprzedaże, nie tylko na leady.
+
+## Przykładowa Mapa Relacji
+
+Sekcja „Co otrzymasz” na stronie i strona `/mapa-relacji-przyklad` pokazują **rzeczywistą strukturę podsumowania** (te same sekcje i ten sam szablon `renderReportHtml`, który generuje PDF dla klienta) wypełnioną danymi fikcyjnymi z `src/lib/report-sample.ts`. Treść jest wyraźnie oznaczona jako przykład, strona ma `noindex`. Test jednostkowy pilnuje, żeby przykład był kompletny (bez znaczników „do uzupełnienia”). Zmiana struktury podsumowania automatycznie zmienia przykład.
 
 ## Linki z UTM
 
@@ -60,7 +70,9 @@ Ochrona: walidacja telefonu, pułapka na boty (ukryte pole + minimalny czas wype
 
 ## Wymaga danych biznesowych lub decyzji
 
-- **Cena i warianty** Mapy Relacji – *Ustawienia → Strona i lejek* (pojawią się w FAQ). Do tego czasu strona mówi uczciwie: „koszt przedstawi konsultant”.
+- **Cena i warianty** Mapy Relacji – *Ustawienia → Strona i lejek* (cena indywidualna i dla pary). Po wpisaniu pojawią się w karcie „Cena” w sekcji „Jak to działa” i pod FAQ. Do tego czasu strona mówi uczciwie: „cenę przedstawi konsultant”. Nie publikujemy widełek 500–1000 zł, dopóki nie odpowiadają one konkretnym wariantom.
+- **FAQ** – domyślna treść jest w kodzie (`src/lib/settings.ts`). Jeśli sekcja „Strona i lejek” została kiedyś zapisana w panelu, strona pokazuje FAQ z bazy – wtedy nowe pytania trzeba wkleić w Ustawieniach.
+- **Referencje klientów** – na stronie nie ma opinii ani ocen. Jeśli DUO ma prawdziwe opinie z pisemną zgodą na publikację, najlepsze miejsce to pod sekcją „Kto pomaga” (cytat + imię lub inicjał, bez szczegółów sytuacji).
 - **Czas oddzwonienia** – tylko jeśli jest realnie gwarantowany (*Czas oddzwonienia*); bez tego nie podajemy terminu.
 - **Program „Odbudowa Więzi”, konsultacje decyzyjne** – nazwy pokazane jako możliwe dalsze wsparcie; potwierdź, że usługi istnieją, i uzupełnij linki/opis, gdy będą gotowe.
 - **Droga rozstania** – landing nie wymienia Nowego Etapu; mówi tylko, że pomagamy wskazać najlepszą drogę rozstania lub rozwodu. Jeśli konsultant lub psycholog proponuje ofertę Nowego Etapu (marka powiązana), powinien przy tym poinformować o powiązaniu marek i dobrowolności – treść do zatwierdzenia (prawnik).

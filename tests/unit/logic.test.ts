@@ -120,3 +120,15 @@ describe("podsumowanie", () => {
     expect(html).not.toContain("<script");
   });
 });
+
+describe("przykładowa Mapa Relacji (landing)", () => {
+  it("używa rzeczywistej struktury podsumowania, jest kompletna i oznaczona jako fikcyjna", async () => {
+    const { SAMPLE_REPORT } = await import("@/lib/report-sample");
+    expect(missingMarkers(SAMPLE_REPORT)).toEqual([]);
+    expect(pathProblems(SAMPLE_REPORT)).toEqual([]);
+    const html = renderReportHtml(SAMPLE_REPORT, DEFAULT_SETTINGS, { sample: true });
+    expect(html).toContain("dane fikcyjne");
+    expect(html).toContain('name="robots" content="noindex"');
+    expect(html).not.toContain(MISSING);
+  });
+});

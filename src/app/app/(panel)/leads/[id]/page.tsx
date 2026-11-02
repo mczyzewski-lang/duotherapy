@@ -131,6 +131,9 @@ export default async function LeadPage({ params }: { params: Promise<{ id: strin
             <ActionForm action={leadDetailsAction as never} className="mt-4 space-y-3">
               <input type="hidden" name="lead_id" value={lead.id} />
               <Field label="Termin rozmowy telefonicznej" htmlFor="call_at"><Input id="call_at" type="datetime-local" name="call_at" defaultValue={fmtDT(lead.call_at)} /></Field>
+              <Field label="Wartość sprzedaży (zł)" htmlFor="sale" hint="Faktyczna kwota zakupu Mapy Relacji – do przychodu i CAC w panelu Lejek.">
+                <Input id="sale" type="number" inputMode="numeric" min={0} max={100000} step={1} name="sale_amount_pln" defaultValue={lead.sale_amount_pln ?? ""} />
+              </Field>
               <Field label="Osoba prowadząca" htmlFor="th"><Select id="th" name="assigned_therapist_id" defaultValue={lead.assigned_therapist_id ?? ""}><option value="">—</option>{therapists.map((t) => <option key={t.id} value={t.id}>{t.display_name}</option>)}</Select></Field>
               <SubmitButton size="sm">Zapisz</SubmitButton>
             </ActionForm>

@@ -17,8 +17,8 @@ export default async function FunnelPage({ searchParams }: { searchParams: Promi
       select event, variant, count(distinct anon_id)::int as n from funnel_events where created_at >= ${since} group by 1, 2`;
     const steps = await tx<{ step: number; n: number }[]>`
       select step, count(distinct anon_id)::int as n from funnel_events where event = 'quiz_step_completed' and created_at >= ${since} group by 1 order by 1`;
-    const leads = await tx<{ stage: string; ab_variant: string | null; src: string | null; camp: string | null; case_id: string | null; session_done: boolean; delivered: boolean }[]>`
-      select l.stage, l.ab_variant, l.attribution->>'utm_source' as src, l.attribution->>'utm_campaign' as camp, l.case_id,
+    const leads = await tx<{ stage: string; sale: number | null; ab_variant: string | null; src: string | null; camp: string | null; case_id: string | null; session_done: boolean; delivered: boolean }[]>`
+      select l.stage, l.sale_amount_pln as sale, l.ab_variant, l.attribution->>'utm_source' as src, l.attribution->>'utm_campaign' as camp, l.case_id,
         coalesce(c.session_ended_at is not null, false) as session_done,
         exists (select 1 from reports r join report_shares sh on sh.report_id = r.id where r.case_id = l.case_id) as delivered
       from leads l left join cases c on c.id = l.case_id
@@ -38,9 +38,14 @@ export default async function FunnelPage({ searchParams }: { searchParams: Promi
   ).sort((a, b) => b[1].length - a[1].length);
 
   const spend = Number(sp.spend) || 0;
-  const price = Number(sp.price) || 0;
+  const priceInput = Number(sp.price) || 0;
   const cost = Number(sp.cost) || 0;
   const paid = reached("paid");
+  const sales = d.leads.map((l) => l.sale).filter((x): x is number => typeof x === "number" && x > 0);
+  const revenue = sales.reduce((a, b) => a + b, 0);
+  const avgSale = sales.length ? Math.round(revenue / sales.length) : 0;
+  // cena: wpisana ręcznie albo średnia z faktycznie wpisanych kwot sprzedaży
+  const price = priceInput || avgSale;
 
   const rows: [string, string, string][] = [
     ["1. Strona → rozpoczęcie quizu", "landing_view", "quiz_started"],
@@ -66,7 +71,7 @@ export default async function FunnelPage({ searchParams }: { searchParams: Promi
       <Card className="mb-6 overflow-x-auto p-6">
         <h2 className="font-display text-xl text-ink">Strona → quiz → prośba o telefon</h2>
         <table className="mt-4 w-full min-w-[560px] text-sm">
-          <thead className="text-left text-xs text-muted"><tr><th className="py-2">Etap</th><th>Razem</th><th>Nagłówek A</th><th>Nagłówek B</th></tr></thead>
+          <thead className="text-left text-xs text-muted"><tr><th className="py-2">Etap</th><th>Razem</th><th>Hero A</th><th>Hero B</th></tr></thead>
           <tbody className="divide-y divide-sand/60">
             {rows.map(([label, from, to]) => (
               <tr key={label}>
@@ -81,12 +86,22 @@ export default async function FunnelPage({ searchParams }: { searchParams: Promi
               {variants.map((v) => <td key={v}>{pct(count("hero_cta_click", v), count("landing_view", v))}</td>)}
             </tr>
             <tr>
+              <td className="py-2.5 text-ink">Kliknięcia przyklejonego CTA (telefon)</td>
+              <td>{pct(count("sticky_cta_click"), count("landing_view"))} <span className="text-xs text-muted">({count("sticky_cta_click")})</span></td>
+              {variants.map((v) => <td key={v}>{pct(count("sticky_cta_click", v), count("landing_view", v))}</td>)}
+            </tr>
+            <tr>
+              <td className="py-2.5 text-ink">Otwarcie przykładowej Mapy Relacji</td>
+              <td>{pct(count("sample_report_open"), count("landing_view"))} <span className="text-xs text-muted">({count("sample_report_open")})</span></td>
+              {variants.map((v) => <td key={v}>{pct(count("sample_report_open", v), count("landing_view", v))}</td>)}
+            </tr>
+            <tr>
               <td className="py-2.5 text-ink">Błędy wysyłki formularza</td>
               <td>{count("lead_submission_error")}</td><td /><td />
             </tr>
           </tbody>
         </table>
-        <p className="mt-4 text-xs text-muted">A: „Nie wiesz, co dalej z Waszą relacją?” · B: „Ratować związek, dać sobie czas czy się rozstać? Zacznij od zrozumienia.” Porównuj warianty dopiero przy kilkuset wejściach na wariant.</p>
+        <p className="mt-4 text-xs text-muted">Ten sam nagłówek, różne rozwinięcie: A – nacisk na emocjonalny problem, B – nacisk na konkretną wartość Mapy Relacji (od 2.11.2026; starsze dane dotyczą wcześniejszych nagłówków, porównuj okresy po tej dacie). Wnioski wyciągaj dopiero przy kilkuset wejściach na wariant.</p>
         {d.steps.length > 0 && (
           <div className="mt-6">
             <h3 className="text-sm font-medium text-ink">Ukończone pytania quizu (sesje)</h3>
@@ -122,12 +137,17 @@ export default async function FunnelPage({ searchParams }: { searchParams: Promi
                 ["Konsultacja odbyta", d.leads.filter((l) => l.session_done).length, paid],
                 ["Podsumowanie przekazane", d.leads.filter((l) => l.delivered).length, paid],
                 ["Bez kontynuacji", d.leads.filter((l) => l.stage === "lost").length, d.leads.length],
+                ["Sprzedaże z wpisaną kwotą", sales.length, paid],
               ] as [string, number, number | null][]
             ).map(([label, n, base]) => (
               <tr key={label}><td className="py-2.5 text-ink">{label}</td><td className="font-medium">{n}</td><td className="text-muted">{base !== null ? pct(n, base) : ""}</td></tr>
             ))}
           </tbody>
         </table>
+        <p className="mt-3 text-sm text-ink">
+          Przychód z wpisanych kwot: <strong>{revenue} zł</strong>
+          {avgSale > 0 && <span className="text-muted"> · średnia sprzedaż {avgSale} zł</span>}
+        </p>
       </Card>
 
       <div className="grid gap-6 xl:grid-cols-2">
@@ -166,6 +186,7 @@ export default async function FunnelPage({ searchParams }: { searchParams: Promi
             <div><dt className="text-muted">Koszt pozyskania płacącego klienta (CAC)</dt><dd className="font-display text-2xl text-forest">{spend && paid ? `${Math.round(spend / paid)} zł` : "—"}</dd></div>
             <div><dt className="text-muted">Koszt leada</dt><dd className="font-display text-2xl text-forest">{spend && d.leads.length ? `${Math.round(spend / d.leads.length)} zł` : "—"}</dd></div>
             <div><dt className="text-muted">Marża na 1 Mapie</dt><dd className="font-display text-2xl text-forest">{price ? `${price - cost} zł` : "—"}</dd></div>
+            <div><dt className="text-muted">Zwrot z reklamy (przychód / wydatki)</dt><dd className="font-display text-2xl text-forest">{spend && revenue ? `${(revenue / spend).toFixed(2)}×` : "—"}</dd></div>
             <div><dt className="text-muted">Marża po kosztach reklamy</dt><dd className="font-display text-2xl text-forest">{price && spend && paid ? `${Math.round(price - cost - spend / paid)} zł` : "—"}</dd></div>
           </dl>
         </Card>

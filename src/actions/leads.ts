@@ -45,8 +45,11 @@ export async function leadDetailsAction(_: R, fd: FormData): Promise<R> {
   const id = String(fd.get("lead_id"));
   const callAt = String(fd.get("call_at") ?? "");
   const therapist = String(fd.get("assigned_therapist_id") ?? "") || null;
+  const rawAmount = String(fd.get("sale_amount_pln") ?? "").trim();
+  const amount = rawAmount ? Number(rawAmount) : null;
+  if (amount !== null && (!Number.isInteger(amount) || amount < 0 || amount > 100000)) return { error: "Wartość sprzedaży: podaj kwotę w pełnych złotych (0–100 000)." };
   await asStaff(s, async (tx) => {
-    await tx`update leads set call_at = ${callAt ? new Date(callAt) : null}, assigned_therapist_id = ${therapist},
+    await tx`update leads set call_at = ${callAt ? new Date(callAt) : null}, assigned_therapist_id = ${therapist}, sale_amount_pln = ${amount},
              stage = case when ${Boolean(callAt)} and stage in ('new', 'contacted') then 'call_scheduled' else stage end, updated_at = now() where id = ${id}`;
     await audit(tx, s.actor, "lead_updated", "lead", id);
   });

@@ -137,6 +137,8 @@ export type Attribution = Partial<Record<(typeof ATTRIBUTION_KEYS)[number], stri
 export const FUNNEL_EVENTS = [
   "landing_view",
   "hero_cta_click",
+  "sticky_cta_click",
+  "sample_report_open",
   "quiz_started",
   "quiz_step_completed",
   "quiz_completed",

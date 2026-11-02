@@ -3,10 +3,11 @@
 // Quiz „Mapa Relacji”: 6 pytań, jedno na ekran, automatyczne przejście, wstępne podsumowanie i prośba o telefon.
 // Wstępne podsumowanie to wyłącznie parafraza odpowiedzi – bez ocen, prognoz i diagnoz.
 import clsx from "clsx";
-import { ArrowLeft, Check, Compass, Loader2, MessagesSquare, Phone, Route, ShieldCheck } from "lucide-react";
+import { ArrowLeft, Check, ClipboardList, Compass, FileText, Loader2, MessagesSquare, Phone, ShieldCheck } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef, useState, useTransition } from "react";
 import { submitLead } from "@/app/actions/lead";
+import { SampleReportLink } from "@/components/mapa/report-preview";
 import { Alert } from "@/components/ui";
 import { PREFERRED_TIMES, QUIZ, summaryFor, type QuizAnswers } from "@/lib/mapa-quiz";
 import { anonId, attribution, captureAttribution, track } from "@/lib/track-client";
@@ -61,7 +62,7 @@ export function MapaQuiz({ consentText, marketingText, callbackPromise }: { cons
       <div className="px-5 pt-2">
         <div className="flex items-center justify-between text-sm">
           <span className="font-medium text-ink">Pytanie {i + 1} z {QUIZ.length}</span>
-          <span className="text-muted">ok. 2 minuty</span>
+          <span className="text-muted">bezpłatnie · ok. 2 minuty</span>
         </div>
         <div className="mt-2.5 flex gap-1.5" role="progressbar" aria-label="Postęp quizu" aria-valuemin={1} aria-valuemax={QUIZ.length} aria-valuenow={i + 1}>
           {QUIZ.map((x, k) => (
@@ -110,7 +111,7 @@ export function MapaQuiz({ consentText, marketingText, callbackPromise }: { cons
           <button type="button" onClick={() => setI(Math.max(0, i - 1))} disabled={i === 0} className="inline-flex min-h-11 items-center gap-1.5 rounded-full px-3 text-[15px] font-medium text-forest disabled:opacity-30">
             <ArrowLeft size={17} aria-hidden /> Wstecz
           </button>
-          <span className="text-xs text-muted">Bez rejestracji · bez oceniania</span>
+          <span className="text-xs text-muted">Quiz wstępny · to nie diagnoza</span>
         </div>
       </div>
     </div>
@@ -209,14 +210,22 @@ function Summary({
         </a>
       </section>
 
+      <section aria-labelledby="limits-h" className="mt-6 rounded-3xl bg-linen/80 p-5 ring-1 ring-sand">
+        <h2 id="limits-h" className="font-display text-xl text-ink">Czego ten quiz nie ustali</h2>
+        <p className="mt-2 text-[15px] leading-relaxed text-ink-soft">
+          Sześć pytań to za mało, żeby zrozumieć, co naprawdę dzieje się w Waszej relacji. Quiz nie ocenia związku, nie stawia diagnozy i nie wskazuje drogi – tym zajmuje
+          się psycholog w pełnej Mapie Relacji, po szczegółowym kwestionariuszu i rozmowie.
+        </p>
+      </section>
+
       <section aria-labelledby="gain-h" className="mt-8">
-        <h2 id="gain-h" className="font-display text-2xl text-ink">Co może dać Ci pełna Mapa Relacji?</h2>
+        <h2 id="gain-h" className="font-display text-2xl text-ink">Co obejmuje pełna Mapa Relacji?</h2>
         <ul className="mt-4 grid gap-3">
           {(
             [
-              [Route, "Zrozumienie", "Uporządkowanie najważniejszych problemów i potrzeb."],
-              [MessagesSquare, "Perspektywa", "Profesjonalna rozmowa z psychologiem – indywidualnie lub razem."],
-              [Compass, "Kierunek", "Możliwe następne kroki, dopasowane do Waszej sytuacji i decyzji."],
+              [ClipboardList, "Poufny kwestionariusz", "Około 15–25 minut. Przy parze każde z Was wypełnia własny – druga osoba nie widzi Twoich odpowiedzi."],
+              [MessagesSquare, "Konsultacja z psychologiem", "Online: 60 minut indywidualnie lub 90 minut dla pary. Psycholog zna już Twoje odpowiedzi."],
+              [FileText, "Pisemne podsumowanie", "Co Was wspiera, gdzie jest najtrudniej, jak działa Wasz konflikt, propozycje psychologa i kolejne kroki – online i w PDF."],
             ] as const
           ).map(([Icon, t, d]) => (
             <li key={t} className="flex gap-4 rounded-2xl bg-white/70 p-4 ring-1 ring-sand">
@@ -225,13 +234,14 @@ function Summary({
             </li>
           ))}
         </ul>
+        <SampleReportLink className="mt-3 text-[15px]">Zobacz przykładową Mapę Relacji</SampleReportLink>
       </section>
 
       <section aria-labelledby="form-h" id="formularz" className="mt-10 scroll-mt-24 rounded-3xl bg-forest p-6 text-white shadow-soft sm:p-8">
         <h2 id="form-h" className="scroll-mt-28 font-display text-[1.7rem] leading-tight">Porozmawiajmy o Twojej Mapie Relacji</h2>
         <p className="mt-3 text-[15px] leading-relaxed text-white/85">
-          Zostaw numer telefonu. Konsultant DUO zadzwoni, wyjaśni, jak wygląda Mapa Relacji, przedstawi dostępne warianty i ich koszt oraz pomoże ustalić, czy ten proces
-          odpowiada Twoim potrzebom.
+          Zostaw numer telefonu, a konsultant DUO zadzwoni w sprawie Mapy Relacji – płatnej usługi z psychologiem. Wyjaśni, jak wygląda, przedstawi warianty i cenę oraz
+          pomoże ustalić, czy ten proces odpowiada Twoim potrzebom. Decyzję podejmujesz po rozmowie, bez zobowiązań.
         </p>
         <form ref={formRef} onSubmit={submit} noValidate className="mt-6 space-y-4">
           <div>

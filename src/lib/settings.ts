@@ -84,40 +84,48 @@ export const DEFAULT_SETTINGS: Settings = {
     funnelTracking: true,
     faq: [
       {
-        q: "Czy mogę rozpocząć samodzielnie?",
-        a: "Tak. Quiz, rozmowę i całą Mapę Relacji możesz przejść sam lub sama. Jeśli później druga osoba zechce dołączyć, wypełni własny, poufny kwestionariusz.",
+        q: "Czy mogę zacząć bez udziału partnera?",
+        a: "Tak. Quiz, rozmowę z konsultantem i całą Mapę Relacji możesz przejść sam lub sama – nie potrzebujesz zgody drugiej osoby. Jeśli później partner lub partnerka zechce dołączyć, wypełni własny, poufny kwestionariusz. Wspólna konsultacja wymaga udziału i zgody obu osób. Nie kontaktujemy się z drugą osobą bez Twojej wiedzy.",
       },
       {
-        q: "Czy partner musi zgodzić się na konsultację?",
-        a: "Na konsultację indywidualną – nie. Wspólna konsultacja wymaga udziału i zgody obu osób. Nie kontaktujemy się z drugą osobą bez Twojej wiedzy.",
+        q: "Czym Mapa Relacji różni się od zwykłej terapii?",
+        a: "Terapia to zwykle wiele spotkań i praca nad zmianą. Mapa Relacji to jednorazowy, zamknięty proces: kwestionariusz, konsultacja z psychologiem i pisemne podsumowanie. Pomaga najpierw zrozumieć, co się między Wami dzieje, i zobaczyć możliwe kierunki. Terapia może być jednym z nich – ale nie musi.",
       },
       {
-        q: "Czy Mapa Relacji jest terapią?",
-        a: "Nie. To jednorazowy, uporządkowany proces: kwestionariusze, konsultacja z psychologiem i pisemne podsumowanie. Pomaga zrozumieć sytuację i możliwe kierunki. Terapia może być jednym z nich – ale nie musi.",
+        q: "Co konkretnie otrzymam po zakończeniu?",
+        a: "Pisemne podsumowanie przygotowane przez psychologa – do przeczytania online pod prywatnym linkiem z kodem dostępu i do pobrania jako PDF. Składa się z sześciu części: najważniejsze w skrócie, co Was wspiera, gdzie jest najtrudniej (sześć obszarów relacji), jak działa Wasz konflikt, propozycje psychologa z możliwą dalszą drogą oraz plan kolejnych kroków. Para może otrzymać podsumowanie wspólne, a w razie potrzeby także osobne.",
       },
       {
-        q: "Czy psycholog powie nam, czy powinniśmy się rozwieść?",
+        q: "Jak wygląda konsultacja?",
+        a: "To rozmowa online z psychologiem: 60 minut przy konsultacji indywidualnej i 90 minut przy konsultacji dla pary. Psycholog zna wcześniej odpowiedzi z kwestionariusza, więc nie zaczynacie od opowiadania wszystkiego od początku – od razu rozmawiacie o tym, co dla Was najważniejsze.",
+      },
+      {
+        q: "Czy psycholog zdecyduje za mnie, czy powinienem się rozwieść?",
         a: "Nie. Psycholog pokaże, co dzieje się między Wami, co Was wspiera i jakie widzi możliwe kierunki. Decyzja zawsze należy do Was – nie jesteśmy ani po stronie ratowania związku za wszelką cenę, ani po stronie rozstania.",
       },
       {
-        q: "Co, jeśli chcemy spróbować odbudować związek?",
-        a: "Mapa Relacji pomoże zobaczyć, od czego zacząć. Dalszą drogą może być terapia par, program Odbudowa Więzi albo wsparcie indywidualne – wybór należy do Was.",
+        q: "Jak długo trwa proces?",
+        a: "Quiz zajmuje około 2 minut, kwestionariusz około 15–25 minut, a konsultacja 60 minut indywidualnie lub 90 minut dla pary. Termin konsultacji i przekazania podsumowania ustalamy wspólnie podczas rozmowy telefonicznej – tak, by pasował do Twojego kalendarza.",
+      },
+      {
+        q: "Ile kosztuje pełna Mapa Relacji?",
+        a: "Quiz na stronie jest bezpłatny. Mapa Relacji to płatna usługa, a jej cena zależy od wariantu – indywidualnie czy we dwoje. Konsultant przedstawi cenę i zakres w rozmowie, zanim podejmiesz jakąkolwiek decyzję. Rozmowa do niczego nie zobowiązuje.",
+      },
+      {
+        q: "Czy moje odpowiedzi i informacje są poufne?",
+        a: "Tak. Każda osoba wypełnia kwestionariusz na własnym linku z kodem dostępu. Odpowiedzi są szyfrowane, widzi je tylko psycholog prowadzący i nie przekazujemy ich drugiej osobie bez zgody. Odpowiedzi z quizu nie trafiają do narzędzi reklamowych ani analitycznych.",
+      },
+      {
+        q: "Czy mogę zobaczyć przykładową Mapę Relacji?",
+        a: "Tak – w sekcji „Co otrzymasz” na tej stronie możesz przejrzeć wszystkie sześć części przykładowej Mapy i otworzyć ją w całości. To prawdziwy szablon podsumowania wypełniony fikcyjnymi danymi.",
+      },
+      {
+        q: "Co mogę zrobić po otrzymaniu podsumowania?",
+        a: "Możesz do niego wracać w swoim tempie – razem albo osobno. Znajdziesz w nim propozycje na najbliższy czas i możliwe dalsze drogi, np. terapię par, konsultacje pomagające podjąć decyzję albo wsparcie w spokojnym rozstaniu. To propozycje, nie zobowiązanie: nie musisz kontynuować współpracy.",
       },
       {
         q: "Co, jeśli zdecydujemy się rozstać?",
         a: "Pomożemy wskazać najlepszą dla Was drogę rozstania lub rozwodu i przejść przez ten etap spokojniej: przygotować się do rozmowy, zadbać o dzieci, jeśli je macie, i nie eskalować konfliktu.",
-      },
-      {
-        q: "Ile trwa przygotowanie Mapy Relacji?",
-        a: "Kwestionariusz zajmuje około 15–25 minut, a konsultacja z psychologiem 60 minut indywidualnie lub 90 minut dla pary. Termin konsultacji i przekazania podsumowania ustalamy wspólnie podczas rozmowy telefonicznej.",
-      },
-      {
-        q: "Ile kosztuje proces?",
-        a: "Krótki quiz jest bezpłatny. Mapa Relacji to płatna usługa – konsultant przedstawi koszt i dostępne warianty w rozmowie, zanim podejmiesz jakąkolwiek decyzję.",
-      },
-      {
-        q: "Czy nasze informacje są poufne?",
-        a: "Tak. Każda osoba wypełnia kwestionariusz na własnym linku z kodem dostępu. Odpowiedzi są szyfrowane, widzi je tylko psycholog prowadzący i nie przekazujemy ich drugiej osobie bez zgody. Odpowiedzi z quizu nie trafiają do narzędzi reklamowych.",
       },
     ],
   },

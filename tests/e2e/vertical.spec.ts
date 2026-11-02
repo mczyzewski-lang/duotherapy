@@ -86,8 +86,16 @@ test("pełny scenariusz audytu pary", async ({ page, browser, request }) => {
   // 1. Landing (wariant A) → quiz Mapy Relacji → prośba o telefon (z UTM)
   await page.goto("/?hero=A&utm_source=instagram&utm_medium=reels&utm_campaign=e2e");
   await page.waitForLoadState("networkidle");
-  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Nie wiesz, co dalej z Waszą relacją?");
-  await page.getByRole("link", { name: /Sprawdź, gdzie dziś jesteście/ }).first().click();
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText("Ratować związek, dać sobie czas czy się rozstać? Zacznij od zrozumienia.");
+  // podgląd rzeczywistej struktury podsumowania (dane fikcyjne)
+  await page.getByRole("tab", { name: /Jak działa Wasz konflikt|Konflikt/ }).click();
+  await expect(page.locator("#pv-panel")).toContainText("Wasz cykl w jednym zdaniu");
+  const sample = await request.get("/mapa-relacji-przyklad");
+  expect(sample.ok()).toBeTruthy();
+  const sampleHtml = await sample.text();
+  expect(sampleHtml).toContain("dane fikcyjne");
+  expect(sampleHtml).not.toContain("[DO UZUPEŁNIENIA]");
+  await page.locator("#hero-cta").click();
   await page.waitForURL(/\/start/);
   await page.waitForLoadState("networkidle");
   for (const pick of ["Nie wiem już, co dalej", "Nie potrafimy spokojnie", "Tak, oboje chcemy", "Dlaczego ciągle", "Od ponad roku", "Razem z partnerem"]) {

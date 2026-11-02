@@ -49,7 +49,7 @@ export function attribution(): Attribution {
 }
 
 export function heroVariant(): "A" | "B" | null {
-  const m = document.cookie.match(/(?:^|; )duo_hero=([AB])/);
+  const m = document.cookie.match(/(?:^|; )duo_hero2=([AB])/);
   return m ? (m[1] as "A" | "B") : null;
 }
 
