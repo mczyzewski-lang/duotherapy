@@ -55,3 +55,27 @@ export async function htmlToPdf(html: string): Promise<Buffer> {
     await browser.close();
   }
 }
+
+/**
+ * PDF ze strony aplikacji (materiały „Wiedza”): drukuje dokładnie tę samą stronę, którą widać w przeglądarce
+ * (wersja do druku /wiedza/<slug>/druk), z numeracją stron i stopką DUO.
+ */
+export async function urlToPdf(url: string, footerText: string): Promise<Buffer> {
+  const browser = await chromium.launch({ executablePath: executablePath(), args: ["--no-sandbox"] });
+  try {
+    const page = await browser.newPage();
+    await page.goto(url, { waitUntil: "networkidle" });
+    await page.evaluate(() => document.fonts.ready);
+    const pdf = await page.pdf({
+      format: "A4",
+      printBackground: true,
+      displayHeaderFooter: true,
+      headerTemplate: "<span></span>",
+      footerTemplate: `<div style="width:100%;font-size:7.5px;color:#8a807a;display:flex;justify-content:space-between;padding:0 14mm;font-family:sans-serif"><span>${footerText.replace(/</g, "&lt;")}</span><span><span class="pageNumber"></span> / <span class="totalPages"></span></span></div>`,
+      margin: { top: "16mm", bottom: "18mm", left: "14mm", right: "14mm" },
+    });
+    return Buffer.from(pdf);
+  } finally {
+    await browser.close();
+  }
+}

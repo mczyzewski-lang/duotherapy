@@ -56,7 +56,7 @@ export function heroVariant(): "A" | "B" | null {
 export function track(event: FunnelEvent, step?: number) {
   try {
     const a = attribution();
-    const body = JSON.stringify({ event, step, anonId: anonId(), variant: heroVariant(), utm_source: a.utm_source, utm_medium: a.utm_medium, utm_campaign: a.utm_campaign, path: window.location.pathname });
+    const body = JSON.stringify({ event, step, anonId: anonId(), variant: heroVariant(), utm_source: a.utm_source, utm_medium: a.utm_medium, utm_campaign: a.utm_campaign, path: window.location.pathname.startsWith("/wiedza/") ? "/wiedza/*" : window.location.pathname });
     if (!navigator.sendBeacon?.("/api/events", new Blob([body], { type: "application/json" }))) {
       void fetch("/api/events", { method: "POST", body, headers: { "content-type": "application/json" }, keepalive: true });
     }

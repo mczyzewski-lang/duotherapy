@@ -19,6 +19,8 @@
 
 - [ ] Sprzedaż online Mapy Relacji (670 zł): regulamin i dane sprzedawcy zatwierdzone (Ustawienia → Oferta), treść zgody na rozpoczęcie usługi przed upływem 14 dni, status VAT, faktury; klucze Stripe najpierw w trybie testowym (`docs/platnosci-i-vsl.md`).
 
+- [ ] Materiały „Wiedza” (10 lead magnetów): akceptacja merytoryczna psycholożki, teksty zgód pod formularzem, polityka prywatności (newsletter), SMTP i decyzja o sekwencjach – lista w `docs/wiedza-lead-magnety.md`.
+
 ## 2. Umowy powierzenia i dostawcy
 
 - [ ] Hosting aplikacji i bazy w UE/EOG; umowa powierzenia (art. 28 RODO).

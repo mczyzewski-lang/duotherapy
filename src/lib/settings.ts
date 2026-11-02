@@ -22,6 +22,10 @@ export interface Settings {
     leadMarketingConsent: string;
     /** Zgoda w formularzu „Masz pytania?”. */
     inquiryConsent: string;
+    /** Materiały „Wiedza”: informacja pod formularzem (dostarczenie materiału – bez zgody marketingowej). */
+    contentDeliveryInfo: string;
+    contentMarketingConsent: string;
+    contentSeriesConsent: string;
     /** Wersja tekstów (zapisywana w rejestrze zgód). Zmień przy każdej zmianie treści. */
     version: string;
     /** Teksty zatwierdzone przez prawnika / IOD. Bez tego (poza trybem DEMO) kwestionariusz jest zablokowany. */
@@ -96,6 +100,11 @@ export const DEFAULT_SETTINGS: Settings = {
     leadMarketingConsent:
       "Chcę otrzymywać od DUO® okazjonalne informacje o materiałach i usługach (opcjonalnie, mogę zrezygnować w każdej chwili).",
     inquiryConsent: "Wyrażam zgodę na kontakt e-mailowy lub telefoniczny w odpowiedzi na moje pytanie.",
+    contentDeliveryInfo:
+      "Materiał jest bezpłatny i nie wiąże się z zakupem. Podany e-mail wykorzystamy, żeby wysłać Ci link do pobrania. Szczegóły w polityce prywatności.",
+    contentMarketingConsent:
+      "Chcę otrzymywać od DUO dodatkowe materiały edukacyjne, wskazówki dotyczące relacji i informacje o usługach na podany adres e-mail. Wiem, że mogę w każdej chwili wycofać zgodę.",
+    contentSeriesConsent: "Chcę dostawać kolejne ćwiczenia wyzwania codziennie e-mailem przez 7 dni. Mogę zrezygnować w każdej chwili.",
     version: "2026-10-draft",
     approved: false,
   },

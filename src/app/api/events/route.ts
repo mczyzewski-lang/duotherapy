@@ -10,7 +10,7 @@ import { readSettings } from "@/lib/settings";
 const Schema = z.object({
   // zgłoszenie, start płatności i zakup zapisuje wyłącznie serwer (po faktycznym zapisie / potwierdzeniu operatora)
   event: z.enum(FUNNEL_EVENTS).refine((e) => !(SERVER_ONLY_EVENTS as readonly string[]).includes(e)),
-  step: z.number().int().min(1).max(6).optional(),
+  step: z.number().int().min(1).max(20).optional(),
   anonId: z.string().regex(/^[a-zA-Z0-9]{8,64}$/),
   variant: z.enum(["A", "B"]).nullable().optional(),
   utm_source: z.string().max(200).optional(),

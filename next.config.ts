@@ -30,7 +30,22 @@ const nextConfig: NextConfig = {
   distDir: process.env.NEXT_DIST_DIR || ".next",
   serverExternalPackages: ["playwright-core"],
   async headers() {
-    return [{ source: "/:path*", headers: securityHeaders }];
+    return [
+      { source: "/:path*", headers: securityHeaders },
+      // podglądy /demo, wersje online i do druku materiałów – poza indeksem wyszukiwarek
+      { source: "/wiedza/:slug/:view(demo|material|druk|pdf)", headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }] },
+    ];
+  },
+  async rewrites() {
+    return {
+      // przykładowa Mapa Relacji jako materiał „Wiedza” – renderowana prawdziwym generatorem podsumowań
+      beforeFiles: [
+        { source: "/wiedza/przykladowa-mapa-relacji/demo", destination: "/mapa-relacji-przyklad/demo" },
+        { source: "/wiedza/przykladowa-mapa-relacji/material", destination: "/mapa-relacji-przyklad/material" },
+      ],
+      afterFiles: [],
+      fallback: [],
+    };
   },
 };
 

@@ -258,9 +258,9 @@ const SAMPLE_CSS = `
 @media screen and (min-width: 700px) { .page { margin: 28px auto; border-radius: 14px; padding: 44px 52px 56px; } }
 @media screen and (max-width: 520px) { th, td { padding: 6px 5px; } td.k { width: auto; } .sample-bottom span { max-width: 52%; } }
 @media print { .sample-top, .sample-bottom { display: none; } }`;
-const SAMPLE_BAR = (back: { href: string; label: string }) =>
-  `<div class="sample-top"><span><strong>Przykładowa Mapa Relacji</strong> · dane fikcyjne, struktura jak w prawdziwym podsumowaniu</span><a href="${back.href}">${back.label}</a></div>
-<div class="sample-bottom"><span><strong>Twoja Mapa Relacji</strong>z psychologiem – zacznij od 6 krótkich pytań</span><a href="/start?utm_source=duo&utm_medium=przyklad">Zacznij →</a></div><div class="page">`;
+const SAMPLE_BAR = (back: { href: string; label: string }, cta?: { text: string; href: string; label: string }, topTitle?: string, pdfHref?: string) =>
+  `<div class="sample-top"><span><strong>${topTitle ?? "Przykładowa Mapa Relacji"}</strong> · dane fikcyjne, struktura jak w prawdziwym podsumowaniu</span><span style="display:flex;gap:14px;align-items:center">${pdfHref ? `<a href="${pdfHref}" data-pdf style="background:#fff;color:#36493d;padding:6px 12px;border-radius:999px;text-decoration:none;font-weight:600">Pobierz PDF</a>` : ""}<a href="${back.href}">${back.label}</a></span></div>
+<div class="sample-bottom"><span><strong>Twoja Mapa Relacji</strong>${cta?.text ?? "z psychologiem – zacznij od 6 krótkich pytań"}</span><a href="${cta?.href ?? "/start?utm_source=duo&utm_medium=przyklad"}">${cta?.label ?? "Zacznij →"}</a></div><div class="page">`;
 
 /** Nagłówki sekcji – ludzkim językiem, z zachowaniem struktury szablonu (04). */
 export function sectionTitles(c: Pick<ReportContent, "audience" | "caseKind">) {
@@ -276,7 +276,7 @@ export function sectionTitles(c: Pick<ReportContent, "audience" | "caseKind">) {
   };
 }
 
-export function renderReportHtml(c: ReportContent, s: Settings, opts: { fontCss?: string; draft?: boolean; sample?: boolean; back?: { href: string; label: string } } = {}): string {
+export function renderReportHtml(c: ReportContent, s: Settings, opts: { fontCss?: string; draft?: boolean; sample?: boolean; back?: { href: string; label: string }; intro?: { title: string; paragraphs: string[] }; bottomCta?: { text: string; href: string; label: string }; topTitle?: string; pdfHref?: string } = {}): string {
   const plural = c.audience === "joint";
   const t = sectionTitles(c);
   const sev = (v: Severity) => (["low", "moderate", "high"] as const).map((k) => radio(v === k, { low: "niskie", moderate: "umiarkowane", high: "wysokie" }[k])).join(" ");
@@ -332,11 +332,12 @@ li { margin: 3pt 0; }
 ${opts.sample ? SAMPLE_CSS : ""}
 </style>${opts.sample ? '<meta name="robots" content="noindex"><meta name="viewport" content="width=device-width, initial-scale=1">' : ""}</head><body>
 ${opts.draft ? '<div class="draft">SZKIC – NIEZATWIERDZONY</div>' : ""}
-${opts.sample ? SAMPLE_BAR(opts.back ?? { href: "/", label: "← wróć na stronę" }) : ""}
+${opts.sample ? SAMPLE_BAR(opts.back ?? { href: "/", label: "← wróć na stronę" }, opts.bottomCta, opts.topTitle, opts.pdfHref) : ""}
 <div class="brand">${symbolSvg("pdf")}<div><div class="wm">DUO®</div><div class="tag">Terapia małżeństw</div></div></div>
 <h1>Mapa Relacji</h1>
 <div class="lead">Podsumowanie sesji · ${esc(c.meta.sessionDate)} · poufne, tylko dla ${plural ? "Was" : "Ciebie"}${c.audience === "participant" && c.caseKind === "couple" ? " (podsumowanie osobne – zawiera wyłącznie treści przeznaczone dla Ciebie)" : ""}</div>
 
+${opts.intro ? `<div class="box" style="margin-top:14pt"><strong>${esc(opts.intro.title)}</strong>${opts.intro.paragraphs.map((x) => `<p>${esc(x)}</p>`).join("")}</div>` : ""}
 <div class="letter"><p>Dzień dobry, ${names},</p><p>${opening}</p><p>To nie jest ocena ani diagnoza – to opis tego, co wspólnie zobaczyliśmy w dniu sesji.</p></div>
 
 <table>

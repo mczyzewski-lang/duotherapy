@@ -2,13 +2,13 @@ import { Check, ClipboardList, FileText, MessagesSquare, PhoneCall, ShieldCheck,
 import { cookies, headers } from "next/headers";
 import Link from "next/link";
 import { AskDialog } from "@/components/landing/ask-dialog";
+import { SiteFooter } from "@/components/site/footer";
+import { SiteHeader } from "@/components/site/header";
 import { TherapistSection } from "@/components/landing/therapist";
 import { LandingTracker, QuizCta, StickyCta } from "@/components/mapa/cta";
 import { HeroMap, HeroMapVertical, Roads } from "@/components/mapa/flow";
 import { MapaEyebrow } from "@/components/mapa/mark";
 import { ReportPreview, SampleReportLink } from "@/components/mapa/report-preview";
-import { MapaLogo } from "@/components/brand";
-import { Logo } from "@/components/ui";
 import { getSettings } from "@/lib/settings";
 
 export const dynamic = "force-dynamic";
@@ -37,23 +37,7 @@ export default async function Landing() {
   return (
     <>
       <LandingTracker />
-      <header className="sticky top-0 z-40 border-b border-sand/60 bg-ivory/90 backdrop-blur">
-        <nav className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-3" aria-label="Główna">
-          <Link href="/" aria-label="DUO – Mapa Relacji – strona główna" className="flex items-center gap-4">
-            <Logo />
-            <span className="hidden h-8 w-px bg-sand-dark lg:block" aria-hidden />
-            <span className="hidden lg:block"><MapaLogo compact id="nav-mapa" /></span>
-          </Link>
-          <div className="hidden items-center gap-6 text-sm text-ink-soft md:flex">
-            <a href="#mapa" className="hover:text-forest">Czym jest</a>
-            <a href="#co-otrzymasz" className="hover:text-forest">Co otrzymasz</a>
-            <a href="#jak" className="hover:text-forest">Jak to działa</a>
-            <a href="#o-mnie" className="hover:text-forest">Kto pomaga</a>
-            <a href="#faq" className="hover:text-forest">Pytania</a>
-          </div>
-          <QuizCta size="sm" className="whitespace-nowrap max-[359px]:hidden">Zacznij</QuizCta>
-        </nav>
-      </header>
+      <SiteHeader />
 
       <main id="main">
         {/* 1. HERO */}
@@ -352,27 +336,7 @@ export default async function Landing() {
         </section>
       </main>
 
-      <footer className="bg-forest-800 text-white/80">
-        <div className="mx-auto grid max-w-6xl gap-10 px-5 py-14 md:grid-cols-2">
-          <div>
-            <div className="flex flex-wrap items-center gap-5">
-              <Logo light id="foot-duo" />
-              <MapaLogo light id="foot-mapa" />
-            </div>
-            <p className="mt-4 max-w-sm text-sm leading-relaxed">Mapa Relacji – zrozum, w jakim miejscu jesteście, i świadomie zdecyduj, co dalej.</p>
-          </div>
-          <div className="text-sm">
-            <p className="font-medium text-white">Informacje</p>
-            <ul className="mt-3 space-y-1.5">
-              <li><Link href="/prywatnosc" className="hover:text-white">Polityka prywatności</Link></li>
-              <li><Link href="/pomoc" className="inline-flex items-center gap-1.5 hover:text-white"><ShieldCheck size={14} aria-hidden /> Gdy nie czujesz się bezpiecznie</Link></li>
-              {s.site.contactEmail && <li><a href={`mailto:${s.site.contactEmail}`} className="hover:text-white">{s.site.contactEmail}</a></li>}
-              <li><Link href="/app" className="hover:text-white">Panel specjalisty</Link></li>
-            </ul>
-            <p className="mt-6 text-xs text-white/50">DUO® · Mapa Relacji. Konsultacja psychologiczna – nie terapia, nie diagnoza, nie pomoc kryzysowa.</p>
-          </div>
-        </div>
-      </footer>
+      <SiteFooter contactEmail={s.site.contactEmail} />
       <StickyCta />
     </>
   );
