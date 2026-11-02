@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
-import { DemoBanner } from "@/components/ui";
 
 export const metadata: Metadata = {
   title: { default: "Mapa Relacji – DUO® | Nie wiesz, co dalej z Waszą relacją?", template: "%s · DUO®" },
@@ -18,7 +17,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <a href="#main" className="skip-link">
           Przejdź do treści
         </a>
-        {process.env.DEMO_MODE === "true" && <DemoBanner />}
         {children}
       </body>
     </html>

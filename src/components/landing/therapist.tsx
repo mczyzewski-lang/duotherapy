@@ -18,7 +18,7 @@ const METHODS = ["Psychoterapia", "CBT i ACT", "Terapia schematÃ³w", "Teoria wiÄ
 
 export function TherapistSection() {
   return (
-    <section id="o-mnie" className="scroll-mt-20" aria-labelledby="o-mnie-h">
+    <section id="o-mnie" className="scroll-mt-20 bg-linen" aria-labelledby="o-mnie-h">
       <div className="mx-auto grid max-w-6xl items-center gap-12 px-5 py-14 md:grid-cols-[0.8fr_1.2fr] md:gap-16 md:py-24">
         <figure className="relative mx-auto w-full max-w-[19rem] md:max-w-none">
           <div className="absolute -inset-3 -z-0 rounded-[2rem] bg-gradient-to-br from-clay-soft via-sand to-sage-soft" aria-hidden />

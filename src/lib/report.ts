@@ -239,21 +239,28 @@ const para = (s: string) => esc(s).replace(/\n/g, "<br>");
 const radio = (on: boolean, label: string) => `<span class="opt ${on ? "on" : ""}">${on ? "●" : "○"} ${esc(label)}</span>`;
 
 // Przykład na stronie: wersja ekranowa (czytelna na telefonie) z wyraźnym oznaczeniem danych fikcyjnych.
+const WATERMARK = "url(\"data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27560%27%20height%3D%27420%27%3E%3Ctext%20x%3D%2750%25%27%20y%3D%2750%25%27%20text-anchor%3D%27middle%27%20transform%3D%27rotate%28-24%20280%20210%29%27%20font-family%3D%27Georgia%2Cserif%27%20font-size%3D%2740%27%20font-weight%3D%27700%27%20fill%3D%27rgba%28169%2C81%2C47%2C0.075%29%27%3EPRZYK%C5%81AD%20%C2%B7%20DANE%20FIKCYJNE%3C%2Ftext%3E%3C%2Fsvg%3E\")";
 const SAMPLE_CSS = `
-.draft { color: rgba(169,81,47,.07); }
-.sample-bar { position: sticky; top: 0; z-index: 5; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 14px; padding: 10px 16px; background: #36493d; color: #fff; font-size: 13px; line-height: 1.35; }
-.sample-bar strong { font-weight: 600; }
-.sample-bar a { color: #fff; }
-.sample-bar .go { background: #a9512f; padding: 9px 16px; border-radius: 999px; text-decoration: none; font-weight: 600; white-space: nowrap; }
+.draft { display: none; }
+.sample-top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px 14px; padding: 10px 16px; background: #36493d; color: #fff; font-size: 13px; line-height: 1.35; }
+.sample-top a { color: #fff; }
+.sample-bottom { position: fixed; left: 0; right: 0; bottom: 0; z-index: 5; display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 10px 16px calc(10px + env(safe-area-inset-bottom)); background: rgba(251,249,245,.96); border-top: 1px solid #eadccb; box-shadow: 0 -10px 30px -20px rgba(54,73,61,.5); font-size: 13px; color: #4d4540; }
+.sample-bottom strong { display: block; font-family: "Fraunces Variable", Georgia, serif; font-weight: 500; font-size: 17px; color: #2a2522; }
+.sample-bottom a { background: #a9512f; color: #fff; padding: 12px 18px; border-radius: 999px; text-decoration: none; font-weight: 600; white-space: nowrap; font-size: 15px; }
+.page { background-color: #fff; background-image: ${WATERMARK}; background-repeat: repeat; background-size: 560px 420px; }
 @media screen {
-  body { font-size: 15.5px; line-height: 1.6; background: #f6f1ea; }
-  .page { max-width: 760px; margin: 0 auto; background: #fff; padding: 28px 22px 48px; box-shadow: 0 20px 50px -30px rgba(54,73,61,.35); }
+  body { font-size: 15.5px; line-height: 1.6; background: #f6f1ea; padding-bottom: 84px; }
+  .page { max-width: 760px; margin: 0 auto; padding: 28px 22px 48px; box-shadow: 0 20px 50px -30px rgba(54,73,61,.35); }
   h1 { font-size: 34px; } h2 { font-size: 21px; }
   table { font-size: 14px; } th { font-size: 12.5px; } .opt { white-space: normal; display: inline-block; }
 }
 @media screen and (min-width: 700px) { .page { margin: 28px auto; border-radius: 14px; padding: 44px 52px 56px; } }
-@media screen and (max-width: 520px) { th, td { padding: 6px 5px; } td.k { width: auto; } }`;
-const SAMPLE_BAR = `<div class="sample-bar"><span><strong>Przykładowa Mapa Relacji</strong> · dane fikcyjne, struktura jak w prawdziwym podsumowaniu · <a href="/">wróć na stronę</a></span><a class="go" href="/start">Zacznij od 6 krótkich pytań →</a></div><div class="page">`;
+@media screen and (max-width: 520px) { th, td { padding: 6px 5px; } td.k { width: auto; } .sample-bottom span { max-width: 52%; } }
+@media print { .sample-top, .sample-bottom { display: none; } }`;
+const SAMPLE_BAR = (back: { href: string; label: string }) =>
+  `<div class="sample-top"><span><strong>Przykładowa Mapa Relacji</strong> · dane fikcyjne, struktura jak w prawdziwym podsumowaniu</span><a href="${back.href}">${back.label}</a></div>
+<div class="sample-bottom"><span><strong>Twoja Mapa Relacji</strong>z psychologiem – zacznij od 6 krótkich pytań</span><a href="/start?utm_source=duo&utm_medium=przyklad">Zacznij →</a></div><div class="page">`;
 
 /** Nagłówki sekcji – ludzkim językiem, z zachowaniem struktury szablonu (04). */
 export function sectionTitles(c: Pick<ReportContent, "audience" | "caseKind">) {
@@ -269,7 +276,7 @@ export function sectionTitles(c: Pick<ReportContent, "audience" | "caseKind">) {
   };
 }
 
-export function renderReportHtml(c: ReportContent, s: Settings, opts: { fontCss?: string; draft?: boolean; sample?: boolean } = {}): string {
+export function renderReportHtml(c: ReportContent, s: Settings, opts: { fontCss?: string; draft?: boolean; sample?: boolean; back?: { href: string; label: string } } = {}): string {
   const plural = c.audience === "joint";
   const t = sectionTitles(c);
   const sev = (v: Severity) => (["low", "moderate", "high"] as const).map((k) => radio(v === k, { low: "niskie", moderate: "umiarkowane", high: "wysokie" }[k])).join(" ");
@@ -325,7 +332,7 @@ li { margin: 3pt 0; }
 ${opts.sample ? SAMPLE_CSS : ""}
 </style>${opts.sample ? '<meta name="robots" content="noindex"><meta name="viewport" content="width=device-width, initial-scale=1">' : ""}</head><body>
 ${opts.draft ? '<div class="draft">SZKIC – NIEZATWIERDZONY</div>' : ""}
-${opts.sample ? SAMPLE_BAR : ""}
+${opts.sample ? SAMPLE_BAR(opts.back ?? { href: "/", label: "← wróć na stronę" }) : ""}
 <div class="brand">${symbolSvg("pdf")}<div><div class="wm">DUO®</div><div class="tag">Terapia małżeństw</div></div></div>
 <h1>Mapa Relacji</h1>
 <div class="lead">Podsumowanie sesji · ${esc(c.meta.sessionDate)} · poufne, tylko dla ${plural ? "Was" : "Ciebie"}${c.audience === "participant" && c.caseKind === "couple" ? " (podsumowanie osobne – zawiera wyłącznie treści przeznaczone dla Ciebie)" : ""}</div>

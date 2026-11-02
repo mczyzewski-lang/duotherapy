@@ -3,8 +3,8 @@
 // „Zobacz, co otrzymasz”: podgląd rzeczywistej struktury podsumowania (sekcje 1–6 z renderReportHtml)
 // na danych FIKCYJNYCH z SAMPLE_REPORT. Bez nowej metodologii – te same sekcje, które psycholog wypełnia w panelu.
 import clsx from "clsx";
-import { ArrowLeft, ArrowRight, ExternalLink } from "lucide-react";
-import { useState } from "react";
+import { ArrowLeft, ArrowRight, ExternalLink, FileText } from "lucide-react";
+import { Fragment, useState } from "react";
 import { BrandSymbol, RoadGlyph } from "@/components/brand";
 import { roadFor } from "@/lib/brand-mark";
 import { PATH_OPTIONS, sectionTitles, type Severity } from "@/lib/report";
@@ -40,7 +40,8 @@ function SeverityDots({ v }: { v: Severity }) {
   );
 }
 
-function SectionBody({ k }: { k: (typeof SECTIONS)[number]["key"] }) {
+function SectionBody({ k, compact }: { k: (typeof SECTIONS)[number]["key"]; compact?: boolean }) {
+  if (compact) return <CompactBody k={k} />;
   switch (k) {
     case "summary":
       return (
@@ -131,13 +132,115 @@ function SectionBody({ k }: { k: (typeof SECTIONS)[number]["key"] }) {
   }
 }
 
+/** Skrócona treść sekcji – do kart na telefonie (każda karta mieści się na ekranie). */
+function CompactBody({ k }: { k: (typeof SECTIONS)[number]["key"] }) {
+  switch (k) {
+    case "summary":
+      return (
+        <div className="space-y-2">
+          <p>{R.summary.text}</p>
+          <p><strong className="font-semibold text-ink">Gdzie jesteście z decyzją:</strong> {R.summary.decisionStage}</p>
+        </div>
+      );
+    case "strengths":
+      return (
+        <ul className="space-y-2">
+          {R.strengths.map((x) => (
+            <li key={x} className="flex gap-2.5"><span className="mt-[0.55em] h-1.5 w-1.5 shrink-0 rounded-full bg-forest" aria-hidden />{x}</li>
+          ))}
+        </ul>
+      );
+    case "tensions":
+      return (
+        <ul className="divide-y divide-sand/70">
+          {R.tensions.slice(0, 4).map((t) => (
+            <li key={t.area} className="flex items-center justify-between gap-3 py-2 first:pt-0">
+              <span className="font-medium text-ink">{t.label}</span>
+              <SeverityDots v={t.severity} />
+            </li>
+          ))}
+          <li className="pt-2 text-[12.5px] text-muted">+ opis każdego z 6 obszarów</li>
+        </ul>
+      );
+    case "mechanism":
+      return (
+        <div className="space-y-2.5">
+          <p className="rounded-xl bg-linen/70 p-3 text-[13.5px]">{R.mechanism.oneLiner}</p>
+          <dl className="grid grid-cols-[6.5rem_1fr_1fr] gap-x-2 gap-y-1.5 text-[12.5px] leading-snug">
+            <span />
+            {R.mechanism.columns.map((c) => <span key={c} className="font-semibold uppercase tracking-wide text-muted">{c}</span>)}
+            {R.mechanism.rows.filter((r) => ["trigger", "behavior", "need"].includes(r.key)).map((r) => (
+              <Fragment key={r.key}>
+                <dt className="font-medium text-ink">{r.label}</dt>
+                {r.values.map((v, i) => <dd key={i}>{v}</dd>)}
+              </Fragment>
+            ))}
+          </dl>
+        </div>
+      );
+    case "recommendations":
+      return (
+        <div className="space-y-2.5">
+          <ol className="list-decimal space-y-1.5 pl-5 marker:text-clay">
+            {R.recommendations.slice(0, 2).map((r) => <li key={r}>{r}</li>)}
+          </ol>
+          <p className="flex items-center gap-2 rounded-lg bg-sage-soft/70 px-2.5 py-1.5 font-medium text-forest">
+            <RoadGlyph road="rebuild" id="pvc-path" className="h-4 w-4" /> Możliwa dalsza droga: {PATH_OPTIONS.rebuild.label.toLowerCase()}
+          </p>
+        </div>
+      );
+    case "nextSteps":
+      return (
+        <ul className="space-y-2">
+          {R.nextSteps.map((n) => (
+            <li key={n.what} className="rounded-xl bg-linen/70 p-2.5">
+              <p className="font-medium text-ink">{n.what}</p>
+              <p className="text-[12px] text-muted">{n.who} · {n.when}</p>
+            </li>
+          ))}
+        </ul>
+      );
+  }
+}
+
+/** Telefon: sekcje jako kartki, które zatrzymują się i nachodzą na siebie podczas przewijania. */
+function StackedSections() {
+  return (
+    <div className="lg:hidden" data-testid="pv-stack">
+      {SECTIONS.map((x, k) => (
+        <article
+          key={x.key}
+          className="sticky mb-5 rounded-[1.4rem] bg-white px-4 pb-4 pt-3.5 shadow-[0_-12px_30px_-18px_rgba(54,73,61,0.35),0_10px_30px_-20px_rgba(54,73,61,0.3)] ring-1 ring-sand"
+          style={{ top: `${76 + k * 10}px` }}
+          aria-labelledby={`pvs-${x.key}`}
+        >
+          <header className="flex items-center justify-between gap-2 border-b border-sand pb-2">
+            <span className="flex items-center gap-2">
+              <span className="grid h-6 w-6 place-items-center rounded-full bg-forest font-display text-[13px] text-white">{k + 1}</span>
+              <h3 id={`pvs-${x.key}`} className="font-display text-[1.1rem] leading-tight text-forest">{x.title}</h3>
+            </span>
+            <span className="whitespace-nowrap rounded-full bg-clay-soft px-2 py-0.5 text-[9.5px] font-semibold uppercase tracking-[0.12em] text-clay">Przykład</span>
+          </header>
+          <p className="mt-2 text-[13px] leading-snug text-clay">{x.benefit}</p>
+          <div className="mt-2.5 text-[13.5px] leading-relaxed text-ink-soft">
+            <SectionBody k={x.key} compact />
+          </div>
+        </article>
+      ))}
+      <p className="text-center text-xs text-muted">Przykład na fikcyjnych danych (Anna i Marek). Pełna wersja – link poniżej.</p>
+    </div>
+  );
+}
+
 export function ReportPreview() {
   const [i, setI] = useState(0);
   const s = SECTIONS[i];
   const go = (d: number) => setI((x) => (x + d + SECTIONS.length) % SECTIONS.length);
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[0.85fr_1.15fr] lg:gap-12">
+    <>
+    <StackedSections />
+    <div className="hidden gap-6 lg:grid lg:grid-cols-[0.85fr_1.15fr] lg:gap-12">
       {/* Spis treści = prawdziwe sekcje podsumowania */}
       <div>
         <div role="tablist" aria-label="Sekcje Mapy Relacji" className="grid grid-cols-3 gap-2 lg:grid-cols-1 lg:gap-1.5">
@@ -200,6 +303,7 @@ export function ReportPreview() {
         </article>
       </div>
     </div>
+    </>
   );
 }
 
@@ -211,9 +315,9 @@ export function SampleReportLink({ className, children = "Zobacz przykładową M
       target="_blank"
       rel="noopener"
       onClick={() => track("sample_report_open")}
-      className={clsx("inline-flex min-h-11 items-center gap-1.5 font-medium text-forest underline decoration-sand-dark underline-offset-4 hover:decoration-forest", className)}
+      className={clsx("inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-forest px-6 text-[15px] font-semibold text-white shadow-soft transition hover:brightness-110", className)}
     >
-      {children} <ExternalLink size={15} aria-hidden />
+      <FileText size={17} aria-hidden /> {children} <ExternalLink size={14} className="opacity-70" aria-hidden />
     </a>
   );
 }

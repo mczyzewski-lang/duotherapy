@@ -243,19 +243,55 @@ export default async function Landing() {
               </div>
               <div className="rounded-3xl bg-linen p-5 sm:p-6">
                 <p className="text-sm font-semibold uppercase tracking-[0.16em] text-clay">Cena</p>
-                {prices.length ? (
-                  <dl className="mt-3 space-y-2">
-                    {prices.map(([k, val]) => (
-                      <div key={k} className="flex items-baseline justify-between gap-3"><dt className="text-ink-soft">{k}</dt><dd className="font-display text-2xl text-ink">{val}</dd></div>
-                    ))}
-                  </dl>
+                <p className="mt-2 font-display text-[2.6rem] leading-none text-ink">{s.offer.pricePln} zł</p>
+                <p className="mt-2 text-sm leading-relaxed text-ink-soft">Pełna Mapa Relacji – kwestionariusz, konsultacja online z psychologiem i pisemne podsumowanie.</p>
+                {s.site.priceCouple ? (
+                  <p className="mt-2 text-sm text-ink-soft">Wariant dla pary: <strong className="font-medium text-ink">{s.site.priceCouple}</strong></p>
                 ) : (
-                  <p className="mt-3 leading-relaxed text-ink-soft">Cena zależy od wariantu – indywidualnie czy we dwoje. Konsultant przedstawi ją w rozmowie, zanim podejmiesz jakąkolwiek decyzję.</p>
+                  <p className="mt-2 text-sm text-ink-soft">Chcecie przejść ją we dwoje? Wariant dla pary omówisz z konsultantem.</p>
                 )}
                 <p className="mt-3 text-sm text-muted">Quiz na stronie jest bezpłatny i do niczego nie zobowiązuje.</p>
               </div>
             </div>
             <div className="mt-8"><QuizCta className="w-full sm:w-auto">Zacznij od 6 krótkich pytań</QuizCta></div>
+          </div>
+        </section>
+
+        {/* 5b. DLA KOGO */}
+        <section id="dla-kogo" className="scroll-mt-20 bg-linen" aria-labelledby="dla-h">
+          <div className="mx-auto max-w-6xl px-5 py-14 md:py-20">
+            <h2 id="dla-h" className="font-display text-[1.9rem] leading-tight text-ink sm:text-4xl">Czy Mapa Relacji jest dla Ciebie?</h2>
+            <div className="mt-8 grid gap-4 md:grid-cols-2">
+              <div className="rounded-3xl bg-white p-6 shadow-soft ring-1 ring-sand sm:p-7">
+                <h3 className="font-display text-xl text-forest">Dla kogo to jest</h3>
+                <ul className="mt-4 space-y-3 text-[15px] leading-snug text-ink">
+                  {[
+                    "Czujesz, że w relacji coś się zmieniło, i chcesz zrozumieć co – zanim podejmiesz decyzję.",
+                    "Zastanawiasz się, czy ratować związek, dać sobie czas czy się rozstać, i nie chcesz decydować pod wpływem emocji.",
+                    "Wracacie do tych samych kłótni i chcesz zobaczyć, jak działa Wasz konflikt.",
+                    "Chcesz zacząć sam lub sama, bo partner nie jest jeszcze gotowy na wspólne spotkania.",
+                    "Szukasz konkretnego, zamkniętego procesu z psychologiem, a nie od razu wielomiesięcznej terapii.",
+                  ].map((x) => (
+                    <li key={x} className="flex gap-3"><span className="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full bg-sage-soft text-forest"><Check size={13} aria-hidden /></span>{x}</li>
+                  ))}
+                </ul>
+              </div>
+              <div className="rounded-3xl bg-white/60 p-6 ring-1 ring-sand sm:p-7">
+                <h3 className="font-display text-xl text-ink-soft">Dla kogo to nie jest</h3>
+                <ul className="mt-4 space-y-3 text-[15px] leading-snug text-ink-soft">
+                  {[
+                    "Gdy w relacji jest przemoc albo nie czujesz się bezpiecznie – wtedy pierwsze jest bezpieczeństwo i specjalistyczna pomoc.",
+                    "Gdy przeżywasz ostry kryzys psychiczny – Mapa Relacji nie jest pomocą kryzysową.",
+                    "Gdy oczekujesz, że psycholog zdecyduje za Ciebie, czy się rozstać – decyzja zawsze należy do Ciebie.",
+                    "Gdy potrzebujesz diagnozy, opinii do sądu albo porady prawnej.",
+                    "Gdy szukasz długoterminowej terapii – Mapa może być dobrym początkiem, ale nią nie jest.",
+                  ].map((x) => (
+                    <li key={x} className="flex gap-3"><span className="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full bg-linen text-muted"><X size={13} aria-hidden /></span>{x}</li>
+                  ))}
+                </ul>
+                <p className="mt-5 text-sm"><Link href="/pomoc" className="inline-flex items-center gap-1.5 font-medium text-forest underline underline-offset-2"><ShieldCheck size={15} aria-hidden /> Gdzie szukać pomocy, gdy nie czujesz się bezpiecznie</Link></p>
+              </div>
+            </div>
           </div>
         </section>
 
@@ -269,7 +305,7 @@ export default async function Landing() {
         )}
 
         {/* 6. TRZY DROGI */}
-        <section id="drogi" className="scroll-mt-20 bg-linen" aria-labelledby="drogi-h">
+        <section id="drogi" className="scroll-mt-20" aria-labelledby="drogi-h">
           <div className="mx-auto max-w-6xl px-5 py-14 md:py-24">
             <h2 id="drogi-h" className="font-display text-[1.9rem] leading-tight text-ink sm:text-4xl">Trzy możliwe drogi</h2>
             <p className="mt-3 max-w-2xl text-[17px] leading-relaxed text-ink-soft">
@@ -283,7 +319,7 @@ export default async function Landing() {
         <TherapistSection />
 
         {/* 8. FAQ */}
-        <section id="faq" className="scroll-mt-20 bg-linen" aria-labelledby="faq-h">
+        <section id="faq" className="scroll-mt-20" aria-labelledby="faq-h">
           <div className="mx-auto max-w-3xl px-5 py-14 md:py-24">
             <h2 id="faq-h" className="font-display text-[1.9rem] text-ink sm:text-4xl">Najczęstsze pytania</h2>
             <div className="mt-8 divide-y divide-sand rounded-3xl bg-white shadow-soft ring-1 ring-sand">
