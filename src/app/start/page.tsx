@@ -23,7 +23,7 @@ export default async function StartPage() {
             <span className="h-5 w-px bg-sand-dark" aria-hidden />
             <MapaLogo compact id="start-logo" />
           </Link>
-          <Link href="/" aria-label="Zamknij quiz i wróć na stronę główną" className="grid h-11 w-11 place-items-center rounded-full text-muted hover:bg-linen">
+          <Link href="/mapa-relacji" aria-label="Zamknij quiz i wróć do Mapy Relacji" className="grid h-11 w-11 place-items-center rounded-full text-muted hover:bg-linen">
             <X size={20} aria-hidden />
           </Link>
         </div>

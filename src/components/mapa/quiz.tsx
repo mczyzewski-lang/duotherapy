@@ -334,7 +334,7 @@ function Done({ callbackPromise }: { callbackPromise: string }) {
         ))}
       </ol>
       <p className="mt-6 text-sm text-muted">Jeśli zadzwonimy w niedogodnym momencie, po prostu nie odbieraj – spróbujemy ponownie albo napiszemy.</p>
-      <Link href="/" className="mt-8 inline-flex min-h-12 items-center rounded-full bg-white px-6 font-medium text-forest ring-1 ring-sand-dark hover:bg-linen">Wróć na stronę główną</Link>
+      <Link href="/mapa-relacji" className="mt-8 inline-flex min-h-12 items-center rounded-full bg-white px-6 font-medium text-forest ring-1 ring-sand-dark hover:bg-linen">Wróć do Mapy Relacji</Link>
     </div>
   );
 }

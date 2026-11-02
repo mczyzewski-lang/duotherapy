@@ -1,343 +1,175 @@
-import { Check, ClipboardList, FileText, MessagesSquare, PhoneCall, ShieldCheck, Users, X } from "lucide-react";
-import { cookies, headers } from "next/headers";
+// Strona główna DUO: marka i struktura pomocy – Mapa Relacji jako start, nad trzema ścieżkami.
+import { ArrowRight, Check } from "lucide-react";
+import type { Metadata } from "next";
 import Link from "next/link";
+import { MapaSymbol, RoadGlyph } from "@/components/brand";
+import { MagnetIcon } from "@/components/knowledge/icons";
 import { AskDialog } from "@/components/landing/ask-dialog";
+import { TherapistSection } from "@/components/landing/therapist";
+import { HeroMap, HeroMapVertical } from "@/components/mapa/flow";
 import { SiteFooter } from "@/components/site/footer";
 import { SiteHeader } from "@/components/site/header";
-import { TherapistSection } from "@/components/landing/therapist";
-import { LandingTracker, QuizCta, StickyCta } from "@/components/mapa/cta";
-import { HeroMap, HeroMapVertical, Roads } from "@/components/mapa/flow";
-import { MapaEyebrow } from "@/components/mapa/mark";
-import { ReportPreview, SampleReportLink } from "@/components/mapa/report-preview";
+import { PATHS } from "@/content/paths";
+import { env } from "@/lib/env";
 import { getSettings } from "@/lib/settings";
+import { magnetBySlug } from "@/knowledge/registry";
 
 export const dynamic = "force-dynamic";
+export const metadata: Metadata = {
+  title: { absolute: "DUO® – terapia małżeństw i par | Odbudowa, decyzja, świadome rozstanie" },
+  description: "DUO pomaga parom i osobom w kryzysie związku zrozumieć, co dalej: Mapa Relacji z psychologiem, a potem odbudowa relacji, wsparcie w decyzji albo świadome rozstanie.",
+  alternates: { canonical: `${env.appUrl}/` },
+};
 
-const HEADLINE = "Ratować związek, dać sobie czas czy się rozstać? Zacznij od zrozumienia.";
-const VALUE = "Mapa Relacji to proces z psychologiem, który pomaga zrozumieć Waszą sytuację i świadomiej wybrać kolejne kroki.";
-
-/** Proces na podstawie rzeczywistego przebiegu w aplikacji (lejek → sprawa → kwestionariusz → sesja → podsumowanie). */
-const STEPS = [
-  { icon: Check, t: "Bezpłatny quiz", time: "ok. 2 minut", d: "6 krótkich pytań o to, gdzie dziś jesteście. Na końcu możesz zostawić numer telefonu." },
-  { icon: PhoneCall, t: "Rozmowa z konsultantem DUO", time: "telefonicznie", d: "Konsultant wyjaśni, jak wygląda Mapa Relacji, czy pasuje do Waszej sytuacji, jaki wariant wybrać i ile kosztuje. Decydujesz po rozmowie." },
-  { icon: ClipboardList, t: "Poufny kwestionariusz", time: "ok. 15–25 minut", d: "Na prywatnym linku z kodem dostępu. Przy konsultacji dla pary każde z Was wypełnia własny – druga osoba nie widzi Twoich odpowiedzi." },
-  { icon: MessagesSquare, t: "Konsultacja z psychologiem", time: "60 min · dla pary 90 min", d: "Online. Psycholog zna już Wasze odpowiedzi, więc od razu rozmawiacie o tym, co najważniejsze." },
-  { icon: FileText, t: "Twoja Mapa Relacji", time: "online i PDF", d: "Pisemne podsumowanie przygotowane przez psychologa – do przeczytania pod prywatnym linkiem z kodem i do pobrania jako PDF." },
+const FAQ: [string, string][] = [
+  ["Od czego zacząć?", "Od Mapy Relacji. To jednorazowy proces z psychologiem – kwestionariusz, konsultacja i pisemne podsumowanie – który pomaga zrozumieć Waszą sytuację i wybrać drogę. Możesz zacząć sam lub sama."],
+  ["Czy muszę wiedzieć, czego chcę?", "Nie. Wiele osób przychodzi z „nie wiem”. Właśnie po to zaczynamy od zrozumienia, a nie od decyzji."],
+  ["Czy pomagacie tylko parom, które chcą zostać razem?", "Nie. Pomagamy w każdej z trzech dróg: odbudowie relacji, spokojnym podjęciu decyzji i świadomym rozstaniu – także z myślą o dzieciach."],
+  ["Czy partner musi brać udział?", "Nie musi. Możesz zacząć samodzielnie. Wspólna praca jest możliwa, gdy obie osoby są gotowe i czują się bezpiecznie."],
+  ["Jak wygląda współpraca?", "Spotkania odbywają się online. Zakres, terminy i koszt poznajesz przed decyzją – w rozmowie albo na stronie Mapy Relacji."],
 ];
 
-export default async function Landing() {
-  const s = await getSettings();
-  const v = (await cookies()).get("duo_hero2")?.value ?? (await headers()).get("x-duo-hero");
-  // A – nacisk na emocjonalny problem; B – nacisk na konkretną wartość Mapy Relacji. Nagłówek ten sam.
-  const variant = v === "B" ? "B" : "A";
-  // cena z ustawień strony; brak = cena oferty online (wariant indywidualny)
-  const individual = s.site.priceIndividual || (s.offer.pricePln ? `${s.offer.pricePln} zł` : "");
-  const prices = [individual && ["Indywidualnie", individual], s.site.priceCouple && ["Dla pary", s.site.priceCouple]].filter(Boolean) as [string, string][];
+const FEATURED = ["mapa-trzech-drog", "petla-konfliktu", "21-pytan-o-relacji"];
 
+export default async function Home() {
+  const s = await getSettings();
   return (
     <>
-      <LandingTracker />
       <SiteHeader />
-
       <main id="main">
-        {/* 1. HERO */}
-        <section className="relative overflow-hidden">
-          <div className="relative mx-auto grid max-w-6xl items-center gap-10 px-5 pb-12 pt-6 md:grid-cols-[1.05fr_0.95fr] md:gap-12 md:pb-20 md:pt-14">
+        {/* HERO */}
+        <section className="overflow-x-clip">
+          <div className="mx-auto grid max-w-6xl items-center gap-10 px-5 pb-12 pt-6 md:grid-cols-[1.05fr_0.95fr] md:gap-12 md:pb-20 md:pt-14">
             <div>
-              <MapaEyebrow className="animate-rise" />
-              <h1 className="animate-rise delay-1 mt-4 font-display text-[2.15rem] leading-[1.06] text-ink min-[400px]:text-[2.35rem] sm:mt-5 sm:text-5xl lg:text-[3.4rem]" data-variant={variant}>
-                {HEADLINE}
+              <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-clay">DUO® · Terapia małżeństw i par</p>
+              <h1 className="mt-4 font-display text-[2.15rem] leading-[1.07] text-ink min-[400px]:text-[2.35rem] sm:text-5xl lg:text-[3.3rem]">
+                Pomagamy zrozumieć, co dalej z Waszym związkiem – i przejść tę drogę z psychologiem
               </h1>
-              {variant === "A" ? (
-                <div className="animate-rise delay-2 mt-4 max-w-xl space-y-3 text-[16.5px] leading-relaxed sm:mt-5 sm:text-lg">
-                  <p className="text-ink-soft">Może chcesz jeszcze spróbować. Może myślisz o rozstaniu. A może po prostu nie wiesz, co dalej.</p>
-                  <p className="font-medium text-ink">{VALUE}</p>
-                </div>
-              ) : (
-                <div className="animate-rise delay-2 mt-4 max-w-xl sm:mt-5">
-                  <p className="text-[16.5px] font-medium leading-relaxed text-ink sm:text-lg">{VALUE}</p>
-                  <ul className="mt-3 space-y-1.5 text-[15px] text-ink-soft">
-                    {["Poufny kwestionariusz online", "Konsultacja z psychologiem – sam lub sama albo we dwoje", "Pisemne podsumowanie z możliwymi kolejnymi krokami"].map((x) => (
-                      <li key={x} className="flex items-start gap-2"><Check size={17} className="mt-0.5 shrink-0 text-forest" aria-hidden />{x}</li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-              <div className="animate-rise delay-3 mt-6">
-                <QuizCta hero id="hero-cta" className="w-full sm:w-auto">Zacznij od 6 krótkich pytań</QuizCta>
-                <p className="mt-2.5 text-center text-sm text-muted sm:text-left">Bezpłatny quiz · około 2 minut</p>
+              <p className="mt-4 max-w-xl text-[17px] leading-relaxed text-ink-soft sm:text-lg">
+                Odbudowa relacji, czas na spokojną decyzję albo rozstanie z szacunkiem. Zaczynamy od Mapy Relacji, a potem wspieramy Was na drodze, którą wybierzecie.
+              </p>
+              <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center">
+                <Link href="/mapa-relacji" className="inline-flex min-h-14 items-center justify-center gap-2 rounded-full bg-clay px-7 text-[16px] font-semibold text-white shadow-[0_10px_30px_-10px_rgba(169,81,47,0.7)]">
+                  Zacznij od Mapy Relacji <ArrowRight size={18} aria-hidden />
+                </Link>
+                <a href="#jak-pomagamy" className="inline-flex min-h-12 items-center justify-center text-[15px] font-medium text-forest underline decoration-sand-dark underline-offset-4">Zobacz, jak pomagamy</a>
               </div>
-              <div className="animate-rise delay-3 mt-6 flex items-center gap-3 rounded-2xl bg-white/75 p-3 ring-1 ring-sand">
+              <div className="mt-6 flex items-center gap-3 rounded-2xl bg-white/75 p-3 ring-1 ring-sand">
                 <img src="/img/klaudia-bosek-avatar.jpg" alt="" width={48} height={48} className="h-12 w-12 shrink-0 rounded-full object-cover ring-2 ring-white" />
                 <p className="text-[13.5px] leading-snug text-ink-soft">
                   <strong className="font-semibold text-ink">Klaudia Bosek</strong> – psycholog i psychoterapeutka relacji, pracuje pod regularną superwizją.{" "}
                   <a href="#o-mnie" className="whitespace-nowrap text-forest underline decoration-sand-dark underline-offset-2">Poznaj mnie</a>
                 </p>
               </div>
-              <ul className="animate-rise delay-3 mt-4 space-y-1.5 text-[13.5px] leading-snug text-ink-soft">
-                <li className="flex gap-2"><Users size={16} className="mt-0.5 shrink-0 text-forest" aria-hidden />Możesz zacząć sam lub sama – bez zgody i udziału partnera.</li>
-                <li className="flex gap-2"><FileText size={16} className="mt-0.5 shrink-0 text-forest" aria-hidden />Quiz to bezpłatny pierwszy krok. Pełna Mapa Relacji jest płatna – szczegóły poznasz w rozmowie.</li>
-              </ul>
             </div>
-            <div className="md:hidden">
-              <HeroMapVertical />
-            </div>
-            <div className="hidden md:block">
-              <HeroMap />
-            </div>
+            <div className="md:hidden"><HeroMapVertical toPaths /></div>
+            <div className="hidden md:block"><HeroMap toPaths /></div>
           </div>
         </section>
 
-        {/* 2. ROZPOZNANIE */}
-        <section className="bg-forest text-white" aria-labelledby="rozp-h">
-          <div className="mx-auto max-w-6xl px-5 py-12 md:py-16">
-            <h2 id="rozp-h" className="font-display text-[1.65rem] leading-tight sm:text-4xl">Czy któraś z tych myśli brzmi znajomo?</h2>
-            <div className="mt-7 grid gap-3 md:grid-cols-3 md:gap-4">
-              {["„Chcę walczyć o nas, ale nie wiem jak.”", "„Nie wiem, czy jeszcze się kochamy.”", "„Myślę o rozstaniu, ale boję się podjąć decyzję.”"].map((q) => (
-                <blockquote key={q} className="rounded-2xl bg-white/[0.07] px-5 py-4 font-display text-lg leading-snug ring-1 ring-white/15 sm:p-6 sm:text-xl">{q}</blockquote>
-              ))}
-            </div>
-            <p className="mt-7 font-display text-xl text-[#f3d9cb] sm:text-2xl">Nie musisz dziś wybierać żadnej z tych dróg.</p>
-          </div>
-        </section>
-
-        {/* 3. CZYM JEST */}
-        <section id="mapa" className="scroll-mt-20" aria-labelledby="mapa-h">
-          <div className="mx-auto max-w-6xl px-5 py-14 md:py-24">
-            <div className="max-w-2xl">
-              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-clay">Mapa Relacji</p>
-              <h2 id="mapa-h" className="mt-3 font-display text-[1.9rem] leading-tight text-ink sm:text-4xl">Czym jest Mapa Relacji?</h2>
-              <p className="mt-4 text-[17px] leading-relaxed text-ink-soft">
-                To jednorazowy, uporządkowany proces z psychologiem – a nie terapia, na którą musisz się od razu zobowiązać. Najpierw odpowiadasz na pytania o Waszą
-                relację, potem rozmawiasz z psychologiem, a na koniec dostajesz pisemne podsumowanie: co się między Wami dzieje, co Was wspiera, gdzie jest najtrudniej i
-                jakie są możliwe kolejne kroki.
-              </p>
-            </div>
-            <ol className="mt-8 grid gap-3 sm:grid-cols-3 sm:gap-4">
-              {(
-                [
-                  [ClipboardList, "Poufny kwestionariusz", "Twoja perspektywa – w Twoim tempie."],
-                  [MessagesSquare, "Konsultacja z psychologiem", "Indywidualnie albo we dwoje, online."],
-                  [FileText, "Pisemna Mapa Relacji", "Podsumowanie, do którego możesz wracać."],
-                ] as const
-              ).map(([Icon, t, d], k) => (
-                <li key={t} className="flex items-center gap-4 rounded-2xl bg-white p-4 shadow-soft ring-1 ring-sand sm:block sm:p-6">
-                  <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-clay-soft text-clay"><Icon size={20} aria-hidden /></span>
-                  <span className="sm:mt-4 sm:block">
-                    <span className="block text-[11px] font-semibold uppercase tracking-[0.16em] text-muted">Krok {k + 1}</span>
-                    <strong className="block font-display text-lg font-medium text-ink sm:text-xl">{t}</strong>
-                    <span className="text-[15px] text-ink-soft">{d}</span>
-                  </span>
-                </li>
-              ))}
-            </ol>
-
-            <div className="mt-10 grid gap-3 md:grid-cols-2 md:gap-4" aria-label="Czym Mapa Relacji różni się od pojedynczej konsultacji">
-              <div className="rounded-3xl bg-white/60 p-5 ring-1 ring-sand sm:p-6">
-                <p className="font-display text-lg text-ink-soft">Pojedyncza konsultacja</p>
-                <ul className="mt-3 space-y-2 text-[15px] text-ink-soft">
-                  {["Rozmowa zaczyna się od opowiadania całej historii", "Para opowiada swoje perspektywy przy sobie", "Po spotkaniu zostaje głównie to, co zapamiętacie"].map((x) => (
-                    <li key={x} className="flex gap-2.5"><X size={16} className="mt-1 shrink-0 text-muted" aria-hidden />{x}</li>
-                  ))}
-                </ul>
-              </div>
-              <div className="rounded-3xl bg-white p-5 shadow-soft ring-1 ring-forest/30 sm:p-6">
-                <p className="font-display text-lg text-forest">Mapa Relacji</p>
-                <ul className="mt-3 space-y-2 text-[15px] text-ink">
-                  {[
-                    "Psycholog zna Wasze odpowiedzi przed rozmową – od razu przechodzicie do sedna",
-                    "Każde z Was wypełnia własny, poufny kwestionariusz",
-                    "Dostajesz pisemne podsumowanie z możliwymi kolejnymi krokami",
-                  ].map((x) => (
-                    <li key={x} className="flex gap-2.5"><Check size={16} className="mt-1 shrink-0 text-forest" aria-hidden />{x}</li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-            <p className="mt-4 text-sm leading-relaxed text-muted">
-              Terapia to zwykle wiele spotkań i praca nad zmianą. Mapa Relacji pomaga najpierw zrozumieć sytuację – i dopiero wtedy zdecydować, czy i jaka dalsza praca ma sens.
-            </p>
-          </div>
-        </section>
-
-        {/* 4. CO OTRZYMASZ */}
-        <section id="co-otrzymasz" className="scroll-mt-20 overflow-x-clip bg-linen" aria-labelledby="dost-h">
-          <div className="mx-auto max-w-6xl px-5 py-14 md:py-24">
-            <div className="max-w-2xl">
-              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-clay">Rezultat</p>
-              <h2 id="dost-h" className="mt-3 font-display text-[1.9rem] leading-tight text-ink sm:text-4xl">Zobacz, co otrzymasz w swojej Mapie Relacji</h2>
-              <p className="mt-4 text-[17px] leading-relaxed text-ink-soft">
-                Nie tylko rozmowę. Po konsultacji psycholog przygotowuje pisemne podsumowanie, które pomaga lepiej zrozumieć Waszą sytuację. Tak wygląda jego struktura –
-                przejdź przez sześć części przykładowej Mapy.
-              </p>
-            </div>
-            <div className="mt-8 md:mt-10"><ReportPreview /></div>
-            <div className="mt-10 grid gap-4 md:mt-12 md:grid-cols-[1.2fr_0.8fr] md:items-center">
-              <ul className="grid gap-2 text-[15px] text-ink-soft sm:grid-cols-2">
-                {[
-                  "Osobisty list od psychologa na początku podsumowania",
-                  "Wersja online pod prywatnym linkiem z kodem i plik PDF",
-                  "Dla pary: podsumowanie wspólne, a w razie potrzeby także osobne",
-                  "Bez ocen, diagnoz i „wyniku” związku – opis tego, co zobaczyliście razem",
-                ].map((x) => (
-                  <li key={x} className="flex gap-2.5"><Check size={16} className="mt-1 shrink-0 text-forest" aria-hidden />{x}</li>
-                ))}
-              </ul>
-              <div className="flex flex-col items-start gap-1 md:items-end">
-                <SampleReportLink />
-                <p className="text-xs text-muted">Przykład na fikcyjnych danych · otwiera się w nowej karcie</p>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* 5. JAK TO DZIAŁA */}
-        <section id="jak" className="scroll-mt-20" aria-labelledby="jak-h">
-          <div className="mx-auto max-w-6xl px-5 py-14 md:py-24">
-            <h2 id="jak-h" className="font-display text-[1.9rem] leading-tight text-ink sm:text-4xl">Jak to działa?</h2>
-            <p className="mt-3 max-w-2xl text-[17px] leading-relaxed text-ink-soft">Od pierwszego kliknięcia do gotowej Mapy Relacji – krok po kroku.</p>
-            <ol className="relative mt-8 space-y-3 md:mt-10 md:grid md:grid-cols-5 md:gap-3 md:space-y-0">
-              {STEPS.map((st, i) => (
-                <li key={st.t} className="relative flex gap-3.5 rounded-3xl bg-white p-4 shadow-soft ring-1 ring-sand sm:p-5 md:block">
-                  <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-forest font-display text-white md:h-10 md:w-10 md:text-lg">{i + 1}</span>
-                  <span className="block md:mt-4">
-                    <strong className="block font-display text-[1.15rem] font-medium leading-snug text-ink">{st.t}</strong>
-                    <span className="mt-1 inline-block rounded-full bg-linen px-2.5 py-0.5 text-xs font-medium text-ink-soft">{st.time}</span>
-                    <span className="mt-1.5 block text-[14.5px] leading-snug text-ink-soft md:leading-relaxed">{st.d}</span>
-                  </span>
-                </li>
-              ))}
-            </ol>
-            <p className="mt-4 text-sm text-muted">Termin konsultacji i przekazania podsumowania ustalacie wspólnie z nami – w rozmowie, bez pośpiechu.</p>
-
-            {/* Co obejmuje + cena (cena wyłącznie z ustawień; brak = uczciwa informacja) */}
-            <div className="mt-10 grid gap-6 rounded-[2rem] bg-white p-6 shadow-soft ring-1 ring-sand sm:p-8 md:grid-cols-[1.2fr_0.8fr] md:gap-10">
-              <div>
-                <h3 className="font-display text-2xl text-ink">Co obejmuje Mapa Relacji</h3>
-                <ul className="mt-4 space-y-2.5 text-[15px] text-ink-soft">
-                  {[
-                    "Rozmowę z konsultantem przed zakupem – bez zobowiązań",
-                    "Szczegółowy, poufny kwestionariusz (przy parze – osobny dla każdej osoby)",
-                    "Konsultację online z psychologiem: 60 minut indywidualnie lub 90 minut dla pary",
-                    "Pisemne podsumowanie przygotowane przez psychologa – online i w PDF",
-                  ].map((x) => (
-                    <li key={x} className="flex gap-2.5"><Check size={16} className="mt-1 shrink-0 text-forest" aria-hidden />{x}</li>
-                  ))}
-                </ul>
-              </div>
-              <div className="rounded-3xl bg-linen p-5 sm:p-6">
-                <p className="text-sm font-semibold uppercase tracking-[0.16em] text-clay">Cena</p>
-                <p className="mt-2 font-display text-[2.6rem] leading-none text-ink">{s.offer.pricePln} zł</p>
-                <p className="mt-2 text-sm leading-relaxed text-ink-soft">Pełna Mapa Relacji – kwestionariusz, konsultacja online z psychologiem i pisemne podsumowanie.</p>
-                {s.site.priceCouple ? (
-                  <p className="mt-2 text-sm text-ink-soft">Wariant dla pary: <strong className="font-medium text-ink">{s.site.priceCouple}</strong></p>
-                ) : (
-                  <p className="mt-2 text-sm text-ink-soft">Chcecie przejść ją we dwoje? Wariant dla pary omówisz z konsultantem.</p>
-                )}
-                <p className="mt-3 text-sm text-muted">Quiz na stronie jest bezpłatny i do niczego nie zobowiązuje.</p>
-              </div>
-            </div>
-            <div className="mt-8"><QuizCta className="w-full sm:w-auto">Zacznij od 6 krótkich pytań</QuizCta></div>
-          </div>
-        </section>
-
-        {/* 5b. DLA KOGO */}
-        <section id="dla-kogo" className="scroll-mt-20 bg-linen" aria-labelledby="dla-h">
+        {/* JAK POMAGAMY – Mapa Relacji nad trzema drogami */}
+        <section id="jak-pomagamy" className="scroll-mt-20 bg-linen" aria-labelledby="jp-h">
           <div className="mx-auto max-w-6xl px-5 py-14 md:py-20">
-            <h2 id="dla-h" className="font-display text-[1.9rem] leading-tight text-ink sm:text-4xl">Czy Mapa Relacji jest dla Ciebie?</h2>
-            <div className="mt-8 grid gap-4 md:grid-cols-2">
-              <div className="rounded-3xl bg-white p-6 shadow-soft ring-1 ring-sand sm:p-7">
-                <h3 className="font-display text-xl text-forest">Dla kogo to jest</h3>
-                <ul className="mt-4 space-y-3 text-[15px] leading-snug text-ink">
-                  {[
-                    "Czujesz, że w relacji coś się zmieniło, i chcesz zrozumieć co – zanim podejmiesz decyzję.",
-                    "Zastanawiasz się, czy ratować związek, dać sobie czas czy się rozstać, i nie chcesz decydować pod wpływem emocji.",
-                    "Wracacie do tych samych kłótni i chcesz zobaczyć, jak działa Wasz konflikt.",
-                    "Chcesz zacząć sam lub sama, bo partner nie jest jeszcze gotowy na wspólne spotkania.",
-                    "Szukasz konkretnego, zamkniętego procesu z psychologiem, a nie od razu wielomiesięcznej terapii.",
-                  ].map((x) => (
-                    <li key={x} className="flex gap-3"><span className="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full bg-sage-soft text-forest"><Check size={13} aria-hidden /></span>{x}</li>
+            <h2 id="jp-h" className="font-display text-[1.9rem] leading-tight text-ink sm:text-4xl">Jak pomagamy</h2>
+            <p className="mt-3 max-w-2xl text-[17px] leading-relaxed text-ink-soft">Najpierw zrozumienie, potem droga. Nie musicie dziś wiedzieć, którą wybierzecie.</p>
+
+            <Link href="/mapa-relacji" className="group mt-8 grid gap-5 rounded-[2rem] bg-forest p-6 text-white shadow-soft transition hover:brightness-110 sm:p-8 md:grid-cols-[1fr_auto] md:items-center">
+              <div>
+                <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-white/70">
+                  <span className="grid h-7 w-9 place-items-center rounded-lg bg-white"><MapaSymbol id="home-mapa" className="h-2.5 w-auto" /></span> Krok 1 · Zacznij tutaj
+                </p>
+                <h3 className="mt-3 font-display text-[1.9rem] leading-tight">Mapa Relacji</h3>
+                <p className="mt-2 max-w-2xl leading-relaxed text-white/85">Jednorazowy proces z psychologiem, który pomaga zrozumieć Waszą sytuację i wybrać kierunek.</p>
+                <ul className="mt-4 grid gap-1.5 text-[15px] text-white/90 sm:grid-cols-3">
+                  {["Szczegółowy kwestionariusz", "Konsultacja online z psychologiem", "Pisemne podsumowanie"].map((x) => (
+                    <li key={x} className="flex items-center gap-2"><Check size={15} aria-hidden />{x}</li>
                   ))}
                 </ul>
               </div>
-              <div className="rounded-3xl bg-white/60 p-6 ring-1 ring-sand sm:p-7">
-                <h3 className="font-display text-xl text-ink-soft">Dla kogo to nie jest</h3>
-                <ul className="mt-4 space-y-3 text-[15px] leading-snug text-ink-soft">
-                  {[
-                    "Gdy w relacji jest przemoc albo nie czujesz się bezpiecznie – wtedy pierwsze jest bezpieczeństwo i specjalistyczna pomoc.",
-                    "Gdy przeżywasz ostry kryzys psychiczny – Mapa Relacji nie jest pomocą kryzysową.",
-                    "Gdy oczekujesz, że psycholog zdecyduje za Ciebie, czy się rozstać – decyzja zawsze należy do Ciebie.",
-                    "Gdy potrzebujesz diagnozy, opinii do sądu albo porady prawnej.",
-                    "Gdy szukasz długoterminowej terapii – Mapa może być dobrym początkiem, ale nią nie jest.",
-                  ].map((x) => (
-                    <li key={x} className="flex gap-3"><span className="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full bg-linen text-muted"><X size={13} aria-hidden /></span>{x}</li>
-                  ))}
-                </ul>
-                <p className="mt-5 text-sm"><Link href="/pomoc" className="inline-flex items-center gap-1.5 font-medium text-forest underline underline-offset-2"><ShieldCheck size={15} aria-hidden /> Gdzie szukać pomocy, gdy nie czujesz się bezpiecznie</Link></p>
+              <div className="flex items-center gap-4 md:flex-col md:items-end">
+                <p className="font-display text-3xl">{s.offer.pricePln} zł</p>
+                <span className="inline-flex min-h-12 items-center gap-2 rounded-full bg-white px-5 font-semibold text-forest">Poznaj Mapę Relacji <ArrowRight size={17} className="transition group-hover:translate-x-0.5" aria-hidden /></span>
               </div>
-            </div>
+            </Link>
+
+            <div className="mx-auto h-10 w-0.5 bg-gradient-to-b from-forest to-sand-dark" aria-hidden />
+            <p className="text-center text-xs font-semibold uppercase tracking-[0.18em] text-clay">Krok 2 · Wybieracie drogę</p>
+            <ul className="mt-5 grid items-stretch gap-3 lg:grid-cols-[1fr_auto_1fr_auto_1fr] lg:gap-2">
+              {PATHS.map((p, i) => (
+                <li key={p.slug} className="contents">
+                  {i > 0 && (
+                    <span aria-hidden className="flex items-center justify-center">
+                      <span className="rounded-full bg-white px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-ink-soft ring-1 ring-sand">lub</span>
+                    </span>
+                  )}
+                  <Link href={`/${p.slug}`} className="group flex flex-col rounded-3xl bg-white p-6 shadow-soft ring-1 ring-sand transition hover:-translate-y-0.5 hover:ring-forest/40">
+                    <span className="grid h-12 w-12 place-items-center rounded-2xl bg-linen"><RoadGlyph road={p.key} id={`home-${p.key}`} className="h-7 w-7" /></span>
+                    <h3 className="mt-4 font-display text-[1.4rem] leading-snug text-ink">{p.short}</h3>
+                    <p className="mt-1.5 flex-1 text-[15px] leading-relaxed text-ink-soft">{p.menuDesc}</p>
+                    <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-forest">Poznaj tę drogę <ArrowRight size={15} className="transition group-hover:translate-x-0.5" aria-hidden /></span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+            <p className="mt-6 text-sm text-muted">Żadna droga nie jest „lepsza”. Psycholog nie decyduje za Was – pomaga zobaczyć, która odpowiada temu, czego naprawdę potrzebujecie.</p>
           </div>
         </section>
 
-        {s.site.vslUrl && /^https:\/\/(www\.youtube-nocookie\.com|player\.vimeo\.com)\//.test(s.site.vslUrl) && (
-          <section className="mx-auto max-w-4xl px-5 pb-16" aria-labelledby="vsl">
-            <h2 id="vsl" className="text-center font-display text-3xl text-ink">Zobacz, jak wygląda Mapa Relacji</h2>
-            <div className="mt-8 aspect-video overflow-hidden rounded-2xl shadow-soft ring-1 ring-sand">
-              <iframe src={s.site.vslUrl} title="Film: jak wygląda Mapa Relacji" className="h-full w-full" allow="fullscreen; picture-in-picture" loading="lazy" referrerPolicy="no-referrer" />
-            </div>
-          </section>
-        )}
-
-        {/* 6. TRZY DROGI */}
-        <section id="drogi" className="scroll-mt-20" aria-labelledby="drogi-h">
-          <div className="mx-auto max-w-6xl px-5 py-14 md:py-24">
-            <h2 id="drogi-h" className="font-display text-[1.9rem] leading-tight text-ink sm:text-4xl">Trzy możliwe drogi</h2>
-            <p className="mt-3 max-w-2xl text-[17px] leading-relaxed text-ink-soft">
-              Mapa Relacji pomaga uporządkować sytuację, ale nie wybiera drogi za Was. Żadna nie jest „lepsza” – liczy się ta, która naprawdę jest Wasza.
-            </p>
-            <div className="mt-8 md:mt-10"><Roads /></div>
-          </div>
-        </section>
-
-        {/* 7. KTO POMAGA */}
         <TherapistSection />
 
-        {/* 8. FAQ */}
-        <section id="faq" className="scroll-mt-20" aria-labelledby="faq-h">
-          <div className="mx-auto max-w-3xl px-5 py-14 md:py-24">
+        {/* WIEDZA */}
+        <section aria-labelledby="wh-h">
+          <div className="mx-auto max-w-6xl px-5 py-14 md:py-20">
+            <div className="flex flex-wrap items-end justify-between gap-3">
+              <div>
+                <h2 id="wh-h" className="font-display text-[1.9rem] leading-tight text-ink sm:text-4xl">Wiedza za darmo</h2>
+                <p className="mt-2 max-w-xl text-ink-soft">Poradniki, pytania i ćwiczenia, z których możesz skorzystać już dziś.</p>
+              </div>
+              <Link href="/wiedza" className="text-sm font-semibold text-forest hover:underline">Wszystkie materiały →</Link>
+            </div>
+            <ul className="mt-6 grid gap-3 sm:grid-cols-3">
+              {FEATURED.map((slug) => magnetBySlug(slug)!).map((m) => (
+                <li key={m.slug}>
+                  <Link href={`/wiedza/${m.slug}`} className="flex h-full items-start gap-3 rounded-2xl bg-white p-5 shadow-soft ring-1 ring-sand hover:ring-forest/40">
+                    <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-linen"><MagnetIcon icon={m.icon} id={`hw-${m.id}`} className="h-6 w-6" /></span>
+                    <span><span className="block font-medium text-ink">{m.short}</span><span className="text-[14px] text-muted">{m.menuDesc}</span></span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+
+        {/* FAQ */}
+        <section id="faq" className="scroll-mt-20 bg-linen" aria-labelledby="faq-h">
+          <div className="mx-auto max-w-3xl px-5 py-14 md:py-20">
             <h2 id="faq-h" className="font-display text-[1.9rem] text-ink sm:text-4xl">Najczęstsze pytania</h2>
             <div className="mt-8 divide-y divide-sand rounded-3xl bg-white shadow-soft ring-1 ring-sand">
-              {s.site.faq.map((f) => (
-                <details key={f.q} className="group px-5 py-4 sm:px-6 sm:py-5">
+              {FAQ.map(([q, a]) => (
+                <details key={q} className="group px-5 py-4 sm:px-6 sm:py-5">
                   <summary className="flex min-h-8 cursor-pointer list-none items-center justify-between gap-4 font-medium text-ink">
-                    {f.q}
-                    <span className="text-xl text-clay transition group-open:rotate-45" aria-hidden>+</span>
+                    {q}<span className="text-xl text-clay transition group-open:rotate-45" aria-hidden>+</span>
                   </summary>
-                  <p className="mt-3 leading-relaxed text-ink-soft">{f.a}</p>
+                  <p className="mt-3 leading-relaxed text-ink-soft">{a}</p>
                 </details>
               ))}
             </div>
-            <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
-              <SampleReportLink className="text-[15px]" />
-              {prices.length > 0 && <p className="text-sm text-ink-soft">Cena Mapy Relacji – {prices.map(([k, val]) => `${k.toLowerCase()}: ${val}`).join(" · ")}.</p>}
-            </div>
           </div>
         </section>
 
-        {/* 9. OSTATNIE CTA */}
-        <section className="px-5 py-16 md:py-20" aria-labelledby="end-h">
-          <div className="mx-auto max-w-4xl overflow-hidden rounded-[2rem] bg-gradient-to-br from-forest to-forest-800 px-6 py-12 text-center text-white shadow-soft sm:px-12 sm:py-14">
-            <h2 id="end-h" className="font-display text-[1.9rem] leading-tight sm:text-4xl">Nie musisz dziś decydować o całym swoim życiu.</h2>
-            <p className="mx-auto mt-4 max-w-xl leading-relaxed text-white/85">Wystarczy pierwszy krok: sześć pytań, które pomogą zobaczyć, gdzie dziś jesteś.</p>
-            <QuizCta className="mt-8 w-full sm:w-auto">Zacznij od 6 krótkich pytań</QuizCta>
-            <p className="mt-3 text-sm text-white/70">Bezpłatny quiz · około 2 minut · bez rejestracji</p>
+        {/* KOŃCOWE CTA */}
+        <section className="px-5 py-16" aria-labelledby="end-h">
+          <div className="mx-auto max-w-4xl rounded-[2rem] bg-gradient-to-br from-forest to-forest-800 px-6 py-12 text-center text-white shadow-soft sm:px-12">
+            <h2 id="end-h" className="font-display text-[1.9rem] leading-tight sm:text-4xl">Nie musisz dziś wiedzieć, która droga jest Twoja</h2>
+            <p className="mx-auto mt-4 max-w-xl leading-relaxed text-white/85">Zacznij od zrozumienia – Mapa Relacji pomoże zobaczyć, gdzie jesteście i co dalej.</p>
+            <Link href="/mapa-relacji" className="mt-8 inline-flex min-h-14 items-center justify-center gap-2 rounded-full bg-clay px-7 text-[16px] font-semibold text-white">
+              Zacznij od Mapy Relacji <ArrowRight size={18} aria-hidden />
+            </Link>
           </div>
           <div className="mt-8 text-center"><AskDialog consentText={s.legal.inquiryConsent} /></div>
         </section>
       </main>
-
       <SiteFooter contactEmail={s.site.contactEmail} />
-      <StickyCta />
     </>
   );
 }

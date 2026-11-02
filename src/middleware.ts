@@ -13,4 +13,4 @@ export function middleware(req: NextRequest) {
   return res;
 }
 
-export const config = { matcher: ["/", "/start"] };
+export const config = { matcher: ["/mapa-relacji", "/start"] };

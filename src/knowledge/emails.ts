@@ -38,7 +38,7 @@ export function deliveryMail(m: LeadMagnet, name: string | null, appUrl: string,
 
 export function nurtureMail(m: LeadMagnet, step: 1 | 2 | 3, appUrl: string, contact: { email?: string; phone?: string }, unsubscribeUrl: string): Mail {
   const e = m.emails[step - 1];
-  const link = step === 3 ? `\n\nPoznaj Mapę Relacji: ${appUrl}/?utm_source=duo_wiedza&utm_medium=email&utm_campaign=${m.id}#co-otrzymasz` : `\n\nTwój materiał: ${appUrl}/wiedza/${m.slug}/material`;
+  const link = step === 3 ? `\n\nPoznaj Mapę Relacji: ${appUrl}/mapa-relacji?utm_source=duo_wiedza&utm_medium=email&utm_campaign=${m.id}#co-otrzymasz` : `\n\nTwój materiał: ${appUrl}/wiedza/${m.slug}/material`;
   return { subject: e.subject, text: e.body + link + "\n" + footer(appUrl, contact, unsubscribeUrl) };
 }
 

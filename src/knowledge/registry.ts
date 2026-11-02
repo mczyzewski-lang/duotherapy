@@ -30,4 +30,4 @@ export const magnetById = (id: string) => MAGNETS.find((m) => m.id === id) ?? nu
 export { SAMPLE_INTRO };
 
 /** Parametry atrybucji linku do Mapy Relacji – nieopisowe (id materiału, bez tematu). */
-export const mapaHref = (m: Pick<LeadMagnet, "id">, place: string) => `/?utm_source=duo_wiedza&utm_medium=lead_magnet&utm_campaign=${m.id}&utm_content=${place}#co-otrzymasz`;
+export const mapaHref = (m: Pick<LeadMagnet, "id">, place: string) => `/mapa-relacji?utm_source=duo_wiedza&utm_medium=lead_magnet&utm_campaign=${m.id}&utm_content=${place}#co-otrzymasz`;

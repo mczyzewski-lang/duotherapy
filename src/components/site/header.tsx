@@ -1,48 +1,53 @@
-// Wspólny nagłówek strony (strona główna, Wiedza, landingi materiałów).
+// Wspólny nagłówek strony. Logo Mapy Relacji tylko na stronach Mapy Relacji (variant "mapa").
 import Link from "next/link";
 import { MapaLogo } from "@/components/brand";
 import { QuizCta } from "@/components/mapa/cta";
 import { Logo } from "@/components/ui";
-import { KnowledgeMenu, MobileMenu } from "./knowledge-menu";
-import { NAV_LINKS } from "./nav";
+import { KnowledgeMenu, MobileMenu, OfferMenu } from "./knowledge-menu";
+
+type Variant = "default" | "mapa" | "magnet" | "path";
+
+const ctaCls = "inline-flex min-h-10 items-center whitespace-nowrap rounded-full bg-clay px-4 text-sm font-semibold text-white shadow-soft transition hover:brightness-110 max-[359px]:px-3";
 
 /**
- * variant "magnet" (landing materiału): tylko logo, jedno główne CTA (pobranie materiału) i menu hamburgerowe
- * na każdej szerokości – bez linków i przycisku quizu, które rozpraszałyby od pobrania.
+ * default – strona główna i Wiedza (CTA: Mapa Relacji); mapa – landing Mapy Relacji (logo Mapy, CTA: quiz);
+ * magnet – landing materiału (jedno CTA: pobranie, menu hamburgerowe); path – podstrona ścieżki (CTA: rozmowa).
  */
-export function SiteHeader({ variant }: { variant?: "magnet" } = {}) {
-  if (variant === "magnet")
-    return (
-      <header className="sticky top-0 z-40 border-b border-sand/60 bg-ivory/90 backdrop-blur">
-        <nav className="relative mx-auto flex max-w-6xl items-center justify-between gap-2 px-4 py-3 sm:px-5" aria-label="Główna">
-          <Link href="/" aria-label="DUO – strona główna" className="min-w-0"><Logo /></Link>
-          <div className="flex items-center gap-2">
-            <a href="#odbierz" className="inline-flex min-h-10 items-center whitespace-nowrap rounded-full bg-clay px-4 text-sm font-semibold text-white shadow-soft max-[359px]:px-3">
-              Pobierz<span className="hidden sm:inline">&nbsp;bezpłatnie</span>
-            </a>
-            <MobileMenu always initialWiedza />
-          </div>
-        </nav>
-      </header>
-    );
+export function SiteHeader({ variant = "default", cta }: { variant?: Variant; cta?: { href: string; label: string; short?: string } }) {
+  const hamburgerOnly = variant === "magnet";
   return (
     <header className="sticky top-0 z-40 border-b border-sand/60 bg-ivory/90 backdrop-blur">
-      <nav className="relative mx-auto flex max-w-6xl items-center justify-between gap-3 px-5 py-3" aria-label="Główna">
-        <Link href="/" aria-label="DUO – Mapa Relacji – strona główna" className="flex items-center gap-4">
-          <Logo />
-          <span className="hidden h-8 w-px bg-sand-dark 2xl:block" aria-hidden />
-          <span className="hidden 2xl:block"><MapaLogo compact id="nav-mapa" /></span>
-        </Link>
-        <div className="hidden items-center gap-3 whitespace-nowrap text-sm text-ink-soft md:flex lg:gap-5">
-          {NAV_LINKS.map(([href, l]) => (
-            <a key={href} href={href} className="hover:text-forest">{l}</a>
-          ))}
-          <KnowledgeMenu />
-          <a href="/#faq" className="hover:text-forest">Pytania</a>
+      <nav className="relative mx-auto flex max-w-6xl items-center justify-between gap-2 px-4 py-3 sm:gap-3 sm:px-5" aria-label="Główna">
+        <div className="flex min-w-0 items-center gap-4">
+          <Link href="/" aria-label="DUO – strona główna" className="min-w-0"><Logo /></Link>
+          {variant === "mapa" && (
+            <>
+              <span className="hidden h-8 w-px bg-sand-dark xl:block" aria-hidden />
+              <Link href="/mapa-relacji" aria-label="Mapa Relacji" className="hidden xl:block"><MapaLogo compact id="nav-mapa" /></Link>
+            </>
+          )}
         </div>
-        <div className="flex items-center gap-2">
-          <QuizCta size="sm" className="whitespace-nowrap max-[359px]:hidden">Zacznij</QuizCta>
-          <MobileMenu />
+        {!hamburgerOnly && (
+          <div className="hidden items-center gap-3 whitespace-nowrap text-sm text-ink-soft md:flex lg:gap-5">
+            <OfferMenu />
+            <KnowledgeMenu />
+            <a href="/#o-mnie" className="hover:text-forest">Kto pomaga</a>
+            <a href="/#faq" className="hover:text-forest">Pytania</a>
+          </div>
+        )}
+        <div className="flex shrink-0 items-center gap-2">
+          {variant === "mapa" ? (
+            <QuizCta size="sm" className="whitespace-nowrap max-[359px]:hidden">Zacznij</QuizCta>
+          ) : variant === "magnet" ? (
+            <a href="#odbierz" className={ctaCls}>Pobierz<span className="hidden sm:inline">&nbsp;bezpłatnie</span></a>
+          ) : cta ? (
+            <a href={cta.href} className={ctaCls}>
+              {cta.short ? (<><span className="sm:hidden">{cta.short}</span><span className="hidden sm:inline">{cta.label}</span></>) : cta.label}
+            </a>
+          ) : (
+            <Link href="/mapa-relacji" className={ctaCls}><span className="sm:hidden">Mapa Relacji</span><span className="hidden sm:inline">Zacznij od Mapy Relacji</span></Link>
+          )}
+          <MobileMenu always={hamburgerOnly} initialWiedza={hamburgerOnly} />
         </div>
       </nav>
     </header>

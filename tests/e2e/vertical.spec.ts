@@ -84,7 +84,7 @@ async function openAsParticipant(browser: Browser, url: string, code: string) {
 
 test("pełny scenariusz audytu pary", async ({ page, browser, request }) => {
   // 1. Landing (wariant A) → quiz Mapy Relacji → prośba o telefon (z UTM)
-  await page.goto("/?hero=A&utm_source=instagram&utm_medium=reels&utm_campaign=e2e");
+  await page.goto("/mapa-relacji?hero=A&utm_source=instagram&utm_medium=reels&utm_campaign=e2e");
   await page.waitForLoadState("networkidle");
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Ratować związek, dać sobie czas czy się rozstać? Zacznij od zrozumienia.");
   // podgląd rzeczywistej struktury podsumowania (dane fikcyjne)

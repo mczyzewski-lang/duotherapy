@@ -5,6 +5,7 @@
 import clsx from "clsx";
 import { ArrowRight, ChevronDown } from "lucide-react";
 import { MapaSymbol, RoadGlyph } from "@/components/brand";
+import { pathHref } from "@/content/paths";
 import Link from "next/link";
 import { Fragment, useEffect, useRef, useState } from "react";
 
@@ -76,7 +77,7 @@ function useInView<T extends Element>() {
 }
 
 /** Mapa w hero (desktop): krótka, interaktywna wersja przebiegu. */
-export function HeroMap() {
+export function HeroMap({ toPaths }: { toPaths?: boolean } = {}) {
   const [active, setActive] = useState<number | null>(null);
   const { ref, inView } = useInView<HTMLDivElement>();
   const ends = [
@@ -133,7 +134,10 @@ export function HeroMap() {
               onMouseLeave={() => setActive(null)}
               onFocus={() => setActive(k)}
               onBlur={() => setActive(null)}
-              onClick={() => document.getElementById(`droga-${ROADS[k].key}`)?.scrollIntoView({ behavior: "smooth", block: "center" })}
+              onClick={() => {
+                if (toPaths) window.location.assign(pathHref(ROADS[k].key));
+                else document.getElementById(`droga-${ROADS[k].key}`)?.scrollIntoView({ behavior: "smooth", block: "center" });
+              }}
               className={clsx("flex max-w-[9.5rem] items-center gap-2 rounded-xl bg-white/95 py-2 pl-2 pr-3 text-left leading-tight text-ink shadow-soft ring-1 transition", active === k ? "ring-forest" : "ring-sand")}
             >
               <span className={clsx("grid h-7 w-7 shrink-0 place-items-center rounded-full", TONE[ROADS[k].tone].soft)}>
@@ -149,7 +153,7 @@ export function HeroMap() {
 }
 
 /** Mapa w hero (telefon): ta sama mapa pionowo – ścieżka w dół i rozwidlenie na trzy drogi. */
-export function HeroMapVertical() {
+export function HeroMapVertical({ toPaths }: { toPaths?: boolean } = {}) {
   const { ref, inView } = useInView<HTMLDivElement>();
   const xs = [56, 170, 284];
   const tones = [TONE.rose.stroke, TONE.clay.stroke, TONE.forest.stroke];
@@ -199,7 +203,7 @@ export function HeroMapVertical() {
         {ROADS.map((r) => (
           <li key={r.key}>
             <a
-              href={`#droga-${r.key}`}
+              href={toPaths ? pathHref(r.key) : `#droga-${r.key}`}
               className={clsx("flex h-full flex-col items-center gap-1.5 rounded-2xl bg-white px-1.5 py-2.5 text-center text-[12.5px] leading-tight text-ink shadow-soft ring-1", TONE[r.tone].ring)}
             >
               <span className={clsx("grid h-8 w-8 place-items-center rounded-full", TONE[r.tone].soft)}>
@@ -254,8 +258,8 @@ export function Roads() {
                 ))}
               </ul>
               <p className="mt-3 text-xs text-muted">To jedna z możliwości do rozważenia po konsultacji. Wybór drogi zawsze należy do Was.</p>
-              <Link href="/start" className="mt-4 inline-flex min-h-11 items-center gap-1.5 rounded-full bg-forest px-5 text-sm font-medium text-white">
-                Zacznij od 6 krótkich pytań <ArrowRight size={15} aria-hidden />
+              <Link href={pathHref(r.key)} className="mt-4 inline-flex min-h-11 items-center gap-1.5 rounded-full bg-forest px-5 text-sm font-medium text-white">
+                Więcej o tej drodze <ArrowRight size={15} aria-hidden />
               </Link>
             </div>
           </article>
