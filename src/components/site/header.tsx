@@ -6,7 +6,25 @@ import { Logo } from "@/components/ui";
 import { KnowledgeMenu, MobileMenu } from "./knowledge-menu";
 import { NAV_LINKS } from "./nav";
 
-export function SiteHeader() {
+/**
+ * variant "magnet" (landing materiału): tylko logo, jedno główne CTA (pobranie materiału) i menu hamburgerowe
+ * na każdej szerokości – bez linków i przycisku quizu, które rozpraszałyby od pobrania.
+ */
+export function SiteHeader({ variant }: { variant?: "magnet" } = {}) {
+  if (variant === "magnet")
+    return (
+      <header className="sticky top-0 z-40 border-b border-sand/60 bg-ivory/90 backdrop-blur">
+        <nav className="relative mx-auto flex max-w-6xl items-center justify-between gap-2 px-4 py-3 sm:px-5" aria-label="Główna">
+          <Link href="/" aria-label="DUO – strona główna" className="min-w-0"><Logo /></Link>
+          <div className="flex items-center gap-2">
+            <a href="#odbierz" className="inline-flex min-h-10 items-center whitespace-nowrap rounded-full bg-clay px-4 text-sm font-semibold text-white shadow-soft max-[359px]:px-3">
+              Pobierz<span className="hidden sm:inline">&nbsp;bezpłatnie</span>
+            </a>
+            <MobileMenu always initialWiedza />
+          </div>
+        </nav>
+      </header>
+    );
   return (
     <header className="sticky top-0 z-40 border-b border-sand/60 bg-ivory/90 backdrop-blur">
       <nav className="relative mx-auto flex max-w-6xl items-center justify-between gap-3 px-5 py-3" aria-label="Główna">

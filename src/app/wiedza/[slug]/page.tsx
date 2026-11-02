@@ -50,7 +50,7 @@ export default async function MagnetLanding({ params }: { params: Promise<{ slug
   return (
     <>
       <KTrack event="lead_magnet_landing_view" step={m.n} />
-      <SiteHeader />
+      <SiteHeader variant="magnet" />
       <main id="main">
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
         {/* 1. HERO */}
@@ -172,7 +172,7 @@ export default async function MagnetLanding({ params }: { params: Promise<{ slug
             <p className="mt-3 max-w-2xl text-[17px] leading-relaxed text-white/90">
               {m.special === "sample-report" ? m.mapaText : `Ten materiał może pomóc Ci uporządkować jeden obszar relacji. ${m.mapaText}`}
             </p>
-            <a href={mapaHref(m, "landing")} data-mapa-cta className={m.special ? "mt-5 inline-flex min-h-12 items-center gap-2 rounded-full bg-clay px-6 font-semibold text-white" : "mt-5 inline-flex min-h-11 items-center gap-1.5 font-semibold text-white underline underline-offset-4"}>
+            <a href={mapaHref(m, "landing")} data-mapa-cta className="mt-5 inline-flex min-h-11 items-center gap-1.5 font-semibold text-white underline underline-offset-4">
               {m.special ? "Poznaj pełną usługę – 670 zł" : "Poznaj Mapę Relacji"} <ArrowRight size={17} aria-hidden />
             </a>
           </div>

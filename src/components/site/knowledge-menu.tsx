@@ -102,9 +102,9 @@ export function KnowledgeMenu() {
 }
 
 /** Menu mobilne: linki strony + rozwijana sekcja „Wiedza” z kategoriami. */
-export function MobileMenu() {
+export function MobileMenu({ always, initialWiedza = false }: { always?: boolean; initialWiedza?: boolean } = {}) {
   const [open, setOpen] = useState(false);
-  const [wiedza, setWiedza] = useState(false);
+  const [wiedza, setWiedza] = useState(initialWiedza);
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
@@ -117,13 +117,14 @@ export function MobileMenu() {
   }, [open]);
   const close = () => setOpen(false);
   return (
-    <div className="md:hidden">
+    <div className={always ? undefined : "md:hidden"}>
       <button type="button" aria-expanded={open} aria-controls="mobile-menu" aria-label={open ? "Zamknij menu" : "Otwórz menu"} onClick={() => setOpen((o) => !o)}
         className="grid h-11 w-11 place-items-center rounded-full text-ink ring-1 ring-sand">
         {open ? <X size={20} aria-hidden /> : <Menu size={20} aria-hidden />}
       </button>
       {open && createPortal(
         <div id="mobile-menu" className="fixed inset-x-0 bottom-0 top-[65px] z-50 overflow-y-auto border-t border-sand bg-ivory px-5 pb-10 pt-4">
+          <div className="mx-auto max-w-3xl">
           <nav aria-label="Menu" className="space-y-1">
             {NAV_LINKS.map(([href, l]) => (
               <a key={href} href={href} onClick={close} className="block rounded-xl px-2 py-3 text-lg text-ink">{l}</a>
@@ -139,6 +140,7 @@ export function MobileMenu() {
             )}
             <a href="/#faq" onClick={close} className="block rounded-xl px-2 py-3 text-lg text-ink">Pytania</a>
           </nav>
+          </div>
         </div>,
         document.body,
       )}
