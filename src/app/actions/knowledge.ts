@@ -9,6 +9,7 @@ import { system } from "@/lib/db";
 import { env } from "@/lib/env";
 import { ATTRIBUTION_KEYS } from "@/lib/mapa-quiz";
 import { notifyCustomer } from "@/lib/notify";
+import { setContentCookie } from "@/lib/content-access";
 import { hit } from "@/lib/rate-limit";
 import { clientIp } from "@/lib/request";
 import { readSettings } from "@/lib/settings";
@@ -46,16 +47,24 @@ export async function submitKnowledgeLead(input: z.input<typeof Schema>): Promis
   const anon = d.anonId && /^[a-zA-Z0-9]{8,64}$/.test(d.anonId) ? d.anonId : null;
   const attribution = Object.fromEntries(Object.entries(d.attribution).filter(([k]) => (ATTRIBUTION_KEYS as readonly string[]).includes(k)));
   const unsubscribe = newToken();
+  // dostęp do wersji online z autozapisem (ciasteczko w tej przeglądarce + link w e-mailu)
+  const access = newToken();
 
   const r = await system(async (tx) => {
     const s = await readSettings(tx);
     // idempotencja: ponowione żądanie z tym samym identyfikatorem
     const [same] = await tx`select id, delivery_status from content_leads where request_id = ${d.requestId}`;
-    if (same) return { id: same.id as string, status: same.delivery_status as string, send: false, s };
+    if (same) {
+      await tx`update content_leads set access_token_hash = ${hashToken(access)} where id = ${same.id}`;
+      return { id: same.id as string, status: same.delivery_status as string, send: false, s };
+    }
     // ta sama osoba i ten sam materiał w ciągu doby, już dostarczony – bez ponownej wysyłki
     const [recent] = await tx`select id, delivery_status from content_leads
       where lower(email) = ${d.email} and magnet_id = ${m.id} and created_at > now() - interval '24 hours' and delivery_status = 'sent' order by created_at desc limit 1`;
-    if (recent) return { id: recent.id as string, status: "sent", send: false, s };
+    if (recent) {
+      await tx`update content_leads set access_token_hash = ${hashToken(access)} where id = ${recent.id}`;
+      return { id: recent.id as string, status: "sent", send: false, s };
+    }
     const series = m.slug === "7-dni-lepszych-rozmow" && d.series;
     const [row] = await tx<{ id: string }[]>`
       insert into content_leads (request_id, email, name, magnet_id, attribution, anon_id, marketing_consent, series_consent, unsubscribe_token_hash, unsubscribe_token_enc,
@@ -72,13 +81,15 @@ export async function submitKnowledgeLead(input: z.input<typeof Schema>): Promis
     if (s.site.funnelTracking && anon)
       await tx`insert into funnel_events (event, anon_id, step, utm_source, utm_medium, utm_campaign, path)
                values ('lead_magnet_submitted', ${anon}, ${m.n}, ${attribution.utm_source ?? null}, ${attribution.utm_medium ?? null}, ${attribution.utm_campaign ?? null}, '/wiedza/*')`;
+    await tx`update content_leads set access_token_hash = ${hashToken(access)} where id = ${row.id}`;
     return { id: row.id, status: "pending", send: true, s };
   });
 
+  await setContentCookie(access);
   if (!r.send) return { ok: true, emailSent: r.status === "sent" };
 
   // dostarczenie: tylko gdy skonfigurowano wysyłkę – nie udajemy, że e-mail wyszedł
-  const mail = deliveryMail(m, d.name || null, env.appUrl, { email: r.s.site.contactEmail, phone: r.s.site.contactPhone });
+  const mail = deliveryMail(m, d.name || null, env.appUrl, { email: r.s.site.contactEmail, phone: r.s.site.contactPhone }, access);
   const configured = Boolean(process.env.SMTP_URL);
   const sent = configured ? await notifyCustomer(d.email, mail.subject, mail.text) : false;
   const status = !configured ? "not_configured" : sent ? "sent" : "failed";

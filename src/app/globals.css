@@ -114,3 +114,21 @@ path.map-line[stroke-dasharray="6 7"] { stroke-dasharray: 6 7; stroke-dashoffset
 @media print {
   .no-print { display: none !important; }
 }
+
+/* „Wiedza”: schematy i karty pojawiają się przy przewinięciu */
+.reveal-box { opacity: 0; transform: translateY(18px); transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1); }
+.reveal-box.on { opacity: 1; transform: none; }
+.reveal-box .draw { stroke-dasharray: 600; stroke-dashoffset: 600; }
+.reveal-box.on .draw { animation: draw 1.3s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+.reveal-box .pop { opacity: 0; transform: scale(0.6); transform-box: fill-box; transform-origin: center; transition: opacity 0.45s ease, transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1.2); }
+.reveal-box.on .pop { opacity: 1; transform: none; }
+.reveal-box .fade { opacity: 0; transition: opacity 0.8s ease 0.1s; }
+.reveal-box.on .fade { opacity: 1; }
+.reveal-box > .grid > * { opacity: 0; transform: translateY(10px); transition: opacity 0.5s ease, transform 0.5s ease; }
+.reveal-box.on > .grid > * { opacity: 1; transform: none; }
+.reveal-box.on > .grid > *:nth-child(2) { transition-delay: 0.08s; } .reveal-box.on > .grid > *:nth-child(3) { transition-delay: 0.16s; }
+.reveal-box.on > .grid > *:nth-child(4) { transition-delay: 0.24s; } .reveal-box.on > .grid > *:nth-child(5) { transition-delay: 0.32s; }
+.reveal-box.on > .grid > *:nth-child(n+6) { transition-delay: 0.4s; }
+@media (prefers-reduced-motion: reduce) {
+  .reveal-box, .reveal-box .draw, .reveal-box .pop, .reveal-box .fade, .reveal-box > .grid > * { opacity: 1 !important; transform: none !important; stroke-dashoffset: 0 !important; animation: none !important; }
+}

@@ -1,12 +1,16 @@
 // Widok pełnego materiału: /demo (podgląd dla właściciela, bez e-maila) i /material (po zapisie). Ta sama treść co PDF.
-import { ArrowLeft, Download } from "lucide-react";
+import { ArrowLeft, ArrowRight, Download, PenLine } from "lucide-react";
 import Link from "next/link";
 import { mapaHref } from "@/knowledge/registry";
 import type { LeadMagnet } from "@/knowledge/types";
 import { KTrack } from "./client";
 import { MaterialDoc } from "./doc";
+import { AnswersProvider } from "./answers";
+import { coverOf } from "@/knowledge/covers";
 
-export function MaterialViewer({ m, variant }: { m: LeadMagnet; variant: "demo" | "material" }) {
+export function MaterialViewer({ m, variant, answers }: { m: LeadMagnet; variant: "demo" | "material"; answers?: Record<string, string | boolean> | null }) {
+  const summary = coverOf(m.slug)?.summary;
+  const fillable = variant === "material" && answers !== undefined && answers !== null && !!summary;
   return (
     <div className="min-h-dvh bg-linen/60">
       <KTrack event={variant === "demo" ? "lead_magnet_demo_view" : "lead_magnet_demo_view"} step={m.n} />
@@ -28,7 +32,28 @@ export function MaterialViewer({ m, variant }: { m: LeadMagnet; variant: "demo" 
         {m.needsReview && variant === "demo" && (
           <p className="mb-4 rounded-2xl bg-white/80 px-4 py-2.5 text-xs text-muted ring-1 ring-sand">Treść przed publikacją wymaga akceptacji merytorycznej psycholożki DUO.</p>
         )}
-        <MaterialDoc m={m} mode="screen" mapaUrl={mapaHref(m, variant)} />
+        {variant === "material" && !fillable && summary && (
+          <p className="mb-5 flex gap-2.5 rounded-2xl bg-white p-4 text-sm leading-relaxed text-ink-soft ring-1 ring-sand">
+            <PenLine size={17} className="mt-0.5 shrink-0 text-clay" aria-hidden />
+            <span>Możesz uzupełniać ten materiał na stronie, a odpowiedzi zapiszą się same – po <Link href={`/wiedza/${m.slug}#odbierz`} className="font-medium text-forest underline">odebraniu go na swój e-mail</Link> albo przez link z wiadomości.</span>
+          </p>
+        )}
+        {fillable ? (
+          <AnswersProvider slug={m.slug} initial={answers ?? {}}>
+            <p className="mb-5 flex gap-2.5 rounded-2xl bg-sage-soft/70 p-4 text-sm leading-relaxed text-ink-soft ring-1 ring-sage/40">
+              <PenLine size={17} className="mt-0.5 shrink-0 text-forest" aria-hidden />
+              <span>Uzupełniaj pola bezpośrednio na stronie – odpowiedzi zapisują się automatycznie i są przypisane do Twojego e-maila. Widzisz je tylko Ty.</span>
+            </p>
+            <MaterialDoc m={m} mode="screen" mapaUrl={mapaHref(m, variant)} />
+            <div className="sticky bottom-3 z-20 mt-8 flex justify-center">
+              <Link href={`/wiedza/${m.slug}/podsumowanie`} className="inline-flex min-h-14 items-center gap-2 rounded-full bg-clay px-7 text-[16px] font-semibold text-white shadow-[0_14px_34px_-12px_rgba(169,81,47,0.8)]">
+                Podsumuj {summary} <ArrowRight size={18} aria-hidden />
+              </Link>
+            </div>
+          </AnswersProvider>
+        ) : (
+          <MaterialDoc m={m} mode="screen" mapaUrl={mapaHref(m, variant)} />
+        )}
       </main>
     </div>
   );

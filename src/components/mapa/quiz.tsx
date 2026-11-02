@@ -15,7 +15,12 @@ import { anonId, attribution, captureAttribution, track } from "@/lib/track-clie
 
 type Phase = "questions" | "summary" | "done";
 
-export function MapaQuiz({ consentText, marketingText, callbackPromise }: { consentText: string; marketingText: string; callbackPromise: string }) {
+export interface QuizAttach {
+  slug: string;
+  title: string;
+}
+
+export function MapaQuiz({ consentText, marketingText, callbackPromise, attach }: { consentText: string; marketingText: string; callbackPromise: string; attach?: QuizAttach | null }) {
   const [i, setI] = useState(0);
   const [answers, setAnswers] = useState<QuizAnswers>({});
   const [phase, setPhase] = useState<Phase>("questions");
@@ -56,7 +61,7 @@ export function MapaQuiz({ consentText, marketingText, callbackPromise }: { cons
 
   if (phase === "done") return <Done callbackPromise={callbackPromise} />;
   if (phase === "summary")
-    return <Summary answers={answers} consentText={consentText} marketingText={marketingText} onBack={() => { setPhase("questions"); setI(QUIZ.length - 1); }} onDone={() => setPhase("done")} headingRef={headingRef} />;
+    return <Summary answers={answers} attach={attach ?? null} consentText={consentText} marketingText={marketingText} onBack={() => { setPhase("questions"); setI(QUIZ.length - 1); }} onDone={() => setPhase("done")} headingRef={headingRef} />;
 
   return (
     <div className="flex min-h-[calc(100dvh-4.5rem)] flex-col">
@@ -121,6 +126,7 @@ export function MapaQuiz({ consentText, marketingText, callbackPromise }: { cons
 
 function Summary({
   answers,
+  attach,
   consentText,
   marketingText,
   onBack,
@@ -128,6 +134,7 @@ function Summary({
   headingRef,
 }: {
   answers: QuizAnswers;
+  attach: QuizAttach | null;
   consentText: string;
   marketingText: string;
   onBack: () => void;
@@ -135,7 +142,7 @@ function Summary({
   headingRef: React.RefObject<HTMLHeadingElement | null>;
 }) {
   const { lead, points } = summaryFor(answers);
-  const [f, setF] = useState({ name: "", phone: "", email: "", preferredTime: "", contactConsent: false, marketingConsent: false, website: "" });
+  const [f, setF] = useState({ name: "", phone: "", email: "", preferredTime: "", contactConsent: false, marketingConsent: false, attachConsent: false, website: "" });
   const [err, setErr] = useState<{ text: string; field?: string } | null>(null);
   const [pending, start] = useTransition();
   const [leaving, setLeaving] = useState(false);
@@ -170,6 +177,7 @@ function Summary({
           preferredTime: f.preferredTime as never,
           contactConsent: f.contactConsent as true,
           marketingConsent: f.marketingConsent,
+          attachSlug: attach && f.attachConsent ? attach.slug : undefined,
           answers: answers as Record<string, string>,
           attribution: attribution() as Record<string, string>,
           anonId: anonId(),
@@ -282,6 +290,12 @@ function Summary({
             <span>{consentText} <Link href="/prywatnosc" className="underline underline-offset-2" target="_blank">Informacja o danych</Link></span>
           </label>
           {fieldErr("contactConsent") && <p className="text-sm text-rose" role="alert">{fieldErr("contactConsent")}</p>}
+          {attach && (
+            <label className="flex items-start gap-3 rounded-2xl bg-white/10 p-3.5 text-sm leading-snug" data-testid="attach-consent">
+              <input type="checkbox" className="mt-0.5 h-5 w-5 shrink-0 accent-[#a9512f]" checked={f.attachConsent} onChange={(e) => setF({ ...f, attachConsent: e.target.checked })} />
+              <span>Dołącz moje podsumowanie z materiału „{attach.title}” do zgłoszenia. Psycholog DUO wykorzysta je przy rozmowie o Mapie Relacji™. <span className="text-white/60">(opcjonalnie)</span></span>
+            </label>
+          )}
           <label className="flex items-start gap-3 px-3.5 text-sm leading-snug text-white/80">
             <input type="checkbox" className="mt-0.5 h-5 w-5 shrink-0 accent-[#a9512f]" checked={f.marketingConsent} onChange={(e) => setF({ ...f, marketingConsent: e.target.checked })} />
             <span>{marketingText}</span>

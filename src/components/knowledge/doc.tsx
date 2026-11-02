@@ -6,7 +6,11 @@ import { BrandSymbol, MapaSymbol, RoadGlyph } from "@/components/brand";
 import type { Block, LeadMagnet } from "@/knowledge/types";
 import { CATEGORY_LABEL } from "@/knowledge/types";
 import { DayDone } from "./day-done";
+import { AnswerCheck, AnswerText } from "./answers";
+import { Reveal } from "./reveal";
+import { fid, LOOP_STEPS } from "@/knowledge/fields";
 import { MagnetIcon } from "./icons";
+import { coverOf } from "@/knowledge/covers";
 
 type Mode = "screen" | "print";
 
@@ -16,47 +20,63 @@ function Rich({ text }: { text: string }) {
   return <>{parts.map((x, i) => (x.startsWith("**") ? <strong key={i} className="font-semibold text-ink">{x.slice(2, -2)}</strong> : x))}</>;
 }
 
-function Lines({ n = 3, className }: { n?: number; className?: string }) {
-  return (
-    <div className={clsx("mt-2 space-y-0", className)} aria-hidden>
-      {Array.from({ length: n }).map((_, i) => <div key={i} className="h-8 border-b border-dashed border-sand-dark/80" />)}
-    </div>
-  );
-}
 
-export function Cover({ m, mode, compact }: { m: LeadMagnet; mode: Mode; compact?: boolean }) {
+const GRAIN = "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.5'/%3E%3C/svg%3E\")";
+
+/**
+ * Okładka: nastrój zamiast „techniki” – światło, ciepłe barwy, cytat z życia. Jeśli dostarczono zdjęcie
+ * (public/img/wiedza/<slug>.jpg, covers.ts → photo: true), jest ono tłem okładki.
+ */
+export function Cover({ m, mode, compact, hero }: { m: LeadMagnet; mode: Mode; compact?: boolean; hero?: boolean }) {
+  const c = coverOf(m.slug) ?? { hook: "", mood: ["#f3e2d3", "#a9512f", "#36493d"] as [string, string, string], photo: false };
+  const uid = `${m.id}-${compact ? "c" : mode}`;
+  const T = compact ? "p" : "h1"; // miniatura okładki nie jest nagłówkiem strony – jeden H1 na stronę
+  const dark = c.photo;
   return (
     <section
       className={clsx(
-        "relative flex flex-col overflow-hidden bg-gradient-to-br from-ivory via-white to-linen text-ink",
-        mode === "print" ? "h-[257mm] break-after-page rounded-none p-[14mm]" : compact ? "aspect-[3/4] rounded-2xl p-5 ring-1 ring-sand" : "rounded-[1.75rem] p-7 shadow-soft ring-1 ring-sand sm:p-10",
+        "relative isolate flex flex-col overflow-hidden",
+        dark ? "text-white" : "text-ink",
+        mode === "print" ? "h-[255mm] break-after-page rounded-none p-[14mm]" : compact ? "aspect-[3/4] rounded-2xl p-4" : "min-h-[30rem] rounded-[1.75rem] p-7 shadow-soft sm:p-10",
       )}
+      style={{ background: `linear-gradient(160deg, ${c.mood[0]} 0%, #fbf9f5 55%, ${c.mood[0]} 100%)` }}
       aria-label="Okładka materiału"
     >
-      <div className="absolute -right-10 -top-10 h-48 w-48 rounded-full bg-clay-soft/70" aria-hidden />
-      <div className="absolute -bottom-16 -left-10 h-56 w-56 rounded-full bg-sage-soft/80" aria-hidden />
-      <div className="relative flex items-center gap-2">
-        <BrandSymbol id={`cv-${m.id}-${compact ? "c" : mode}`} className={compact ? "h-4 w-auto" : "h-6 w-auto"} />
-        <span className={clsx("font-wordmark font-medium text-forest", compact ? "text-sm" : "text-lg")}>DUO®</span>
-        <span className={clsx("ml-auto rounded-full bg-white/80 font-semibold uppercase tracking-[0.16em] text-clay ring-1 ring-sand", compact ? "px-2 py-0.5 text-[8px]" : "px-3 py-1 text-[10px]")}>
+      {c.photo ? (
+        <>
+          <img src={`/img/wiedza/${m.slug}.jpg`} alt="" className="absolute inset-0 -z-10 h-full w-full object-cover" />
+          <div className="absolute inset-0 -z-10 bg-gradient-to-b from-black/25 via-black/10 to-black/70" aria-hidden />
+        </>
+      ) : (
+        <div className="absolute inset-0 -z-10" aria-hidden>
+          {/* miękkie światło jak z okna i dwa „ciepłe” punkty – bez stockowych zdjęć */}
+          <div className="absolute -right-[20%] -top-[15%] h-[70%] w-[80%] rounded-full opacity-40 blur-3xl" style={{ background: c.mood[1] }} />
+          <div className="absolute -bottom-[20%] -left-[25%] h-[65%] w-[75%] rounded-full opacity-30 blur-3xl" style={{ background: c.mood[2] }} />
+          <div className="absolute inset-0 opacity-60" style={{ background: "linear-gradient(115deg, transparent 20%, rgba(255,255,255,.55) 32%, transparent 44%, rgba(255,255,255,.35) 56%, transparent 66%)" }} />
+          <div className="absolute inset-0 opacity-[0.18] mix-blend-multiply" style={{ backgroundImage: GRAIN }} />
+        </div>
+      )}
+      <div className="flex items-center gap-2">
+        <BrandSymbol id={`cv-${uid}`} className={compact ? "h-3.5 w-auto" : "h-5 w-auto"} />
+        <span className={clsx("font-wordmark font-medium", dark ? "text-white" : "text-forest", compact ? "text-xs" : "text-base")}>DUO®</span>
+        <span className={clsx("ml-auto rounded-full font-semibold uppercase tracking-[0.16em] backdrop-blur", dark ? "bg-white/20 text-white" : "bg-white/70 text-clay", compact ? "px-2 py-0.5 text-[7.5px]" : "px-3 py-1 text-[10px]")}>
           Bezpłatny materiał
         </span>
       </div>
-      <div className={clsx("relative mt-auto", compact ? "pt-4" : "pt-16")}>
-        <span className={clsx("grid place-items-center rounded-2xl bg-white shadow-soft ring-1 ring-sand", compact ? "h-11 w-11" : "h-16 w-16")}>
-          <MagnetIcon icon={m.icon} id={`cv-${m.id}-${compact ? "c" : mode}`} className={compact ? "h-6 w-6" : "h-9 w-9"} />
-        </span>
-        <p className={clsx("font-semibold uppercase tracking-[0.18em] text-clay", compact ? "mt-3 text-[8.5px]" : "mt-6 text-xs")}>{m.cover.kicker} · {CATEGORY_LABEL[m.category]}</p>
-        {(() => {
-          // miniatura okładki (landing, karty) nie jest nagłówkiem strony – jeden H1 na stronę
-          const T = compact ? "p" : "h1";
-          return <T className={clsx("font-display leading-[1.08] text-ink", compact ? "mt-1.5 text-[1.05rem]" : mode === "print" ? "mt-3 text-[34pt]" : "mt-3 text-[2rem] sm:text-[2.6rem]")}>{m.title}</T>;
-        })()}
-        <p className={clsx("text-ink-soft", compact ? "mt-1.5 text-[10px] leading-snug" : "mt-4 max-w-xl text-lg leading-relaxed")}>{m.cover.subtitle}</p>
-      </div>
-      <div className={clsx("relative flex items-end justify-between", compact ? "mt-4" : "mt-14")}>
-        <MapaSymbol id={`cvm-${m.id}-${compact ? "c" : mode}`} className={compact ? "h-3.5 w-auto" : "h-6 w-auto"} />
-        {!compact && <span className="text-xs text-muted">duo · Mapa Relacji</span>}
+      <div className={clsx("mt-auto", compact ? "pt-3" : "pt-12")}>
+        {c.hook && (
+          <p className={clsx("font-display italic leading-[1.12]", dark ? "text-white" : "text-ink", hero ? "text-[1.5rem] sm:text-[1.75rem]" : compact ? "text-[1.02rem]" : mode === "print" ? "text-[30pt]" : "text-[1.9rem] sm:text-[2.4rem]")}>{c.hook}</p>
+        )}
+        <div className={clsx("flex items-start gap-3", compact ? "mt-3" : "mt-8")}>
+          <span className={clsx("grid shrink-0 place-items-center rounded-xl bg-white/85 shadow-soft", compact ? "h-7 w-7" : "h-11 w-11")}>
+            <MagnetIcon icon={m.icon} id={`cv-${uid}`} className={compact ? "h-4 w-4" : "h-6 w-6"} />
+          </span>
+          <div className="min-w-0">
+            <p className={clsx("font-semibold uppercase tracking-[0.16em]", dark ? "text-white/80" : "text-clay", compact ? "text-[7.5px]" : "text-[11px]")}>{m.cover.kicker} · {CATEGORY_LABEL[m.category]}</p>
+            <T className={clsx("font-display leading-snug", compact ? "mt-0.5 text-[0.8rem]" : mode === "print" ? "mt-1 text-[17pt]" : "mt-1 text-[1.25rem] sm:text-[1.45rem]")}>{m.title}</T>
+            {!compact && <p className={clsx("mt-2 max-w-xl leading-relaxed", dark ? "text-white/85" : "text-ink-soft")}>{m.cover.subtitle}</p>}
+          </div>
+        </div>
       </div>
     </section>
   );
@@ -72,12 +92,12 @@ function RoadsFigure() {
   return (
     <figure className="my-6 break-inside-avoid rounded-3xl bg-gradient-to-br from-white via-ivory to-linen p-4 ring-1 ring-sand">
       <svg viewBox="0 0 400 300" className="h-auto w-full" role="img" aria-label="Od miejsca, w którym jesteś dziś, przez zrozumienie, do jednej z trzech dróg">
-        <path d="M200 46 C 170 70, 230 88, 200 108" fill="none" stroke="#36493d" strokeWidth="2.5" strokeDasharray="6 7" />
-        {ends.map((e) => <path key={e.x} d={`M200 168 C 200 210, ${e.x} 200, ${e.x} 246`} fill="none" stroke={e.c} strokeWidth="3.5" strokeLinecap="round" />)}
+        <path d="M200 46 C 170 70, 230 88, 200 108" fill="none" stroke="#36493d" strokeWidth="2.5" strokeDasharray="6 7" className="fade" />
+        {ends.map((e, k) => <path key={e.x} d={`M200 168 C 200 210, ${e.x} 200, ${e.x} 246`} fill="none" stroke={e.c} strokeWidth="3.5" strokeLinecap="round" className="draw" style={{ animationDelay: `${0.35 + k * 0.18}s` }} />)}
         <circle cx="200" cy="38" r="9" fill="#a9512f" />
         <circle cx="200" cy="138" r="30" fill="#fff" stroke="#36493d" strokeWidth="2.5" />
         <svg x="176" y="131" width="48" height="14" viewBox="0 0 112 32"><MapaSymbol id="rf-node" /></svg>
-        {ends.map((e) => <circle key={e.x} cx={e.x} cy="248" r="6" fill={e.c} />)}
+        {ends.map((e, k) => <circle key={e.x} cx={e.x} cy="248" r="6" fill={e.c} className="pop" style={{ transitionDelay: `${0.9 + k * 0.18}s` }} />)}
         <text x="200" y="18" textAnchor="middle" fontSize="11" fontWeight="600" letterSpacing="1.5" fill="#a9512f">TU JESTEŚ DZISIAJ</text>
         {[130, 270].map((x) => <text key={x} x={x} y="230" textAnchor="middle" fontSize="10" fontWeight="600" fill="#6a605a">LUB</text>)}
       </svg>
@@ -94,11 +114,11 @@ function RoadsFigure() {
   );
 }
 
-const LOOP_STEPS = ["Wyzwalacz", "Interpretacja", "Emocje", "Reakcja A", "Reakcja B", "Eskalacja"];
+const LOOP_STEPS_SHORT = ["Wyzwalacz", "Interpretacja", "Emocje", "Reakcja A", "Reakcja B", "Eskalacja"];
 
 function LoopFigure() {
   const r = 108;
-  const pts = LOOP_STEPS.map((_, i) => {
+  const pts = LOOP_STEPS_SHORT.map((_, i) => {
     const a = (-90 + i * 60) * (Math.PI / 180);
     return { x: 160 + r * Math.cos(a), y: 150 + r * Math.sin(a) };
   });
@@ -113,12 +133,12 @@ function LoopFigure() {
           const q = pts[(i + 1) % pts.length];
           const mx = (p.x + q.x) / 2, my = (p.y + q.y) / 2;
           const dx = mx - 160, dy = my - 150, len = Math.hypot(dx, dy);
-          return <path key={i} d={`M${p.x} ${p.y} Q ${160 + (dx / len) * (r + 26)} ${150 + (dy / len) * (r + 26)} ${q.x} ${q.y}`} fill="none" stroke="#a9512f" strokeWidth="1.6" markerEnd="url(#lp-arrow)" opacity="0.7" />;
+          return <path key={i} d={`M${p.x} ${p.y} Q ${160 + (dx / len) * (r + 26)} ${150 + (dy / len) * (r + 26)} ${q.x} ${q.y}`} fill="none" stroke="#a9512f" strokeWidth="1.6" markerEnd="url(#lp-arrow)" opacity="0.7" className="draw" style={{ animationDelay: `${0.2 + i * 0.22}s` }} />;
         })}
         {pts.map((p, i) => (
-          <g key={LOOP_STEPS[i]}>
+          <g key={LOOP_STEPS_SHORT[i]} className="pop" style={{ transitionDelay: `${0.1 + i * 0.22}s` }}>
             <circle cx={p.x} cy={p.y} r="27" fill={i === 5 ? "#a9512f" : "#fff"} stroke={i === 5 ? "#a9512f" : "#36493d"} strokeWidth="2" />
-            <text x={p.x} y={p.y + 3.5} textAnchor="middle" fontSize="8.4" fontWeight="600" fill={i === 5 ? "#fff" : "#36493d"}>{LOOP_STEPS[i]}</text>
+            <text x={p.x} y={p.y + 3.5} textAnchor="middle" fontSize="8.4" fontWeight="600" fill={i === 5 ? "#fff" : "#36493d"}>{LOOP_STEPS_SHORT[i]}</text>
           </g>
         ))}
         <circle cx="160" cy="150" r="40" fill="#e5ece6" />
@@ -180,7 +200,7 @@ export function BlockView({ b, mode, i, first }: { b: Block; mode: Mode; i: numb
               <p className="font-display text-[1.15rem] leading-snug text-ink">{b.q}</p>
               {b.why && <p className="mt-1.5 text-[14.5px] leading-relaxed text-ink-soft">{b.why}</p>}
               {b.deeper && <p className="mt-2 text-[14px] text-forest"><span className="font-semibold">Pogłębiająco: </span>{b.deeper}</p>}
-              <Lines n={b.lines ?? 2} />
+              <AnswerText id={fid.question(i)} lines={b.lines ?? 2} label={b.q} />
             </div>
           </div>
         </article>
@@ -194,10 +214,10 @@ export function BlockView({ b, mode, i, first }: { b: Block; mode: Mode; i: numb
           </div>
           {b.intro && <p className="mt-2 leading-relaxed text-ink-soft">{b.intro}</p>}
           {b.steps && <ol className="mt-3 list-decimal space-y-1.5 pl-6 text-ink-soft">{b.steps.map((x) => <li key={x}>{x}</li>)}</ol>}
-          {b.prompts?.map((q) => (
+          {b.prompts?.map((q, k) => (
             <div key={q} className="mt-4">
               <p className="font-medium text-ink">{q}</p>
-              <Lines n={b.lines ?? 2} />
+              <AnswerText id={fid.prompt(i, k)} lines={b.lines ?? 2} label={q} />
             </div>
           ))}
         </article>
@@ -212,11 +232,13 @@ export function BlockView({ b, mode, i, first }: { b: Block; mode: Mode; i: numb
               <tbody>
                 {b.rows?.map((r, k) => (
                   <tr key={k} className="border-t border-sand align-top">
-                    {r.map((c, j) => <td key={j} className="px-3 py-2.5 text-ink-soft">{c || <span className="block h-6 border-b border-dashed border-sand-dark/80" aria-hidden />}</td>)}
+                    {r.map((c, j) => <td key={j} className="px-3 py-2.5 text-ink-soft">{c || <AnswerText id={fid.cell(i, k)} lines={1} label={r[0]} compact />}</td>)}
                   </tr>
                 ))}
                 {Array.from({ length: b.blankRows ?? 0 }).map((_, k) => (
-                  <tr key={`b${k}`} className="h-11 border-t border-sand"><td className="border-r border-sand" /><td /></tr>
+                  <tr key={`b${k}`} className="h-11 border-t border-sand align-top">
+                    {b.cols.map((c, col) => <td key={col} className={clsx("px-2 py-1", col === 0 && "border-r border-sand")}><AnswerText id={fid.blankCell(i, k, col)} lines={1} label={`${c} ${k + 1}`} compact /></td>)}
+                  </tr>
                 ))}
               </tbody>
             </table>
@@ -239,7 +261,7 @@ export function BlockView({ b, mode, i, first }: { b: Block; mode: Mode; i: numb
           <p className="mt-4 rounded-2xl bg-linen/70 p-3.5 text-[14.5px] leading-relaxed text-ink-soft"><span className="font-semibold text-ink">Przykład: </span>{b.example}</p>
           <p className="mt-3 rounded-2xl bg-sage-soft/60 p-3.5 text-[14.5px] leading-relaxed text-ink-soft"><span className="font-semibold text-forest">Wariant indywidualny: </span>{b.solo}</p>
           <p className="mt-4 text-sm font-semibold text-ink">Moja notatka</p>
-          <Lines n={b.lines ?? 3} />
+          <AnswerText id={fid.day(i)} lines={b.lines ?? 3} label={`Dzień ${b.n} – moja notatka`} />
           {mode === "screen" && <DayDone n={b.n} />}
         </article>
       );
@@ -262,10 +284,12 @@ export function BlockView({ b, mode, i, first }: { b: Block; mode: Mode; i: numb
         <div className="mt-5 break-inside-avoid rounded-3xl bg-white p-5 ring-1 ring-sand">
           {b.title && <p className="font-display text-lg text-ink">{b.title}</p>}
           <ul className="mt-2 space-y-2.5">
-            {b.items.map((x) => (
-              <li key={x} className="flex gap-3 leading-snug text-ink-soft">
-                <span className="mt-0.5 h-5 w-5 shrink-0 rounded-md border-2 border-forest/60 bg-white" aria-hidden />
-                {x}
+            {b.items.map((x, k) => (
+              <li key={x}>
+                <label className="flex gap-3 leading-snug text-ink-soft">
+                  <AnswerCheck id={fid.check(i, k)} label={x} />
+                  {x}
+                </label>
               </li>
             ))}
           </ul>
@@ -273,7 +297,7 @@ export function BlockView({ b, mode, i, first }: { b: Block; mode: Mode; i: numb
       );
     case "cards":
       return (
-        <div className="mt-5 break-inside-avoid">
+        <Reveal off={mode === "print"} className="mt-5 break-inside-avoid">
           {b.title && <p className="mb-2 font-display text-lg text-ink">{b.title}</p>}
           <div className="grid gap-3 sm:grid-cols-2">
             {b.items.map((c) => (
@@ -284,12 +308,12 @@ export function BlockView({ b, mode, i, first }: { b: Block; mode: Mode; i: numb
               </div>
             ))}
           </div>
-        </div>
+        </Reveal>
       );
     case "roads":
-      return <RoadsFigure />;
+      return mode === "print" ? <RoadsFigure /> : <Reveal><RoadsFigure /></Reveal>;
     case "loop":
-      return <LoopFigure />;
+      return mode === "print" ? <LoopFigure /> : <Reveal><LoopFigure /></Reveal>;
     case "loopExample":
       return (
         <article className="mt-5 break-inside-avoid rounded-3xl bg-white p-5 shadow-soft ring-1 ring-sand">
@@ -308,10 +332,10 @@ export function BlockView({ b, mode, i, first }: { b: Block; mode: Mode; i: numb
     case "loopBlank":
       return (
         <div className="mt-5 grid break-inside-avoid gap-3 sm:grid-cols-2">
-          {["1. Wyzwalacz – co się wydarzyło?", "2. Moja interpretacja – co sobie pomyślałem / pomyślałam?", "3. Emocje – co czułem / czułam pod spodem?", "4. Moja reakcja – co zrobiłem / zrobiłam?", "5. Reakcja drugiej osoby", "6. Eskalacja – jak to się potoczyło?", "7. Punkt przerwania – co mogę zrobić inaczej?"].map((x, k) => (
+          {LOOP_STEPS.map((x, k) => (
             <div key={x} className={clsx("rounded-2xl bg-white p-4 ring-1", k === 6 ? "ring-forest/40 sm:col-span-2" : "ring-sand")}>
               <p className="text-[14px] font-semibold text-ink">{x}</p>
-              <Lines n={3} />
+              <AnswerText id={fid.loop(i, k)} lines={3} label={x} />
             </div>
           ))}
         </div>

@@ -119,3 +119,25 @@ describe("wiadomości", () => {
     expect(contentHash({ ...m, blocks: [...m.blocks, { t: "p", text: "zmiana" }] })).not.toBe(contentHash(m));
   });
 });
+
+describe("materiały do uzupełniania online", () => {
+  it("każdy materiał (poza przykładowym raportem) ma pola do uzupełnienia i nazwę podsumowania", async () => {
+    const { fieldsOf } = await import("@/knowledge/fields");
+    const { coverOf } = await import("@/knowledge/covers");
+    for (const m of MAGNETS) {
+      if (m.special) continue;
+      expect(fieldsOf(m).length, m.slug).toBeGreaterThan(3);
+      expect(coverOf(m.slug)?.summary, m.slug).toBeTruthy();
+      expect(new Set(fieldsOf(m).map((f) => f.id)).size, m.slug).toBe(fieldsOf(m).length);
+    }
+  });
+  it("zapis przyjmuje tylko istniejące pola i właściwe typy; podsumowanie grupuje odpowiedzi", async () => {
+    const { fieldsOf, sanitizeAnswers, summarize, filledCount } = await import("@/knowledge/fields");
+    const m = magnetBySlug("21-pytan-o-relacji")!;
+    const [q1] = fieldsOf(m);
+    const clean = sanitizeAnswers(m, { [q1.id]: "Pieniądze", nieistnieje: "x", [`${q1.id}x`]: true });
+    expect(clean).toEqual({ [q1.id]: "Pieniądze" });
+    expect(filledCount(clean)).toBe(1);
+    expect(summarize(m, clean)[0].items[0]).toEqual({ label: q1.label, value: "Pieniądze" });
+  });
+});

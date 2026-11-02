@@ -19,7 +19,7 @@ const footer = (appUrl: string, contact: { email?: string; phone?: string }, uns
     .filter((x) => x !== "")
     .join("\n");
 
-export function deliveryMail(m: LeadMagnet, name: string | null, appUrl: string, contact: { email?: string; phone?: string }): Mail {
+export function deliveryMail(m: LeadMagnet, name: string | null, appUrl: string, contact: { email?: string; phone?: string }, accessToken?: string): Mail {
   return {
     subject: `Twój bezpłatny materiał DUO: ${m.short}`,
     text: [
@@ -27,7 +27,9 @@ export function deliveryMail(m: LeadMagnet, name: string | null, appUrl: string,
       "",
       m.purpose,
       "",
-      `Otwórz materiał online: ${appUrl}/wiedza/${m.slug}/material`,
+      accessToken
+        ? `Otwórz materiał online – uzupełniaj go na stronie, odpowiedzi zapisują się same: ${appUrl}/wiedza/${m.slug}/otworz?t=${accessToken}`
+        : `Otwórz materiał online: ${appUrl}/wiedza/${m.slug}/material`,
       `Pobierz PDF: ${appUrl}/wiedza/${m.slug}/pdf`,
       "",
       `Jak korzystać: ${m.howTo}`,

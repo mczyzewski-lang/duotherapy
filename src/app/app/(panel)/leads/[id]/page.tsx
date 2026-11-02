@@ -1,4 +1,6 @@
 import { LeadRoad } from "@/components/brand";
+import { summarize } from "@/knowledge/fields";
+import { magnetById } from "@/knowledge/registry";
 import { callStatus, fmtWarsaw, orderLabel } from "@/lib/orders";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -31,10 +33,13 @@ export default async function LeadPage({ params }: { params: Promise<{ id: strin
       therapists: await tx`select id, display_name from therapists order by display_name`,
       settings: await readSettings(tx),
       orders: await tx`select o.*, b.starts_at as booked_at from orders o left join booking_slots b on b.order_id = o.id where o.lead_id = ${id} order by o.created_at desc`,
+      attached: lead.attached_answers_id ? (await tx`select data_enc, updated_at from content_answers where id = ${lead.attached_answers_id}`)[0] ?? null : null,
     };
   });
   if (!d) notFound();
-  const { lead, acts, consents, therapists, settings, orders } = d;
+  const { lead, acts, consents, therapists, settings, orders, attached } = d;
+  const attachedMagnet = lead.attached_magnet_id ? magnetById(lead.attached_magnet_id) : null;
+  const attachedGroups = attached && attachedMagnet ? summarize(attachedMagnet, decrypt<Record<string, string | boolean>>(attached.data_enc) ?? {}) : [];
   const cs = callStatus(lead as never, orders as never, settings.offer);
   const quiz = lead.quiz_enc ? decrypt<Record<string, string>>(lead.quiz_enc) : null;
   const stageLabel = LEAD_STAGES.find(([k]) => k === lead.stage)?.[1];
@@ -62,6 +67,24 @@ export default async function LeadPage({ params }: { params: Promise<{ id: strin
               </div>
             </dl>
           </Card>
+          {attachedMagnet && (
+            <Card className="p-6" data-testid="attached-summary">
+              <h2 className="font-display text-lg text-ink">Dołączone podsumowanie: {attachedMagnet.short}</h2>
+              <p className="mt-1 text-xs text-muted">Klient dołączył je świadomie w quizie (zgoda w rejestrze zgód). Treść poufna – tylko do przygotowania rozmowy.</p>
+              {attachedGroups.length === 0 ? <p className="mt-3 text-sm text-muted">Brak uzupełnionych odpowiedzi.</p> : (
+                <div className="mt-4 space-y-4">
+                  {attachedGroups.map((g) => (
+                    <div key={g.section}>
+                      <p className="text-sm font-semibold text-forest">{g.section}</p>
+                      <dl className="mt-1.5 space-y-2 text-sm">
+                        {g.items.map((it) => <div key={it.label}><dt className="text-muted">{it.label}</dt><dd className="whitespace-pre-line text-ink">{it.value}</dd></div>)}
+                      </dl>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </Card>
+          )}
 
           <Card className="p-6">
             <h2 className="font-display text-lg text-ink">Odpowiedzi z quizu</h2>

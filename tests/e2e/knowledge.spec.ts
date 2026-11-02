@@ -87,6 +87,29 @@ test("formularz: materiał bez zgody marketingowej, uczciwy komunikat bez SMTP, 
   await page.getByRole("link", { name: "Otwórz materiał" }).click();
   await expect(page.getByText("Twój materiał DUO")).toBeVisible();
   await expect(page.getByRole("heading", { name: "Twój arkusz pętli" })).toBeVisible();
+  // uzupełnianie na stronie z autozapisem (przypisane do e-maila) → odświeżenie → podsumowanie → dołączenie do quizu
+  const field = page.locator("textarea[data-field]").first();
+  await field.fill("Wieczorem po pracy, przy naczyniach.");
+  await expect(page.locator('[data-save-status="saved"]')).toBeVisible({ timeout: 10_000 });
+  await page.reload();
+  await expect(page.locator("textarea[data-field]").first()).toHaveValue("Wieczorem po pracy, przy naczyniach.");
+  await page.getByRole("link", { name: /Podsumuj swoją pętlę konfliktu/ }).click();
+  await expect(page.getByRole("heading", { name: /Twoje podsumowanie/ })).toBeVisible();
+  await expect(page.getByTestId("summary")).toContainText("Wieczorem po pracy, przy naczyniach.");
+  await page.getByRole("link", { name: /Przejdź do quizu/ }).click();
+  await page.waitForURL(/\/start\?dolacz=petla-konfliktu/);
+  await page.waitForLoadState("networkidle");
+  for (const pick of ["Oddaliliśmy się", "Nie potrafimy spokojnie", "Tak, oboje chcemy", "Dlaczego ciągle", "Od ponad roku", "Samodzielnie"]) {
+    await page.getByRole("radio", { name: new RegExp(pick) }).first().click();
+    await page.waitForTimeout(400);
+  }
+  await page.waitForTimeout(2600);
+  await page.getByLabel("Imię").fill("Czytelnik Pętli");
+  await page.getByLabel("Numer telefonu").fill("600 111 222");
+  await page.getByRole("checkbox", { name: /Proszę o kontakt telefoniczny/ }).check();
+  await page.getByTestId("attach-consent").locator("input").check();
+  await page.getByRole("button", { name: /Poproś o telefon/ }).click();
+  await page.waitForURL(/twoja-mapa/);
 
   const admin = await browser.newPage();
   await admin.goto("/app/login");
@@ -101,5 +124,8 @@ test("formularz: materiał bez zgody marketingowej, uczciwy komunikat bez SMTP, 
   await expect(row).toContainText("marketing: nie");
   await expect(row).toContainText("wysyłka nieskonfigurowana");
   await expect(row).toContainText("instagram");
+  await admin.goto("/app/leads");
+  await admin.getByRole("link", { name: "Czytelnik Pętli" }).click();
+  await expect(admin.getByTestId("attached-summary")).toContainText("Wieczorem po pracy, przy naczyniach.");
   await admin.close();
 });

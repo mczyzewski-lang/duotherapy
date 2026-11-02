@@ -33,7 +33,7 @@ const nextConfig: NextConfig = {
     return [
       { source: "/:path*", headers: securityHeaders },
       // podglądy /demo, wersje online i do druku materiałów – poza indeksem wyszukiwarek
-      { source: "/wiedza/:slug/:view(demo|material|druk|pdf)", headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }] },
+      { source: "/wiedza/:slug/:view(demo|material|druk|pdf|otworz|podsumowanie)", headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }] },
     ];
   },
   async rewrites() {

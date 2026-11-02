@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { MapaSymbol } from "@/components/brand";
-import { KTrack, LeadMagnetForm } from "@/components/knowledge/client";
+import { KTrack, LeadMagnetForm, MagnetStickyBar } from "@/components/knowledge/client";
 import { BlockView, Cover } from "@/components/knowledge/doc";
 import { MagnetIcon } from "@/components/knowledge/icons";
 import { ReportPreview } from "@/components/mapa/report-preview";
@@ -76,7 +76,7 @@ export default async function MagnetLanding({ params }: { params: Promise<{ slug
             </div>
             <div className="mx-auto w-full max-w-[22rem] md:max-w-sm">
               <div className="rotate-[1.5deg] rounded-[1.4rem] bg-white p-2 shadow-[0_30px_60px_-30px_rgba(54,73,61,0.5)] ring-1 ring-sand">
-                <Cover m={m} mode="screen" compact />
+                <Cover m={m} mode="screen" compact hero />
               </div>
             </div>
           </div>
@@ -105,11 +105,23 @@ export default async function MagnetLanding({ params }: { params: Promise<{ slug
               {m.special === "sample-report" ? (
                 <ReportPreview />
               ) : (
-                <div className="mx-auto max-w-3xl rounded-[1.75rem] bg-linen/60 p-3 ring-1 ring-sand sm:p-5" data-testid="lm-preview">
-                  <p className="mb-1 px-1 text-[10.5px] font-semibold uppercase tracking-[0.18em] text-muted">Fragment materiału</p>
-                  {m.preview.map((i) => (
-                    <div key={i} className="[&>*:first-child]:mt-2"><BlockView b={m.blocks[i]} mode="screen" i={i} first={false} /></div>
-                  ))}
+                <div className="relative z-10 mx-auto -mb-40 max-w-3xl" data-testid="lm-preview">
+                  {/* fragment urywa się rozmyciem, które wychodzi poza sekcję – w pełnej wersji jest dalszy ciąg */}
+                  <div className="relative max-h-[36rem] overflow-hidden rounded-t-[1.75rem] bg-linen/60 p-3 ring-1 ring-sand sm:max-h-[40rem] sm:p-5">
+                    <p className="mb-1 px-1 text-[10.5px] font-semibold uppercase tracking-[0.18em] text-muted">Fragment materiału</p>
+                    {m.preview.map((i) => (
+                      <div key={i} className="[&>*:first-child]:mt-2"><BlockView b={m.blocks[i]} mode="screen" i={i} first={false} /></div>
+                    ))}
+                    <div className="pointer-events-none absolute inset-x-0 bottom-0 h-64 backdrop-blur-[3px] [mask-image:linear-gradient(to_bottom,transparent,black_55%)]" aria-hidden />
+                    <div className="pointer-events-none absolute inset-x-0 bottom-0 h-64 bg-gradient-to-b from-transparent via-ivory/70 to-linen" aria-hidden />
+                  </div>
+                  <div className="absolute inset-x-3 bottom-6 z-10 mx-auto max-w-md rounded-3xl bg-white/95 p-5 text-center shadow-[0_24px_50px_-24px_rgba(54,73,61,0.55)] ring-1 ring-sand backdrop-blur sm:p-6">
+                    <p className="font-display text-[1.3rem] leading-snug text-ink">To dopiero fragment – dalej jest więcej</p>
+                    <p className="mt-1.5 text-[14px] leading-relaxed text-ink-soft">{m.previewNote}</p>
+                    <a href="#odbierz" className="mt-4 inline-flex min-h-12 items-center gap-2 rounded-full bg-clay px-6 text-[15px] font-semibold text-white">
+                      Czytam dalej – odbieram za darmo <ArrowRight size={17} aria-hidden />
+                    </a>
+                  </div>
                 </div>
               )}
             </div>
@@ -117,8 +129,8 @@ export default async function MagnetLanding({ params }: { params: Promise<{ slug
         </section>
 
         {/* 4. DLA KOGO + 5. FORMULARZ */}
-        <section id="odbierz" className="scroll-mt-20 bg-linen" aria-labelledby="form-h">
-          <div className="mx-auto grid max-w-6xl gap-8 px-5 py-12 md:grid-cols-2 md:gap-12 md:py-16">
+        <section id="odbierz" className="scroll-mt-4 bg-linen" aria-labelledby="form-h">
+          <div className={`mx-auto grid max-w-6xl gap-8 px-5 pb-12 md:grid-cols-2 md:gap-12 md:pb-16 ${m.special ? "pt-12 md:pt-16" : "pt-52"}`}>
             <div>
               <h2 className="font-display text-[1.75rem] leading-tight text-ink sm:text-4xl">Dla kogo to jest?</h2>
               <ul className="mt-5 space-y-3">
@@ -195,6 +207,7 @@ export default async function MagnetLanding({ params }: { params: Promise<{ slug
         )}
       </main>
       <SiteFooter contactEmail={s.site.contactEmail} />
+      <MagnetStickyBar title={m.short} />
     </>
   );
 }

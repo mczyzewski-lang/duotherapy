@@ -4,6 +4,8 @@ import Link from "next/link";
 import { MapaQuiz } from "@/components/mapa/quiz";
 import { BrandSymbol, MapaLogo } from "@/components/brand";
 import { getSettings } from "@/lib/settings";
+import { coverOf } from "@/knowledge/covers";
+import { magnetBySlug } from "@/knowledge/registry";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
@@ -12,7 +14,10 @@ export const metadata: Metadata = {
   robots: { index: false, follow: true },
 };
 
-export default async function StartPage() {
+export default async function StartPage({ searchParams }: { searchParams: Promise<Record<string, string | undefined>> }) {
+  const sp = await searchParams;
+  const m = sp.dolacz ? magnetBySlug(sp.dolacz) : null;
+  const attach = m && coverOf(m.slug)?.summary ? { slug: m.slug, title: m.short } : null;
   const s = await getSettings();
   return (
     <div className="min-h-dvh bg-gradient-to-b from-ivory to-linen">
@@ -29,7 +34,7 @@ export default async function StartPage() {
         </div>
       </header>
       <main id="main">
-        <MapaQuiz consentText={s.legal.leadContactConsent} marketingText={s.legal.leadMarketingConsent} callbackPromise={s.site.callbackPromise} />
+        <MapaQuiz attach={attach} consentText={s.legal.leadContactConsent} marketingText={s.legal.leadMarketingConsent} callbackPromise={s.site.callbackPromise} />
       </main>
     </div>
   );

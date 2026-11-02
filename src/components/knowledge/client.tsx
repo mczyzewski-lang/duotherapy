@@ -149,3 +149,40 @@ export function LeadMagnetForm({
     </form>
   );
 }
+
+/** Dolny pasek na landingu materiału: pojawia się po przewinięciu nagłówka, znika przy formularzu. */
+export function MagnetStickyBar({ title }: { title: string }) {
+  const [show, setShow] = useState(false);
+  useEffect(() => {
+    let raf = 0;
+    const check = () => {
+      raf = 0;
+      const form = document.getElementById("odbierz")?.getBoundingClientRect();
+      const formVisible = !!form && form.top < window.innerHeight * 0.85 && form.bottom > 0;
+      setShow(window.scrollY > 420 && !formVisible && !document.getElementById("lm-done"));
+    };
+    const on = () => (raf ||= requestAnimationFrame(check));
+    window.addEventListener("scroll", on, { passive: true });
+    window.addEventListener("resize", on, { passive: true });
+    check();
+    return () => {
+      window.removeEventListener("scroll", on);
+      window.removeEventListener("resize", on);
+      cancelAnimationFrame(raf);
+    };
+  }, []);
+  return (
+    <div inert={!show} className={clsx(
+      "fixed inset-x-0 bottom-0 z-40 border-t border-sand/70 bg-ivory/95 px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 backdrop-blur transition-transform duration-300",
+      show ? "translate-y-0" : "pointer-events-none translate-y-full",
+    )} data-testid="lm-sticky">
+      <div className="mx-auto flex max-w-3xl items-center justify-between gap-3">
+        <span className="min-w-0 leading-tight">
+          <span className="block text-[11px] font-semibold uppercase tracking-[0.16em] text-clay">Bezpłatny materiał</span>
+          <span className="block truncate font-display text-[15px] text-ink">{title}</span>
+        </span>
+        <a href="#odbierz" className="inline-flex min-h-12 shrink-0 items-center rounded-full bg-clay px-5 text-[15px] font-semibold text-white shadow-soft">Pobierz bezpłatnie</a>
+      </div>
+    </div>
+  );
+}

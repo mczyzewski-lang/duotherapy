@@ -6,7 +6,9 @@ import { cookies } from "next/headers";
 import { z } from "zod";
 import { audit } from "@/lib/audit";
 import { encrypt, hashToken, newToken } from "@/lib/crypto";
-import { withActor } from "@/lib/db";
+import { system, withActor } from "@/lib/db";
+import { contentReader, loadAnswers } from "@/lib/content-access";
+import { magnetBySlug } from "@/knowledge/registry";
 import { ATTRIBUTION_KEYS, isValidAnswers, normalizePhone, QUIZ_VERSION } from "@/lib/mapa-quiz";
 import { setLeadCookie } from "@/lib/lead-session";
 import { notifyTeam } from "@/lib/notify";
@@ -26,6 +28,7 @@ const LeadSchema = z.object({
   anonId: z.string().max(64).optional(),
   startedAt: z.number().optional(),
   website: z.string().max(0).optional(), // honeypot
+  attachSlug: z.string().max(80).optional(),
 });
 
 export type LeadInput = z.input<typeof LeadSchema>;
@@ -55,9 +58,10 @@ export async function submitLead(input: LeadInput): Promise<LeadResult> {
   // token powiązania tej przeglądarki ze zgłoszeniem (strona po quizie) – w bazie tylko hash
   const accessToken = newToken();
   const anon = d.anonId && /^[a-zA-Z0-9]{8,64}$/.test(d.anonId) ? d.anonId : null;
+  const leadId = randomUUID();
   await withActor({ kind: "public" }, async (tx) => {
     const s = await readSettings(tx);
-    const lead = { id: randomUUID() }; // bez RETURNING – rola publiczna nie ma prawa odczytu zgłoszeń
+    const lead = { id: leadId }; // bez RETURNING – rola publiczna nie ma prawa odczytu zgłoszeń
     await tx`
       insert into leads (id, name, email, phone, mode, intent, preferred_contact, quiz, quiz_enc, quiz_version, segment, preferred_time, attribution, ab_variant, access_token_hash, anon_id)
       values (${lead.id}, ${d.name}, ${d.email || null}, ${phone}, ${mode}, ${intent}, 'phone', ${tx.json({})}, ${encrypt(a)}, ${QUIZ_VERSION},
@@ -73,7 +77,25 @@ export async function submitLead(input: LeadInput): Promise<LeadResult> {
     }
     await audit(tx, { kind: "public" }, "lead_created", "lead", lead.id);
   });
+  // dołączenie podsumowania z materiału „Wiedza” – tylko za wyraźną zgodą i tylko odpowiedzi tej osoby (ciasteczko)
+  if (d.attachSlug) await attachAnswers(leadId, d.attachSlug);
   await setLeadCookie(accessToken);
   await notifyTeam("DUO – nowa prośba o telefon (Mapa Relacji)", "Nowa osoba prosi o kontakt w sprawie Mapy Relacji. Szczegóły w panelu: Zgłoszenia.");
   return { ok: true };
+}
+
+async function attachAnswers(leadId: string, slug: string) {
+  const m = magnetBySlug(slug);
+  if (!m) return;
+  await system(async (tx) => {
+    const who = await contentReader(tx);
+    if (!who || !who.magnets.includes(m.id)) return;
+    const a = await loadAnswers(tx, who.email, m.id);
+    if (!a) return;
+    const s = await readSettings(tx);
+    await tx`update leads set attached_answers_id = ${a.id}, attached_magnet_id = ${m.id} where id = ${leadId}`;
+    await tx`insert into consents (lead_id, kind, granted, text_version, text_snapshot)
+             values (${leadId}, 'attach_answers', true, ${s.legal.version}, ${`Dołącz moje podsumowanie z materiału „${m.short}” do zgłoszenia. Psycholog DUO wykorzysta je przy rozmowie o Mapie Relacji™.`})`;
+    await tx`insert into lead_activities (lead_id, kind, content) values (${leadId}, 'system', ${`Klient dołączył podsumowanie z materiału „${m.short}”.`})`;
+  });
 }
