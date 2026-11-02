@@ -14,10 +14,8 @@ import { env } from "@/lib/env";
 import { getSettings } from "@/lib/settings";
 import { MAGNETS, magnetBySlug, mapaHref } from "@/knowledge/registry";
 
-export const dynamicParams = false;
-export function generateStaticParams() {
-  return MAGNETS.map((m) => ({ slug: m.slug }));
-}
+// formularz i zgody zależą od ustawień w bazie – renderowanie przy żądaniu (nieznany adres → 404)
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const m = magnetBySlug((await params).slug);

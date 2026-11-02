@@ -5,6 +5,8 @@ import { MaterialDoc } from "@/components/knowledge/doc";
 import { env } from "@/lib/env";
 import { magnetBySlug, mapaHref } from "@/knowledge/registry";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = { robots: { index: false, follow: false } };
 
 export default async function PrintPage({ params }: { params: Promise<{ slug: string }> }) {

@@ -3,6 +3,8 @@ import { notFound } from "next/navigation";
 import { MaterialViewer } from "@/components/knowledge/viewer";
 import { magnetBySlug } from "@/knowledge/registry";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = { robots: { index: false, follow: false } };
 
 export default async function MaterialPage({ params }: { params: Promise<{ slug: string }> }) {

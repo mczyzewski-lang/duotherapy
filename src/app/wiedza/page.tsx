@@ -7,6 +7,9 @@ import { SiteHeader } from "@/components/site/header";
 import { env } from "@/lib/env";
 import { getSettings } from "@/lib/settings";
 
+// treść zależy od ustawień w bazie – renderowanie przy żądaniu (baza nie jest dostępna podczas budowania)
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: { absolute: "Wiedza – bezpłatne poradniki o relacjach | DUO" },
   description: "Bezpłatne poradniki, pytania i ćwiczenia DUO o kryzysie w związku, trudnych rozmowach, konflikcie, zdradzie i rozstaniu. Wybierz temat, który jest dla Ciebie ważny.",

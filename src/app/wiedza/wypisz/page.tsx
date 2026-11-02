@@ -4,6 +4,8 @@ import Link from "next/link";
 import { unsubscribeKnowledge } from "@/app/actions/knowledge";
 import { Logo } from "@/components/ui";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = { title: "Wypisanie z wiadomości", robots: { index: false, follow: false } };
 
 export default async function Unsubscribe({ searchParams }: { searchParams: Promise<Record<string, string | undefined>> }) {
