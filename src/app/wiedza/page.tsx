@@ -2,6 +2,7 @@
 import type { Metadata } from "next";
 import { KTrack } from "@/components/knowledge/client";
 import { KnowledgeGrid } from "@/components/knowledge/grid";
+import { coverPhotoMap } from "@/lib/cover-photos";
 import { SiteFooter } from "@/components/site/footer";
 import { SiteHeader } from "@/components/site/header";
 import { env } from "@/lib/env";
@@ -19,6 +20,7 @@ export const metadata: Metadata = {
 
 export default async function KnowledgeHub() {
   const s = await getSettings();
+  const photos = await coverPhotoMap();
   return (
     <>
       <KTrack event="knowledge_hub_view" />
@@ -29,7 +31,7 @@ export default async function KnowledgeHub() {
         <p className="mt-4 max-w-2xl text-[17px] leading-relaxed text-ink-soft">
           Bezpłatne poradniki, pytania i ćwiczenia przygotowane przez DUO. Wybierz temat, który jest teraz dla Ciebie ważny.
         </p>
-        <KnowledgeGrid />
+        <KnowledgeGrid photos={photos} />
       </main>
       <SiteFooter contactEmail={s.site.contactEmail} />
     </>

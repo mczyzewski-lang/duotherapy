@@ -3,6 +3,7 @@
 import { Badge, Card, PageTitle } from "@/components/ui";
 import { asStaff, requireStaff } from "@/lib/auth";
 import { MAGNETS } from "@/knowledge/registry";
+import { CoverAdmin } from "@/components/knowledge/cover-admin";
 import { customerMailConfigured } from "@/lib/notify";
 
 export const metadata = { title: "Wiedza – zapisy" };
@@ -56,6 +57,8 @@ export default async function KnowledgeAdmin({ searchParams }: { searchParams: P
         <Badge tone={nurture ? "ok" : "neutral"}>{nurture ? "Seria 7 dni włączona (NURTURE_ENABLED)" : "Seria 7 dni wyłączona"}</Badge>
         <Badge tone="forest"><a href="/app/mailing" className="underline">Nurturing e-mailowy → Mailing</a></Badge>
       </div>
+
+      <CoverAdmin />
 
       <Card className="mb-6 overflow-x-auto p-6">
         <h2 className="font-display text-xl text-ink">Materiały: landing → e-mail → dostarczenie → Mapa Relacji</h2>

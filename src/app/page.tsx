@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { MapaSymbol, RoadGlyph } from "@/components/brand";
 import { MagnetCard } from "@/components/knowledge/magnet-card";
+import { coverPhotoMap } from "@/lib/cover-photos";
 import { AskDialog } from "@/components/landing/ask-dialog";
 import { TherapistSection } from "@/components/landing/therapist";
 import { HeroMap, HeroMapVertical } from "@/components/mapa/flow";
@@ -33,6 +34,7 @@ const FEATURED = ["mapa-trzech-drog", "petla-konfliktu", "21-pytan-o-relacji"];
 
 export default async function Home() {
   const s = await getSettings();
+  const photos = await coverPhotoMap();
   return (
     <>
       <SiteHeader />
@@ -130,7 +132,7 @@ export default async function Home() {
             <ul className="mt-6 grid gap-5 sm:grid-cols-3">
               {FEATURED.map((slug) => magnetBySlug(slug)!).map((m) => (
                 <li key={m.slug}>
-                  <MagnetCard m={m} />
+                  <MagnetCard m={m} photo={photos[m.slug]} />
                 </li>
               ))}
             </ul>

@@ -28,6 +28,13 @@ test("mailing: tag z materiału, ścieżki w panelu, warunki tagów, link śledz
   await expect(admin.getByTestId("seq-customer")).toContainText("/k1/…");
   await expect(admin.getByText("Resend nieskonfigurowany")).toBeVisible();
 
+  // okładki zdjęciowe: panel generowania (bez klucza – wyłączone), brak zdjęcia → 404
+  await admin.goto("/app/wiedza");
+  await expect(admin.getByTestId("cover-item")).toHaveCount(10);
+  await expect(admin.getByTestId("cover-admin")).toContainText("Brak OPENAI_API_KEY");
+  expect((await request.get("/wiedza-okladki/petla-konfliktu")).status()).toBe(404);
+  await admin.goto("/app/mailing");
+
   // warunek tagów w e-mailu n6
   await admin.getByTestId("seq-lead").locator("tr", { hasText: "/n6/…" }).getByRole("link", { name: "Edytuj" }).click();
   await expect(admin.getByTestId("mail-preview")).toBeVisible();

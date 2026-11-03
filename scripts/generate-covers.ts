@@ -9,6 +9,7 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { COVERS } from "../src/knowledge/covers";
+import { COVER_STYLE } from "../src/lib/cover-photos";
 
 const KEY = process.env.OPENAI_API_KEY;
 const MODEL = process.env.OPENAI_IMAGE_MODEL ?? "gpt-image-1";
@@ -16,12 +17,7 @@ const args = process.argv.slice(2);
 const force = args.includes("--force");
 const only = args.includes("--only") ? args[args.indexOf("--only") + 1] : null;
 
-const STYLE = [
-  "Editorial documentary photograph, natural light, warm muted palette (ivory, sand, terracotta, deep green), subtle film grain, shallow depth of field.",
-  "Emotional, quiet, intimate, honest – not a stock photo, no posed smiling couples.",
-  "No text, no letters, no logos, no watermarks. If people appear, faces are not clearly visible (profile, back, hands, silhouette).",
-  "Vertical composition with calm empty space in the upper third for a title overlay.",
-].join(" ");
+const STYLE = COVER_STYLE;
 
 const OUT = join(process.cwd(), "public/img/wiedza");
 const COVERS_FILE = join(process.cwd(), "src/knowledge/covers.ts");

@@ -4,14 +4,14 @@ import { ArrowRight } from "lucide-react";
 import type { LeadMagnet } from "@/knowledge/types";
 import { Cover } from "./doc";
 
-export function MagnetCard({ m }: { m: LeadMagnet }) {
+export function MagnetCard({ m, photo }: { m: LeadMagnet; photo?: string | null }) {
   return (
     <Link href={`/wiedza/${m.slug}`} className="group flex h-full flex-col overflow-hidden rounded-[1.4rem] bg-white shadow-soft ring-1 ring-sand transition hover:-translate-y-0.5 hover:ring-forest/40" data-testid="magnet-card">
       <div className="bg-linen/60 px-4 pt-4">
         {/* okładka „wystaje” z kontenera jak leżący materiał */}
         {/* okładka renderowana w pełnym rozmiarze miniatury (13rem) i pomniejszona – cała treść mieści się w kadrze */}
         <div className="mx-auto -mb-6 h-[13rem] w-[9.75rem] rotate-[-1.5deg] transition group-hover:rotate-0">
-          <div className="w-[13rem] origin-top-left scale-75"><Cover m={m} mode="screen" compact /></div>
+          <div className="w-[13rem] origin-top-left scale-75"><Cover m={m} mode="screen" compact photo={photo} /></div>
         </div>
       </div>
       <div className="flex flex-1 flex-col px-5 pb-5 pt-9">

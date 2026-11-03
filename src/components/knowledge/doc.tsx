@@ -27,11 +27,13 @@ const GRAIN = "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg
  * Okładka: nastrój zamiast „techniki” – światło, ciepłe barwy, cytat z życia. Jeśli dostarczono zdjęcie
  * (public/img/wiedza/<slug>.jpg, covers.ts → photo: true), jest ono tłem okładki.
  */
-export function Cover({ m, mode, compact, hero }: { m: LeadMagnet; mode: Mode; compact?: boolean; hero?: boolean }) {
+export function Cover({ m, mode, compact, hero, photo }: { m: LeadMagnet; mode: Mode; compact?: boolean; hero?: boolean; photo?: string | null }) {
   const c = coverOf(m.slug) ?? { hook: "", mood: ["#f3e2d3", "#a9512f", "#36493d"] as [string, string, string], photo: false };
   const uid = `${m.id}-${compact ? "c" : mode}`;
   const T = compact ? "p" : "h1"; // miniatura okładki nie jest nagłówkiem strony – jeden H1 na stronę
-  const dark = c.photo;
+  // zdjęcie: wygenerowane w panelu (z bazy) albo plik w public/img/wiedza (photo: true w covers.ts)
+  const photoSrc = photo ?? (c.photo ? `/img/wiedza/${m.slug}.jpg` : null);
+  const dark = !!photoSrc;
   return (
     <section
       className={clsx(
@@ -42,9 +44,9 @@ export function Cover({ m, mode, compact, hero }: { m: LeadMagnet; mode: Mode; c
       style={{ background: `linear-gradient(160deg, ${c.mood[0]} 0%, #fbf9f5 55%, ${c.mood[0]} 100%)` }}
       aria-label="Okładka materiału"
     >
-      {c.photo ? (
+      {photoSrc ? (
         <>
-          <img src={`/img/wiedza/${m.slug}.jpg`} alt="" className="absolute inset-0 -z-10 h-full w-full object-cover" />
+          <img src={photoSrc} alt="" loading={hero ? "eager" : "lazy"} className="absolute inset-0 -z-10 h-full w-full object-cover" />
           <div className="absolute inset-0 -z-10 bg-gradient-to-b from-black/25 via-black/10 to-black/70" aria-hidden />
         </>
       ) : (

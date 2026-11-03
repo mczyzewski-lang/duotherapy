@@ -10,7 +10,7 @@ import type { Category } from "@/knowledge/types";
 import { Cover } from "./doc";
 import { MagnetIcon } from "./icons";
 
-export function KnowledgeGrid() {
+export function KnowledgeGrid({ photos = {} }: { photos?: Record<string, string> }) {
   const [cat, setCat] = useState<Category | "all">("all");
   const list = cat === "all" ? MAGNETS : MAGNETS.filter((m) => m.category === cat);
   return (
@@ -28,7 +28,7 @@ export function KnowledgeGrid() {
           <li key={m.slug}>
             <Link href={`/wiedza/${m.slug}`} className="group flex h-full flex-col overflow-hidden rounded-[1.6rem] bg-white shadow-soft ring-1 ring-sand transition hover:-translate-y-0.5 hover:ring-forest/40">
               <div className="bg-linen/60 p-4">
-                <div className="mx-auto max-w-[13rem]"><Cover m={m} mode="screen" compact /></div>
+                <div className="mx-auto max-w-[13rem]"><Cover m={m} mode="screen" compact photo={photos[m.slug]} /></div>
               </div>
               <div className="flex flex-1 flex-col p-5">
                 <p className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-clay">

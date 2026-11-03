@@ -8,6 +8,7 @@ import { KTrack, LeadMagnetForm, MagnetStickyBar } from "@/components/knowledge/
 import { BlockView, Cover } from "@/components/knowledge/doc";
 import { MagnetIcon } from "@/components/knowledge/icons";
 import { MagnetCard } from "@/components/knowledge/magnet-card";
+import { coverPhotoMap } from "@/lib/cover-photos";
 import { ReportPreview } from "@/components/mapa/report-preview";
 import { SiteFooter } from "@/components/site/footer";
 import { SiteHeader } from "@/components/site/header";
@@ -35,6 +36,7 @@ export default async function MagnetLanding({ params }: { params: Promise<{ slug
   const m = magnetBySlug((await params).slug);
   if (!m) notFound();
   const s = await getSettings();
+  const photos = await coverPhotoMap();
   const related = MAGNETS.filter((x) => x.slug !== m.slug && x.category === m.category).slice(0, 3);
   const jsonLd = {
     "@context": "https://schema.org",
@@ -77,7 +79,7 @@ export default async function MagnetLanding({ params }: { params: Promise<{ slug
             </div>
             <div className="mx-auto w-full max-w-[22rem] md:max-w-sm">
               <div className="rotate-[1.5deg] rounded-[1.4rem] bg-white p-2 shadow-[0_30px_60px_-30px_rgba(54,73,61,0.5)] ring-1 ring-sand">
-                <Cover m={m} mode="screen" compact hero />
+                <Cover m={m} mode="screen" compact hero photo={photos[m.slug]} />
               </div>
             </div>
           </div>
@@ -197,7 +199,7 @@ export default async function MagnetLanding({ params }: { params: Promise<{ slug
             <ul className="mt-4 grid gap-5 sm:grid-cols-3">
               {related.map((r) => (
                 <li key={r.slug}>
-                  <MagnetCard m={r} />
+                  <MagnetCard m={r} photo={photos[r.slug]} />
                 </li>
               ))}
             </ul>
