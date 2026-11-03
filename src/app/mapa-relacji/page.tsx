@@ -227,7 +227,11 @@ export default async function Landing() {
               </div>
               <div className="rounded-3xl bg-linen p-5 sm:p-6">
                 <p className="text-sm font-semibold uppercase tracking-[0.16em] text-clay">Cena</p>
-                <p className="mt-2 font-display text-[2.6rem] leading-none text-ink">{s.offer.pricePln} zł</p>
+                <p className="mt-2 flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                  <span className="font-display text-[2.6rem] leading-none text-ink">{s.offer.pricePln} zł</span>
+                  <span className="rounded-full bg-white px-2.5 py-1 text-[12px] font-semibold text-forest ring-1 ring-sand" data-testid="price-once">jednorazowo</span>
+                </p>
+                <p className="mt-1.5 text-[13px] text-muted">Płacisz raz – to nie jest abonament.</p>
                 <p className="mt-2 text-sm leading-relaxed text-ink-soft">Pełna Mapa Relacji – kwestionariusz, konsultacja online z psychologiem i pisemne podsumowanie.</p>
                 {s.site.priceCouple ? (
                   <p className="mt-2 text-sm text-ink-soft">Wariant dla pary: <strong className="font-medium text-ink">{s.site.priceCouple}</strong></p>

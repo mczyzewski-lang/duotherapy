@@ -93,7 +93,7 @@ export function OfferCard(p: OfferProps) {
       <div className="mt-5 flex items-end justify-between gap-3 border-t border-sand pt-4">
         <div>
           <p className="font-display text-[2.4rem] leading-none text-ink">{p.price} zł</p>
-          <p className="mt-1 text-[13px] text-muted">Cena za pełną Mapę Relacji</p>
+          <p className="mt-1 text-[13px] text-muted">Jednorazowa cena za pełną Mapę Relacji – bez abonamentu</p>
         </div>
       </div>
 
@@ -223,7 +223,7 @@ export function VslSticky({ price, enabled }: { price: number; enabled: boolean 
     >
       <span className="leading-tight">
         <span className="block text-[13px] text-muted">Mapa Relacji</span>
-        <strong className="font-display text-xl font-medium text-ink">{price} zł</strong>
+        <strong className="font-display text-xl font-medium text-ink">{price} zł</strong> <span className="text-[12px] text-muted">jednorazowo</span>
       </span>
       <button type="button" onClick={() => openCheckout()} className="min-h-12 rounded-full bg-clay px-6 text-[16px] font-semibold text-white shadow-soft">
         Zamawiam
