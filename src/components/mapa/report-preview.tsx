@@ -3,9 +3,10 @@
 // „Zobacz, co otrzymasz”: podgląd rzeczywistej struktury podsumowania (sekcje 1–6 z renderReportHtml)
 // na danych FIKCYJNYCH z SAMPLE_REPORT. Bez nowej metodologii – te same sekcje, które psycholog wypełnia w panelu.
 import clsx from "clsx";
-import { ArrowLeft, ArrowRight, ExternalLink, FileText } from "lucide-react";
-import { Fragment, useState } from "react";
-import { BrandSymbol, RoadGlyph } from "@/components/brand";
+import { ExternalLink, FileText } from "lucide-react";
+import { Fragment } from "react";
+import { RoadGlyph } from "@/components/brand";
+import { SectionGraphic, SectionIcon } from "./report-graphics";
 import { roadFor } from "@/lib/brand-mark";
 import { PATH_OPTIONS, sectionTitles, type Severity } from "@/lib/report";
 import { SAMPLE_REPORT as R } from "@/lib/report-sample";
@@ -203,107 +204,48 @@ function CompactBody({ k }: { k: (typeof SECTIONS)[number]["key"] }) {
   }
 }
 
-/** Telefon: sekcje jako kartki, które zatrzymują się i nachodzą na siebie podczas przewijania. */
-function StackedSections() {
+/**
+ * Sekcje jako kartki, które zatrzymują się i nachodzą na siebie podczas przewijania (telefon i komputer).
+ * Każda kartka: ikona części, co zawiera, poziomy schemat logiki części oraz fragment przykładu (dane fikcyjne).
+ */
+export function ReportPreview() {
   return (
-    <div className="lg:hidden" data-testid="pv-stack">
+    <div data-testid="pv-stack">
       {SECTIONS.map((x, k) => (
         <article
           key={x.key}
-          className="sticky mb-5 rounded-[1.4rem] bg-white px-4 pb-4 pt-3.5 shadow-[0_-12px_30px_-18px_rgba(54,73,61,0.35),0_10px_30px_-20px_rgba(54,73,61,0.3)] ring-1 ring-sand"
-          style={{ top: `${76 + k * 10}px` }}
+          className="sticky top-[var(--pv-top)] mb-5 rounded-[1.4rem] bg-white px-4 pb-4 pt-3.5 shadow-[0_-12px_30px_-18px_rgba(54,73,61,0.35),0_10px_30px_-20px_rgba(54,73,61,0.3)] ring-1 ring-sand lg:top-[var(--pv-top-lg)] lg:mb-8 lg:rounded-[1.75rem] lg:px-8 lg:pb-7 lg:pt-6"
+          style={{ "--pv-top": `${76 + k * 10}px`, "--pv-top-lg": `${96 + k * 14}px` } as React.CSSProperties}
           aria-labelledby={`pvs-${x.key}`}
+          data-testid="pv-card"
         >
-          <header className="flex items-center justify-between gap-2 border-b border-sand pb-2">
-            <span className="flex items-center gap-2">
-              <span className="grid h-6 w-6 place-items-center rounded-full bg-forest font-display text-[13px] text-white">{k + 1}</span>
-              <h3 id={`pvs-${x.key}`} className="font-display text-[1.1rem] leading-tight text-forest">{x.title}</h3>
+          <header className="flex items-center justify-between gap-2 border-b border-sand pb-2 lg:pb-3">
+            <span className="flex items-center gap-2.5">
+              <span className="relative grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-linen ring-1 ring-sand lg:h-11 lg:w-11 lg:rounded-2xl">
+                <SectionIcon k={x.key} id={`pvi-${x.key}`} className="h-5 w-5 lg:h-6 lg:w-6" />
+                <span className="absolute -right-1.5 -top-1.5 grid h-5 w-5 place-items-center rounded-full bg-forest font-display text-[11px] text-white">{k + 1}</span>
+              </span>
+              <h3 id={`pvs-${x.key}`} className="font-display text-[1.1rem] leading-tight text-forest lg:text-[1.45rem]">{x.title}</h3>
             </span>
-            <span className="whitespace-nowrap rounded-full bg-clay-soft px-2 py-0.5 text-[9.5px] font-semibold uppercase tracking-[0.12em] text-clay">Przykład</span>
+            <span className="whitespace-nowrap rounded-full bg-clay-soft px-2 py-0.5 text-[9.5px] font-semibold uppercase tracking-[0.12em] text-clay lg:text-[10.5px]">Przykład<span className="hidden lg:inline"> · dane fikcyjne</span></span>
           </header>
-          <p className="mt-2 text-[13px] leading-snug text-clay">{x.benefit}</p>
-          <div className="mt-2.5 text-[13.5px] leading-relaxed text-ink-soft">
-            <SectionBody k={x.key} compact />
+          <div className="lg:mt-5 lg:grid lg:grid-cols-[0.9fr_1.1fr] lg:gap-10">
+            <div>
+              <p className="mt-2 text-[13px] leading-snug text-clay lg:mt-0 lg:text-[16px] lg:leading-relaxed lg:text-ink-soft">{x.benefit}</p>
+              <div className="mt-3 rounded-2xl bg-linen/60 px-2 py-2 ring-1 ring-sand/70 lg:mt-5 lg:px-4 lg:py-3">
+                <SectionGraphic k={x.key} id={`pvg-${x.key}`} className="mx-auto h-auto w-full max-w-[340px] lg:max-w-[400px]" />
+              </div>
+            </div>
+            <div className="mt-2.5 text-[13.5px] leading-relaxed text-ink-soft lg:mt-0 lg:text-[14.5px]">
+              <p className="mb-2 hidden text-[11px] font-semibold uppercase tracking-[0.14em] text-muted lg:block">Tak to wygląda w przykładowej Mapie</p>
+              <div className="lg:hidden"><SectionBody k={x.key} compact /></div>
+              <div className="hidden lg:block"><SectionBody k={x.key} /></div>
+            </div>
           </div>
         </article>
       ))}
       <p className="text-center text-xs text-muted">Przykład na fikcyjnych danych (Anna i Marek). Pełna wersja – link poniżej.</p>
     </div>
-  );
-}
-
-export function ReportPreview() {
-  const [i, setI] = useState(0);
-  const s = SECTIONS[i];
-  const go = (d: number) => setI((x) => (x + d + SECTIONS.length) % SECTIONS.length);
-
-  return (
-    <>
-    <StackedSections />
-    <div className="hidden gap-6 lg:grid lg:grid-cols-[0.85fr_1.15fr] lg:gap-12">
-      {/* Spis treści = prawdziwe sekcje podsumowania */}
-      <div>
-        <div role="tablist" aria-label="Sekcje Mapy Relacji" className="grid grid-cols-3 gap-2 lg:grid-cols-1 lg:gap-1.5">
-          {SECTIONS.map((x, k) => (
-            <button
-              key={x.key}
-              role="tab"
-              id={`pv-tab-${x.key}`}
-              aria-selected={k === i}
-              aria-controls="pv-panel"
-              onClick={() => setI(k)}
-              className={clsx(
-                "flex min-h-11 items-center gap-2 rounded-xl px-2.5 py-2 text-left text-[13px] leading-tight transition lg:gap-3 lg:rounded-2xl lg:px-4 lg:py-3 lg:text-[15px]",
-                k === i ? "bg-forest text-white shadow-soft" : "bg-white text-ink-soft ring-1 ring-sand hover:ring-forest/40",
-              )}
-            >
-              <span className={clsx("grid h-6 w-6 shrink-0 place-items-center rounded-full font-display text-[13px] lg:h-7 lg:w-7", k === i ? "bg-white/15" : "bg-linen text-forest")}>{k + 1}</span>
-              <span className="lg:hidden">{x.short}</span>
-              <span className="hidden lg:inline">{x.title}</span>
-            </button>
-          ))}
-        </div>
-        <p className="mt-3 rounded-2xl bg-white/70 px-4 py-3 text-[15px] leading-relaxed text-ink-soft ring-1 ring-sand lg:mt-5 lg:py-4" aria-live="polite">
-          <strong className="mb-1 hidden font-display text-lg font-medium text-ink lg:block">{s.title}</strong>
-          {s.benefit}
-        </p>
-      </div>
-
-      {/* Podgląd dokumentu – kartki ułożone jedna na drugiej */}
-      <div className="relative">
-        <div className="absolute inset-x-6 -bottom-3 top-6 rotate-[2deg] rounded-[1.6rem] bg-white/70 shadow-soft ring-1 ring-sand" aria-hidden />
-        <div className="absolute inset-x-3 -bottom-1.5 top-3 -rotate-[1.2deg] rounded-[1.6rem] bg-white/85 shadow-soft ring-1 ring-sand" aria-hidden />
-        <article
-          id="pv-panel"
-          role="tabpanel"
-          aria-labelledby={`pv-tab-${s.key}`}
-          className="relative overflow-hidden rounded-[1.6rem] bg-white px-5 pb-5 pt-4 shadow-soft ring-1 ring-sand sm:px-7 sm:pb-7 sm:pt-5"
-        >
-          <header className="flex items-center justify-between gap-3 border-b border-sand pb-3">
-            <span className="flex items-center gap-2">
-              <BrandSymbol id="pv-brand" className="h-4 w-auto" />
-              <span className="whitespace-nowrap font-wordmark text-[15px] text-forest">Mapa Relacji</span>
-            </span>
-            <span className="whitespace-nowrap rounded-full bg-clay-soft px-2.5 py-0.5 text-[10.5px] font-semibold uppercase tracking-[0.12em] text-clay">Przykład<span className="hidden sm:inline"> · dane fikcyjne</span></span>
-          </header>
-          <p className="mt-2 text-[11.5px] text-muted">Podsumowanie sesji · konsultacja dla pary · Anna i Marek <span className="sm:hidden">· dane fikcyjne</span></p>
-          <h3 className="mt-4 border-b border-sand/70 pb-1.5 font-display text-[1.2rem] text-forest">{i + 1}. {s.title}</h3>
-          <div key={s.key} className="mt-3 animate-rise text-[14px] leading-relaxed text-ink-soft sm:text-[14.5px]">
-            <SectionBody k={s.key} />
-          </div>
-          <footer className="mt-5 flex items-center justify-between border-t border-sand pt-3">
-            <button type="button" onClick={() => go(-1)} className="inline-flex min-h-10 items-center gap-1 rounded-full px-2 text-sm text-forest" aria-label="Poprzednia sekcja">
-              <ArrowLeft size={16} aria-hidden /> <span className="max-[359px]:hidden">Wstecz</span>
-            </button>
-            <span className="text-xs text-muted">{i + 1} / {SECTIONS.length}</span>
-            <button type="button" onClick={() => go(1)} className="inline-flex min-h-10 items-center gap-1 rounded-full px-2 text-sm font-medium text-forest" aria-label="Następna sekcja">
-              <span className="max-[359px]:hidden">Dalej</span> <ArrowRight size={16} aria-hidden />
-            </button>
-          </footer>
-        </article>
-      </div>
-    </div>
-    </>
   );
 }
 

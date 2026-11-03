@@ -88,8 +88,9 @@ test("pełny scenariusz audytu pary", async ({ page, browser, request }) => {
   await page.waitForLoadState("networkidle");
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Ratować związek, dać sobie czas czy się rozstać? Zacznij od zrozumienia.");
   // podgląd rzeczywistej struktury podsumowania (dane fikcyjne)
-  await page.getByRole("tab", { name: /Jak działa Wasz konflikt|Konflikt/ }).click();
-  await expect(page.locator("#pv-panel")).toContainText("Wasz cykl w jednym zdaniu");
+  await expect(page.getByTestId("pv-card")).toHaveCount(6);
+  await expect(page.getByTestId("pv-card").nth(3)).toContainText("Wasz cykl w jednym zdaniu");
+  await expect(page.getByRole("img", { name: /Schemat: Cykl konfliktu/ })).toBeVisible();
   const sample = await request.get("/mapa-relacji-przyklad");
   expect(sample.ok()).toBeTruthy();
   const sampleHtml = await sample.text();
