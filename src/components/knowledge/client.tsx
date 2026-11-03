@@ -224,10 +224,14 @@ function Choice({ name, label, value, options, onChange, error }: {
       <div className="grid grid-cols-2 gap-2">
         {options.map(([v, l]) => (
           <label key={v} className={clsx(
-            "flex min-h-12 cursor-pointer items-center justify-center rounded-2xl px-3 text-center text-[15px] font-medium ring-1 transition has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-forest",
-            value === v ? "bg-forest text-white ring-forest" : error ? "bg-alert-soft/50 text-ink ring-alert/40" : "bg-white text-ink ring-sand-dark hover:ring-forest/60",
+            "flex min-h-12 cursor-pointer items-center gap-3 rounded-2xl px-4 py-2.5 text-left text-[15px] font-medium leading-tight ring-1 transition has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-forest",
+            value === v ? "bg-sage-soft/70 text-forest ring-2 ring-forest" : error ? "bg-alert-soft/50 text-ink ring-alert/40" : "bg-white text-ink ring-sand-dark hover:ring-forest/60",
           )}>
             <input type="radio" name={name} value={v} checked={value === v} onChange={() => onChange(v)} className="sr-only" />
+            {/* widoczny przycisk radiowy: wybór jednej z dwóch opcji */}
+            <span className={clsx("grid h-5 w-5 shrink-0 place-items-center rounded-full border-2 bg-white transition", value === v ? "border-forest" : "border-sand-dark")} aria-hidden>
+              <span className={clsx("h-2.5 w-2.5 rounded-full bg-forest transition-transform", value === v ? "scale-100" : "scale-0")} />
+            </span>
             {l}
           </label>
         ))}
