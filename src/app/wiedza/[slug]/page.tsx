@@ -114,28 +114,12 @@ export default async function MagnetLanding({ params }: { params: Promise<{ slug
                 <ReportPreview />
               ) : (
                 <div className="relative z-10 mx-auto -mb-40 max-w-3xl" data-testid="lm-preview">
-                  {/* fragment urywa się rozmyciem, które wychodzi poza sekcję – w pełnej wersji jest dalszy ciąg */}
-                  <div className="relative max-h-[36rem] overflow-hidden rounded-t-[1.75rem] bg-linen/60 p-3 ring-1 ring-sand [mask-image:linear-gradient(to_bottom,black_45%,rgba(0,0,0,.6)_68%,transparent_92%)] sm:max-h-[40rem] sm:p-5">
+                  {/* fragment stopniowo zanika (bez rozmycia) do końca ramki – widać, że treść biegnie dalej */}
+                  <div className="relative max-h-[36rem] overflow-hidden rounded-t-[1.75rem] bg-linen/60 p-3 ring-1 ring-sand [mask-image:linear-gradient(to_bottom,black_30%,transparent_100%)] sm:max-h-[40rem] sm:p-5">
                     <p className="mb-1 px-1 text-[10.5px] font-semibold uppercase tracking-[0.18em] text-muted">Fragment materiału</p>
                     {m.preview.map((i) => (
                       <div key={i} className="[&>*:first-child]:mt-2"><BlockView b={m.blocks[i]} mode="screen" i={i} first={false} /></div>
                     ))}
-                    {/* rozmycie narastające stopniowo (warstwy o coraz większym rozmyciu) – bez widocznej krawędzi */}
-                    <div className="pointer-events-none absolute inset-x-0 bottom-0 h-80" aria-hidden>
-                      {[0.5, 1, 2, 4, 8].map((px, i) => (
-                        <div
-                          key={px}
-                          className="absolute inset-0"
-                          style={{
-                            backdropFilter: `blur(${px}px)`,
-                            WebkitBackdropFilter: `blur(${px}px)`,
-                            maskImage: `linear-gradient(to bottom, transparent ${i * 16}%, black ${i * 16 + 22}%)`,
-                            WebkitMaskImage: `linear-gradient(to bottom, transparent ${i * 16}%, black ${i * 16 + 22}%)`,
-                          }}
-                        />
-                      ))}
-                    </div>
-                    <div className="pointer-events-none absolute inset-x-0 bottom-0 h-80 bg-[linear-gradient(to_bottom,transparent,rgba(251,249,245,.35)_40%,rgba(251,249,245,.8)_75%,#f4eee6)]" aria-hidden />
                   </div>
                   <div className="absolute inset-x-3 bottom-6 z-10 mx-auto max-w-md rounded-3xl bg-white/95 p-5 text-center shadow-[0_24px_50px_-24px_rgba(54,73,61,0.55)] ring-1 ring-sand backdrop-blur sm:p-6">
                     <p className="font-display text-[1.3rem] leading-snug text-ink">To dopiero fragment – dalej jest więcej</p>
