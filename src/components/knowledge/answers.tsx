@@ -31,10 +31,24 @@ interface Ctx {
 }
 const AnswersCtx = createContext<Ctx | null>(null);
 
-/** Podgląd na landingu: przykładowe odpowiedzi pisane „na żywo” odręcznym pismem (bez zapisu). */
-const SampleCtx = createContext<Record<string, string | true> | null>(null);
+/**
+ * Podgląd na landingu: przykładowe odpowiedzi pisane „na żywo” odręcznym pismem (bez zapisu) – po kolei, jak pisze człowiek:
+ * następne pole zaczyna się dopiero, gdy poprzednie jest skończone (kolejność = kolejność kluczy w SAMPLE_ANSWERS).
+ */
+interface SampleState { answers: Record<string, string | true>; order: string[]; turn: number; next: () => void }
+const SampleCtx = createContext<SampleState | null>(null);
 export function SampleAnswers({ answers, children }: { answers: Record<string, string | true>; children: React.ReactNode }) {
-  return <SampleCtx.Provider value={answers}>{children}</SampleCtx.Provider>;
+  const [turn, setTurn] = useState(0);
+  const order = Object.keys(answers);
+  const next = useCallback(() => setTurn((t) => t + 1), []);
+  return <SampleCtx.Provider value={{ answers, order, turn, next }}>{children}</SampleCtx.Provider>;
+}
+
+/** Czy to pole ma teraz „długopis”, czy już je skończono. */
+function useSampleTurn(id: string) {
+  const c = useContext(SampleCtx);
+  const idx = c ? c.order.indexOf(id) : -1;
+  return { active: !!c && idx === c.turn, done: !!c && idx > -1 && idx < c.turn, next: c?.next ?? (() => {}) };
 }
 
 function useOnScreen<T extends Element>(enabled: boolean) {
@@ -51,27 +65,34 @@ function useOnScreen<T extends Element>(enabled: boolean) {
 }
 
 /** Linie do pisania z odręczną odpowiedzią „niebieskim długopisem”, pisaną znak po znaku po wejściu w widok. */
-function HandLines({ text, lines, compact }: { text: string; lines: number; compact?: boolean }) {
+function HandLines({ id, text, lines, compact }: { id: string; text: string; lines: number; compact?: boolean }) {
   const { ref, on } = useOnScreen<HTMLDivElement>(true);
+  const { active, done, next } = useSampleTurn(id);
   const [n, setN] = useState(0);
   useEffect(() => {
-    if (!on) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return setN(text.length);
+    if (!on || !active) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setN(text.length);
+      next();
+      return;
+    }
     let i = 0;
     let t: ReturnType<typeof setTimeout>;
     const step = () => {
       i++;
       setN(i);
       if (i < text.length) t = setTimeout(step, /[ ,.–]/.test(text[i - 1]) ? 120 : 45 + Math.random() * 45);
+      else t = setTimeout(next, 650); // chwila na przeniesienie długopisu do następnego pola
     };
     t = setTimeout(step, 350);
     return () => clearTimeout(t);
-  }, [on, text]);
+  }, [on, active, text, next]);
+  const shown = done ? text.length : n;
   return (
     <div ref={ref} className={clsx("relative", compact ? "mt-1" : "mt-2")} data-sample-answer>
       {Array.from({ length: lines }).map((_, i) => <div key={i} className="h-8 border-b border-dashed border-sand-dark/80" aria-hidden />)}
       <p className="absolute inset-x-1 top-0 -rotate-[0.6deg] font-hand text-[1.45rem] leading-8 text-[#1f3f9a]" aria-label={`Przykładowa odpowiedź: ${text}`}>
-        <span aria-hidden className={clsx(n > 0 && n < text.length && "hand-caret")}>{text.slice(0, n)}</span>
+        <span aria-hidden className={clsx(active && shown < text.length && "hand-caret")}>{text.slice(0, shown)}</span>
       </p>
     </div>
   );
@@ -176,8 +197,8 @@ export function AnswerText({ id, lines = 2, label, compact }: { id: string; line
     el.style.height = "auto";
     el.style.height = `${Math.max(el.scrollHeight, lines * 32)}px`;
   }, [v, lines]);
-  const sample = useContext(SampleCtx)?.[id];
-  if (!ctx && typeof sample === "string") return <HandLines text={sample} lines={lines} compact={compact} />;
+  const sample = useContext(SampleCtx)?.answers[id];
+  if (!ctx && typeof sample === "string") return <HandLines id={id} text={sample} lines={lines} compact={compact} />;
   if (!ctx)
     return (
       <div className={clsx(compact ? "mt-1" : "mt-2")} aria-hidden>
@@ -207,8 +228,8 @@ export function AnswerText({ id, lines = 2, label, compact }: { id: string; line
 /** Pole wyboru w checkliście. */
 export function AnswerCheck({ id, label }: { id: string; label: string }) {
   const ctx = useContext(AnswersCtx);
-  const sample = useContext(SampleCtx)?.[id] === true;
-  if (!ctx && sample) return <HandTick />;
+  const sample = useContext(SampleCtx)?.answers[id] === true;
+  if (!ctx && sample) return <HandTick id={id} />;
   if (!ctx) return <span className="mt-0.5 h-5 w-5 shrink-0 rounded-md border-2 border-forest/60 bg-white" aria-hidden />;
   const on = ctx.get(id) === true;
   return (
@@ -273,11 +294,18 @@ export function SummarizeBar({ href, label, requirements }: { href: string; labe
 }
 
 /** Odręczny ptaszek w checkliście podglądu – rysowany po wejściu w widok. */
-function HandTick() {
+function HandTick({ id }: { id: string }) {
   const { ref, on } = useOnScreen<HTMLSpanElement>(true);
+  const { active, done, next } = useSampleTurn(id);
+  const drawn = done || (on && active);
+  useEffect(() => {
+    if (!on || !active) return;
+    const t = setTimeout(next, 700); // ptaszek rysuje się ok. 0,45 s, potem chwila przerwy
+    return () => clearTimeout(t);
+  }, [on, active, next]);
   return (
     <span ref={ref} className="relative mt-0.5 h-5 w-5 shrink-0 rounded-md border-2 border-forest/60 bg-white" data-sample-answer>
-      <svg viewBox="0 0 24 24" className={clsx("hand-tick absolute -left-1 -top-2 h-7 w-7", on && "on")} aria-label="Przykładowe zaznaczenie">
+      <svg viewBox="0 0 24 24" className={clsx("hand-tick absolute -left-1 -top-2 h-7 w-7", drawn && "on")} aria-label="Przykładowe zaznaczenie">
         <path d="M4 13.5c2 1.6 3.4 3.3 4.6 5.4C11.2 12.6 15 7.2 21 3.5" fill="none" stroke="#1f3f9a" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
     </span>
