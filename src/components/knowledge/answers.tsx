@@ -31,6 +31,52 @@ interface Ctx {
 }
 const AnswersCtx = createContext<Ctx | null>(null);
 
+/** Podgląd na landingu: przykładowe odpowiedzi pisane „na żywo” odręcznym pismem (bez zapisu). */
+const SampleCtx = createContext<Record<string, string | true> | null>(null);
+export function SampleAnswers({ answers, children }: { answers: Record<string, string | true>; children: React.ReactNode }) {
+  return <SampleCtx.Provider value={answers}>{children}</SampleCtx.Provider>;
+}
+
+function useOnScreen<T extends Element>(enabled: boolean) {
+  const ref = useRef<T>(null);
+  const [on, setOn] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!enabled || !el) return;
+    const io = new IntersectionObserver((e) => e.some((x) => x.isIntersecting) && (setOn(true), io.disconnect()), { threshold: 0.6 });
+    io.observe(el);
+    return () => io.disconnect();
+  }, [enabled]);
+  return { ref, on };
+}
+
+/** Linie do pisania z odręczną odpowiedzią „niebieskim długopisem”, pisaną znak po znaku po wejściu w widok. */
+function HandLines({ text, lines, compact }: { text: string; lines: number; compact?: boolean }) {
+  const { ref, on } = useOnScreen<HTMLDivElement>(true);
+  const [n, setN] = useState(0);
+  useEffect(() => {
+    if (!on) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return setN(text.length);
+    let i = 0;
+    let t: ReturnType<typeof setTimeout>;
+    const step = () => {
+      i++;
+      setN(i);
+      if (i < text.length) t = setTimeout(step, /[ ,.–]/.test(text[i - 1]) ? 120 : 45 + Math.random() * 45);
+    };
+    t = setTimeout(step, 350);
+    return () => clearTimeout(t);
+  }, [on, text]);
+  return (
+    <div ref={ref} className={clsx("relative", compact ? "mt-1" : "mt-2")} data-sample-answer>
+      {Array.from({ length: lines }).map((_, i) => <div key={i} className="h-8 border-b border-dashed border-sand-dark/80" aria-hidden />)}
+      <p className="absolute inset-x-1 top-0 -rotate-[0.6deg] font-hand text-[1.45rem] leading-8 text-[#1f3f9a]" aria-label={`Przykładowa odpowiedź: ${text}`}>
+        <span aria-hidden className={clsx(n > 0 && n < text.length && "hand-caret")}>{text.slice(0, n)}</span>
+      </p>
+    </div>
+  );
+}
+
 export function AnswersProvider({ slug, initial, local, children }: { slug: string; initial: Record<string, Val>; local?: boolean; children: React.ReactNode }) {
   const [data, setData] = useState(initial);
   const [invalid, setInvalid] = useState<Set<string>>(new Set());
@@ -130,6 +176,8 @@ export function AnswerText({ id, lines = 2, label, compact }: { id: string; line
     el.style.height = "auto";
     el.style.height = `${Math.max(el.scrollHeight, lines * 32)}px`;
   }, [v, lines]);
+  const sample = useContext(SampleCtx)?.[id];
+  if (!ctx && typeof sample === "string") return <HandLines text={sample} lines={lines} compact={compact} />;
   if (!ctx)
     return (
       <div className={clsx(compact ? "mt-1" : "mt-2")} aria-hidden>
@@ -159,6 +207,8 @@ export function AnswerText({ id, lines = 2, label, compact }: { id: string; line
 /** Pole wyboru w checkliście. */
 export function AnswerCheck({ id, label }: { id: string; label: string }) {
   const ctx = useContext(AnswersCtx);
+  const sample = useContext(SampleCtx)?.[id] === true;
+  if (!ctx && sample) return <HandTick />;
   if (!ctx) return <span className="mt-0.5 h-5 w-5 shrink-0 rounded-md border-2 border-forest/60 bg-white" aria-hidden />;
   const on = ctx.get(id) === true;
   return (
@@ -219,5 +269,17 @@ export function SummarizeBar({ href, label, requirements }: { href: string; labe
         </button>
       </div>
     </div>
+  );
+}
+
+/** Odręczny ptaszek w checkliście podglądu – rysowany po wejściu w widok. */
+function HandTick() {
+  const { ref, on } = useOnScreen<HTMLSpanElement>(true);
+  return (
+    <span ref={ref} className="relative mt-0.5 h-5 w-5 shrink-0 rounded-md border-2 border-forest/60 bg-white" data-sample-answer>
+      <svg viewBox="0 0 24 24" className={clsx("hand-tick absolute -left-1 -top-2 h-7 w-7", on && "on")} aria-label="Przykładowe zaznaczenie">
+        <path d="M4 13.5c2 1.6 3.4 3.3 4.6 5.4C11.2 12.6 15 7.2 21 3.5" fill="none" stroke="#1f3f9a" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    </span>
   );
 }

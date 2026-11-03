@@ -153,5 +153,19 @@ describe("materiały do uzupełniania online", () => {
       expect(missingRequirements(reqs, { [reqs[0].ids[0]]: "   " }).length, slug).toBe(reqs.length);
     }
   });
+  it("przykładowe odręczne odpowiedzi trafiają w pola z podglądu landingu", async () => {
+    const { fieldsOf } = await import("@/knowledge/fields");
+    const { SAMPLE_ANSWERS } = await import("@/knowledge/samples");
+    for (const [slug, answers] of Object.entries(SAMPLE_ANSWERS)) {
+      const m = magnetBySlug(slug)!;
+      const preview = fieldsOf(m).filter((f) => m.preview.includes(Number(f.id.match(/^[a-z](\d+)/)![1])));
+      for (const [id, v] of Object.entries(answers)) {
+        const f = preview.find((x) => x.id === id);
+        expect(f, `${slug}:${id}`).toBeTruthy();
+        expect(f!.kind, `${slug}:${id}`).toBe(v === true ? "check" : "text");
+        if (typeof v === "string") expect(v.length, `${slug}:${id}`).toBeLessThanOrEqual(70);
+      }
+    }
+  });
 });
 

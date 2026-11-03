@@ -9,6 +9,8 @@ import { BlockView, Cover } from "@/components/knowledge/doc";
 import { MagnetIcon } from "@/components/knowledge/icons";
 import { MagnetCard, MagnetRail } from "@/components/knowledge/magnet-card";
 import { CoverBook } from "@/components/knowledge/cover-book";
+import { SampleAnswers } from "@/components/knowledge/answers";
+import { SAMPLE_ANSWERS } from "@/knowledge/samples";
 import { coverPhotoMap } from "@/lib/cover-photos";
 import { ReportPreview } from "@/components/mapa/report-preview";
 import { SiteFooter } from "@/components/site/footer";
@@ -117,9 +119,12 @@ export default async function MagnetLanding({ params }: { params: Promise<{ slug
                   {/* fragment stopniowo zanika (bez rozmycia) do końca ramki – widać, że treść biegnie dalej */}
                   <div className="relative max-h-[36rem] overflow-hidden rounded-t-[1.75rem] bg-linen/60 p-3 ring-1 ring-sand [mask-image:linear-gradient(to_bottom,black_30%,transparent_100%)] sm:max-h-[40rem] sm:p-5">
                     <p className="mb-1 px-1 text-[10.5px] font-semibold uppercase tracking-[0.18em] text-muted">Fragment materiału</p>
-                    {m.preview.map((i) => (
-                      <div key={i} className="[&>*:first-child]:mt-2"><BlockView b={m.blocks[i]} mode="screen" i={i} first={false} /></div>
-                    ))}
+                    {/* przykładowe odpowiedzi pisane odręcznie (fikcyjne) – pokazują, jak wygląda praca z materiałem */}
+                    <SampleAnswers answers={SAMPLE_ANSWERS[m.slug] ?? {}}>
+                      {m.preview.map((i) => (
+                        <div key={i} className="[&>*:first-child]:mt-2"><BlockView b={m.blocks[i]} mode="screen" i={i} first={false} /></div>
+                      ))}
+                    </SampleAnswers>
                   </div>
                   <div className="absolute inset-x-3 bottom-6 z-10 mx-auto max-w-md rounded-3xl bg-white/95 p-5 text-center shadow-[0_24px_50px_-24px_rgba(54,73,61,0.55)] ring-1 ring-sand backdrop-blur sm:p-6">
                     <p className="font-display text-[1.3rem] leading-snug text-ink">To dopiero fragment – dalej jest więcej</p>
