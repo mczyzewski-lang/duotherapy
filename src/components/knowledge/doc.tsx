@@ -30,6 +30,7 @@ const GRAIN = "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg
 export function Cover({ m, mode, compact, hero, photo }: { m: LeadMagnet; mode: Mode; compact?: boolean; hero?: boolean; photo?: string | null }) {
   const c = coverOf(m.slug) ?? { hook: "", mood: ["#f3e2d3", "#a9512f", "#36493d"] as [string, string, string], photo: false };
   const uid = `${m.id}-${compact ? "c" : mode}`;
+  const sm = compact && !hero; // mała miniatura (karty); okładka w hero landingu jest większa
   const T = compact ? "p" : "h1"; // miniatura okładki nie jest nagłówkiem strony – jeden H1 na stronę
   // zdjęcie: wygenerowane w panelu (z bazy) albo plik w public/img/wiedza (photo: true w covers.ts)
   const photoSrc = photo ?? (c.photo ? `/img/wiedza/${m.slug}.jpg` : null);
@@ -47,7 +48,7 @@ export function Cover({ m, mode, compact, hero, photo }: { m: LeadMagnet; mode: 
       {photoSrc ? (
         <>
           <img src={photoSrc} alt="" loading={hero ? "eager" : "lazy"} className="absolute inset-0 -z-10 h-full w-full object-cover" />
-          <div className="absolute inset-0 -z-10 bg-gradient-to-b from-black/25 via-black/10 to-black/70" aria-hidden />
+          <div className="absolute inset-0 -z-10 bg-gradient-to-b from-black/50 via-black/5 to-black/70" aria-hidden />
         </>
       ) : (
         <div className="absolute inset-0 -z-10" aria-hidden>
@@ -65,20 +66,36 @@ export function Cover({ m, mode, compact, hero, photo }: { m: LeadMagnet; mode: 
           Bezpłatny materiał
         </span>
       </div>
-      <div className={clsx("mt-auto", compact ? "pt-3" : "pt-12")}>
-        {c.hook && (
-          <p className={clsx("font-display italic leading-[1.12]", dark ? "text-white" : "text-ink", hero ? "text-[1.5rem] sm:text-[1.75rem]" : compact ? "text-[1.02rem]" : mode === "print" ? "text-[30pt]" : "text-[1.9rem] sm:text-[2.4rem]")}>{c.hook}</p>
-        )}
-        <div className={clsx("flex items-start gap-3", compact ? "mt-3" : "mt-8")}>
-          <span className={clsx("grid shrink-0 place-items-center rounded-xl bg-white/85 shadow-soft", compact ? "h-7 w-7" : "h-11 w-11")}>
-            <MagnetIcon icon={m.icon} id={`cv-${uid}`} className={compact ? "h-4 w-4" : "h-6 w-6"} />
+      {/* nazwa materiału – najważniejsza na okładce, od razu pod znakiem */}
+      <div className={clsx(sm ? "mt-3" : "mt-8")}>
+        <p className={clsx("flex items-center gap-1.5 font-semibold uppercase tracking-[0.16em]", dark ? "text-white/85" : "text-clay", sm ? "text-[7.5px]" : "text-[11px]")}>
+          <span className={clsx("grid shrink-0 place-items-center rounded-lg bg-white/85 shadow-soft", sm ? "h-5 w-5" : "h-8 w-8")}>
+            <MagnetIcon icon={m.icon} id={`cv-${uid}`} className={sm ? "h-3 w-3" : "h-5 w-5"} />
           </span>
-          <div className="min-w-0">
-            <p className={clsx("font-semibold uppercase tracking-[0.16em]", dark ? "text-white/80" : "text-clay", compact ? "text-[7.5px]" : "text-[11px]")}>{m.cover.kicker} · {CATEGORY_LABEL[m.category]}</p>
-            <T className={clsx("font-display leading-snug", compact ? "mt-0.5 text-[0.8rem]" : mode === "print" ? "mt-1 text-[17pt]" : "mt-1 text-[1.25rem] sm:text-[1.45rem]")}>{m.title}</T>
-            {!compact && <p className={clsx("mt-2 max-w-xl leading-relaxed", dark ? "text-white/85" : "text-ink-soft")}>{m.cover.subtitle}</p>}
-          </div>
-        </div>
+          {m.cover.kicker}
+        </p>
+        <T
+          className={clsx(
+            "text-balance font-display font-semibold leading-[1.02] tracking-[-0.01em]",
+            dark ? "text-white [text-shadow:0_1px_18px_rgba(0,0,0,.35)]" : "text-ink",
+            hero ? "mt-3 text-[2.1rem] sm:text-[2.5rem]" : sm ? "mt-1.5 text-[1.3rem]" : mode === "print" ? "mt-4 text-[34pt]" : "mt-4 text-[2.4rem] sm:text-[3.1rem]",
+          )}
+          data-testid="cover-title"
+        >
+          {m.short}
+        </T>
+        <span className={clsx("block rounded-full", dark ? "bg-white/70" : "bg-clay", sm ? "mt-2 h-[2px] w-8" : "mt-4 h-[3px] w-14")} aria-hidden />
+      </div>
+      <div className={clsx("mt-auto", sm ? "pt-3" : "pt-10")}>
+        {c.hook && (
+          <p className={clsx("font-display italic leading-[1.15]", dark ? "text-white/95" : "text-ink-soft", hero ? "text-[1.15rem] sm:text-[1.3rem]" : sm ? "text-[0.8rem]" : mode === "print" ? "text-[18pt]" : "text-[1.3rem] sm:text-[1.55rem]")}>{c.hook}</p>
+        )}
+        {!sm && (
+          <>
+            <p className={clsx("mt-5 font-display leading-snug", dark ? "text-white" : "text-ink", mode === "print" ? "text-[14pt]" : "text-[1.05rem] sm:text-[1.15rem]")}>{m.title}</p>
+            <p className={clsx("mt-1.5 max-w-xl text-[14px] leading-relaxed", dark ? "text-white/80" : "text-muted")}>{m.cover.subtitle} · {CATEGORY_LABEL[m.category]}</p>
+          </>
+        )}
       </div>
     </section>
   );
