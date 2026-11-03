@@ -47,6 +47,9 @@ export function PathPage({ p, consentText, contactEmail }: { p: PathContent; con
                 {PATHS.map((x, i) => (
                   <li key={x.key} className={`relative ${i === 0 ? "pt-1" : ""} ${i < PATHS.length - 1 ? "pb-2" : ""}`}>
                     <span className={`absolute -left-4 top-0 border-l-2 border-dashed border-sand-dark ${i < PATHS.length - 1 ? "bottom-0" : "h-1/2"}`} aria-hidden />
+                    <div className="relative">
+                    {/* odgałęzienie od linii do drogi */}
+                    <span className="absolute -left-4 top-1/2 h-0.5 w-3.5 -translate-y-1/2 bg-sand-dark" aria-hidden />
                     {x.key === p.key ? (
                       <span className="flex items-center gap-3 rounded-2xl bg-white p-3 shadow-soft ring-2 ring-clay/40">
                         <RoadGlyph road={x.key} id={`phl-${x.key}`} className="h-6 w-6" />
@@ -59,6 +62,7 @@ export function PathPage({ p, consentText, contactEmail }: { p: PathContent; con
                         <span>{x.short}</span>
                       </Link>
                     )}
+                    </div>
                   </li>
                 ))}
               </ul>
