@@ -28,27 +28,67 @@ export async function coverPhotoMap(): Promise<Record<string, string>> {
 }
 export const invalidateCoverPhotos = () => { cache = null; };
 
+// Modele obrazów próbowane po kolei (dostęp zależy od konta / projektu OpenAI). OPENAI_IMAGE_MODEL – wymuszenie modelu.
+const IMAGE_MODELS = ["gpt-image-1.5", "gpt-image-1", "gpt-image-1-mini", "dall-e-3"];
+const modelMissing = (status: number, msg: string) =>
+  status === 404 || /does not exist|model_not_found|not have access|must be verified|not supported/i.test(msg);
+
+async function requestImage(model: string, prompt: string): Promise<{ ok: true; data: Buffer; mime: string } | { ok: false; status: number; error: string }> {
+  const dalle = model.startsWith("dall-e");
+  const body = dalle
+    ? { model, prompt, size: "1024x1792", quality: "hd", response_format: "b64_json", n: 1 }
+    : { model, prompt, size: "1024x1536", quality: "high", output_format: "webp", output_compression: 82, n: 1 };
+  const res = await fetch("https://api.openai.com/v1/images/generations", {
+    method: "POST",
+    headers: { Authorization: `Bearer ${process.env.OPENAI_API_KEY}`, "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+    signal: AbortSignal.timeout(180_000),
+  });
+  const json = (await res.json().catch(() => ({}))) as { data?: { b64_json?: string }[]; error?: { message?: string } };
+  const b64 = json.data?.[0]?.b64_json;
+  if (!res.ok || !b64) return { ok: false, status: res.status, error: json.error?.message ?? `HTTP ${res.status}` };
+  return { ok: true, data: Buffer.from(b64, "base64"), mime: dalle ? "image/png" : "image/webp" };
+}
+
+/** Modele obrazów dostępne dla klucza (do komunikatu, gdy żaden z listy nie działa). */
+async function availableImageModels(): Promise<string[]> {
+  try {
+    const res = await fetch("https://api.openai.com/v1/models", { headers: { Authorization: `Bearer ${process.env.OPENAI_API_KEY}` }, signal: AbortSignal.timeout(20_000) });
+    const j = (await res.json()) as { data?: { id: string }[] };
+    return (j.data ?? []).map((m) => m.id).filter((id) => /image|dall-e/i.test(id)).sort();
+  } catch {
+    return [];
+  }
+}
+
 /** Generuje zdjęcie okładki na podstawie projektu (photoBrief) i zapisuje w bazie. */
-export async function generateCoverPhoto(slug: string): Promise<{ ok: true } | { ok: false; error: string }> {
+export async function generateCoverPhoto(slug: string): Promise<{ ok: true; model: string } | { ok: false; error: string }> {
   const brief = COVERS[slug]?.photoBrief;
   if (!brief) return { ok: false, error: "Brak projektu zdjęcia dla tego materiału." };
   if (!coverGenConfigured()) return { ok: false, error: "Brak OPENAI_API_KEY w zmiennych środowiskowych aplikacji." };
-  const model = process.env.OPENAI_IMAGE_MODEL || "gpt-image-1";
+  const forced = process.env.OPENAI_IMAGE_MODEL;
+  const models = forced ? [forced] : IMAGE_MODELS;
+  const prompt = `${brief}\n\n${COVER_STYLE}`;
+  const tried: string[] = [];
   try {
-    const res = await fetch("https://api.openai.com/v1/images/generations", {
-      method: "POST",
-      headers: { Authorization: `Bearer ${process.env.OPENAI_API_KEY}`, "Content-Type": "application/json" },
-      body: JSON.stringify({ model, prompt: `${brief}\n\n${COVER_STYLE}`, size: "1024x1536", quality: "high", output_format: "webp", output_compression: 82, n: 1 }),
-      signal: AbortSignal.timeout(180_000),
-    });
-    const json = (await res.json().catch(() => ({}))) as { data?: { b64_json?: string }[]; error?: { message?: string } };
-    const b64 = json.data?.[0]?.b64_json;
-    if (!res.ok || !b64) return { ok: false, error: `OpenAI: ${json.error?.message ?? `HTTP ${res.status}`}` };
-    const data = Buffer.from(b64, "base64");
-    await system((tx) => tx`insert into cover_images (slug, mime, data, model) values (${slug}, 'image/webp', ${data}, ${model})
-                            on conflict (slug) do update set mime = excluded.mime, data = excluded.data, model = excluded.model, updated_at = now()`);
-    invalidateCoverPhotos();
-    return { ok: true };
+    for (const model of models) {
+      const r = await requestImage(model, prompt);
+      if (r.ok) {
+        await system((tx) => tx`insert into cover_images (slug, mime, data, model) values (${slug}, ${r.mime}, ${r.data}, ${model})
+                                on conflict (slug) do update set mime = excluded.mime, data = excluded.data, model = excluded.model, updated_at = now()`);
+        invalidateCoverPhotos();
+        return { ok: true, model };
+      }
+      tried.push(`${model}: ${r.error}`);
+      if (!modelMissing(r.status, r.error)) return { ok: false, error: `OpenAI (${model}): ${r.error}` };
+    }
+    const avail = await availableImageModels();
+    return {
+      ok: false,
+      error: `Żaden model obrazów nie jest dostępny dla tego klucza (${models.join(", ")}). ${
+        avail.length ? `Dostępne modele obrazów: ${avail.join(", ")} – ustaw jeden z nich w zmiennej OPENAI_IMAGE_MODEL.` : "Sprawdź w panelu OpenAI, czy projekt klucza ma dostęp do modeli obrazów (Limits → Model usage) i czy organizacja jest zweryfikowana."
+      }`,
+    };
   } catch (e) {
     return { ok: false, error: (e as Error).name === "TimeoutError" ? "OpenAI nie odpowiedział w 3 minuty – spróbuj ponownie." : (e as Error).message };
   }

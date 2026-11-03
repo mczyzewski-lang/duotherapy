@@ -17,7 +17,7 @@ export async function generateCoverAction(_: R, fd: FormData): Promise<R> {
   if (!r.ok) return { error: r.error };
   await asStaff(s, (tx) => audit(tx, s.actor, "cover_generated", "cover", null, null, { slug }));
   revalidatePath("/app/wiedza");
-  return { ok: "Okładka gotowa – widać ją już na stronie." };
+  return { ok: `Okładka gotowa (${r.model}) – widać ją już na stronie.` };
 }
 
 export async function deleteCoverAction(_: R, fd: FormData): Promise<R> {
