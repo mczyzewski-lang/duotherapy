@@ -67,12 +67,14 @@ export function sanitizeAnswers(m: LeadMagnet, data: unknown): Answers {
 
 export const filledCount = (a: Answers) => Object.values(a).filter((v) => v === true || (typeof v === "string" && v.trim())).length;
 
+export type SummaryGroup = { section: string; items: { label: string; value: string }[] };
+
 /** Podsumowanie: uzupełnione pola pogrupowane według części materiału. */
-export function summarize(m: LeadMagnet, a: Answers): { section: string; items: { label: string; value: string }[] }[] {
-  const groups: { section: string; items: { label: string; value: string }[] }[] = [];
-  for (const f of fieldsOf(m)) {
+export function groupAnswers(fields: Field[], a: Answers): SummaryGroup[] {
+  const groups: SummaryGroup[] = [];
+  for (const f of fields) {
     const v = a[f.id];
-    if (v === undefined || v === false || v === "") continue;
+    if (v === undefined || v === false || (typeof v === "string" && !v.trim())) continue;
     const value = v === true ? "✓" : String(v);
     let g = groups.find((x) => x.section === f.section);
     if (!g) groups.push((g = { section: f.section, items: [] }));
@@ -80,3 +82,24 @@ export function summarize(m: LeadMagnet, a: Answers): { section: string; items: 
   }
   return groups;
 }
+
+export const summarize = (m: LeadMagnet, a: Answers) => groupAnswers(fieldsOf(m), a);
+
+/** Minimum do podsumowania: co najmniej 1 odpowiedź w każdej z pierwszych (maks. 3) części materiału z polami. */
+export interface Requirement { section: string; ids: string[] }
+export const MAX_REQUIRED_SECTIONS = 3;
+export function requirementsOf(fields: Field[]): Requirement[] {
+  const out: Requirement[] = [];
+  for (const f of fields) {
+    let r = out.find((x) => x.section === f.section);
+    if (!r) {
+      if (out.length >= MAX_REQUIRED_SECTIONS) continue;
+      out.push((r = { section: f.section, ids: [] }));
+    }
+    r.ids.push(f.id);
+  }
+  return out;
+}
+
+const isFilled = (v: string | boolean | undefined) => v === true || (typeof v === "string" && v.trim().length > 0);
+export const missingRequirements = (reqs: Requirement[], a: Answers) => reqs.filter((r) => !r.ids.some((id) => isFilled(a[id])));

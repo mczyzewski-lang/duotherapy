@@ -1,16 +1,20 @@
 // Widok pełnego materiału: /demo (podgląd dla właściciela, bez e-maila) i /material (po zapisie). Ta sama treść co PDF.
-import { ArrowLeft, ArrowRight, Download, PenLine } from "lucide-react";
+import { ArrowLeft, Download, PenLine } from "lucide-react";
 import Link from "next/link";
 import { mapaHref } from "@/knowledge/registry";
 import type { LeadMagnet } from "@/knowledge/types";
 import { KTrack } from "./client";
 import { MaterialDoc } from "./doc";
-import { AnswersProvider } from "./answers";
+import { AnswersProvider, SummarizeBar } from "./answers";
 import { coverOf } from "@/knowledge/covers";
+import { fieldsOf, requirementsOf } from "@/knowledge/fields";
 
 export function MaterialViewer({ m, variant, answers }: { m: LeadMagnet; variant: "demo" | "material"; answers?: Record<string, string | boolean> | null }) {
   const summary = coverOf(m.slug)?.summary;
-  const fillable = variant === "material" && answers !== undefined && answers !== null && !!summary;
+  // demo: pola zapisywane tylko w tej przeglądarce; material: autozapis przypisany do e-maila (gdy osoba jest zapisana)
+  const local = variant === "demo" && !!summary;
+  const fillable = local || (variant === "material" && answers !== undefined && answers !== null && !!summary);
+  const requirements = requirementsOf(fieldsOf(m));
   return (
     <div className="min-h-dvh bg-linen/60">
       <KTrack event={variant === "demo" ? "lead_magnet_demo_view" : "lead_magnet_demo_view"} step={m.n} />
@@ -25,13 +29,10 @@ export function MaterialViewer({ m, variant, answers }: { m: LeadMagnet; variant
           </a>
         </div>
       </header>
-      <main id="main" className="mx-auto max-w-3xl px-4 pb-20 pt-6 sm:px-5">
+      <main id="main" className={fillable ? "mx-auto max-w-3xl px-4 pb-48 pt-6 sm:px-5" : "mx-auto max-w-3xl px-4 pb-20 pt-6 sm:px-5"}>
         <Link href={`/wiedza/${m.slug}`} className="mb-4 inline-flex min-h-10 items-center gap-1.5 text-sm font-medium text-forest">
           <ArrowLeft size={16} aria-hidden /> {variant === "demo" ? "Wróć do strony materiału" : "Opis materiału"}
         </Link>
-        {m.needsReview && variant === "demo" && (
-          <p className="mb-4 rounded-2xl bg-white/80 px-4 py-2.5 text-xs text-muted ring-1 ring-sand">Treść przed publikacją wymaga akceptacji merytorycznej psycholożki DUO.</p>
-        )}
         {variant === "material" && !fillable && summary && (
           <p className="mb-5 flex gap-2.5 rounded-2xl bg-white p-4 text-sm leading-relaxed text-ink-soft ring-1 ring-sand">
             <PenLine size={17} className="mt-0.5 shrink-0 text-clay" aria-hidden />
@@ -39,17 +40,21 @@ export function MaterialViewer({ m, variant, answers }: { m: LeadMagnet; variant
           </p>
         )}
         {fillable ? (
-          <AnswersProvider slug={m.slug} initial={answers ?? {}}>
+          <AnswersProvider slug={m.slug} initial={answers ?? {}} local={local}>
             <p className="mb-5 flex gap-2.5 rounded-2xl bg-sage-soft/70 p-4 text-sm leading-relaxed text-ink-soft ring-1 ring-sage/40">
               <PenLine size={17} className="mt-0.5 shrink-0 text-forest" aria-hidden />
-              <span>Uzupełniaj pola bezpośrednio na stronie – odpowiedzi zapisują się automatycznie i są przypisane do Twojego e-maila. Widzisz je tylko Ty.</span>
+              <span>
+                {local
+                  ? "Wpisuj odpowiedzi bezpośrednio na stronie – zapisują się tylko na tym urządzeniu. Na końcu kliknij „Podsumuj moje odpowiedzi”."
+                  : "Uzupełniaj pola bezpośrednio na stronie – odpowiedzi zapisują się automatycznie i są przypisane do Twojego e-maila. Widzisz je tylko Ty."}
+              </span>
             </p>
             <MaterialDoc m={m} mode="screen" mapaUrl={mapaHref(m, variant)} />
-            <div className="sticky bottom-3 z-20 mt-8 flex justify-center">
-              <Link href={`/wiedza/${m.slug}/podsumowanie`} className="inline-flex min-h-14 items-center gap-2 rounded-full bg-clay px-7 text-[16px] font-semibold text-white shadow-[0_14px_34px_-12px_rgba(169,81,47,0.8)]">
-                Podsumuj {summary} <ArrowRight size={18} aria-hidden />
-              </Link>
-            </div>
+            <SummarizeBar
+              href={local ? `/wiedza/${m.slug}/demo/podsumowanie` : `/wiedza/${m.slug}/podsumowanie`}
+              label={local ? "Podsumuj moje odpowiedzi" : `Podsumuj ${summary}`}
+              requirements={requirements}
+            />
           </AnswersProvider>
         ) : (
           <MaterialDoc m={m} mode="screen" mapaUrl={mapaHref(m, variant)} />

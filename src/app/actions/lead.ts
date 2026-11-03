@@ -15,6 +15,7 @@ import { notifyTeam } from "@/lib/notify";
 import { hit } from "@/lib/rate-limit";
 import { clientIp } from "@/lib/request";
 import { readSettings } from "@/lib/settings";
+import { filledCount, sanitizeAnswers } from "@/knowledge/fields";
 
 const LeadSchema = z.object({
   name: z.string().trim().min(2, "Podaj imię.").max(80),
@@ -29,6 +30,8 @@ const LeadSchema = z.object({
   startedAt: z.number().optional(),
   website: z.string().max(0).optional(), // honeypot
   attachSlug: z.string().max(80).optional(),
+  /** Odpowiedzi z podglądu /demo (zapisane w przeglądarce) – wysyłane tylko przy zgodzie na dołączenie. */
+  attachData: z.record(z.string(), z.union([z.string().max(4000), z.boolean()])).optional(),
 });
 
 export type LeadInput = z.input<typeof LeadSchema>;
@@ -78,22 +81,29 @@ export async function submitLead(input: LeadInput): Promise<LeadResult> {
     await audit(tx, { kind: "public" }, "lead_created", "lead", lead.id);
   });
   // dołączenie podsumowania z materiału „Wiedza” – tylko za wyraźną zgodą i tylko odpowiedzi tej osoby (ciasteczko)
-  if (d.attachSlug) await attachAnswers(leadId, d.attachSlug);
+  if (d.attachSlug) await attachAnswers(leadId, d.attachSlug, d.attachData);
   await setLeadCookie(accessToken);
   await notifyTeam("DUO – nowa prośba o telefon (Mapa Relacji)", "Nowa osoba prosi o kontakt w sprawie Mapy Relacji. Szczegóły w panelu: Zgłoszenia.");
   return { ok: true };
 }
 
-async function attachAnswers(leadId: string, slug: string) {
+async function attachAnswers(leadId: string, slug: string, demoData?: Record<string, string | boolean>) {
   const m = magnetBySlug(slug);
-  if (!m) return;
+  if (!m || m.special) return;
   await system(async (tx) => {
+    // 1) odpowiedzi zapisane przy e-mailu (ciasteczko z materiału), 2) odpowiedzi z podglądu /demo z tej przeglądarki
     const who = await contentReader(tx);
-    if (!who || !who.magnets.includes(m.id)) return;
-    const a = await loadAnswers(tx, who.email, m.id);
-    if (!a) return;
+    let answersId = who && who.magnets.includes(m.id) ? (await loadAnswers(tx, who.email, m.id))?.id ?? null : null;
+    if (!answersId && demoData && JSON.stringify(demoData).length <= 120_000) {
+      const clean = sanitizeAnswers(m, demoData);
+      if (filledCount(clean) === 0) return;
+      const [r] = await tx`insert into content_answers (email_lc, magnet_id, data_enc, filled, source)
+                           values (null, ${m.id}, ${encrypt(clean)}, ${filledCount(clean)}, 'demo') returning id`;
+      answersId = r.id as string;
+    }
+    if (!answersId) return;
     const s = await readSettings(tx);
-    await tx`update leads set attached_answers_id = ${a.id}, attached_magnet_id = ${m.id} where id = ${leadId}`;
+    await tx`update leads set attached_answers_id = ${answersId}, attached_magnet_id = ${m.id} where id = ${leadId}`;
     await tx`insert into consents (lead_id, kind, granted, text_version, text_snapshot)
              values (${leadId}, 'attach_answers', true, ${s.legal.version}, ${`Dołącz moje podsumowanie z materiału „${m.short}” do zgłoszenia. Psycholog DUO wykorzysta je przy rozmowie o Mapie Relacji™.`})`;
     await tx`insert into lead_activities (lead_id, kind, content) values (${leadId}, 'system', ${`Klient dołączył podsumowanie z materiału „${m.short}”.`})`;

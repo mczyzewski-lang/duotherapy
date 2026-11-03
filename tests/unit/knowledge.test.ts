@@ -140,4 +140,18 @@ describe("materiały do uzupełniania online", () => {
     expect(filledCount(clean)).toBe(1);
     expect(summarize(m, clean)[0].items[0]).toEqual({ label: q1.label, value: "Pieniądze" });
   });
+  it("minimum do podsumowania: min. 1 odpowiedź w każdej z pierwszych 3 części", async () => {
+    const { fieldsOf, requirementsOf, missingRequirements, MAX_REQUIRED_SECTIONS } = await import("@/knowledge/fields");
+    for (const slug of ["21-pytan-o-relacji", "petla-konfliktu", "swiadome-rozstanie"]) {
+      const m = magnetBySlug(slug)!;
+      const reqs = requirementsOf(fieldsOf(m));
+      expect(reqs.length, slug).toBeGreaterThan(0);
+      expect(reqs.length, slug).toBeLessThanOrEqual(MAX_REQUIRED_SECTIONS);
+      expect(missingRequirements(reqs, {}).length, slug).toBe(reqs.length);
+      const all = Object.fromEntries(reqs.map((r) => [r.ids[r.ids.length - 1], fieldsOf(m).find((f) => f.id === r.ids[r.ids.length - 1])!.kind === "check" ? true : "tak"]));
+      expect(missingRequirements(reqs, all), slug).toEqual([]);
+      expect(missingRequirements(reqs, { [reqs[0].ids[0]]: "   " }).length, slug).toBe(reqs.length);
+    }
+  });
 });
+

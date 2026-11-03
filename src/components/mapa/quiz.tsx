@@ -8,6 +8,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, useTransition } from "react";
 import { submitLead } from "@/app/actions/lead";
+import { readDemoAnswers } from "@/components/knowledge/answers";
 import { SampleReportLink } from "@/components/mapa/report-preview";
 import { Alert } from "@/components/ui";
 import { PREFERRED_TIMES, QUIZ, summaryFor, type QuizAnswers } from "@/lib/mapa-quiz";
@@ -178,6 +179,7 @@ function Summary({
           contactConsent: f.contactConsent as true,
           marketingConsent: f.marketingConsent,
           attachSlug: attach && f.attachConsent ? attach.slug : undefined,
+          attachData: attach && f.attachConsent ? readDemoAnswers(attach.slug) : undefined,
           answers: answers as Record<string, string>,
           attribution: attribution() as Record<string, string>,
           anonId: anonId(),

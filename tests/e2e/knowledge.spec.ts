@@ -6,6 +6,31 @@ const SLUGS = [
   "trudna-rozmowa", "partner-nie-chce-ratowac-zwiazku", "petla-konfliktu", "po-zdradzie", "swiadome-rozstanie",
 ];
 
+/** Klika „Podsumuj…”; dopóki brakuje odpowiedzi – przechodzi do wskazanego pola i je uzupełnia. */
+async function summarizeAnswers(page: Page, label: RegExp) {
+  const missing = page.getByTestId("summarize-missing");
+  const done = page.getByRole("heading", { name: /Twoje podsumowanie/ });
+  for (let i = 0; i < 8; i++) {
+    await page.getByTestId("summarize-bar").getByRole("button", { name: label }).click();
+    await expect(missing.or(done)).toBeVisible();
+    if (await done.isVisible()) return i;
+    await missing.getByRole("button").first().click();
+    const f = page.locator(":focus");
+    if ((await f.getAttribute("type")) === "checkbox") await f.check();
+    else await f.fill(`Moja odpowiedź ${i + 1}`);
+  }
+  throw new Error("Nie udało się podsumować");
+}
+
+async function adminLogin(page: Page) {
+  await page.goto("/app/login");
+  await page.waitForLoadState("networkidle");
+  await page.getByLabel("E-mail", { exact: true }).fill("admin@demo.duo");
+  await page.getByLabel("Hasło").fill("demo-duo-2026!");
+  await page.getByRole("button", { name: "Zaloguj się" }).click();
+  await expect(page.getByRole("heading", { name: /Dzień dobry/ })).toBeVisible();
+}
+
 async function headings(page: Page, url: string, sel: string) {
   await page.goto(url);
   return page.locator(sel).allTextContents();
@@ -93,8 +118,7 @@ test("formularz: materiał bez zgody marketingowej, uczciwy komunikat bez SMTP, 
   await expect(page.locator('[data-save-status="saved"]')).toBeVisible({ timeout: 10_000 });
   await page.reload();
   await expect(page.locator("textarea[data-field]").first()).toHaveValue("Wieczorem po pracy, przy naczyniach.");
-  await page.getByRole("link", { name: /Podsumuj swoją pętlę konfliktu/ }).click();
-  await expect(page.getByRole("heading", { name: /Twoje podsumowanie/ })).toBeVisible();
+  await summarizeAnswers(page, /Podsumuj swoją pętlę konfliktu/);
   await expect(page.getByTestId("summary")).toContainText("Wieczorem po pracy, przy naczyniach.");
   await page.getByRole("link", { name: /Przejdź do quizu/ }).click();
   await page.waitForURL(/\/start\?dolacz=petla-konfliktu/);
@@ -127,5 +151,47 @@ test("formularz: materiał bez zgody marketingowej, uczciwy komunikat bez SMTP, 
   await admin.goto("/app/leads");
   await admin.getByRole("link", { name: "Czytelnik Pętli" }).click();
   await expect(admin.getByTestId("attached-summary")).toContainText("Wieczorem po pracy, przy naczyniach.");
+  await admin.close();
+});
+
+test("demo: pola do uzupełnienia, wymagane minimum, mini-podsumowanie i dołączenie odpowiedzi do quizu", async ({ page, browser }) => {
+  await page.goto("/wiedza/21-pytan-o-relacji/demo");
+  await expect(page.getByText(/akceptacji merytorycznej/)).toHaveCount(0);
+  await expect(page.locator("textarea[data-field]").first()).toBeVisible();
+  // bez odpowiedzi nie da się podsumować – jest informacja, co uzupełnić
+  await page.getByTestId("summarize-bar").getByRole("button", { name: "Podsumuj moje odpowiedzi" }).click();
+  await expect(page.getByTestId("summarize-missing")).toContainText("uzupełnij jeszcze");
+  await expect(page).toHaveURL(/\/demo$/);
+  const first = page.locator("textarea[data-field]").first();
+  await first.fill("Najbardziej brakuje mi wspólnych wieczorów.");
+  await expect(page.locator('[data-save-status="saved"]')).toBeVisible();
+  // odpowiedzi zostają po odświeżeniu (tylko w tej przeglądarce)
+  await page.reload();
+  await expect(page.locator("textarea[data-field]").first()).toHaveValue("Najbardziej brakuje mi wspólnych wieczorów.");
+  expect(await summarizeAnswers(page, /Podsumuj moje odpowiedzi/)).toBeGreaterThan(0);
+  await expect(page).toHaveURL(/\/demo\/podsumowanie$/);
+  await expect(page.getByTestId("summary")).toContainText("Najbardziej brakuje mi wspólnych wieczorów.");
+  await expect(page.getByTestId("demo-summary-cta")).toContainText("załączyć te odpowiedzi");
+
+  await page.getByRole("link", { name: /Kliknij tutaj i odpowiedz na kilka pytań/ }).click();
+  await page.waitForURL(/\/start\?dolacz=21-pytan-o-relacji/);
+  await page.waitForLoadState("networkidle");
+  for (const pick of ["Oddaliliśmy się", "Nie potrafimy spokojnie", "Tak, oboje chcemy", "Dlaczego ciągle", "Od ponad roku", "Samodzielnie"]) {
+    await page.getByRole("radio", { name: new RegExp(pick) }).first().click();
+    await page.waitForTimeout(400);
+  }
+  await page.waitForTimeout(2600);
+  await page.getByLabel("Imię").fill("Czytelnik Demo");
+  await page.getByLabel("Numer telefonu").fill("600 333 444");
+  await page.getByRole("checkbox", { name: /Proszę o kontakt telefoniczny/ }).check();
+  await page.getByTestId("attach-consent").locator("input").check();
+  await page.getByRole("button", { name: /Poproś o telefon/ }).click();
+  await page.waitForURL(/twoja-mapa/);
+
+  const admin = await browser.newPage();
+  await adminLogin(admin);
+  await admin.goto("/app/leads");
+  await admin.getByRole("link", { name: "Czytelnik Demo" }).click();
+  await expect(admin.getByTestId("attached-summary")).toContainText("Najbardziej brakuje mi wspólnych wieczorów.");
   await admin.close();
 });
