@@ -8,6 +8,7 @@ import { KTrack, LeadMagnetForm, MagnetStickyBar } from "@/components/knowledge/
 import { BlockView, Cover } from "@/components/knowledge/doc";
 import { MagnetIcon } from "@/components/knowledge/icons";
 import { MagnetCard } from "@/components/knowledge/magnet-card";
+import { CoverBook } from "@/components/knowledge/cover-book";
 import { coverPhotoMap } from "@/lib/cover-photos";
 import { ReportPreview } from "@/components/mapa/report-preview";
 import { SiteFooter } from "@/components/site/footer";
@@ -78,9 +79,9 @@ export default async function MagnetLanding({ params }: { params: Promise<{ slug
               </div>
             </div>
             <div className="mx-auto w-full max-w-[22rem] md:max-w-sm">
-              <div className="rotate-[1.5deg] rounded-[1.4rem] bg-white p-2 shadow-[0_30px_60px_-30px_rgba(54,73,61,0.5)] ring-1 ring-sand">
+              <CoverBook size="lg">
                 <Cover m={m} mode="screen" compact hero photo={photos[m.slug]} />
-              </div>
+              </CoverBook>
             </div>
           </div>
         </section>

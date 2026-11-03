@@ -7,6 +7,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { CATEGORIES, MAGNETS } from "@/knowledge/registry";
 import type { Category } from "@/knowledge/types";
+import { CoverBook } from "./cover-book";
 import { Cover } from "./doc";
 import { MagnetIcon } from "./icons";
 
@@ -28,7 +29,7 @@ export function KnowledgeGrid({ photos = {} }: { photos?: Record<string, string>
           <li key={m.slug}>
             <Link href={`/wiedza/${m.slug}`} className="group flex h-full flex-col overflow-hidden rounded-[1.6rem] bg-white shadow-soft ring-1 ring-sand transition hover:-translate-y-0.5 hover:ring-forest/40">
               <div className="bg-linen/60 p-4">
-                <div className="mx-auto max-w-[13rem]"><Cover m={m} mode="screen" compact photo={photos[m.slug]} /></div>
+                <div className="mx-auto max-w-[13rem]"><CoverBook><Cover m={m} mode="screen" compact photo={photos[m.slug]} /></CoverBook></div>
               </div>
               <div className="flex flex-1 flex-col p-5">
                 <p className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-clay">

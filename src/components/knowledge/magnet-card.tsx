@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import type { LeadMagnet } from "@/knowledge/types";
+import { CoverBook } from "./cover-book";
 import { Cover } from "./doc";
 
 export function MagnetCard({ m, photo }: { m: LeadMagnet; photo?: string | null }) {
@@ -10,8 +11,8 @@ export function MagnetCard({ m, photo }: { m: LeadMagnet; photo?: string | null 
       <div className="bg-linen/60 px-4 pt-4">
         {/* okładka „wystaje” z kontenera jak leżący materiał */}
         {/* okładka renderowana w pełnym rozmiarze miniatury (13rem) i pomniejszona – cała treść mieści się w kadrze */}
-        <div className="mx-auto -mb-6 h-[13rem] w-[9.75rem] rotate-[-1.5deg] transition group-hover:rotate-0">
-          <div className="w-[13rem] origin-top-left scale-75"><Cover m={m} mode="screen" compact photo={photo} /></div>
+        <div className="mx-auto -mb-6 h-[14.6rem] w-[10.5rem]">
+          <div className="w-[14rem] origin-top-left scale-75"><CoverBook><Cover m={m} mode="screen" compact photo={photo} /></CoverBook></div>
         </div>
       </div>
       <div className="flex flex-1 flex-col px-5 pb-5 pt-9">
