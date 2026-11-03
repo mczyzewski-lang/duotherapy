@@ -39,7 +39,7 @@ export function LeadMagnetForm({
   marketingText: string;
   seriesText?: string;
 }) {
-  const [f, setF] = useState({ name: "", email: "", marketing: false, series: false, website: "" });
+  const [f, setF] = useState({ name: "", email: "", consent: false, website: "" });
   const [err, setErr] = useState<{ text: string; field?: string } | null>(null);
   const [done, setDone] = useState<{ emailSent: boolean } | null>(null);
   const [pending, start] = useTransition();
@@ -71,14 +71,14 @@ export function LeadMagnetForm({
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
     setErr(null);
+    if (!f.consent) return setErr({ text: "Zaznacz zgodę, żeby odebrać materiał.", field: "consent" });
     start(async () => {
       try {
         const r = await submitKnowledgeLead({
           slug,
           email: f.email,
           name: f.name,
-          marketing: f.marketing,
-          series: f.series,
+          consent: f.consent as true,
           requestId: requestId.current,
           attribution: attribution() as Record<string, string>,
           anonId: anonId(),
@@ -129,17 +129,14 @@ export function LeadMagnetForm({
         {err?.field === "email" && <p id="lm-email-e" role="alert" className="mt-1.5 text-sm text-alert">{err.text}</p>}
       </div>
       <input type="text" tabIndex={-1} autoComplete="off" aria-hidden className="hidden" value={f.website} onChange={(e) => setF({ ...f, website: e.target.value })} />
-      {seriesText && (
-        <label className="flex items-start gap-3 rounded-2xl bg-white/70 p-3.5 text-sm leading-snug text-ink ring-1 ring-sand">
-          <input type="checkbox" className="mt-0.5 h-5 w-5 shrink-0 accent-[#36493d]" checked={f.series} onChange={(e) => setF({ ...f, series: e.target.checked })} />
-          <span>{seriesText} <span className="text-muted">(opcjonalnie)</span></span>
-        </label>
-      )}
-      <label className="flex items-start gap-3 px-1 text-sm leading-snug text-ink-soft">
-        <input type="checkbox" className="mt-0.5 h-5 w-5 shrink-0 accent-[#36493d]" checked={f.marketing} onChange={(e) => setF({ ...f, marketing: e.target.checked })} />
-        <span>{marketingText} <span className="text-muted">(opcjonalnie)</span></span>
+      <label className={clsx("flex items-start gap-3 rounded-2xl p-3.5 text-[14.5px] leading-snug text-ink ring-1 transition", err?.field === "consent" ? "bg-alert-soft/60 ring-alert/40" : f.consent ? "bg-sage-soft/60 ring-sage/50" : "bg-linen/60 ring-sand")}>
+        <input type="checkbox" required className="mt-0.5 h-5 w-5 shrink-0 accent-[#36493d]" checked={f.consent}
+          onChange={(e) => { setF({ ...f, consent: e.target.checked }); if (err?.field === "consent") setErr(null); }}
+          aria-invalid={err?.field === "consent"} aria-describedby={err?.field === "consent" ? "lm-consent-e" : undefined} data-testid="lm-consent" />
+        <span>{marketingText}{seriesText ? ` ${seriesText}` : ""}</span>
       </label>
-      {err && err.field !== "email" && <p role="alert" className="rounded-xl bg-alert-soft px-3 py-2 text-sm text-alert">{err.text}</p>}
+      {err?.field === "consent" && <p id="lm-consent-e" role="alert" className="-mt-2 text-sm text-alert">{err.text}</p>}
+      {err && err.field !== "email" && err.field !== "consent" && <p role="alert" className="rounded-xl bg-alert-soft px-3 py-2 text-sm text-alert">{err.text}</p>}
       <button type="submit" disabled={pending} className={clsx("flex min-h-14 w-full items-center justify-center gap-2 rounded-full bg-clay px-6 text-[16px] font-semibold text-white shadow-soft transition hover:brightness-110 disabled:opacity-60")}>
         {pending ? <Loader2 size={18} className="animate-spin" aria-hidden /> : <Mail size={18} aria-hidden />} {pending ? "Wysyłanie…" : "Wyślij mi materiał"}
       </button>

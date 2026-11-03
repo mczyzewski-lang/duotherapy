@@ -21,8 +21,8 @@ const Schema = z.object({
   slug: z.string().max(80),
   email: z.string().trim().toLowerCase().email("Podaj poprawny adres e-mail.").max(200),
   name: z.string().trim().max(80).default(""),
-  marketing: z.boolean().default(false),
-  series: z.boolean().default(false),
+  /** Jedna, wymagana zgoda: materiał + wiadomości e-mail (przy wyzwaniu 7 dni także codzienne ćwiczenia). */
+  consent: z.literal(true, { error: "Zaznacz zgodę, żeby odebrać materiał." }),
   requestId: z.string().uuid(),
   attribution: z.record(z.string(), z.string().max(300)).default({}),
   anonId: z.string().max(64).optional(),
@@ -66,17 +66,18 @@ export async function submitKnowledgeLead(input: z.input<typeof Schema>): Promis
       await tx`update content_leads set access_token_hash = ${hashToken(access)} where id = ${recent.id}`;
       return { id: recent.id as string, status: "sent", send: false, s };
     }
-    const series = m.slug === "7-dni-lepszych-rozmow" && d.series;
+    const series = m.slug === "7-dni-lepszych-rozmow"; // przy wyzwaniu zgoda obejmuje codzienne ćwiczenia
+    const marketing = d.consent;
     const [row] = await tx<{ id: string }[]>`
       insert into content_leads (request_id, email, name, magnet_id, attribution, anon_id, marketing_consent, series_consent, unsubscribe_token_hash, unsubscribe_token_enc,
                                  nurture_next_at, series_day, series_next_at)
-      values (${d.requestId}, ${d.email}, ${d.name || null}, ${m.id}, ${tx.json(attribution)}, ${anon}, ${d.marketing}, ${series}, ${hashToken(unsubscribe)}, ${encrypt(unsubscribe)},
-              ${d.marketing ? new Date(Date.now() + 2 * 86400_000) : null}, ${series ? 1 : 0}, ${series ? new Date(Date.now() + 86400_000) : null})
+      values (${d.requestId}, ${d.email}, ${d.name || null}, ${m.id}, ${tx.json(attribution)}, ${anon}, ${marketing}, ${series}, ${hashToken(unsubscribe)}, ${encrypt(unsubscribe)},
+              ${marketing ? new Date(Date.now() + 2 * 86400_000) : null}, ${series ? 1 : 0}, ${series ? new Date(Date.now() + 86400_000) : null})
       returning id`;
     const v = s.legal.version;
     await tx`insert into content_lead_consents (content_lead_id, kind, granted, text_version, text_snapshot) values
       (${row.id}, 'delivery_info', true, ${v}, ${s.legal.contentDeliveryInfo}),
-      (${row.id}, 'marketing', ${d.marketing}, ${v}, ${s.legal.contentMarketingConsent})`;
+      (${row.id}, 'marketing', ${marketing}, ${v}, ${s.legal.contentMarketingConsent})`;
     if (m.slug === "7-dni-lepszych-rozmow")
       await tx`insert into content_lead_consents (content_lead_id, kind, granted, text_version, text_snapshot) values (${row.id}, 'challenge_series', ${series}, ${v}, ${s.legal.contentSeriesConsent})`;
     if (s.site.funnelTracking && anon)
@@ -84,7 +85,7 @@ export async function submitKnowledgeLead(input: z.input<typeof Schema>): Promis
                values ('lead_magnet_submitted', ${anon}, ${m.n}, ${attribution.utm_source ?? null}, ${attribution.utm_medium ?? null}, ${attribution.utm_campaign ?? null}, '/wiedza/*')`;
     await tx`update content_leads set access_token_hash = ${hashToken(access)} where id = ${row.id}`;
     // nurturing: kontakt z tagiem materiału (wiadomości marketingowe tylko przy zgodzie – pilnuje tego sekwencja)
-    await captureContact(tx, { email: d.email, name: d.name || null, tags: [`lm-${m.slug}`, ...(series ? ["seria-7-dni"] : [])], marketing: d.marketing });
+    await captureContact(tx, { email: d.email, name: d.name || null, tags: [`lm-${m.slug}`, ...(series ? ["seria-7-dni"] : [])], marketing });
     return { id: row.id, status: "pending", send: true, s };
   });
 

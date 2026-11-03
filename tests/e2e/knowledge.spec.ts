@@ -97,11 +97,16 @@ test("10 landingów i 10 pełnych podglądów /demo (noindex), /demo zgodne z PD
   expect(sm).not.toContain("/demo");
 });
 
-test("formularz: materiał bez zgody marketingowej, uczciwy komunikat bez SMTP, zapis w panelu", async ({ page, browser }) => {
+test("formularz: jedna wymagana zgoda, uczciwy komunikat bez wysyłki, zapis w panelu", async ({ page, browser }) => {
   await page.goto("/wiedza/petla-konfliktu?utm_source=instagram&utm_campaign=wiedza_e2e");
   await page.waitForLoadState("networkidle");
   await page.getByLabel("E-mail", { exact: true }).fill("zle");
   await page.waitForTimeout(1600);
+  await page.getByRole("button", { name: "Wyślij mi materiał" }).click();
+  // bez zgody nie odbierzesz materiału – jedna zgoda, wymagana
+  await expect(page.getByText("Zaznacz zgodę, żeby odebrać materiał.")).toBeVisible();
+  await expect(page.locator("#odbierz input[type=checkbox]")).toHaveCount(1);
+  await page.getByTestId("lm-consent").check();
   await page.getByRole("button", { name: "Wyślij mi materiał" }).click();
   await expect(page.getByText("Podaj poprawny adres e-mail.")).toBeVisible();
   await page.getByLabel("E-mail", { exact: true }).fill("czytelnik@example.test");
@@ -145,7 +150,7 @@ test("formularz: materiał bez zgody marketingowej, uczciwy komunikat bez SMTP, 
   await admin.goto("/app/wiedza");
   const row = admin.locator("tr", { hasText: "czytelnik@example.test" });
   await expect(row).toContainText("lm07");
-  await expect(row).toContainText("marketing: nie");
+  await expect(row).toContainText("marketing: tak");
   await expect(row).toContainText("wysyłka nieskonfigurowana");
   await expect(row).toContainText("instagram");
   await admin.goto("/app/leads");

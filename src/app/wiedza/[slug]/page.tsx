@@ -155,9 +155,14 @@ export default async function MagnetLanding({ params }: { params: Promise<{ slug
                 Materiał ma charakter edukacyjny. Nie jest diagnozą ani terapią i nie zastępuje pomocy specjalisty.
               </p>
             </div>
-            <div className="rounded-[1.75rem] bg-white p-5 shadow-soft ring-1 ring-sand sm:p-7">
-              <h2 id="form-h" className="font-display text-[1.6rem] leading-tight text-ink">Odbierz bezpłatny materiał</h2>
-              <p className="mb-5 mt-2 text-[15px] leading-relaxed text-ink-soft">Podaj adres e-mail, a wyślemy Ci link do pobrania.</p>
+            {/* wyraźny kontener formularza: akcent u góry, mocniejszy cień i obramowanie */}
+            <div className="relative overflow-hidden rounded-[1.75rem] bg-white p-5 shadow-[0_34px_70px_-34px_rgba(169,81,47,0.55)] ring-2 ring-clay/25 sm:p-7" data-testid="lm-form-box">
+              <div className="absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r from-clay via-[#e07f78] to-forest" aria-hidden />
+              <p className="inline-flex items-center gap-2 rounded-full bg-clay-soft px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-clay">
+                <MagnetIcon icon={m.icon} id={`frm-${m.id}`} className="h-4 w-4" /> Bezpłatnie · {m.format.split(" · ")[0]}
+              </p>
+              <h2 id="form-h" className="mt-3 font-display text-[1.75rem] leading-tight text-ink sm:text-[2rem]">Odbierz bezpłatny materiał</h2>
+              <p className="mb-5 mt-2 text-[15px] leading-relaxed text-ink-soft">Podaj adres e-mail – od razu otworzysz materiał, a link wyślemy też na Twoją skrzynkę.</p>
               <LeadMagnetForm
                 slug={m.slug}
                 n={m.n}

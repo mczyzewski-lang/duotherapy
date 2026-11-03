@@ -101,10 +101,10 @@ export const DEFAULT_SETTINGS: Settings = {
       "Chcę otrzymywać od DUO® okazjonalne informacje o materiałach i usługach (opcjonalnie, mogę zrezygnować w każdej chwili).",
     inquiryConsent: "Wyrażam zgodę na kontakt e-mailowy lub telefoniczny w odpowiedzi na moje pytanie.",
     contentDeliveryInfo:
-      "Materiał jest bezpłatny i nie wiąże się z zakupem. Podany e-mail wykorzystamy, żeby wysłać Ci link do pobrania. Szczegóły w polityce prywatności.",
+      "Materiał jest bezpłatny i nie wiąże się z zakupem. Z wiadomości możesz wypisać się w każdej chwili jednym kliknięciem w stopce e-maila.",
     contentMarketingConsent:
-      "Chcę otrzymywać od DUO dodatkowe materiały edukacyjne, wskazówki dotyczące relacji i informacje o usługach na podany adres e-mail. Wiem, że mogę w każdej chwili wycofać zgodę.",
-    contentSeriesConsent: "Chcę dostawać kolejne ćwiczenia wyzwania codziennie e-mailem przez 7 dni. Mogę zrezygnować w każdej chwili.",
+      "Chcę otrzymać materiał i wyrażam zgodę na wiadomości e-mail od DUO z kolejnymi materiałami, wskazówkami dotyczącymi relacji i informacjami o usługach. Mogę wycofać zgodę w każdej chwili.",
+    contentSeriesConsent: "W ramach wyzwania dostanę też kolejne ćwiczenia codziennie przez 7 dni.",
     version: "2026-10-draft",
     approved: false,
   },
