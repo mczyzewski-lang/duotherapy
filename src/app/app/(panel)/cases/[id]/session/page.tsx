@@ -49,7 +49,7 @@ export default async function SessionPage({ params }: { params: Promise<{ id: st
     KEY_ANSWERS.map(([k, label]) => {
       const { q, a } = answerByKey(p, k);
       return q && a ? { who: p.name, label, text: formatAnswer(q, a) } : null;
-    }).filter((x): x is { who: string; label: string; text: string } => !!x && x.text !== "—"),
+    }).filter((x): x is { who: string; label: string; text: string } => !!x && x.text !== "–"),
   );
   const risk = d.participants.some((p) => p.risk) || signals.some((x) => x.level === "safety");
   const form = (op: "start" | "end", label: string, variant: "clay" | "secondary") => (

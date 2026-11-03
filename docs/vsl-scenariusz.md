@@ -91,7 +91,7 @@ Jeśli czujesz, że tego właśnie teraz potrzebujesz, możesz rozpocząć od ra
 A jeżeli masz jeszcze pytania, możesz zaczekać na rozmowę z naszym konsultantem.
 Pamiętaj – nie musisz dzisiaj decydować o całej przyszłości swojego związku. Możesz zacząć od zrozumienia, gdzie naprawdę jesteś.”
 
-**Montaż:** Klaudia na pełnym ekranie; przy cenie dyskretnie „Mapa Relacji — 670 zł”; na końcu graficzny przycisk „Zamawiam Mapę Relacji”. Bez odliczania i presji.
+**Montaż:** Klaudia na pełnym ekranie; przy cenie dyskretnie „Mapa Relacji – 670 zł”; na końcu graficzny przycisk „Zamawiam Mapę Relacji”. Bez odliczania i presji.
 
 ---
 

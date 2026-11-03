@@ -122,7 +122,7 @@ export function OfferCard(p: OfferProps) {
       ) : !open ? (
         <div className="mt-5">
           <button id="offer-cta" type="button" onClick={show} className="flex min-h-14 w-full items-center justify-center gap-2 rounded-full bg-clay px-5 text-[16px] font-semibold text-white shadow-[0_10px_30px_-10px_rgba(169,81,47,0.7)] transition hover:brightness-110">
-            Zamawiam Mapę Relacji — {p.price} zł
+            Zamawiam Mapę Relacji – {p.price} zł
           </button>
           <p className="mt-2.5 flex items-start justify-center gap-1.5 text-center text-[13px] leading-snug text-muted">
             <Lock size={14} className="mt-0.5 shrink-0" aria-hidden /> Bezpieczna płatność. Przed zakupem poznajesz zakres i warunki usługi.
@@ -164,7 +164,7 @@ export function OfferCard(p: OfferProps) {
             )}
           >
             {pending || leaving ? <Loader2 size={18} className="animate-spin" aria-hidden /> : <ShieldCheck size={18} aria-hidden />}
-            {pending || leaving ? "Łączenie z płatnością…" : `Przejdź do bezpiecznej płatności — ${p.price} zł`}
+            {pending || leaving ? "Łączenie z płatnością…" : `Przejdź do bezpiecznej płatności – ${p.price} zł`}
           </button>
           <button type="button" onClick={() => setOpen(false)} className="mt-2 min-h-10 w-full text-sm text-muted">Wróć</button>
         </div>

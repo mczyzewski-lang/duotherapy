@@ -7,7 +7,7 @@
 | `/odbudowa` | Droga 1 – program „6 tygodni” z terapeutą par | Rozmowa o programie (formularz) |
 | `/czas-na-decyzje` | Droga 2 – wsparcie w decyzji | Rozmowa o wsparciu w decyzji |
 | `/swiadome-rozstanie` | Droga 3 – najlepsza droga rozstania, wsparcie indywidualne, pary i dzieci | Rozmowa o wsparciu w rozstaniu |
-| `/wiedza` | 10 bezpłatnych materiałów | — |
+| `/wiedza` | 10 bezpłatnych materiałów | – |
 
 Menu „Jak pomagamy” (desktop i telefon) pokazuje hierarchię: **Mapa Relacji – zacznij tutaj**, pod nią rozgałęzienie „Możliwe drogi po Mapie Relacji” z trzema ścieżkami. Logo Mapy Relacji jest tylko na stronach Mapy (landing, quiz, strona po quizie, zamówienie, przykład); w nagłówku i stopce reszty strony – tylko DUO. Na stronie głównej i w podstronach Mapa występuje jako usługa (mały znak w karcie), nie jako logo.
 

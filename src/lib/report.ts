@@ -113,7 +113,7 @@ function fromAnswer(p: PersonData | null, key: string, prefix = "Deklaracja klie
   const { q, a } = answerByKey(p, key);
   if (!q || !a || a.state !== "answered") return MISSING;
   const txt = formatAnswer(q, a);
-  return txt && txt !== "—" ? `${prefix}${txt}` : MISSING;
+  return txt && txt !== "–" ? `${prefix}${txt}` : MISSING;
 }
 
 const AREA_SECTIONS: Record<string, string[]> = {

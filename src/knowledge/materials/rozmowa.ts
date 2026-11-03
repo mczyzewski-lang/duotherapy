@@ -8,7 +8,7 @@ export const siedemDni: LeadMagnet = {
   slug: "7-dni-lepszych-rozmow",
   category: "rozmowa",
   icon: "days",
-  title: "7 dni lepszych rozmów — jedno małe ćwiczenie dziennie",
+  title: "7 dni lepszych rozmów – jedno małe ćwiczenie dziennie",
   short: "7 dni lepszych rozmów",
   menuDesc: "Siedem krótkich ćwiczeń, które pomagają spróbować nowego sposobu rozmowy.",
   format: "Wyzwanie 7 dni · online i PDF",

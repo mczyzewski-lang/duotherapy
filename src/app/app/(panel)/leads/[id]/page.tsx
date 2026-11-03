@@ -53,8 +53,8 @@ export default async function LeadPage({ params }: { params: Promise<{ id: strin
           <Card className="p-6">
             <h2 className="font-display text-lg text-ink">Kontakt</h2>
             <dl className="mt-4 grid gap-x-6 gap-y-3 text-sm sm:grid-cols-2">
-              <div><dt className="text-muted">Telefon</dt><dd>{lead.phone ? <a href={`tel:${lead.phone}`} className="text-base font-medium text-forest">{lead.phone}</a> : "—"}</dd></div>
-              <div><dt className="text-muted">E-mail</dt><dd>{lead.email ? <a href={`mailto:${lead.email}`} className="text-forest">{lead.email}</a> : "—"}</dd></div>
+              <div><dt className="text-muted">Telefon</dt><dd>{lead.phone ? <a href={`tel:${lead.phone}`} className="text-base font-medium text-forest">{lead.phone}</a> : "–"}</dd></div>
+              <div><dt className="text-muted">E-mail</dt><dd>{lead.email ? <a href={`mailto:${lead.email}`} className="text-forest">{lead.email}</a> : "–"}</dd></div>
               <div><dt className="text-muted">Kiedy dzwonić</dt><dd>{PREFERRED_TIME_LABEL[lead.preferred_time] ?? "dowolna pora"}{lead.quiz?.discreet && <Badge tone="clay" className="ml-2">dyskretnie</Badge>}</dd></div>
               <div><dt className="text-muted">Pierwszy krok</dt><dd>{lead.mode === "couple" ? "razem z partnerem/partnerką" : lead.mode === "individual" ? "samodzielnie" : "nie ustalono"}</dd></div>
               <div><dt className="text-muted">Zgody</dt><dd>{consents.map((c) => <span key={c.kind} className="block">{c.kind === "lead_contact" ? "kontakt" : "marketing"}: {c.granted ? "tak" : "nie"} <span className="text-xs text-muted">(wersja {c.text_version})</span></span>)}</dd></div>
@@ -102,10 +102,10 @@ export default async function LeadPage({ params }: { params: Promise<{ id: strin
               </>
             ) : (
               <dl className="mt-4 grid gap-x-6 gap-y-3 text-sm sm:grid-cols-2">
-                <div><dt className="text-muted">Intencja</dt><dd className="flex items-center gap-1.5"><LeadRoad lead={{ intent: lead.intent }} />{INTENT_LABEL[lead.intent] ?? "—"}</dd></div>
-                <div><dt className="text-muted">Co obciąża</dt><dd>{(lead.quiz?.concerns ?? []).map((c: string) => CONCERN_LABEL[c]).join(", ") || "—"}</dd></div>
-                <div><dt className="text-muted">Staż</dt><dd>{LEN[lead.quiz?.length] ?? "—"}</dd></div>
-                <div><dt className="text-muted">Kiedy</dt><dd>{WHEN[lead.quiz?.when] ?? "—"}</dd></div>
+                <div><dt className="text-muted">Intencja</dt><dd className="flex items-center gap-1.5"><LeadRoad lead={{ intent: lead.intent }} />{INTENT_LABEL[lead.intent] ?? "–"}</dd></div>
+                <div><dt className="text-muted">Co obciąża</dt><dd>{(lead.quiz?.concerns ?? []).map((c: string) => CONCERN_LABEL[c]).join(", ") || "–"}</dd></div>
+                <div><dt className="text-muted">Staż</dt><dd>{LEN[lead.quiz?.length] ?? "–"}</dd></div>
+                <div><dt className="text-muted">Kiedy</dt><dd>{WHEN[lead.quiz?.when] ?? "–"}</dd></div>
               </dl>
             )}
           </Card>
@@ -189,7 +189,7 @@ export default async function LeadPage({ params }: { params: Promise<{ id: strin
               <Field label="Wartość sprzedaży (zł)" htmlFor="sale" hint="Faktyczna kwota zakupu Mapy Relacji – do przychodu i CAC w panelu Lejek.">
                 <Input id="sale" type="number" inputMode="numeric" min={0} max={100000} step={1} name="sale_amount_pln" defaultValue={lead.sale_amount_pln ?? ""} />
               </Field>
-              <Field label="Osoba prowadząca" htmlFor="th"><Select id="th" name="assigned_therapist_id" defaultValue={lead.assigned_therapist_id ?? ""}><option value="">—</option>{therapists.map((t) => <option key={t.id} value={t.id}>{t.display_name}</option>)}</Select></Field>
+              <Field label="Osoba prowadząca" htmlFor="th"><Select id="th" name="assigned_therapist_id" defaultValue={lead.assigned_therapist_id ?? ""}><option value="">–</option>{therapists.map((t) => <option key={t.id} value={t.id}>{t.display_name}</option>)}</Select></Field>
               <SubmitButton size="sm">Zapisz</SubmitButton>
             </ActionForm>
             {settings.site.paymentUrl && <p className="mt-4 break-all text-xs text-muted">Link do płatności: <span className="text-ink">{settings.site.paymentUrl}</span></p>}

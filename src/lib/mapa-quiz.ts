@@ -91,7 +91,7 @@ export function isValidAnswers(a: Record<string, unknown>): a is Required<QuizAn
 }
 
 export function optionLabel(qid: QuizQuestion["id"], value?: string): string {
-  return QUIZ.find((q) => q.id === qid)?.options.find((o) => o.value === value)?.label ?? "—";
+  return QUIZ.find((q) => q.id === qid)?.options.find((o) => o.value === value)?.label ?? "–";
 }
 
 /** Wstępne podsumowanie – wyłącznie parafraza odpowiedzi, bez ocen i prognoz. */

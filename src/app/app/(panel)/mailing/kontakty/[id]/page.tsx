@@ -75,7 +75,7 @@ export default async function ContactJourney({ params }: { params: Promise<{ id:
             <h2 className="font-display text-lg text-ink">Status</h2>
             <dl className="mt-3 space-y-1.5">
               <div className="flex justify-between"><dt className="text-muted">Zgoda marketingowa</dt><dd>{c.marketing_consent ? "tak" : "nie"}</dd></div>
-              <div className="flex justify-between"><dt className="text-muted">Zakup</dt><dd>{c.purchased_at ? new Date(c.purchased_at).toLocaleString("pl-PL") : "—"}</dd></div>
+              <div className="flex justify-between"><dt className="text-muted">Zakup</dt><dd>{c.purchased_at ? new Date(c.purchased_at).toLocaleString("pl-PL") : "–"}</dd></div>
               {d.enr.map((e) => (
                 <div key={e.sequence_id} className="flex justify-between"><dt className="text-muted">Ścieżka {e.sequence_id === "lead" ? "przed zakupem" : "po zakupie"}</dt><dd>{e.status}{e.stopped_reason ? ` (${e.stopped_reason})` : ""}</dd></div>
               ))}

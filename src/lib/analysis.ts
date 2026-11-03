@@ -172,11 +172,11 @@ function choiceOf(v: AnswerValue) {
 
 /** Czytelna forma odpowiedzi (do widoku i cytatów). */
 export function formatAnswer(q: Pick<QuestionRow, "type" | "options">, a?: AnswerLite): string {
-  if (!a) return "—";
+  if (!a) return "–";
   if (a.state === "not_applicable") return "nie dotyczy";
   if (a.state === "discuss_in_session") return "wolę omówić na sesji";
   const v = a.value;
-  if (v === null || v === undefined) return "—";
+  if (v === null || v === undefined) return "–";
   const label = (val: string) => q.options?.find((o) => o.value === val)?.label ?? val;
   switch (q.type) {
     case "scale5":
@@ -193,7 +193,7 @@ export function formatAnswer(q: Pick<QuestionRow, "type" | "options">, a?: Answe
     }
     case "children": {
       const c = (v as { children: { name: string; age: string }[] }).children.filter((x) => x.name.trim() || x.age.trim());
-      return c.length ? c.map((x) => [x.name.trim(), x.age.trim() && `${x.age.trim()} l.`].filter(Boolean).join(", ")).join("; ") : "—";
+      return c.length ? c.map((x) => [x.name.trim(), x.age.trim() && `${x.age.trim()} l.`].filter(Boolean).join(", ")).join("; ") : "–";
     }
     case "country_city": {
       const c = v as { country: string; city: string };

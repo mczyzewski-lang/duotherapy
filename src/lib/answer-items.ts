@@ -28,14 +28,14 @@ export async function buildAnswerSections(tx: Tx, person: PersonData, sectionKey
           return {
             q: qv,
             a: a ? { state: a.state, value: a.value, byTherapist: Boolean(meta?.updated_by_user), updatedAt: new Date(meta?.updated_at ?? Date.now()).toISOString() } : null,
-            display: a ? formatAnswer(q, a) || "—" : "brak odpowiedzi",
+            display: a ? formatAnswer(q, a) || "–" : "brak odpowiedzi",
             revisions: revs
               .filter((r) => a && r.answer_id === (a as unknown as { id: string }).id)
               .map((r) => ({
                 at: new Date(r.created_at).toISOString(),
                 who: r.user_name ?? "klient",
                 reason: r.reason,
-                old: r.old_state ? formatAnswer(q, { question_id: q.id, state: r.old_state, value: decrypt<AnswerValue>(r.old_value_enc) }) : "—",
+                old: r.old_state ? formatAnswer(q, { question_id: q.id, state: r.old_state, value: decrypt<AnswerValue>(r.old_value_enc) }) : "–",
                 new: formatAnswer(q, { question_id: q.id, state: r.new_state, value: decrypt<AnswerValue>(r.new_value_enc) }),
               })),
           };

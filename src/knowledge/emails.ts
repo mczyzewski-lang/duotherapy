@@ -10,7 +10,7 @@ export interface Mail {
 const footer = (appUrl: string, contact: { email?: string; phone?: string }, unsubscribeUrl?: string) =>
   [
     "",
-    "—",
+    "–",
     "DUO® · Mapa Relacji",
     [contact.email, contact.phone].filter(Boolean).join(" · ") || appUrl,
     unsubscribeUrl ? `Nie chcesz więcej wiadomości? Wypisz się: ${unsubscribeUrl}` : "",

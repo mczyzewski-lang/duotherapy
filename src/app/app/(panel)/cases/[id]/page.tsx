@@ -25,7 +25,7 @@ import { audit } from "@/lib/audit";
 export const metadata = { title: "Karta sprawy" };
 
 const RISK_LABEL: Record<string, string> = { needs_review: "wymaga przeglądu", contacted: "kontakt podjęty", reviewed: "przejrzane", safety_path: "ścieżka bezpieczeństwa" };
-const fmt = (d: Date | string | null) => (d ? new Date(d).toLocaleString("pl-PL", { dateStyle: "medium", timeStyle: "short" }) : "—");
+const fmt = (d: Date | string | null) => (d ? new Date(d).toLocaleString("pl-PL", { dateStyle: "medium", timeStyle: "short" }) : "–");
 
 export default async function CasePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;

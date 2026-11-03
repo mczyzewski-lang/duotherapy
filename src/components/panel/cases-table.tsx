@@ -47,7 +47,7 @@ export function CasesTable({ rows }: { rows: CaseRow[] }) {
               </td>
               <td className="px-4 py-3"><Badge tone={r.status === "closed" ? "neutral" : "forest"}>{statusLabel(r.status)}</Badge>{r.payment_status === "unpaid" && <Badge tone="clay" className="ml-1">nieopłacone</Badge>}</td>
               <td className="px-4 py-3 text-ink-soft">{r.progress}</td>
-              <td className="px-4 py-3 text-ink-soft">{r.session_at ? new Date(r.session_at).toLocaleString("pl-PL", { dateStyle: "short", timeStyle: "short" }) : "—"}</td>
+              <td className="px-4 py-3 text-ink-soft">{r.session_at ? new Date(r.session_at).toLocaleString("pl-PL", { dateStyle: "short", timeStyle: "short" }) : "–"}</td>
               <td className="px-4 py-3 text-ink-soft">{r.therapist_name}</td>
             </tr>
           ))}

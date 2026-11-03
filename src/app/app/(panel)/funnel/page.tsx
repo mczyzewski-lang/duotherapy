@@ -4,7 +4,7 @@ import { readSettings } from "@/lib/settings";
 
 export const metadata = { title: "Lejek" };
 
-const pct = (a: number, b: number) => (b > 0 ? `${Math.round((a / b) * 1000) / 10}%` : "—");
+const pct = (a: number, b: number) => (b > 0 ? `${Math.round((a / b) * 1000) / 10}%` : "–");
 const STAGE_RANK = ["new", "contacted", "call_scheduled", "call_done", "payment_sent", "paid", "converted"];
 
 export default async function FunnelPage({ searchParams }: { searchParams: Promise<Record<string, string | undefined>> }) {
@@ -234,11 +234,11 @@ export default async function FunnelPage({ searchParams }: { searchParams: Promi
             <button className="rounded-full bg-forest px-4 py-2 text-sm font-medium text-white sm:col-span-3 sm:justify-self-start">Przelicz</button>
           </form>
           <dl className="mt-5 grid grid-cols-2 gap-4 text-sm">
-            <div><dt className="text-muted">Koszt pozyskania płacącego klienta (CAC)</dt><dd className="font-display text-2xl text-forest">{spend && paid ? `${Math.round(spend / paid)} zł` : "—"}</dd></div>
-            <div><dt className="text-muted">Koszt leada</dt><dd className="font-display text-2xl text-forest">{spend && d.leads.length ? `${Math.round(spend / d.leads.length)} zł` : "—"}</dd></div>
-            <div><dt className="text-muted">Marża na 1 Mapie</dt><dd className="font-display text-2xl text-forest">{price ? `${price - cost} zł` : "—"}</dd></div>
-            <div><dt className="text-muted">Zwrot z reklamy (przychód / wydatki)</dt><dd className="font-display text-2xl text-forest">{spend && revenue ? `${(revenue / spend).toFixed(2)}×` : "—"}</dd></div>
-            <div><dt className="text-muted">Marża po kosztach reklamy</dt><dd className="font-display text-2xl text-forest">{price && spend && paid ? `${Math.round(price - cost - spend / paid)} zł` : "—"}</dd></div>
+            <div><dt className="text-muted">Koszt pozyskania płacącego klienta (CAC)</dt><dd className="font-display text-2xl text-forest">{spend && paid ? `${Math.round(spend / paid)} zł` : "–"}</dd></div>
+            <div><dt className="text-muted">Koszt leada</dt><dd className="font-display text-2xl text-forest">{spend && d.leads.length ? `${Math.round(spend / d.leads.length)} zł` : "–"}</dd></div>
+            <div><dt className="text-muted">Marża na 1 Mapie</dt><dd className="font-display text-2xl text-forest">{price ? `${price - cost} zł` : "–"}</dd></div>
+            <div><dt className="text-muted">Zwrot z reklamy (przychód / wydatki)</dt><dd className="font-display text-2xl text-forest">{spend && revenue ? `${(revenue / spend).toFixed(2)}×` : "–"}</dd></div>
+            <div><dt className="text-muted">Marża po kosztach reklamy</dt><dd className="font-display text-2xl text-forest">{price && spend && paid ? `${Math.round(price - cost - spend / paid)} zł` : "–"}</dd></div>
           </dl>
         </Card>
       </div>

@@ -52,8 +52,8 @@ export default async function ComparePage({ params, searchParams }: { params: Pr
           <h2 className="font-display text-lg text-ink">Gotowość (opisowo)</h2>
           <p className="mt-1 text-xs text-muted">Średnia z pozycji „gotowość” Cz. 10 (1–5) – wskaźnik pomocniczy, autorski, niediagnostyczny.</p>
           <dl className="mt-3 grid grid-cols-2 gap-3 text-sm">
-            <div><dt className="text-muted">{a.name}</dt><dd className="font-display text-2xl text-forest">{ra?.toFixed(1) ?? "—"}</dd></div>
-            <div><dt className="text-muted">{b.name}</dt><dd className="font-display text-2xl text-forest">{rb?.toFixed(1) ?? "—"}</dd></div>
+            <div><dt className="text-muted">{a.name}</dt><dd className="font-display text-2xl text-forest">{ra?.toFixed(1) ?? "–"}</dd></div>
+            <div><dt className="text-muted">{b.name}</dt><dd className="font-display text-2xl text-forest">{rb?.toFixed(1) ?? "–"}</dd></div>
           </dl>
           <p className="mt-3 text-xs text-muted">Wytyczne: w części indywidualnej sesji zapytaj każdą osobę osobno o gotowość w skali 0–10.</p>
         </Card>

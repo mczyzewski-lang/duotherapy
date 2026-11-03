@@ -161,7 +161,7 @@ export function renderMail(step: Pick<StepRow, "code" | "sequence_id" | "subject
     : "Otrzymujesz tę wiadomość, bo pobrałeś / pobrałaś materiał DUO i zgodziłeś / zgodziłaś się na wiadomości.";
   const paras = body.split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
 
-  const text = [greeting, "", ...paras.flatMap((p) => [p, ""]), step.cta_label ? `${step.cta_label}: ${link}` : link, "", "Zespół DUO", "", "—", why, `Wypisz się: ${unsub}`].join("\n");
+  const text = [greeting, "", ...paras.flatMap((p) => [p, ""]), step.cta_label ? `${step.cta_label}: ${link}` : link, "", "Zespół DUO", "", "–", why, `Wypisz się: ${unsub}`].join("\n");
   const html = `<!doctype html><html lang="pl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(step.subject)}</title></head>
 <body style="margin:0;background:#f4eee6;font-family:Helvetica,Arial,sans-serif;color:#2a2522">
 <span style="display:none;max-height:0;overflow:hidden;opacity:0">${esc(step.preheader)}</span>

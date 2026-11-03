@@ -36,4 +36,4 @@ export const SEGMENT_LABEL: Record<string, string> = {
 export const PREFERRED_TIME_LABEL: Record<string, string> = { morning: "rano (8–12)", afternoon: "po południu (12–17)", evening: "wieczorem (17–20)" };
 
 export const leadSummary = (l: { segment?: string | null; intent?: string | null }) =>
-  (l.segment && SEGMENT_LABEL[l.segment]) || (l.intent && INTENT_LABEL[l.intent]) || "—";
+  (l.segment && SEGMENT_LABEL[l.segment]) || (l.intent && INTENT_LABEL[l.intent]) || "–";

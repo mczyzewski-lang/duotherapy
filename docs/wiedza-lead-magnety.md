@@ -12,7 +12,7 @@
 | 6 | Gdy tylko jedna osoba chce ratować związek | `/wiedza/partner-nie-chce-ratowac-zwiazku` | `…/demo` | `…/pdf` |
 | 7 | Pętla konfliktu | `/wiedza/petla-konfliktu` | `…/demo` | `…/pdf` |
 | 8 | Pierwsze kroki po zdradzie | `/wiedza/po-zdradzie` | `…/demo` | `…/pdf` |
-| 9 | Świadome rozstanie — co teraz? | `/wiedza/swiadome-rozstanie` | `…/demo` | `…/pdf` |
+| 9 | Świadome rozstanie – co teraz? | `/wiedza/swiadome-rozstanie` | `…/demo` | `…/pdf` |
 | 10 | Przykładowa Mapa Relacji | `/wiedza/przykladowa-mapa-relacji` | `…/demo` | `…/pdf` |
 
 Strona zbiorcza: `/wiedza` (filtr kategorii). Wersja online po zapisie: `/wiedza/<slug>/material` (noindex). Wydrukowane PDF-y do przejrzenia: `docs/materialy/DUO-<slug>.pdf`.

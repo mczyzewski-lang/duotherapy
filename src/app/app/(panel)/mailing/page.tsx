@@ -12,7 +12,7 @@ import { ensureDefaults, resendConfigured, type StepRow } from "@/lib/mailing";
 export const metadata = { title: "Mailing" };
 export const dynamic = "force-dynamic";
 
-const pct = (a: number, b: number) => (b > 0 ? `${Math.round((a / b) * 100)}%` : "—");
+const pct = (a: number, b: number) => (b > 0 ? `${Math.round((a / b) * 100)}%` : "–");
 
 export default async function MailingPage() {
   const s = await requireStaff("admin");

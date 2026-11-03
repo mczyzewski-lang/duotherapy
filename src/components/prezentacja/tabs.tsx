@@ -57,7 +57,7 @@ export function DeckTabs({ deck, ads, hooks, creatives, strategy }: {
         <div role="tabpanel" id="panel-reklamy" aria-labelledby="tab-reklamy" hidden={tab !== "reklamy"} className="np-ads">
           <header className="mb-6">
             <p className="text-[11px] font-semibold uppercase tracking-[0.25em] text-[#9a7d43]">Meta Ads</p>
-            <h1 className="mt-1 font-serif text-3xl font-medium leading-tight text-[#16291f] sm:text-[2.4rem]">Reklamy Meta — pozyskanie psychologów na webinar</h1>
+            <h1 className="mt-1 font-serif text-3xl font-medium leading-tight text-[#16291f] sm:text-[2.4rem]">Reklamy Meta – pozyskanie psychologów na webinar</h1>
           </header>
           <div role="tablist" aria-label="Rodzaj materiału" className="mb-6 inline-flex rounded-full bg-[#f2ece0] p-1 ring-1 ring-[#e3d8c2]">
             {([["glowne", "Główne reklamy"], ["hooki", "Hooki"], ["kreacje", "Kreacje"]] as const).map(([k, l]) => (

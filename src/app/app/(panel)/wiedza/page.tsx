@@ -8,7 +8,7 @@ import { customerMailConfigured } from "@/lib/notify";
 
 export const metadata = { title: "Wiedza – zapisy" };
 
-const pct = (a: number, b: number) => (b > 0 ? `${Math.round((a / b) * 1000) / 10}%` : "—");
+const pct = (a: number, b: number) => (b > 0 ? `${Math.round((a / b) * 1000) / 10}%` : "–");
 const DELIVERY: Record<string, [string, "ok" | "clay" | "alert" | "neutral"]> = {
   sent: ["wysłano", "ok"],
   not_configured: ["wysyłka nieskonfigurowana", "clay"],
@@ -103,7 +103,7 @@ export default async function KnowledgeAdmin({ searchParams }: { searchParams: P
                   <tr key={l.id}>
                     <td className="py-2 text-xs">{new Date(l.created_at).toLocaleString("pl-PL")}</td>
                     <td>{l.email}</td>
-                    <td>{l.name ?? "—"}</td>
+                    <td>{l.name ?? "–"}</td>
                     <td>{l.magnet_id}</td>
                     <td className="text-xs">{[l.attribution?.utm_source, l.attribution?.utm_campaign].filter(Boolean).join(" · ") || "bezpośrednio"}</td>
                     <td className="text-xs">marketing: {l.marketing_consent ? "tak" : "nie"}{l.series_consent ? " · seria 7 dni" : ""}{l.unsubscribed_at ? " · wypisany" : ""}</td>

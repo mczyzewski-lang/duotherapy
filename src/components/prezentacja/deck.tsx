@@ -209,7 +209,7 @@ function CreativeBox({ c }: { c: NonNullable<Ad["creative"]> }) {
 export function AdCard({ ad }: { ad: Ad }) {
   return (
     <article className="rounded-[1.75rem] border border-[#ece4d4] bg-[#fdfbf7] p-5 sm:p-8" data-testid="ad">
-      <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#9a7d43]">Reklama {ad.n} — {ad.name}</p>
+      <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#9a7d43]">Reklama {ad.n} – {ad.name}</p>
       <div className={clsx("mt-4 grid gap-6", ad.creative && "lg:grid-cols-[minmax(0,22rem)_1fr]")}>
         {ad.creative && (
           <div>

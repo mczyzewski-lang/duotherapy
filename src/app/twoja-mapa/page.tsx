@@ -154,7 +154,7 @@ export default async function VslPage({ searchParams }: { searchParams: Promise<
             <p className="mx-auto mt-3 max-w-xl leading-relaxed text-white/85">
               Możesz zacząć od lepszego zrozumienia swojej sytuacji – z pomocą psychologa i w swoim tempie.
             </p>
-            <p className="mt-5 font-display text-2xl">Mapa Relacji — {price} zł</p>
+            <p className="mt-5 font-display text-2xl">Mapa Relacji – {price} zł</p>
             <div className="mt-5">
               {lead && available ? (
                 <FinalOrderButton label="Rozpoczynam swoją Mapę Relacji" />

@@ -48,7 +48,7 @@ export default async function ContactsPage({ searchParams }: { searchParams: Pro
                 <td className="text-xs">{(c.seqs ?? "").split(",").filter(Boolean).map((x) => { const [a, b] = x.split(":"); return <span key={x} className="block">{SEQ[a] ?? a}: {ST[b] ?? b}</span>; })}</td>
                 <td>{c.sent}</td>
                 <td>{c.clicks}</td>
-                <td>{c.purchased_at ? new Date(c.purchased_at).toLocaleDateString("pl-PL") : "—"}</td>
+                <td>{c.purchased_at ? new Date(c.purchased_at).toLocaleDateString("pl-PL") : "–"}</td>
                 <td className="text-xs text-muted">{new Date(c.created_at).toLocaleDateString("pl-PL")}</td>
               </tr>
             ))}

@@ -51,7 +51,7 @@ export const SLIDES: Slide[] = [
       { t: "lead", text: "Nie chcemy uczyć psychologów pisać pozwów." },
       { t: "p", text: "Chcemy pokazać sytuacje, w których klient podczas terapii zaczyna podejmować decyzje mające później konsekwencje:" },
       { t: "pills", items: ["emocjonalne", "prawne", "finansowe", "rodzinne"] },
-      { t: "highlight", text: "Cel webinaru: wiedzieć, gdzie kończy się rola psychologa — i kiedy warto skierować klienta po dodatkowe wsparcie." },
+      { t: "highlight", text: "Cel webinaru: wiedzieć, gdzie kończy się rola psychologa – i kiedy warto skierować klienta po dodatkowe wsparcie." },
     ],
   },
   {
@@ -276,7 +276,7 @@ export const SLIDES: Slide[] = [
           "Pomóż oddzielić emocję od działania.",
           "Sprawdź, co jest faktem, a co założeniem dotyczącym partnera.",
           "Zwróć uwagę na wpływ decyzji na dzieci.",
-          "Jeżeli pojawiają się kwestie prawne — skieruj klienta po właściwą kompetencję.",
+          "Jeżeli pojawiają się kwestie prawne – skieruj klienta po właściwą kompetencję.",
         ],
       },
     ],
@@ -293,7 +293,7 @@ export const SLIDES: Slide[] = [
     divider: "Przejście do partnerstwa",
     blocks: [
       { t: "h", text: "Dlaczego rozmawiamy dzisiaj z psychologami?" },
-      { t: "lead", text: "Bo bardzo często pracujemy z tymi samymi ludźmi — tylko w innych momentach ich problemu." },
+      { t: "lead", text: "Bo bardzo często pracujemy z tymi samymi ludźmi – tylko w innych momentach ich problemu." },
       {
         t: "cols",
         cols: [
@@ -353,7 +353,7 @@ export const ADS: Ad[] = [
   {
     n: 1,
     name: "Główna",
-    creative: { kicker: "Twój pacjent mówi:", big: "„chyba chcę się rozwieść”", small: "Co możesz mu powiedzieć — a kiedy warto skierować go do innego specjalisty?", badge: "Bezpłatny webinar dla psychologów" },
+    creative: { kicker: "Twój pacjent mówi:", big: "„chyba chcę się rozwieść”", small: "Co możesz mu powiedzieć – a kiedy warto skierować go do innego specjalisty?", badge: "Bezpłatny webinar dla psychologów" },
     primary: [
       "Psycholog często jest jedną z pierwszych osób, którym klient mówi:",
       "„Chyba chcę się rozwieść.”",
@@ -391,7 +391,7 @@ export const ADS: Ad[] = [
       "Co dzieje się później?",
       "Czasami formalne działanie porządkuje sytuację.",
       "A czasami rozpoczyna wymianę stanowisk, na którą emocjonalnie nie była przygotowana żadna ze stron.",
-      "Podczas bezpłatnego webinaru porozmawiamy o tym, co psycholog powinien wiedzieć o okresie poprzedzającym rozwód — bez wchodzenia w rolę prawnika.",
+      "Podczas bezpłatnego webinaru porozmawiamy o tym, co psycholog powinien wiedzieć o okresie poprzedzającym rozwód – bez wchodzenia w rolę prawnika.",
     ],
     cta: "Zapisz się",
   },
@@ -439,13 +439,13 @@ export const ADS: Ad[] = [
 
 export const HOOKS = [
   "Pacjent mówi: „chyba chcę się rozwieść”. Co robisz dalej?",
-  "Co psycholog powinien wiedzieć o rozwodzie — nie będąc prawnikiem?",
+  "Co psycholog powinien wiedzieć o rozwodzie – nie będąc prawnikiem?",
   "Gdzie kończy się psychologia, a zaczyna prawo?",
   "7 momentów przed rozwodem, w których klient potrzebuje więcej niż jednej kompetencji.",
   "Czy psycholog powinien rozmawiać z klientem o pozwie?",
   "Pacjent pyta: „czy mam się wyprowadzić?”. Jak odpowiedzieć, nie wchodząc w rolę prawnika?",
   "Twój pacjent chce się rozwieść. Czy wie, co powinien zrobić najpierw?",
-  "Psycholog, mediator i prawnik — gdzie kończy się rola każdego z nich?",
+  "Psycholog, mediator i prawnik – gdzie kończy się rola każdego z nich?",
 ];
 
 export const FUNNEL = [

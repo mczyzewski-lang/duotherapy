@@ -333,7 +333,7 @@ test("zakup online: strona VSL → płatność (atrapa operatora) → termin →
   await page.waitForLoadState("networkidle");
 
   // podsumowanie zamówienia: bez akceptacji regulaminu i zgody nie da się przejść dalej
-  await page.getByRole("button", { name: /Zamawiam Mapę Relacji — 670 zł/ }).click();
+  await page.getByRole("button", { name: /Zamawiam Mapę Relacji – 670 zł/ }).click();
   await expect(page.getByRole("heading", { name: "Podsumowanie zamówienia" })).toBeVisible();
   await expect(page.getByRole("button", { name: /Przejdź do bezpiecznej płatności/ })).toBeDisabled();
   await page.getByRole("checkbox", { name: /Akceptuję/ }).check();
