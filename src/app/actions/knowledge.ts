@@ -20,7 +20,7 @@ import { magnetBySlug } from "@/knowledge/registry";
 const Schema = z.object({
   slug: z.string().max(80),
   email: z.string().trim().toLowerCase().email("Podaj poprawny adres e-mail.").max(200),
-  name: z.string().trim().max(80).default(""),
+  name: z.string().trim().min(2, "Podaj imię.").max(80),
   relationship: z.enum(["para", "malzenstwo"], { error: "Zaznacz, czy jesteście parą, czy małżeństwem." }),
   children: z.enum(["tak", "nie"], { error: "Zaznacz, czy macie dzieci." }),
   /** Jedna, wymagana zgoda: materiał + wiadomości e-mail (przy wyzwaniu 7 dni także codzienne ćwiczenia). */

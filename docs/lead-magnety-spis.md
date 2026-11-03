@@ -57,7 +57,7 @@ materiałów, które zbierają e-maile i prowadzą – delikatnie, bez presji �
 
 ## Jak działa lejek
 
-1. Formularz na landingu: e-mail (+ imię opcjonalnie), „Jesteśmy: parą / małżeństwem”, „Dzieci: mamy / nie mamy” (wymagane)
+1. Formularz na landingu: imię i e-mail (wymagane; reszta pojawia się po wpisaniu kompletnego e-maila), „Jesteśmy: parą / małżeństwem”, „Dzieci: mamy / nie mamy” (wymagane)
    i jedna wymagana zgoda (materiał + wiadomości e-mail; przy lm04 obejmuje codzienne ćwiczenia przez 7 dni).
    Zapis w `content_leads`; materiał wysyłany e-mailem (Resend, zapasowo SMTP) albo dostępny od razu na stronie.
 2. Kontakt w mailingu (`mail_contacts`) dostaje tag `#lm-<slug>` (np. `#lm-po-zdradzie`), `#para` albo `#malzenstwo`,

@@ -76,6 +76,7 @@ export function LeadMagnetForm({
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
     setErr(null);
+    if (f.name.trim().length < 2) return setErr({ text: "Podaj imię.", field: "name" });
     if (!emailReady) return setErr({ text: "Podaj poprawny adres e-mail.", field: "email" });
     if (!f.relationship) return setErr({ text: "Zaznacz, czy jesteście parą, czy małżeństwem.", field: "relationship" });
     if (!f.children) return setErr({ text: "Zaznacz, czy macie dzieci.", field: "children" });
@@ -129,8 +130,11 @@ export function LeadMagnetForm({
   return (
     <form ref={ref} onSubmit={submit} onFocus={onStart} noValidate className="space-y-4">
       <div>
-        <label htmlFor="lm-name" className="mb-1.5 block text-sm font-medium text-ink">Imię <span className="font-normal text-muted">– opcjonalnie</span></label>
-        <input id="lm-name" className={input} autoComplete="given-name" value={f.name} onChange={(e) => setF({ ...f, name: e.target.value })} />
+        <label htmlFor="lm-name" className="mb-1.5 block text-sm font-medium text-ink">Imię</label>
+        <input id="lm-name" className={input} autoComplete="given-name" required value={f.name}
+          onChange={(e) => { setF({ ...f, name: e.target.value }); if (err?.field === "name") setErr(null); }}
+          aria-invalid={err?.field === "name"} aria-describedby={err?.field === "name" ? "lm-name-e" : undefined} />
+        {err?.field === "name" && <p id="lm-name-e" role="alert" className="mt-1.5 text-sm text-alert">{err.text}</p>}
       </div>
       <div>
         <label htmlFor="lm-email" className="mb-1.5 block text-sm font-medium text-ink">E-mail</label>
@@ -162,7 +166,7 @@ export function LeadMagnetForm({
         {err?.field === "consent" && <p id="lm-consent-e" role="alert" className="-mt-2 text-sm text-alert">{err.text}</p>}
         </div>
       </div>
-      {err && !["email", "consent", "relationship", "children"].includes(err.field ?? "") && <p role="alert" className="rounded-xl bg-alert-soft px-3 py-2 text-sm text-alert">{err.text}</p>}
+      {err && !["name", "email", "consent", "relationship", "children"].includes(err.field ?? "") && <p role="alert" className="rounded-xl bg-alert-soft px-3 py-2 text-sm text-alert">{err.text}</p>}
       <button type="submit" disabled={pending} className={clsx("flex min-h-14 w-full items-center justify-center gap-2 rounded-full bg-clay px-6 text-[16px] font-semibold text-white shadow-soft transition hover:brightness-110 disabled:opacity-60")}>
         {pending ? <Loader2 size={18} className="animate-spin" aria-hidden /> : <Mail size={18} aria-hidden />} {pending ? "Wysyłanie…" : "Wyślij mi materiał"}
       </button>

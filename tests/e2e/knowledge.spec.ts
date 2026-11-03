@@ -100,8 +100,12 @@ test("10 landingów i 10 pełnych podglądów /demo (noindex), /demo zgodne z PD
 test("formularz: jedna wymagana zgoda, uczciwy komunikat bez wysyłki, zapis w panelu", async ({ page, browser }) => {
   await page.goto("/wiedza/petla-konfliktu?utm_source=instagram&utm_campaign=wiedza_e2e");
   await page.waitForLoadState("networkidle");
-  await page.getByLabel("E-mail", { exact: true }).fill("zle");
   await page.waitForTimeout(1600);
+  // imię jest wymagane
+  await page.getByRole("button", { name: "Wyślij mi materiał" }).click();
+  await expect(page.getByText("Podaj imię.")).toBeVisible();
+  await page.getByLabel("Imię", { exact: true }).fill("Czytelnik");
+  await page.getByLabel("E-mail", { exact: true }).fill("zle");
   // dalsze pola pojawiają się dopiero przy e-mailu z „@” i min. 2 znakami po kropce
   await expect(page.getByTestId("lm-consent")).not.toBeVisible();
   await page.getByRole("button", { name: "Wyślij mi materiał" }).click();

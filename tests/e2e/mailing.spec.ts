@@ -14,6 +14,7 @@ test("mailing: tag z materiału, ścieżki w panelu, warunki tagów, link śledz
   // zapis na materiał ze zgodą marketingową
   await page.goto("/wiedza/po-zdradzie");
   await page.waitForLoadState("networkidle");
+  await page.getByLabel("Imię", { exact: true }).fill("Podróżniczka");
   await page.getByLabel("E-mail", { exact: true }).fill("podroz@example.test");
   await page.getByTestId("lm-relationship").getByText("Parą", { exact: true }).click();
   await page.getByTestId("lm-children").getByText("Nie mamy dzieci", { exact: true }).click();
