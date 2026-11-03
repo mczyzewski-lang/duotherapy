@@ -3,7 +3,7 @@ import { ArrowRight, Check } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { MapaSymbol, RoadGlyph } from "@/components/brand";
-import { MagnetCard } from "@/components/knowledge/magnet-card";
+import { MagnetCard, MagnetRail } from "@/components/knowledge/magnet-card";
 import { coverPhotoMap } from "@/lib/cover-photos";
 import { AskDialog } from "@/components/landing/ask-dialog";
 import { TherapistSection } from "@/components/landing/therapist";
@@ -13,7 +13,7 @@ import { SiteHeader } from "@/components/site/header";
 import { PATHS } from "@/content/paths";
 import { env } from "@/lib/env";
 import { getSettings } from "@/lib/settings";
-import { magnetBySlug } from "@/knowledge/registry";
+import { MAGNETS, magnetBySlug } from "@/knowledge/registry";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
@@ -129,7 +129,8 @@ export default async function Home() {
               </div>
               <Link href="/wiedza" className="text-sm font-semibold text-forest hover:underline">Wszystkie materiały →</Link>
             </div>
-            <ul className="mt-6 grid gap-5 sm:grid-cols-3">
+            <div className="mt-6"><MagnetRail items={MAGNETS} photos={photos} label="Bezpłatne materiały" /></div>
+            <ul className="mt-6 hidden gap-6 md:grid md:grid-cols-3">
               {FEATURED.map((slug) => magnetBySlug(slug)!).map((m) => (
                 <li key={m.slug}>
                   <MagnetCard m={m} photo={photos[m.slug]} />

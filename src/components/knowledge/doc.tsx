@@ -27,9 +27,9 @@ const GRAIN = "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg
  * Okładka: nastrój zamiast „techniki” – światło, ciepłe barwy, cytat z życia. Jeśli dostarczono zdjęcie
  * (public/img/wiedza/<slug>.jpg, covers.ts → photo: true), jest ono tłem okładki.
  */
-export function Cover({ m, mode, compact, hero, photo }: { m: LeadMagnet; mode: Mode; compact?: boolean; hero?: boolean; photo?: string | null }) {
+export function Cover({ m, mode, compact, hero, photo, idSuffix = "" }: { m: LeadMagnet; mode: Mode; compact?: boolean; hero?: boolean; photo?: string | null; idSuffix?: string }) {
   const c = coverOf(m.slug) ?? { hook: "", mood: ["#f3e2d3", "#a9512f", "#36493d"] as [string, string, string], photo: false };
-  const uid = `${m.id}-${compact ? "c" : mode}`;
+  const uid = `${m.id}-${compact ? "c" : mode}${idSuffix}`; // unikalne id gradientów SVG, gdy ta sama okładka jest na stronie kilka razy
   const sm = compact && !hero; // mała miniatura (karty); okładka w hero landingu jest większa
   const T = compact ? "p" : "h1"; // miniatura okładki nie jest nagłówkiem strony – jeden H1 na stronę
   // zdjęcie: wygenerowane w panelu (z bazy) albo plik w public/img/wiedza (photo: true w covers.ts)

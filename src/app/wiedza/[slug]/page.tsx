@@ -7,7 +7,7 @@ import { MapaSymbol } from "@/components/brand";
 import { KTrack, LeadMagnetForm, MagnetStickyBar } from "@/components/knowledge/client";
 import { BlockView, Cover } from "@/components/knowledge/doc";
 import { MagnetIcon } from "@/components/knowledge/icons";
-import { MagnetCard } from "@/components/knowledge/magnet-card";
+import { MagnetCard, MagnetRail } from "@/components/knowledge/magnet-card";
 import { CoverBook } from "@/components/knowledge/cover-book";
 import { coverPhotoMap } from "@/lib/cover-photos";
 import { ReportPreview } from "@/components/mapa/report-preview";
@@ -199,7 +199,8 @@ export default async function MagnetLanding({ params }: { params: Promise<{ slug
         {related.length > 0 && (
           <section className="mx-auto max-w-6xl px-5 pb-16" aria-labelledby="inne-h">
             <h2 id="inne-h" className="font-display text-2xl text-ink">Inne materiały z tej kategorii</h2>
-            <ul className="mt-4 grid gap-5 sm:grid-cols-3">
+            <div className="mt-4"><MagnetRail items={related} photos={photos} label="Inne materiały" /></div>
+            <ul className="mt-4 hidden gap-6 md:grid md:grid-cols-3">
               {related.map((r) => (
                 <li key={r.slug}>
                   <MagnetCard m={r} photo={photos[r.slug]} />
