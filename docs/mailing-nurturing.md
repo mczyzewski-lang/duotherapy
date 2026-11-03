@@ -11,7 +11,7 @@ zakup (webhook płatności) ──► tag #klient, ścieżka „przed zakupem”
 ```
 
 - **Kontakt** = jeden adres e-mail. Ma stały, losowy **kod osoby** (8 znaków, np. `k7m2p9xq`) i listę **tagów**.
-- **Tagi nadawane automatycznie:** `#lm-<slug materiału>` (np. `#lm-po-zdradzie`), `#seria-7-dni`, `#quiz`, `#klient`. Własne tagi dopisujesz przy kontakcie.
+- **Tagi nadawane automatycznie:** `#lm-<slug materiału>` (np. `#lm-po-zdradzie`), `#para` / `#malzenstwo`, `#dzieci` / `#bez-dzieci` (z formularza materiału), `#seria-7-dni`, `#quiz`, `#klient`. Własne tagi dopisujesz przy kontakcie.
 - **Warunki w każdym e-mailu:**
   - „Wysyłaj tylko, jeśli osoba MA tag” – którykolwiek z wpisanych (puste = wszyscy),
   - „Nie wysyłaj, jeśli osoba MA tag” – wystarczy jeden.

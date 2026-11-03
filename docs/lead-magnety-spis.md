@@ -57,10 +57,11 @@ materiałów, które zbierają e-maile i prowadzą – delikatnie, bez presji �
 
 ## Jak działa lejek
 
-1. Formularz na landingu: e-mail (+ imię opcjonalnie), zgoda marketingowa opcjonalna, przy lm04 zgoda na serię 7 dni.
+1. Formularz na landingu: e-mail (+ imię opcjonalnie), „Jesteśmy: parą / małżeństwem”, „Dzieci: mamy / nie mamy” (wymagane)
+   i jedna wymagana zgoda (materiał + wiadomości e-mail; przy lm04 obejmuje codzienne ćwiczenia przez 7 dni).
    Zapis w `content_leads`; materiał wysyłany e-mailem (Resend, zapasowo SMTP) albo dostępny od razu na stronie.
-2. Kontakt w mailingu (`mail_contacts`) dostaje tag `#lm-<slug>` (np. `#lm-po-zdradzie`), `#seria-7-dni`, później `#quiz`
-   i `#klient`. Ścieżka „Przed zakupem → Mapa Relacji” (e-maile n1–n8) idzie tylko do osób ze zgodą marketingową;
+2. Kontakt w mailingu (`mail_contacts`) dostaje tag `#lm-<slug>` (np. `#lm-po-zdradzie`), `#para` albo `#malzenstwo`,
+   `#dzieci` albo `#bez-dzieci`, `#seria-7-dni`, później `#quiz` i `#klient`. Ścieżka „Przed zakupem → Mapa Relacji” (e-maile n1–n8) idzie tylko do osób ze zgodą marketingową;
    część e-maili ma warunki tagów (np. n5 tylko `#lm-po-zdradzie`, n4 tylko tagi rozstania/kryzysu).
 3. Odpowiedzi z materiału → podsumowanie → quiz `/start?dolacz=<slug>` → zgłoszenie z dołączonym podsumowaniem
    (psycholog widzi je w panelu: Zgłoszenia).

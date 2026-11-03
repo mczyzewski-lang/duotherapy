@@ -39,7 +39,7 @@ export function LeadMagnetForm({
   marketingText: string;
   seriesText?: string;
 }) {
-  const [f, setF] = useState({ name: "", email: "", consent: false, website: "" });
+  const [f, setF] = useState({ name: "", email: "", relationship: "", children: "", consent: false, website: "" });
   const [err, setErr] = useState<{ text: string; field?: string } | null>(null);
   const [done, setDone] = useState<{ emailSent: boolean } | null>(null);
   const [pending, start] = useTransition();
@@ -71,6 +71,8 @@ export function LeadMagnetForm({
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
     setErr(null);
+    if (!f.relationship) return setErr({ text: "Zaznacz, czy jesteście parą, czy małżeństwem.", field: "relationship" });
+    if (!f.children) return setErr({ text: "Zaznacz, czy macie dzieci.", field: "children" });
     if (!f.consent) return setErr({ text: "Zaznacz zgodę, żeby odebrać materiał.", field: "consent" });
     start(async () => {
       try {
@@ -78,6 +80,8 @@ export function LeadMagnetForm({
           slug,
           email: f.email,
           name: f.name,
+          relationship: f.relationship as "para",
+          children: f.children as "tak",
           consent: f.consent as true,
           requestId: requestId.current,
           attribution: attribution() as Record<string, string>,
@@ -128,6 +132,16 @@ export function LeadMagnetForm({
           aria-invalid={err?.field === "email"} aria-describedby={err?.field === "email" ? "lm-email-e" : undefined} />
         {err?.field === "email" && <p id="lm-email-e" role="alert" className="mt-1.5 text-sm text-alert">{err.text}</p>}
       </div>
+      <Choice
+        name="relationship" label="Jesteśmy" value={f.relationship} error={err?.field === "relationship" ? err.text : undefined}
+        options={[["para", "Parą"], ["malzenstwo", "Małżeństwem"]]}
+        onChange={(v) => { setF({ ...f, relationship: v }); if (err?.field === "relationship") setErr(null); }}
+      />
+      <Choice
+        name="children" label="Dzieci" value={f.children} error={err?.field === "children" ? err.text : undefined}
+        options={[["tak", "Mamy dzieci"], ["nie", "Nie mamy dzieci"]]}
+        onChange={(v) => { setF({ ...f, children: v }); if (err?.field === "children") setErr(null); }}
+      />
       <input type="text" tabIndex={-1} autoComplete="off" aria-hidden className="hidden" value={f.website} onChange={(e) => setF({ ...f, website: e.target.value })} />
       <label className={clsx("flex items-start gap-3 rounded-2xl p-3.5 text-[14.5px] leading-snug text-ink ring-1 transition", err?.field === "consent" ? "bg-alert-soft/60 ring-alert/40" : f.consent ? "bg-sage-soft/60 ring-sage/50" : "bg-linen/60 ring-sand")}>
         <input type="checkbox" required className="mt-0.5 h-5 w-5 shrink-0 accent-[#36493d]" checked={f.consent}
@@ -136,7 +150,7 @@ export function LeadMagnetForm({
         <span>{marketingText}{seriesText ? ` ${seriesText}` : ""}</span>
       </label>
       {err?.field === "consent" && <p id="lm-consent-e" role="alert" className="-mt-2 text-sm text-alert">{err.text}</p>}
-      {err && err.field !== "email" && err.field !== "consent" && <p role="alert" className="rounded-xl bg-alert-soft px-3 py-2 text-sm text-alert">{err.text}</p>}
+      {err && !["email", "consent", "relationship", "children"].includes(err.field ?? "") && <p role="alert" className="rounded-xl bg-alert-soft px-3 py-2 text-sm text-alert">{err.text}</p>}
       <button type="submit" disabled={pending} className={clsx("flex min-h-14 w-full items-center justify-center gap-2 rounded-full bg-clay px-6 text-[16px] font-semibold text-white shadow-soft transition hover:brightness-110 disabled:opacity-60")}>
         {pending ? <Loader2 size={18} className="animate-spin" aria-hidden /> : <Mail size={18} aria-hidden />} {pending ? "Wysyłanie…" : "Wyślij mi materiał"}
       </button>
@@ -181,5 +195,28 @@ export function MagnetStickyBar({ title }: { title: string }) {
         <a href="#odbierz" className="inline-flex min-h-12 shrink-0 items-center rounded-full bg-clay px-5 text-[15px] font-semibold text-white shadow-soft">Pobierz bezpłatnie</a>
       </div>
     </div>
+  );
+}
+
+/** Wybór jednym kliknięciem (dwa przyciski-kafelki) – dostępny jak grupa radio. */
+function Choice({ name, label, value, options, onChange, error }: {
+  name: string; label: string; value: string; options: [string, string][]; onChange: (v: string) => void; error?: string;
+}) {
+  return (
+    <fieldset aria-invalid={!!error} aria-describedby={error ? `lm-${name}-e` : undefined} data-testid={`lm-${name}`}>
+      <legend className="mb-1.5 text-sm font-medium text-ink">{label}</legend>
+      <div className="grid grid-cols-2 gap-2">
+        {options.map(([v, l]) => (
+          <label key={v} className={clsx(
+            "flex min-h-12 cursor-pointer items-center justify-center rounded-2xl px-3 text-center text-[15px] font-medium ring-1 transition has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-forest",
+            value === v ? "bg-forest text-white ring-forest" : error ? "bg-alert-soft/50 text-ink ring-alert/40" : "bg-white text-ink ring-sand-dark hover:ring-forest/60",
+          )}>
+            <input type="radio" name={name} value={v} checked={value === v} onChange={() => onChange(v)} className="sr-only" />
+            {l}
+          </label>
+        ))}
+      </div>
+      {error && <p id={`lm-${name}-e`} role="alert" className="mt-1.5 text-sm text-alert">{error}</p>}
+    </fieldset>
   );
 }

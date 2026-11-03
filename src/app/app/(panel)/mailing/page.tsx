@@ -108,7 +108,7 @@ export default async function MailingPage() {
         </Card>
         <Card className="p-6">
           <h2 className="font-display text-xl text-ink">Tagi</h2>
-          <p className="mt-1 text-xs text-muted">Nadawane automatycznie: #lm-&lt;materiał&gt; (pobranie), #seria-7-dni, #quiz (quiz z e-mailem), #klient (zakup). Własne tagi dodasz przy kontakcie.</p>
+          <p className="mt-1 text-xs text-muted">Nadawane automatycznie: #lm-&lt;materiał&gt; (pobranie), #para / #malzenstwo, #dzieci / #bez-dzieci, #seria-7-dni, #quiz (quiz z e-mailem), #klient (zakup). Własne tagi dodasz przy kontakcie.</p>
           <div className="mt-3 flex flex-wrap gap-1.5">
             {d.tags.length ? d.tags.map((t) => <Link key={t.tag} href={`/app/mailing/kontakty?tag=${t.tag}`}><Badge>#{t.tag} · {t.n}</Badge></Link>) : <span className="text-sm text-muted">Brak kontaktów.</span>}
           </div>

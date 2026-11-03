@@ -106,7 +106,7 @@ export default async function KnowledgeAdmin({ searchParams }: { searchParams: P
                     <td>{l.name ?? "–"}</td>
                     <td>{l.magnet_id}</td>
                     <td className="text-xs">{[l.attribution?.utm_source, l.attribution?.utm_campaign].filter(Boolean).join(" · ") || "bezpośrednio"}</td>
-                    <td className="text-xs">marketing: {l.marketing_consent ? "tak" : "nie"}{l.series_consent ? " · seria 7 dni" : ""}{l.unsubscribed_at ? " · wypisany" : ""}</td>
+                    <td className="text-xs">{l.relationship ? (l.relationship === "para" ? "para" : "małżeństwo") : "–"} · {l.has_children === null ? "–" : l.has_children ? "dzieci" : "bez dzieci"}<br />marketing: {l.marketing_consent ? "tak" : "nie"}{l.series_consent ? " · seria 7 dni" : ""}{l.unsubscribed_at ? " · wypisany" : ""}</td>
                     <td><Badge tone={tone}>{label}</Badge></td>
                     <td className="text-xs">{l.marketing_consent || l.series_consent ? `${l.marketing_consent ? "zgoda – nurturing (Mailing)" : ""}${l.series_consent ? `${l.marketing_consent ? " · " : ""}seria: dzień ${l.series_day}/7` : ""}` : "brak zgody – nie wysyłamy"}</td>
                   </tr>

@@ -15,7 +15,9 @@ test("mailing: tag z materiału, ścieżki w panelu, warunki tagów, link śledz
   await page.goto("/wiedza/po-zdradzie");
   await page.waitForLoadState("networkidle");
   await page.getByLabel("E-mail", { exact: true }).fill("podroz@example.test");
-  await page.locator("#odbierz input[type=checkbox]").last().check();
+  await page.getByTestId("lm-relationship").getByText("Parą", { exact: true }).click();
+  await page.getByTestId("lm-children").getByText("Nie mamy dzieci", { exact: true }).click();
+  await page.getByTestId("lm-consent").check();
   await page.waitForTimeout(1600);
   await page.getByRole("button", { name: "Wyślij mi materiał" }).click();
   await expect(page.getByRole("heading", { name: "Twój materiał jest gotowy" })).toBeVisible();
@@ -48,6 +50,8 @@ test("mailing: tag z materiału, ścieżki w panelu, warunki tagów, link śledz
   await admin.goto("/app/mailing/kontakty?tag=lm-po-zdradzie");
   const row = admin.getByTestId("contact-row").filter({ hasText: "podroz@example.test" });
   await expect(row).toContainText("#lm-po-zdradzie");
+  await expect(row).toContainText("#para");
+  await expect(row).toContainText("#bez-dzieci");
   await expect(row).toContainText("przed zakupem: w toku");
   await row.getByRole("link", { name: "podroz@example.test" }).click();
   const code = (await admin.locator("span.font-mono").first().textContent())!.trim();

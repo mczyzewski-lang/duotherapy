@@ -103,6 +103,11 @@ test("formularz: jedna wymagana zgoda, uczciwy komunikat bez wysyłki, zapis w p
   await page.getByLabel("E-mail", { exact: true }).fill("zle");
   await page.waitForTimeout(1600);
   await page.getByRole("button", { name: "Wyślij mi materiał" }).click();
+  // stan związku i dzieci – wymagane, wybór jednym kliknięciem
+  await expect(page.getByText("Zaznacz, czy jesteście parą, czy małżeństwem.")).toBeVisible();
+  await page.getByTestId("lm-relationship").getByText("Małżeństwem", { exact: true }).click();
+  await page.getByTestId("lm-children").getByText("Mamy dzieci", { exact: true }).click();
+  await page.getByRole("button", { name: "Wyślij mi materiał" }).click();
   // bez zgody nie odbierzesz materiału – jedna zgoda, wymagana
   await expect(page.getByText("Zaznacz zgodę, żeby odebrać materiał.")).toBeVisible();
   await expect(page.locator("#odbierz input[type=checkbox]")).toHaveCount(1);
@@ -151,6 +156,7 @@ test("formularz: jedna wymagana zgoda, uczciwy komunikat bez wysyłki, zapis w p
   const row = admin.locator("tr", { hasText: "czytelnik@example.test" });
   await expect(row).toContainText("lm07");
   await expect(row).toContainText("marketing: tak");
+  await expect(row).toContainText("małżeństwo · dzieci");
   await expect(row).toContainText("wysyłka nieskonfigurowana");
   await expect(row).toContainText("instagram");
   await admin.goto("/app/leads");
