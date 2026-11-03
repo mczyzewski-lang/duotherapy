@@ -1,7 +1,7 @@
 // Wypisanie z wiadomości „Wiedza” – potwierdzane przyciskiem (skanery linków w poczcie nie wypisują automatycznie).
 import type { Metadata } from "next";
 import Link from "next/link";
-import { unsubscribeKnowledge } from "@/app/actions/knowledge";
+import { unsubscribeContact, unsubscribeKnowledge } from "@/app/actions/knowledge";
 import { Logo } from "@/components/ui";
 
 export const dynamic = "force-dynamic";
@@ -11,10 +11,11 @@ export const metadata: Metadata = { title: "Wypisanie z wiadomości", robots: { 
 export default async function Unsubscribe({ searchParams }: { searchParams: Promise<Record<string, string | undefined>> }) {
   const sp = await searchParams;
   const token = sp.t ?? "";
+  const contactKey = sp.k ?? "";
   async function action() {
     "use server";
     const { redirect } = await import("next/navigation");
-    const r = await unsubscribeKnowledge(token);
+    const r = contactKey ? await unsubscribeContact(contactKey) : await unsubscribeKnowledge(token);
     redirect(`/wiedza/wypisz?gotowe=${r.ok ? "1" : "0"}`);
   }
   return (

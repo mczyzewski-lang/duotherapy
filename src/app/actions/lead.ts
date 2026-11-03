@@ -16,6 +16,7 @@ import { hit } from "@/lib/rate-limit";
 import { clientIp } from "@/lib/request";
 import { readSettings } from "@/lib/settings";
 import { filledCount, sanitizeAnswers } from "@/knowledge/fields";
+import { captureContact, contactFromCookie } from "@/lib/mailing";
 
 const LeadSchema = z.object({
   name: z.string().trim().min(2, "Podaj imię.").max(80),
@@ -82,6 +83,7 @@ export async function submitLead(input: LeadInput): Promise<LeadResult> {
   });
   // dołączenie podsumowania z materiału „Wiedza” – tylko za wyraźną zgodą i tylko odpowiedzi tej osoby (ciasteczko)
   if (d.attachSlug) await attachAnswers(leadId, d.attachSlug, d.attachData);
+  await linkMailContact(leadId, d.email, d.name, d.marketingConsent);
   await setLeadCookie(accessToken);
   await notifyTeam("DUO – nowa prośba o telefon (Mapa Relacji)", "Nowa osoba prosi o kontakt w sprawie Mapy Relacji. Szczegóły w panelu: Zgłoszenia.");
   return { ok: true };
@@ -107,5 +109,15 @@ async function attachAnswers(leadId: string, slug: string, demoData?: Record<str
     await tx`insert into consents (lead_id, kind, granted, text_version, text_snapshot)
              values (${leadId}, 'attach_answers', true, ${s.legal.version}, ${`Dołącz moje podsumowanie z materiału „${m.short}” do zgłoszenia. Psycholog DUO wykorzysta je przy rozmowie o Mapie Relacji™.`})`;
     await tx`insert into lead_activities (lead_id, kind, content) values (${leadId}, 'system', ${`Klient dołączył podsumowanie z materiału „${m.short}”.`})`;
+  });
+}
+
+/** Nurturing: zgłoszenie z quizu → kontakt z tagiem #quiz (z e-mailem) albo powiązanie z osobą, która kliknęła link z maila. */
+async function linkMailContact(leadId: string, email: string, name: string, marketing: boolean) {
+  await system(async (tx) => {
+    let contactId = await contactFromCookie(tx);
+    if (email) contactId = (await captureContact(tx, { email, name, tags: ["quiz"], marketing })).id;
+    else if (contactId) await tx`update mail_contacts set tags = (select array(select distinct unnest(tags || array['quiz']))), updated_at = now() where id = ${contactId}`;
+    if (contactId) await tx`update leads set mail_contact_id = ${contactId} where id = ${leadId}`;
   });
 }

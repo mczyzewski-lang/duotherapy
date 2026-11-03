@@ -3,6 +3,7 @@
 import { Badge, Card, PageTitle } from "@/components/ui";
 import { asStaff, requireStaff } from "@/lib/auth";
 import { MAGNETS } from "@/knowledge/registry";
+import { customerMailConfigured } from "@/lib/notify";
 
 export const metadata = { title: "Wiedza – zapisy" };
 
@@ -34,7 +35,7 @@ export default async function KnowledgeAdmin({ searchParams }: { searchParams: P
     };
   });
   const c = (event: string, step?: number) => d.ev.filter((e) => e.event === event && (step === undefined || e.step === step)).reduce((a, e) => a + e.n, 0);
-  const smtp = Boolean(process.env.SMTP_URL);
+  const smtp = customerMailConfigured();
   const nurture = process.env.NURTURE_ENABLED === "true";
 
   return (
@@ -51,8 +52,9 @@ export default async function KnowledgeAdmin({ searchParams }: { searchParams: P
         }
       />
       <div className="mb-6 flex flex-wrap gap-2 text-sm">
-        <Badge tone={smtp ? "ok" : "clay"}>{smtp ? "SMTP skonfigurowany – materiały są wysyłane e-mailem" : "Brak SMTP_URL – materiał dostępny tylko na stronie podziękowania"}</Badge>
-        <Badge tone={nurture ? "ok" : "neutral"}>{nurture ? "Sekwencje włączone (NURTURE_ENABLED)" : "Sekwencje wyłączone – szablony gotowe"}</Badge>
+        <Badge tone={smtp ? "ok" : "clay"}>{smtp ? "Wysyłka skonfigurowana – materiały są wysyłane e-mailem" : "Brak wysyłki (Resend / SMTP) – materiał dostępny tylko na stronie podziękowania"}</Badge>
+        <Badge tone={nurture ? "ok" : "neutral"}>{nurture ? "Seria 7 dni włączona (NURTURE_ENABLED)" : "Seria 7 dni wyłączona"}</Badge>
+        <Badge tone="forest"><a href="/app/mailing" className="underline">Nurturing e-mailowy → Mailing</a></Badge>
       </div>
 
       <Card className="mb-6 overflow-x-auto p-6">
@@ -103,7 +105,7 @@ export default async function KnowledgeAdmin({ searchParams }: { searchParams: P
                     <td className="text-xs">{[l.attribution?.utm_source, l.attribution?.utm_campaign].filter(Boolean).join(" · ") || "bezpośrednio"}</td>
                     <td className="text-xs">marketing: {l.marketing_consent ? "tak" : "nie"}{l.series_consent ? " · seria 7 dni" : ""}{l.unsubscribed_at ? " · wypisany" : ""}</td>
                     <td><Badge tone={tone}>{label}</Badge></td>
-                    <td className="text-xs">{l.marketing_consent || l.series_consent ? `wysłane: ${Math.max(0, l.sent_msgs - (l.delivery_status === "sent" ? 1 : 0))} · krok ${l.nurture_step}/3${l.series_consent ? ` · dzień ${l.series_day}/7` : ""}` : "brak zgody – nie wysyłamy"}</td>
+                    <td className="text-xs">{l.marketing_consent || l.series_consent ? `${l.marketing_consent ? "zgoda – nurturing (Mailing)" : ""}${l.series_consent ? `${l.marketing_consent ? " · " : ""}seria: dzień ${l.series_day}/7` : ""}` : "brak zgody – nie wysyłamy"}</td>
                   </tr>
                 );
               })}

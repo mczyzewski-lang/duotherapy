@@ -5,6 +5,7 @@ import { audit } from "./audit";
 import { createCase, recomputeStatus } from "./cases";
 import { decrypt, encrypt, hashToken } from "./crypto";
 import type { Tx } from "./db";
+import { markPurchase } from "./mailing";
 import { createInvitation } from "./participant-auth";
 import { nextOrderStatus, type Outcome } from "./payments";
 import type { Settings } from "./settings";
@@ -164,6 +165,11 @@ export async function applyPaymentOutcome(
                sale_amount_pln = coalesce(sale_amount_pln, ${o.amount_pln}), updated_at = now() where id = ${o.lead_id}`;
     await note(`Mapa Relacji opłacona online: ${o.amount_pln} zł (potwierdzenie operatora płatności). Klient wybiera termin na stronie zamówienia – bez telefonu sprzedażowego.`);
     await funnel(tx, "purchase_completed", o.lead_id);
+    // nurturing: koniec ścieżki do Mapy Relacji, start ścieżki po zakupie
+    const [who] = await tx`select l.mail_contact_id, coalesce(${info.email ?? null}, o.customer_email, l.email) as email
+                           from orders o join leads l on l.id = o.lead_id where o.id = ${orderId}`;
+    const contactId = await markPurchase(tx, { contactId: who?.mail_contact_id ?? null, email: who?.email ?? null });
+    if (contactId) await tx`update orders set mail_contact_id = ${contactId} where id = ${orderId}`;
   } else if (next === "failed") {
     await note("Płatność online odrzucona. Klient pozostaje w kontakcie telefonicznym – może potrzebować pomocy przy płatności.");
     await funnel(tx, "purchase_failed", o.lead_id);

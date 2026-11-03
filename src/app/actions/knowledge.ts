@@ -8,11 +8,12 @@ import { encrypt, hashToken, newToken } from "@/lib/crypto";
 import { system } from "@/lib/db";
 import { env } from "@/lib/env";
 import { ATTRIBUTION_KEYS } from "@/lib/mapa-quiz";
-import { notifyCustomer } from "@/lib/notify";
+import { customerMailConfigured, notifyCustomer } from "@/lib/notify";
 import { setContentCookie } from "@/lib/content-access";
 import { hit } from "@/lib/rate-limit";
 import { clientIp } from "@/lib/request";
 import { readSettings } from "@/lib/settings";
+import { captureContact, verifyUnsubscribe } from "@/lib/mailing";
 import { deliveryMail } from "@/knowledge/emails";
 import { magnetBySlug } from "@/knowledge/registry";
 
@@ -82,6 +83,8 @@ export async function submitKnowledgeLead(input: z.input<typeof Schema>): Promis
       await tx`insert into funnel_events (event, anon_id, step, utm_source, utm_medium, utm_campaign, path)
                values ('lead_magnet_submitted', ${anon}, ${m.n}, ${attribution.utm_source ?? null}, ${attribution.utm_medium ?? null}, ${attribution.utm_campaign ?? null}, '/wiedza/*')`;
     await tx`update content_leads set access_token_hash = ${hashToken(access)} where id = ${row.id}`;
+    // nurturing: kontakt z tagiem materiału (wiadomości marketingowe tylko przy zgodzie – pilnuje tego sekwencja)
+    await captureContact(tx, { email: d.email, name: d.name || null, tags: [`lm-${m.slug}`, ...(series ? ["seria-7-dni"] : [])], marketing: d.marketing });
     return { id: row.id, status: "pending", send: true, s };
   });
 
@@ -90,12 +93,12 @@ export async function submitKnowledgeLead(input: z.input<typeof Schema>): Promis
 
   // dostarczenie: tylko gdy skonfigurowano wysyłkę – nie udajemy, że e-mail wyszedł
   const mail = deliveryMail(m, d.name || null, env.appUrl, { email: r.s.site.contactEmail, phone: r.s.site.contactPhone }, access);
-  const configured = Boolean(process.env.SMTP_URL);
+  const configured = customerMailConfigured();
   const sent = configured ? await notifyCustomer(d.email, mail.subject, mail.text) : false;
   const status = !configured ? "not_configured" : sent ? "sent" : "failed";
   await system(async (tx) => {
     await tx`update content_leads set delivery_status = ${status}, delivered_at = ${sent ? new Date() : null} where id = ${r.id}`;
-    await tx`insert into content_lead_messages (content_lead_id, kind, status, error) values (${r.id}, 'delivery', ${status}, ${status === "failed" ? "błąd wysyłki SMTP" : null})`;
+    await tx`insert into content_lead_messages (content_lead_id, kind, status, error) values (${r.id}, 'delivery', ${status}, ${status === "failed" ? "błąd wysyłki" : null})`;
     if (configured && r.s.site.funnelTracking && anon)
       await tx`insert into funnel_events (event, anon_id, step, path) values (${sent ? "lead_magnet_delivery_success" : "lead_magnet_delivery_error"}, ${anon}, ${m.n}, '/wiedza/*')`;
   });
@@ -104,13 +107,31 @@ export async function submitKnowledgeLead(input: z.input<typeof Schema>): Promis
 }
 
 /** Wypisanie z wiadomości (link w e-mailu). Wycofanie zgody zapisujemy w historii zgód. */
+/** Wypisanie z nurturingu (link „k=<kod>.<podpis>” w wiadomościach z sekwencji) – także ze wszystkich materiałów tej osoby. */
+export async function unsubscribeContact(k: string): Promise<{ ok: boolean }> {
+  const code = verifyUnsubscribe(k);
+  if (!code) return { ok: false };
+  return system(async (tx) => {
+    const s = await readSettings(tx);
+    const [c] = await tx`update mail_contacts set unsubscribed_at = coalesce(unsubscribed_at, now()), marketing_consent = false, updated_at = now()
+                         where code = ${code} returning email_lc`;
+    if (!c) return { ok: false };
+    const rows = await tx`update content_leads set unsubscribed_at = coalesce(unsubscribed_at, now()), marketing_consent = false, series_consent = false,
+                            nurture_next_at = null, series_next_at = null where lower(email) = ${c.email_lc} returning id`;
+    for (const r of rows)
+      await tx`insert into content_lead_consents (content_lead_id, kind, granted, text_version, text_snapshot) values (${r.id}, 'withdrawn', false, ${s.legal.version}, 'Wypisanie z wiadomości (link w e-mailu)')`;
+    return { ok: true };
+  });
+}
+
 export async function unsubscribeKnowledge(token: string): Promise<{ ok: boolean }> {
   if (!/^[A-Za-z0-9_-]{40,60}$/.test(token)) return { ok: false };
   return system(async (tx) => {
     const s = await readSettings(tx);
     const r = await tx`update content_leads set unsubscribed_at = coalesce(unsubscribed_at, now()), marketing_consent = false, series_consent = false,
-                         nurture_next_at = null, series_next_at = null where unsubscribe_token_hash = ${hashToken(token)} returning id`;
+                         nurture_next_at = null, series_next_at = null where unsubscribe_token_hash = ${hashToken(token)} returning id, lower(email) as email_lc`;
     if (!r.length) return { ok: false };
+    await tx`update mail_contacts set unsubscribed_at = coalesce(unsubscribed_at, now()), marketing_consent = false, updated_at = now() where email_lc = ${r[0].email_lc}`;
     await tx`insert into content_lead_consents (content_lead_id, kind, granted, text_version, text_snapshot) values (${r[0].id}, 'withdrawn', false, ${s.legal.version}, 'Wypisanie z wiadomości (link w e-mailu)')`;
     return { ok: true };
   });
