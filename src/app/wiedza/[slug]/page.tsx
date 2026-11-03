@@ -7,6 +7,7 @@ import { MapaSymbol } from "@/components/brand";
 import { KTrack, LeadMagnetForm, MagnetStickyBar } from "@/components/knowledge/client";
 import { BlockView, Cover } from "@/components/knowledge/doc";
 import { MagnetIcon } from "@/components/knowledge/icons";
+import { MagnetCard } from "@/components/knowledge/magnet-card";
 import { ReportPreview } from "@/components/mapa/report-preview";
 import { SiteFooter } from "@/components/site/footer";
 import { SiteHeader } from "@/components/site/header";
@@ -193,13 +194,10 @@ export default async function MagnetLanding({ params }: { params: Promise<{ slug
         {related.length > 0 && (
           <section className="mx-auto max-w-6xl px-5 pb-16" aria-labelledby="inne-h">
             <h2 id="inne-h" className="font-display text-2xl text-ink">Inne materiały z tej kategorii</h2>
-            <ul className="mt-4 grid gap-3 sm:grid-cols-3">
+            <ul className="mt-4 grid gap-5 sm:grid-cols-3">
               {related.map((r) => (
                 <li key={r.slug}>
-                  <Link href={`/wiedza/${r.slug}`} className="flex h-full items-start gap-3 rounded-2xl bg-white p-4 shadow-soft ring-1 ring-sand hover:ring-forest/40">
-                    <MagnetIcon icon={r.icon} id={`rel-${r.id}`} className="h-6 w-6 shrink-0" />
-                    <span><span className="block font-medium text-ink">{r.short}</span><span className="text-[13.5px] text-muted">{r.menuDesc}</span></span>
-                  </Link>
+                  <MagnetCard m={r} />
                 </li>
               ))}
             </ul>

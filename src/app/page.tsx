@@ -3,7 +3,7 @@ import { ArrowRight, Check } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { MapaSymbol, RoadGlyph } from "@/components/brand";
-import { MagnetIcon } from "@/components/knowledge/icons";
+import { MagnetCard } from "@/components/knowledge/magnet-card";
 import { AskDialog } from "@/components/landing/ask-dialog";
 import { TherapistSection } from "@/components/landing/therapist";
 import { HeroMap, HeroMapVertical } from "@/components/mapa/flow";
@@ -127,13 +127,10 @@ export default async function Home() {
               </div>
               <Link href="/wiedza" className="text-sm font-semibold text-forest hover:underline">Wszystkie materiały →</Link>
             </div>
-            <ul className="mt-6 grid gap-3 sm:grid-cols-3">
+            <ul className="mt-6 grid gap-5 sm:grid-cols-3">
               {FEATURED.map((slug) => magnetBySlug(slug)!).map((m) => (
                 <li key={m.slug}>
-                  <Link href={`/wiedza/${m.slug}`} className="flex h-full items-start gap-3 rounded-2xl bg-white p-5 shadow-soft ring-1 ring-sand hover:ring-forest/40">
-                    <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-linen"><MagnetIcon icon={m.icon} id={`hw-${m.id}`} className="h-6 w-6" /></span>
-                    <span><span className="block font-medium text-ink">{m.short}</span><span className="text-[14px] text-muted">{m.menuDesc}</span></span>
-                  </Link>
+                  <MagnetCard m={m} />
                 </li>
               ))}
             </ul>
