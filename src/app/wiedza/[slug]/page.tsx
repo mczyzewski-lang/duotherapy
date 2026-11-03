@@ -107,7 +107,7 @@ export default async function MagnetLanding({ params }: { params: Promise<{ slug
               ) : (
                 <div className="relative z-10 mx-auto -mb-40 max-w-3xl" data-testid="lm-preview">
                   {/* fragment urywa się rozmyciem, które wychodzi poza sekcję – w pełnej wersji jest dalszy ciąg */}
-                  <div className="relative max-h-[36rem] overflow-hidden rounded-t-[1.75rem] bg-linen/60 p-3 ring-1 ring-sand sm:max-h-[40rem] sm:p-5">
+                  <div className="relative max-h-[36rem] overflow-hidden rounded-t-[1.75rem] bg-linen/60 p-3 ring-1 ring-sand [mask-image:linear-gradient(to_bottom,black_40%,transparent_80%)] sm:max-h-[40rem] sm:p-5">
                     <p className="mb-1 px-1 text-[10.5px] font-semibold uppercase tracking-[0.18em] text-muted">Fragment materiału</p>
                     {m.preview.map((i) => (
                       <div key={i} className="[&>*:first-child]:mt-2"><BlockView b={m.blocks[i]} mode="screen" i={i} first={false} /></div>

@@ -53,11 +53,16 @@ function OfferItems({ onPick, dense }: { onPick?: () => void; dense?: boolean })
           <span className="block text-[12.5px] leading-snug text-white/80">Zrozumienie Waszej sytuacji z psychologiem – i wybór drogi.</span>
         </span>
       </Link>
-      <div className="relative ml-[1.85rem] border-l-2 border-dashed border-sand-dark pl-4 pt-2">
-        <p className="mb-1 px-2 text-[10.5px] font-semibold uppercase tracking-[0.18em] text-clay">Możliwe drogi po Mapie Relacji</p>
-        <ul className={clsx(dense ? "space-y-0.5" : "space-y-1")}>
-          {PATHS.map((p) => (
-            <li key={p.slug} className="relative">
+      {/* pionowa linia składa się z odcinków i kończy na ostatniej drodze – bez „ogona” sugerującego czwartą */}
+      <div className="relative ml-[1.85rem] pl-4 pt-2">
+        <span className="absolute left-0 top-0 h-[calc(0.5rem+1rem+0.25rem)] border-l-2 border-dashed border-sand-dark" aria-hidden />
+        <p className="mb-1 px-2 text-[10.5px] font-semibold uppercase leading-4 tracking-[0.18em] text-clay">Możliwe drogi po Mapie Relacji</p>
+        <ul>
+          {PATHS.map((p, i) => {
+            const last = i === PATHS.length - 1;
+            return (
+            <li key={p.slug} className={clsx("relative", !last && (dense ? "pb-0.5" : "pb-1"))}>
+              <span className={clsx("absolute -left-4 top-0 border-l-2 border-dashed border-sand-dark", last ? "h-[1.625rem]" : "bottom-0")} aria-hidden />
               <span className="absolute -left-4 top-6 h-0.5 w-3.5 bg-sand-dark" aria-hidden />
               <Link href={`/${p.slug}`} onClick={onPick} className="group flex items-start gap-3 rounded-xl p-2 transition hover:bg-linen focus-visible:bg-linen">
                 <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-white shadow-soft ring-1 ring-sand">
@@ -69,7 +74,8 @@ function OfferItems({ onPick, dense }: { onPick?: () => void; dense?: boolean })
                 </span>
               </Link>
             </li>
-          ))}
+            );
+          })}
         </ul>
       </div>
     </div>

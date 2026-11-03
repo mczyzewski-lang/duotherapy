@@ -42,9 +42,11 @@ export function PathPage({ p, consentText, contactEmail }: { p: PathContent; con
                   <span className="font-display text-lg">Mapa Relacji</span>
                 </span>
               </Link>
-              <ul className="ml-7 mt-2 space-y-2 border-l-2 border-dashed border-sand-dark pl-4 pt-1">
-                {PATHS.map((x) => (
-                  <li key={x.key}>
+              {/* linia kończy się na ostatniej drodze – bez „ogona” sugerującego czwartą */}
+              <ul className="ml-7 mt-2 pl-4">
+                {PATHS.map((x, i) => (
+                  <li key={x.key} className={`relative ${i === 0 ? "pt-1" : ""} ${i < PATHS.length - 1 ? "pb-2" : ""}`}>
+                    <span className={`absolute -left-4 top-0 border-l-2 border-dashed border-sand-dark ${i < PATHS.length - 1 ? "bottom-0" : "h-1/2"}`} aria-hidden />
                     {x.key === p.key ? (
                       <span className="flex items-center gap-3 rounded-2xl bg-white p-3 shadow-soft ring-2 ring-clay/40">
                         <RoadGlyph road={x.key} id={`phl-${x.key}`} className="h-6 w-6" />
