@@ -24,6 +24,9 @@ export function KTrack({ event, step }: { event: FunnelEvent; step?: number }) {
   return null;
 }
 
+/** E-mail „wygląda na kompletny”: coś@coś.xx – dopiero wtedy pokazujemy resztę formularza. */
+const EMAIL_READY = /^[^\s@]+@[^\s@]+\.[^\s@.]{2,}$/;
+
 export function LeadMagnetForm({
   slug,
   n,
@@ -68,9 +71,12 @@ export function LeadMagnetForm({
     track("lead_magnet_form_started", n);
   };
 
+  const emailReady = EMAIL_READY.test(f.email.trim());
+
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
     setErr(null);
+    if (!emailReady) return setErr({ text: "Podaj poprawny adres e-mail.", field: "email" });
     if (!f.relationship) return setErr({ text: "Zaznacz, czy jesteście parą, czy małżeństwem.", field: "relationship" });
     if (!f.children) return setErr({ text: "Zaznacz, czy macie dzieci.", field: "children" });
     if (!f.consent) return setErr({ text: "Zaznacz zgodę, żeby odebrać materiał.", field: "consent" });
@@ -132,24 +138,30 @@ export function LeadMagnetForm({
           aria-invalid={err?.field === "email"} aria-describedby={err?.field === "email" ? "lm-email-e" : undefined} />
         {err?.field === "email" && <p id="lm-email-e" role="alert" className="mt-1.5 text-sm text-alert">{err.text}</p>}
       </div>
-      <Choice
-        name="relationship" label="Jesteśmy" value={f.relationship} error={err?.field === "relationship" ? err.text : undefined}
-        options={[["para", "Parą"], ["malzenstwo", "Małżeństwem"]]}
-        onChange={(v) => { setF({ ...f, relationship: v }); if (err?.field === "relationship") setErr(null); }}
-      />
-      <Choice
-        name="children" label="Dzieci" value={f.children} error={err?.field === "children" ? err.text : undefined}
-        options={[["tak", "Mamy dzieci"], ["nie", "Nie mamy dzieci"]]}
-        onChange={(v) => { setF({ ...f, children: v }); if (err?.field === "children") setErr(null); }}
-      />
       <input type="text" tabIndex={-1} autoComplete="off" aria-hidden className="hidden" value={f.website} onChange={(e) => setF({ ...f, website: e.target.value })} />
-      <label className={clsx("flex items-start gap-3 rounded-2xl p-3.5 text-[14.5px] leading-snug text-ink ring-1 transition", err?.field === "consent" ? "bg-alert-soft/60 ring-alert/40" : f.consent ? "bg-sage-soft/60 ring-sage/50" : "bg-linen/60 ring-sand")}>
-        <input type="checkbox" required className="mt-0.5 h-5 w-5 shrink-0 accent-[#36493d]" checked={f.consent}
-          onChange={(e) => { setF({ ...f, consent: e.target.checked }); if (err?.field === "consent") setErr(null); }}
-          aria-invalid={err?.field === "consent"} aria-describedby={err?.field === "consent" ? "lm-consent-e" : undefined} data-testid="lm-consent" />
-        <span>{marketingText}{seriesText ? ` ${seriesText}` : ""}</span>
-      </label>
-      {err?.field === "consent" && <p id="lm-consent-e" role="alert" className="-mt-2 text-sm text-alert">{err.text}</p>}
+      {/* reszta formularza pojawia się, gdy e-mail wygląda na kompletny (jest „@” i min. 2 znaki po ostatniej kropce) */}
+      <div className={clsx("grid transition-[grid-template-rows,opacity] duration-500 ease-out motion-reduce:transition-none", emailReady ? "grid-rows-[1fr] opacity-100" : "invisible !mt-0 grid-rows-[0fr] opacity-0")}
+        inert={!emailReady} data-testid="lm-more">
+        <div className={clsx("min-h-0 space-y-4 overflow-hidden", emailReady && "-m-1 p-1")}>
+        <Choice
+          name="relationship" label="Jesteśmy" value={f.relationship} error={err?.field === "relationship" ? err.text : undefined}
+          options={[["para", "Parą"], ["malzenstwo", "Małżeństwem"]]}
+          onChange={(v) => { setF({ ...f, relationship: v }); if (err?.field === "relationship") setErr(null); }}
+        />
+        <Choice
+          name="children" label="Dzieci" value={f.children} error={err?.field === "children" ? err.text : undefined}
+          options={[["tak", "Mamy dzieci"], ["nie", "Nie mamy dzieci"]]}
+          onChange={(v) => { setF({ ...f, children: v }); if (err?.field === "children") setErr(null); }}
+        />
+        <label className={clsx("flex items-start gap-3 rounded-2xl p-3.5 text-[14.5px] leading-snug text-ink ring-1 transition", err?.field === "consent" ? "bg-alert-soft/60 ring-alert/40" : f.consent ? "bg-sage-soft/60 ring-sage/50" : "bg-linen/60 ring-sand")}>
+          <input type="checkbox" required className="mt-0.5 h-5 w-5 shrink-0 accent-[#36493d]" checked={f.consent}
+            onChange={(e) => { setF({ ...f, consent: e.target.checked }); if (err?.field === "consent") setErr(null); }}
+            aria-invalid={err?.field === "consent"} aria-describedby={err?.field === "consent" ? "lm-consent-e" : undefined} data-testid="lm-consent" />
+          <span>{marketingText}{seriesText ? ` ${seriesText}` : ""}</span>
+        </label>
+        {err?.field === "consent" && <p id="lm-consent-e" role="alert" className="-mt-2 text-sm text-alert">{err.text}</p>}
+        </div>
+      </div>
       {err && !["email", "consent", "relationship", "children"].includes(err.field ?? "") && <p role="alert" className="rounded-xl bg-alert-soft px-3 py-2 text-sm text-alert">{err.text}</p>}
       <button type="submit" disabled={pending} className={clsx("flex min-h-14 w-full items-center justify-center gap-2 rounded-full bg-clay px-6 text-[16px] font-semibold text-white shadow-soft transition hover:brightness-110 disabled:opacity-60")}>
         {pending ? <Loader2 size={18} className="animate-spin" aria-hidden /> : <Mail size={18} aria-hidden />} {pending ? "Wysyłanie…" : "Wyślij mi materiał"}

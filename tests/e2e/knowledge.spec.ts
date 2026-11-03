@@ -102,8 +102,16 @@ test("formularz: jedna wymagana zgoda, uczciwy komunikat bez wysyłki, zapis w p
   await page.waitForLoadState("networkidle");
   await page.getByLabel("E-mail", { exact: true }).fill("zle");
   await page.waitForTimeout(1600);
+  // dalsze pola pojawiają się dopiero przy e-mailu z „@” i min. 2 znakami po kropce
+  await expect(page.getByTestId("lm-consent")).not.toBeVisible();
   await page.getByRole("button", { name: "Wyślij mi materiał" }).click();
+  await expect(page.getByText("Podaj poprawny adres e-mail.")).toBeVisible();
+  await page.getByLabel("E-mail", { exact: true }).fill("czytelnik@example.t");
+  await expect(page.getByTestId("lm-consent")).not.toBeVisible();
+  await page.getByLabel("E-mail", { exact: true }).fill("czytelnik@example.test");
+  await expect(page.getByTestId("lm-consent")).toBeVisible();
   // stan związku i dzieci – wymagane, wybór jednym kliknięciem
+  await page.getByRole("button", { name: "Wyślij mi materiał" }).click();
   await expect(page.getByText("Zaznacz, czy jesteście parą, czy małżeństwem.")).toBeVisible();
   await page.getByTestId("lm-relationship").getByText("Małżeństwem", { exact: true }).click();
   await page.getByTestId("lm-children").getByText("Mamy dzieci", { exact: true }).click();
@@ -112,9 +120,6 @@ test("formularz: jedna wymagana zgoda, uczciwy komunikat bez wysyłki, zapis w p
   await expect(page.getByText("Zaznacz zgodę, żeby odebrać materiał.")).toBeVisible();
   await expect(page.locator("#odbierz input[type=checkbox]")).toHaveCount(1);
   await page.getByTestId("lm-consent").check();
-  await page.getByRole("button", { name: "Wyślij mi materiał" }).click();
-  await expect(page.getByText("Podaj poprawny adres e-mail.")).toBeVisible();
-  await page.getByLabel("E-mail", { exact: true }).fill("czytelnik@example.test");
   await page.getByRole("button", { name: "Wyślij mi materiał" }).click();
   await expect(page.getByRole("heading", { name: "Twój materiał jest gotowy" })).toBeVisible();
   // bez skonfigurowanej wysyłki nie twierdzimy, że e-mail wyszedł
