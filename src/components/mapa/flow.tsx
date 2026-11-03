@@ -93,6 +93,9 @@ export function HeroMap({ toPaths }: { toPaths?: boolean } = {}) {
           <pattern id="grid" width="26" height="26" patternUnits="userSpaceOnUse">
             <circle cx="1" cy="1" r="1" fill="#e2d4c2" />
           </pattern>
+          <marker id="start-arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M1 1 L8 5 L1 9" fill="none" stroke="#a9512f" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+          </marker>
         </defs>
         <rect x="14" y="14" width="492" height="352" rx="28" fill="url(#grid)" opacity="0.7" />
         {/* od „Tu jesteście” do węzła */}
@@ -111,6 +114,8 @@ export function HeroMap({ toPaths }: { toPaths?: boolean } = {}) {
         ))}
         <circle cx="70" cy="300" r="9" fill="#a9512f" />
         <circle cx="70" cy="300" r="18" fill="#a9512f" opacity="0.15" className="motion-safe:animate-ping" style={{ transformOrigin: "70px 300px", animationDuration: "3s" }} />
+        {/* „Tu zacznij” – strzałka do węzła Mapy Relacji */}
+        <path d="M232 104 C 220 118, 222 130, 234 142" fill="none" stroke="#a9512f" strokeWidth="2" strokeLinecap="round" markerEnd="url(#start-arrow)" />
         <circle cx="246" cy="190" r="32" fill="#fff" stroke="#36493d" strokeWidth="2.5" />
         <circle cx="246" cy="190" r="42" fill="none" stroke="#36493d" strokeOpacity="0.2" strokeWidth="1.5" />
         <svg x="221" y="182.5" width="50" height="15" viewBox="0 0 112 32">
@@ -122,6 +127,7 @@ export function HeroMap({ toPaths }: { toPaths?: boolean } = {}) {
       </svg>
       <div className="pointer-events-none absolute inset-0 text-[13px]">
         <span className="absolute left-[3%] top-[85%] -translate-y-1/2 rounded-full bg-white px-3 py-1.5 font-semibold uppercase tracking-[0.12em] text-[10.5px] text-clay shadow-soft ring-1 ring-sand">Tu jesteście dzisiaj</span>
+        <span className="absolute left-[47.3%] top-[22%] -translate-x-1/2 -translate-y-1/2 whitespace-nowrap rounded-full bg-clay px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-white shadow-soft" data-testid="map-start">Tu zacznij</span>
         <span className="absolute left-[47.3%] top-[64%] -translate-x-1/2 whitespace-nowrap rounded-full bg-forest px-3.5 py-1.5 text-[12px] font-medium text-white shadow-soft">Mapa Relacji</span>
       </div>
       <ul className="absolute right-[2%] top-0 flex h-full flex-col justify-between py-[9%] text-[13px]">
@@ -165,6 +171,9 @@ export function HeroMapVertical({ toPaths }: { toPaths?: boolean } = {}) {
             <pattern id="grid-v" width="24" height="24" patternUnits="userSpaceOnUse">
               <circle cx="1" cy="1" r="1" fill="#e2d4c2" />
             </pattern>
+            <marker id="start-arrow-v" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M1 1 L8 5 L1 9" fill="none" stroke="#a9512f" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+            </marker>
           </defs>
           <rect x="0" y="0" width="340" height="300" rx="20" fill="url(#grid-v)" opacity="0.7" />
           <path d="M170 64 C 130 88, 210 108, 170 128" fill="none" stroke="#36493d" strokeWidth="2.5" strokeDasharray="6 7" />
@@ -182,6 +191,8 @@ export function HeroMapVertical({ toPaths }: { toPaths?: boolean } = {}) {
           ))}
           <circle cx="170" cy="56" r="8" fill="#a9512f" />
           <circle cx="170" cy="56" r="16" fill="#a9512f" opacity="0.15" className="motion-safe:animate-ping" style={{ transformOrigin: "170px 56px", animationDuration: "3s" }} />
+          {/* „Tu zacznij” – strzałka do węzła Mapy Relacji */}
+          <path d="M84 168 C 100 176, 112 174, 124 166" fill="none" stroke="#a9512f" strokeWidth="2" strokeLinecap="round" markerEnd="url(#start-arrow-v)" />
           <circle cx="170" cy="160" r="30" fill="#fff" stroke="#36493d" strokeWidth="2.5" />
           <circle cx="170" cy="160" r="40" fill="none" stroke="#36493d" strokeOpacity="0.2" strokeWidth="1.5" />
           <svg x="146" y="153" width="48" height="14" viewBox="0 0 112 32">
@@ -193,6 +204,7 @@ export function HeroMapVertical({ toPaths }: { toPaths?: boolean } = {}) {
         </svg>
         <div className="pointer-events-none absolute inset-0">
           <span className="absolute left-1/2 top-[3%] -translate-x-1/2 whitespace-nowrap rounded-full bg-white px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-clay shadow-soft ring-1 ring-sand">Tu jesteście dzisiaj</span>
+          <span className="absolute left-[3%] top-[50%] -translate-y-1/2 whitespace-nowrap rounded-full bg-clay px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-white shadow-soft" data-testid="map-start-v">Tu zacznij</span>
           <span className="absolute left-[62%] top-[53.3%] -translate-y-1/2 whitespace-nowrap rounded-full bg-forest px-2.5 py-1 text-[11px] max-[359px]:px-2 max-[359px]:text-[10px] font-medium text-white shadow-soft">Mapa Relacji</span>
           {[33.5, 66.5].map((l) => (
             <span key={l} aria-hidden className="absolute top-[88%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-linen px-2 py-0.5 text-[9.5px] font-semibold uppercase tracking-[0.16em] text-ink-soft ring-1 ring-sand" style={{ left: `${l}%` }}>lub</span>
