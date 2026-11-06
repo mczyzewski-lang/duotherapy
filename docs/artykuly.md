@@ -33,6 +33,9 @@ W tekście: `**pogrubienie**` i `[tekst linku](/adres)`. **Każdy artykuł linku
   z delikatnymi elementami komiksowymi, **bez tekstu w obrazie** – tytuł i podpis („W skrócie: …” – podsumowanie idei) są pod grafiką w HTML
   (czytelne dla Google). Logo DUO w narożniku dokłada strona. Dopóki grafika nie jest wygenerowana, widać spokojne tło w barwach marki.
 - Każdy artykuł ma **min. 2 ilustracje** (`art`) i grafikę na górze; pilnuje test. Prompty piszemy po angielsku, opisując scenę (styl dokłada system).
+- **Wszystkie naraz:** przycisk „Wygeneruj wszystkie brakujące” w tej samej karcie – generuje w tle (po 2 naraz, ponawia przy limitach OpenAI,
+  przerywa po 3 błędach z rzędu). Postęp odświeża się sam; stronę można zamknąć. Po restarcie serwera wystarczy kliknąć ponownie – robią się tylko brakujące.
+- Przed dodaniem do rejestru sprawdź plik: `npx tsx scripts/check-article.ts src/content/articles/<slug>.ts` (te same zasady co test + typografia).
 - Autorka wszystkich artykułów: **Klaudia Bosek** (`AUTHOR` w `src/content/articles/index.ts`) – widoczna pod tytułem, w ramce na końcu i w danych strukturalnych.
 
 ## Infografiki HTML

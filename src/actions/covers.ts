@@ -5,7 +5,8 @@ import { revalidatePath } from "next/cache";
 import { asStaff, requireStaff } from "@/lib/auth";
 import { audit } from "@/lib/audit";
 import { generateCoverPhoto, invalidateCoverPhotos } from "@/lib/cover-photos";
-import { allArticleImageJobs, articleImageJobs, articleImageMap, generateArticleImage, invalidateArticleImages } from "@/lib/article-images";
+import { allArticleImageJobs, articleImageJobs, articleImageMap, generateArticleImage, invalidateArticleImages, startBulkGeneration, stopBulkGeneration } from "@/lib/article-images";
+import { coverGenConfigured } from "@/lib/cover-photos";
 import { COVERS } from "@/knowledge/covers";
 
 type R = { error?: string; ok?: string } | undefined;
@@ -73,4 +74,22 @@ export async function deleteArticleImageAction(_: R, fd: FormData): Promise<R> {
   invalidateArticleImages();
   revalidatePath("/app/wiedza");
   return { ok: "Usunięto." };
+}
+
+/** Wszystkie brakujące ilustracje wszystkich artykułów – w tle (postęp widać w panelu, strona sama się odświeża). */
+export async function generateAllArticleImagesAction(_: R): Promise<R> {
+  const s = await requireStaff("admin");
+  if (!coverGenConfigured()) return { error: "Brak OPENAI_API_KEY na serwerze." };
+  const r = await startBulkGeneration();
+  if (!r.started) return r.total ? { ok: "Generowanie już trwa." } : { ok: "Wszystkie grafiki są gotowe." };
+  await asStaff(s, (tx) => audit(tx, s.actor, "article_images_bulk_started", "article_image", null, null, { count: r.total }));
+  revalidatePath("/app/wiedza");
+  return { ok: `Start: ${r.total} grafik w tle. Możesz zamknąć tę stronę – generowanie trwa na serwerze.` };
+}
+
+export async function stopAllArticleImagesAction(_: R): Promise<R> {
+  await requireStaff("admin");
+  stopBulkGeneration();
+  revalidatePath("/app/wiedza");
+  return { ok: "Zatrzymano po bieżących grafikach." };
 }

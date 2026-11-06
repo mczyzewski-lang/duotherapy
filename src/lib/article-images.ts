@@ -52,3 +52,64 @@ export async function generateArticleImage(key: string): Promise<{ ok: true; mod
   invalidateArticleImages();
   return { ok: true, model: r.model };
 }
+
+// ---------------------------------------------------------------------------
+// Generowanie hurtowe w tle: wszystkie brakujące ilustracje, po 2 naraz, z ponowieniem przy limitach OpenAI.
+// Stan żyje w procesie serwera (jedna instancja) – po restarcie wystarczy kliknąć ponownie: generują się tylko brakujące.
+// ---------------------------------------------------------------------------
+export interface BulkStatus {
+  running: boolean;
+  total: number;
+  done: number;
+  failed: { key: string; error: string }[];
+  current: string[];
+  startedAt: number;
+  finishedAt: number | null;
+  stoppedReason: string | null;
+}
+const g = globalThis as unknown as { __duoBulk?: BulkStatus };
+export const bulkStatus = (): BulkStatus | null => g.__duoBulk ?? null;
+
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+const retryable = (e: string) => /429|rate|limit|timeout|ECONNRESET|5\d\d|overloaded|temporarily/i.test(e);
+
+export async function startBulkGeneration(concurrency = 2): Promise<{ started: boolean; total: number }> {
+  if (g.__duoBulk?.running) return { started: false, total: g.__duoBulk.total };
+  invalidateArticleImages();
+  const have = await articleImageMap();
+  const todo = allArticleImageJobs().filter((j) => !have[j.key]);
+  const st: BulkStatus = { running: todo.length > 0, total: todo.length, done: 0, failed: [], current: [], startedAt: Date.now(), finishedAt: todo.length ? null : Date.now(), stoppedReason: null };
+  g.__duoBulk = st;
+  if (!todo.length) return { started: false, total: 0 };
+  let next = 0;
+  let consecutiveFails = 0;
+  const worker = async () => {
+    while (st.running && next < todo.length) {
+      const job = todo[next++];
+      st.current.push(job.key);
+      let r: Awaited<ReturnType<typeof generateArticleImage>> = { ok: false, error: "" };
+      for (let attempt = 0; attempt < 4; attempt++) {
+        r = await generateArticleImage(job.key).catch((e) => ({ ok: false as const, error: String(e?.message ?? e) }));
+        if (r.ok || !retryable(r.error)) break;
+        await sleep(15_000 * (attempt + 1));
+      }
+      st.current = st.current.filter((k) => k !== job.key);
+      if (r.ok) { st.done++; consecutiveFails = 0; }
+      else {
+        st.failed.push({ key: job.key, error: r.error.slice(0, 300) });
+        // ten sam błąd kilka razy z rzędu (brak klucza, model, limit konta) – przerywamy, żeby nie mnożyć kosztów i błędów
+        if (++consecutiveFails >= 3) { st.running = false; st.stoppedReason = `Przerwano po 3 błędach z rzędu: ${r.error.slice(0, 200)}`; }
+      }
+    }
+  };
+  void Promise.all(Array.from({ length: Math.min(concurrency, todo.length) }, worker)).finally(() => {
+    st.running = false;
+    st.finishedAt = Date.now();
+    invalidateArticleImages();
+  });
+  return { started: true, total: todo.length };
+}
+
+export function stopBulkGeneration() {
+  if (g.__duoBulk?.running) { g.__duoBulk.running = false; g.__duoBulk.stoppedReason = "Zatrzymano ręcznie."; }
+}
