@@ -28,10 +28,13 @@ export function KnowledgeGrid({ photos = {} }: { photos?: Record<string, string>
         {list.map((m) => (
           <li key={m.slug}>
             <Link href={`/wiedza/${m.slug}`} className="group flex h-full flex-col overflow-hidden rounded-[1.6rem] bg-white shadow-soft ring-1 ring-sand transition hover:-translate-y-0.5 hover:ring-forest/40">
-              <div className="bg-linen/60 p-4">
-                <div className="mx-auto max-w-[13rem]"><CoverBook><Cover m={m} mode="screen" compact photo={photos[m.slug]} /></CoverBook></div>
+              <div className="relative bg-linen/60 px-4 pt-5">
+                {/* okładka-książka wychodzi z górnego pola i nachodzi na część z treścią (jak na stronie głównej) */}
+                <div className="relative z-10 mx-auto -mb-20 h-[17rem] w-[12.6rem]">
+                  <div className="w-[14rem] origin-top-left scale-90"><CoverBook><Cover m={m} mode="screen" compact photo={photos[m.slug]} idSuffix="-hub" /></CoverBook></div>
+                </div>
               </div>
-              <div className="flex flex-1 flex-col p-5">
+              <div className="flex flex-1 flex-col px-5 pb-5 pt-24">
                 <p className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-clay">
                   <MagnetIcon icon={m.icon} id={`g-${m.id}`} className="h-5 w-5" /> {CATEGORIES.find((c) => c.key === m.category)?.label}
                 </p>
