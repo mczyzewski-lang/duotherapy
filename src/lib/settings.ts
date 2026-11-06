@@ -110,7 +110,7 @@ export const DEFAULT_SETTINGS: Settings = {
   },
   site: {
     priceIndividual: "",
-    priceCouple: "",
+    priceCouple: "1270 zł",
     contactPhone: "",
     contactEmail: "",
     vslUrl: "",
@@ -144,7 +144,7 @@ export const DEFAULT_SETTINGS: Settings = {
       },
       {
         q: "Ile kosztuje pełna Mapa Relacji?",
-        a: "Quiz na stronie jest bezpłatny. Mapa Relacji dla Ciebie kosztuje 670 zł – obejmuje kwestionariusz, jedno spotkanie online z psychologiem (60 minut) i pisemne podsumowanie. Możesz ją zamówić od razu po quizie albo po rozmowie z konsultantem. Mapę Relacji dla Was (3 spotkania: z Tobą, z partnerem i wspólne, dwa kwestionariusze) omówisz z konsultantem.",
+        a: "Quiz na stronie jest bezpłatny. Mapa Relacji dla Ciebie kosztuje 670 zł – obejmuje kwestionariusz, jedno spotkanie online z psychologiem (60 minut) i pisemne podsumowanie. Możesz ją zamówić od razu po quizie albo po rozmowie z konsultantem. Mapa Relacji dla Was kosztuje 1270 zł – obejmuje dwa kwestionariusze, 3 spotkania online (z Tobą, z partnerem i wspólne) oraz pisemne podsumowanie. Obie ceny są jednorazowe.",
       },
       {
         q: "Czy moje odpowiedzi i informacje są poufne?",

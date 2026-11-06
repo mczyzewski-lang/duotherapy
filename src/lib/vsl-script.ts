@@ -68,7 +68,7 @@ export const VSL_SCRIPT: VslSegment[] = [
     time: "4:00",
     title: "Jak zacząć",
     paragraphs: [
-      "Mapa Relacji kosztuje 670 złotych. W tej cenie otrzymujesz cały proces, o którym Ci opowiedziałam: szczegółowy kwestionariusz, godzinną konsultację online z psychologiem oraz pisemne podsumowanie w formie Mapy Relacji. Jeśli chcecie przejść ją we dwoje, porozmawiaj o tym z naszym konsultantem.",
+      "Mapa Relacji kosztuje 670 złotych. W tej cenie otrzymujesz cały proces, o którym Ci opowiedziałam: szczegółowy kwestionariusz, godzinną konsultację online z psychologiem oraz pisemne podsumowanie w formie Mapy Relacji. Jeśli chcecie przejść ją we dwoje – trzy spotkania: z Tobą, z partnerem i wspólne – Mapa Relacji dla Was kosztuje 1270 złotych; termin ustalisz z naszym konsultantem.",
       "Nie płacisz więc za krótki test internetowy. Płacisz za profesjonalne wsparcie w przyjrzeniu się jednej z najważniejszych relacji w Twoim życiu.",
       "Jeśli czujesz, że tego właśnie teraz potrzebujesz, możesz rozpocząć od razu. Kliknij przycisk pod nagraniem, zamów Mapę Relacji i wybierz termin konsultacji. Zaraz potem otrzymasz dostęp do kwestionariusza.",
       "A jeżeli masz jeszcze pytania, możesz zaczekać na rozmowę z naszym konsultantem.",

@@ -17,6 +17,10 @@ test("strona główna i menu „Jak pomagamy”: Mapa Relacji nad trzema ścież
   await expect(page.locator('header a[aria-label="Mapa Relacji"]')).toHaveCount(0);
   await page.goto("/mapa-relacji");
   await expect(page.locator('header a[aria-label="Mapa Relacji"]')).toHaveCount(1);
+  // dwa warianty z cenami jednorazowymi
+  await expect(page.getByTestId("variant-solo")).toContainText("670 zł");
+  await expect(page.getByTestId("variant-couple")).toContainText("1270 zł");
+  await expect(page.getByTestId("variant-couple")).toContainText("jednorazowo");
 });
 
 test("podstrony ścieżek: jeden H1, plan, zapytanie z tematem trafia do panelu", async ({ page, browser }) => {

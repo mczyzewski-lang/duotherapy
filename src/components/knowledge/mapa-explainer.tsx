@@ -79,7 +79,7 @@ export function MapaExplainer({ id, lead, href, cta = "Poznaj Mapę Relacji", sa
             Zobacz przykładową Mapę
           </a>
         )}
-        <span className="text-sm text-white/65 sm:ml-auto">670 zł jednorazowo · decyzja po rozmowie z konsultantem</span>
+        <span className="text-sm text-white/65 sm:ml-auto">Dla Ciebie 670 zł · dla Was 1270 zł · jednorazowo</span>
       </div>
     </div>
   );
