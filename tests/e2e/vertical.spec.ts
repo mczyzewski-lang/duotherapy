@@ -308,13 +308,23 @@ test("zakup online: strona VSL → płatność (atrapa operatora) → termin →
   // psycholog dodaje wolne terminy
   const staff = await browser.newPage();
   await login(staff);
-  await staff.goto("/app/terminy");
-  await staff.waitForLoadState("networkidle");
   const day = new Date(Date.now() + 3 * 86400_000).toISOString().slice(0, 10);
-  await staff.getByLabel("Dzień").fill(day);
-  await staff.getByLabel("Godziny rozpoczęcia").fill("10:00, 15:30");
-  await staff.getByRole("button", { name: "Dodaj terminy" }).click();
+  await staff.goto(`/app/terminy?w=${day}`);
+  await staff.waitForLoadState("networkidle");
+  // kalendarz: klik w puste pola → nowe terminy (przerywane), zapis jednym przyciskiem
+  await staff.getByTestId(`cell-${day}-10:00`).click();
+  await staff.getByTestId(`cell-${day}-15:30`).click();
+  await expect(staff.getByTestId("slot-new")).toHaveCount(2);
+  await staff.getByTestId(`cell-${day}-09:30`).click(); // 9:30–10:30 nachodzi na 10:00–11:00
+  await expect(staff.getByText("Ten czas nachodzi na inny termin.")).toBeVisible();
+  await staff.getByTestId("slot-savebar").getByRole("button", { name: "Zapisz zmiany" }).click();
   await expect(staff.getByText(/Dodano terminy: 2/)).toBeVisible();
+  await expect(staff.getByTestId("slot-free")).toHaveCount(2);
+  // wolny termin można zaznaczyć do usunięcia i cofnąć
+  await staff.getByTestId("slot-free").first().click();
+  await expect(staff.getByTestId("slot-savebar")).toContainText("−1 do usunięcia");
+  await staff.getByTestId("slot-savebar").getByRole("button", { name: "Anuluj" }).click();
+  await expect(staff.getByTestId("slot-savebar")).toHaveCount(0);
 
   // klient: quiz → prośba o kontakt → strona VSL
   await page.setViewportSize({ width: 390, height: 844 });
@@ -383,6 +393,6 @@ test("zakup online: strona VSL → płatność (atrapa operatora) → termin →
   await expect(pay.getByText(/bez telefonu sprzedażowego/)).toBeVisible();
   await expect(pay.getByText(/Termin wybrany online/)).toBeVisible();
   await staff.goto("/app/terminy");
-  await expect(staff.getByText("Kasia Kupująca")).toBeVisible();
+  await expect(staff.getByTestId("upcoming-bookings").getByText("Kasia Kupująca")).toBeVisible();
   await staff.close();
 });
