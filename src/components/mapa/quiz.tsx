@@ -240,7 +240,7 @@ function Summary({
           {(
             [
               [ClipboardList, "Poufny kwestionariusz", "Około 15–25 minut. Przy parze każde z Was wypełnia własny – druga osoba nie widzi Twoich odpowiedzi."],
-              [MessagesSquare, "Konsultacja z psychologiem", "Online: 60 minut indywidualnie lub 90 minut dla pary. Psycholog zna już Twoje odpowiedzi."],
+              [MessagesSquare, "Konsultacja z psychologiem", "Online. Dla Ciebie: 1 spotkanie. Dla Was: 3 spotkania – z każdym z Was osobno i jedno wspólne. Psycholog zna już Twoje odpowiedzi."],
               [FileText, "Pisemne podsumowanie", "Co Was wspiera, gdzie jest najtrudniej, jak działa Wasz konflikt, propozycje psychologa i kolejne kroki – online i w PDF."],
             ] as const
           ).map(([Icon, t, d]) => (

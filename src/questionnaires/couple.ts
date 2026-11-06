@@ -106,7 +106,7 @@ export function buildCouple(gender: Gender): TemplateDef {
     verificationNote:
       "Plik źródłowy 01/02 nie został dostarczony. Szablon roboczy zbudowany z pozycji wspólnych z wersją indywidualną. Przed użyciem z prawdziwymi klientami porównaj z PDF i opublikuj poprawioną wersję w edytorze szablonów.",
     intro: [
-      "Kwestionariusz przygotowuje Cię do wspólnej konsultacji Mapy Relacji online (90 minut). Każde z Was wypełnia go osobno, na własnym, prywatnym linku.",
+      "Kwestionariusz przygotowuje Cię do spotkań Mapy Relacji dla Was: spotkania z każdym z Was osobno i jednego wspólnego (online). Każde z Was wypełnia go osobno, na własnym, prywatnym linku.",
       "Wypełnienie zajmuje około 15-25 minut. Rób to w spokoju, w miejscu, w którym nikt nie czyta Ci przez ramię – także druga osoba w związku.",
       g(
         "Twoje odpowiedzi nie są pokazywane partnerce. Psycholog nie ujawnia treści jednej osoby drugiej bez zgody.",

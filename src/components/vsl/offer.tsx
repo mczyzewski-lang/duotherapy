@@ -171,7 +171,7 @@ export function OfferCard(p: OfferProps) {
       )}
 
       <p className="mt-4 border-t border-sand pt-3 text-[13px] leading-relaxed text-muted">
-        Chcecie przejść Mapę Relacji we dwoje (konsultacja 90 minut, osobny kwestionariusz dla każdego z Was)? Ten wariant ustalisz z konsultantem DUO.
+        Chcecie przejść ją we dwoje? Mapa Relacji dla Was to 3 spotkania: z Tobą, z partnerem i wspólne (osobny kwestionariusz dla każdego z Was). Ten wariant ustalisz z konsultantem DUO.
       </p>
     </section>
   );

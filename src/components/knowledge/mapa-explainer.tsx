@@ -6,7 +6,7 @@ import { MapaSymbol, RoadGlyph } from "@/components/brand";
 
 const STEPS = [
   { icon: ClipboardList, title: "Kwestionariusz", text: "Poufnie, na prywatnym linku. Przy parze – każde z Was osobno." },
-  { icon: MessagesSquare, title: "Rozmowa z psychologiem", text: "Online: 60 min indywidualnie lub 90 min dla pary." },
+  { icon: MessagesSquare, title: "Spotkania z psychologiem", text: "Online. Dla Ciebie: 1 spotkanie. Dla Was: 3 – z każdym osobno i wspólne." },
   { icon: FileText, title: "Pisemne podsumowanie", text: "Co się dzieje, co Was wspiera i możliwe kolejne kroki – online i w PDF." },
 ] as const;
 

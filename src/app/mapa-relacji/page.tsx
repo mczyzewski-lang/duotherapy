@@ -21,7 +21,7 @@ const STEPS = [
   { icon: Check, t: "Bezpłatny quiz", time: "ok. 2 minut", d: "6 krótkich pytań o to, gdzie dziś jesteście. Na końcu możesz zostawić numer telefonu." },
   { icon: PhoneCall, t: "Rozmowa z konsultantem DUO", time: "telefonicznie", d: "Konsultant wyjaśni, jak wygląda Mapa Relacji, czy pasuje do Waszej sytuacji, jaki wariant wybrać i ile kosztuje. Decydujesz po rozmowie." },
   { icon: ClipboardList, t: "Poufny kwestionariusz", time: "ok. 15–25 minut", d: "Na prywatnym linku z kodem dostępu. Przy konsultacji dla pary każde z Was wypełnia własny – druga osoba nie widzi Twoich odpowiedzi." },
-  { icon: MessagesSquare, t: "Konsultacja z psychologiem", time: "60 min · dla pary 90 min", d: "Online. Psycholog zna już Wasze odpowiedzi, więc od razu rozmawiacie o tym, co najważniejsze." },
+  { icon: MessagesSquare, t: "Spotkania z psychologiem", time: "dla Ciebie 1 · dla Was 3", d: "Online. Dla Was: spotkanie z każdym z Was osobno i jedno wspólne. Psycholog zna już Wasze odpowiedzi, więc od razu rozmawiacie o tym, co najważniejsze." },
   { icon: FileText, t: "Twoja Mapa Relacji", time: "online i PDF", d: "Pisemne podsumowanie przygotowane przez psychologa – do przeczytania pod prywatnym linkiem z kodem i do pobrania jako PDF." },
 ];
 
@@ -32,7 +32,7 @@ export default async function Landing() {
   const variant = v === "B" ? "B" : "A";
   // cena z ustawień strony; brak = cena oferty online (wariant indywidualny)
   const individual = s.site.priceIndividual || (s.offer.pricePln ? `${s.offer.pricePln} zł` : "");
-  const prices = [individual && ["Indywidualnie", individual], s.site.priceCouple && ["Dla pary", s.site.priceCouple]].filter(Boolean) as [string, string][];
+  const prices = [individual && ["Dla Ciebie", individual], s.site.priceCouple && ["Dla Was", s.site.priceCouple]].filter(Boolean) as [string, string][];
 
   return (
     <>
@@ -210,36 +210,53 @@ export default async function Landing() {
             </ol>
             <p className="mt-4 text-sm text-muted">Termin konsultacji i przekazania podsumowania ustalacie wspólnie z nami – w rozmowie, bez pośpiechu.</p>
 
-            {/* Co obejmuje + cena (cena wyłącznie z ustawień; brak = uczciwa informacja) */}
-            <div className="mt-10 grid gap-6 rounded-[2rem] bg-white p-6 shadow-soft ring-1 ring-sand sm:p-8 md:grid-cols-[1.2fr_0.8fr] md:gap-10">
-              <div>
-                <h3 className="font-display text-2xl text-ink">Co obejmuje Mapa Relacji</h3>
-                <ul className="mt-4 space-y-2.5 text-[15px] text-ink-soft">
-                  {[
-                    "Rozmowę z konsultantem przed zakupem – bez zobowiązań",
-                    "Szczegółowy, poufny kwestionariusz (przy parze – osobny dla każdej osoby)",
-                    "Konsultację online z psychologiem: 60 minut indywidualnie lub 90 minut dla pary",
-                    "Pisemne podsumowanie przygotowane przez psychologa – online i w PDF",
-                  ].map((x) => (
-                    <li key={x} className="flex gap-2.5"><Check size={16} className="mt-1 shrink-0 text-forest" aria-hidden />{x}</li>
-                  ))}
-                </ul>
+            {/* Dwa warianty: dla Ciebie (1 spotkanie) i dla Was (3 spotkania). Cena pary wyłącznie z ustawień; brak = uczciwa informacja. */}
+            <div className="mt-10" data-testid="mapa-variants">
+              <h3 className="font-display text-2xl text-ink">Co obejmuje Mapa Relacji</h3>
+              <div className="mt-5 grid gap-5 md:grid-cols-2">
+                {[
+                  {
+                    key: "solo",
+                    name: "Mapa Relacji dla Ciebie",
+                    meetings: "1 spotkanie z Tobą",
+                    price: `${s.offer.pricePln} zł`,
+                    once: true,
+                    items: ["Szczegółowy, poufny kwestionariusz", "1 spotkanie online z psychologiem (60 minut)", "Pisemne podsumowanie przygotowane przez psychologa – online i w PDF"],
+                  },
+                  {
+                    key: "couple",
+                    name: "Mapa Relacji dla Was",
+                    meetings: "3 spotkania: z Tobą, z partnerem i wspólne",
+                    price: s.site.priceCouple,
+                    once: !!s.site.priceCouple,
+                    items: ["Osobny, poufny kwestionariusz dla każdego z Was", "3 spotkania online z psychologiem: 1 z Tobą, 1 z partnerem i 1 wspólne", "Pisemne podsumowanie przygotowane przez psychologa – online i w PDF"],
+                  },
+                ].map((v) => (
+                  <div key={v.key} className={v.key === "solo" ? "flex flex-col rounded-[2rem] bg-white p-6 shadow-soft ring-1 ring-sand sm:p-7" : "flex flex-col rounded-[2rem] bg-white p-6 shadow-soft ring-2 ring-forest/25 sm:p-7"} data-testid={`variant-${v.key}`}>
+                    <p className="text-sm font-semibold uppercase tracking-[0.16em] text-clay">{v.key === "solo" ? "Sam / sama" : "We dwoje"}</p>
+                    <p className="mt-2 font-display text-[1.6rem] leading-tight text-ink">{v.name}</p>
+                    <p className="mt-1 font-medium text-forest">{v.meetings}</p>
+                    <ul className="mt-4 flex-1 space-y-2.5 text-[15px] text-ink-soft">
+                      {v.items.map((x) => <li key={x} className="flex gap-2.5"><Check size={16} className="mt-1 shrink-0 text-forest" aria-hidden />{x}</li>)}
+                    </ul>
+                    <div className="mt-5 rounded-2xl bg-linen p-4">
+                      {v.price ? (
+                        <p className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                          <span className="font-display text-[2.2rem] leading-none text-ink">{v.price}</span>
+                          {v.once && <span className="rounded-full bg-white px-2.5 py-1 text-[12px] font-semibold text-forest ring-1 ring-sand" data-testid={v.key === "solo" ? "price-once" : undefined}>jednorazowo</span>}
+                        </p>
+                      ) : (
+                        <p className="text-[15px] font-medium text-ink">Cenę omówisz z konsultantem</p>
+                      )}
+                      <p className="mt-1.5 text-[13px] text-muted">{v.price ? "Płacisz raz – to nie jest abonament." : "Konsultant dopasuje termin trzech spotkań do Was obojga."}</p>
+                    </div>
+                  </div>
+                ))}
               </div>
-              <div className="rounded-3xl bg-linen p-5 sm:p-6">
-                <p className="text-sm font-semibold uppercase tracking-[0.16em] text-clay">Cena</p>
-                <p className="mt-2 flex flex-wrap items-baseline gap-x-3 gap-y-1">
-                  <span className="font-display text-[2.6rem] leading-none text-ink">{s.offer.pricePln} zł</span>
-                  <span className="rounded-full bg-white px-2.5 py-1 text-[12px] font-semibold text-forest ring-1 ring-sand" data-testid="price-once">jednorazowo</span>
-                </p>
-                <p className="mt-1.5 text-[13px] text-muted">Płacisz raz – to nie jest abonament.</p>
-                <p className="mt-2 text-sm leading-relaxed text-ink-soft">Pełna Mapa Relacji – kwestionariusz, konsultacja online z psychologiem i pisemne podsumowanie.</p>
-                {s.site.priceCouple ? (
-                  <p className="mt-2 text-sm text-ink-soft">Wariant dla pary: <strong className="font-medium text-ink">{s.site.priceCouple}</strong></p>
-                ) : (
-                  <p className="mt-2 text-sm text-ink-soft">Chcecie przejść ją we dwoje? Wariant dla pary omówisz z konsultantem.</p>
-                )}
-                <p className="mt-3 text-sm text-muted">Quiz na stronie jest bezpłatny i do niczego nie zobowiązuje.</p>
-              </div>
+              <p className="mt-4 flex gap-2.5 text-[15px] text-ink-soft">
+                <Check size={16} className="mt-1 shrink-0 text-forest" aria-hidden />
+                Przed zakupem rozmowa z konsultantem – bez zobowiązań. Quiz na stronie jest bezpłatny i do niczego nie zobowiązuje.
+              </p>
             </div>
             <div className="mt-8"><QuizCta className="w-full sm:w-auto">Zacznij od 6 krótkich pytań</QuizCta></div>
           </div>

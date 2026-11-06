@@ -115,7 +115,7 @@ export default async function LeadPage({ params }: { params: Promise<{ id: strin
             <ol className="mt-3 list-decimal space-y-1.5 pl-5 text-sm leading-relaxed text-ink-soft">
               <li>Przedstaw się, sprawdź, czy to dobry i bezpieczny moment na rozmowę{lead.quiz?.discreet ? " (osoba prosi o dyskrecję)" : ""}.</li>
               <li>Zapytaj krótko, co skłoniło do zgłoszenia i czego osoba oczekuje.</li>
-              <li>Wyjaśnij Mapę Relacji: poufne kwestionariusze (ok. 15–25 min), konsultacja z psychologiem ({lead.mode === "couple" ? "90 minut wspólnie, każda osoba wypełnia własny kwestionariusz" : "60 minut indywidualnie lub 90 minut wspólnie"}), pisemne podsumowanie z możliwymi kierunkami. Podaj cenę i warianty.</li>
+              <li>Wyjaśnij Mapę Relacji: poufne kwestionariusze (ok. 15–25 min), spotkania z psychologiem ({lead.mode === "couple" ? "Mapa Relacji dla Was: 3 spotkania – z każdym osobno i jedno wspólne; każda osoba wypełnia własny kwestionariusz" : "Mapa Relacji dla Ciebie: 1 spotkanie (60 min); dla Was: 3 spotkania – z każdym osobno i wspólne"}), pisemne podsumowanie z możliwymi kierunkami. Podaj cenę i warianty.</li>
               <li>Podkreśl: to nie terapia ani diagnoza; rekomendacja jest propozycją, decyzja należy do klienta.</li>
               <li>Zapytaj o bezpieczeństwo. Przy sygnałach przemocy: bez wspólnej sesji – ścieżka bezpieczeństwa i numery pomocy.</li>
               <li>Ustal formę płatności{settings.site.paymentUrl ? " (link do płatności w ustawieniach)" : ""} i kolejne kroki: link do kwestionariusza z kodem przekazanym telefonicznie.</li>

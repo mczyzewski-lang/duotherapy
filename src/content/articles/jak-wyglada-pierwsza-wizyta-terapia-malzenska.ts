@@ -65,7 +65,7 @@ export const article: Article = {
     { t: "mapa" },
   ],
   faq: [
-    { q: "Ile trwa pierwsza wizyta na terapii par?", a: "Zwykle tyle, ile standardowe spotkanie u danego terapeuty. Przy Mapie Relacji w DUO konsultacja dla pary trwa 90 minut, a indywidualna 60 minut." },
+    { q: "Ile trwa pierwsza wizyta na terapii par?", a: "Zwykle tyle, ile standardowe spotkanie u danego terapeuty. Przy Mapie Relacji w DUO wariant dla Ciebie to 1 spotkanie (60 minut), a wariant dla Was – 3 spotkania: z każdym z Was osobno i jedno wspólne." },
     { q: "Czy terapeuta rozmawia z każdym z nas osobno?", a: "Zależy od metody pracy. Część terapeutów proponuje także spotkania indywidualne, ale zawsze z jasnymi zasadami dotyczącymi tego, co pozostaje poufne." },
     { q: "Czy muszę od razu mówić o wszystkim?", a: "Nie. Możesz mówić w swoim tempie. Terapeuta pomoże Wam ustalić, od czego zacząć." },
   ],

@@ -132,7 +132,7 @@ export const DEFAULT_SETTINGS: Settings = {
       },
       {
         q: "Jak wygląda konsultacja?",
-        a: "To rozmowa online z psychologiem: 60 minut przy konsultacji indywidualnej i 90 minut przy konsultacji dla pary. Psycholog zna wcześniej odpowiedzi z kwestionariusza, więc nie zaczynacie od opowiadania wszystkiego od początku – od razu rozmawiacie o tym, co dla Was najważniejsze.",
+        a: "To rozmowa online z psychologiem. Mapa Relacji dla Ciebie to 1 spotkanie (60 minut), a Mapa Relacji dla Was – 3 spotkania: z Tobą, z partnerem i jedno wspólne. Psycholog zna wcześniej odpowiedzi z kwestionariusza, więc nie zaczynacie od opowiadania wszystkiego od początku – od razu rozmawiacie o tym, co dla Was najważniejsze.",
       },
       {
         q: "Czy psycholog zdecyduje za mnie, czy powinienem się rozwieść?",
@@ -140,11 +140,11 @@ export const DEFAULT_SETTINGS: Settings = {
       },
       {
         q: "Jak długo trwa proces?",
-        a: "Quiz zajmuje około 2 minut, kwestionariusz około 15–25 minut, a konsultacja 60 minut indywidualnie lub 90 minut dla pary. Termin konsultacji i przekazania podsumowania ustalamy wspólnie podczas rozmowy telefonicznej – tak, by pasował do Twojego kalendarza.",
+        a: "Quiz zajmuje około 2 minut, kwestionariusz około 15–25 minut, a spotkania: dla Ciebie 1 (60 minut), dla Was 3 – z każdym z Was osobno i jedno wspólne. Termin konsultacji i przekazania podsumowania ustalamy wspólnie podczas rozmowy telefonicznej – tak, by pasował do Twojego kalendarza.",
       },
       {
         q: "Ile kosztuje pełna Mapa Relacji?",
-        a: "Quiz na stronie jest bezpłatny. Mapa Relacji w wariancie indywidualnym kosztuje 670 zł – obejmuje kwestionariusz, godzinną konsultację online z psychologiem i pisemne podsumowanie. Możesz ją zamówić od razu po quizie albo po rozmowie z konsultantem. Wariant dla pary (konsultacja 90 minut, dwa kwestionariusze) omówisz z konsultantem.",
+        a: "Quiz na stronie jest bezpłatny. Mapa Relacji dla Ciebie kosztuje 670 zł – obejmuje kwestionariusz, jedno spotkanie online z psychologiem (60 minut) i pisemne podsumowanie. Możesz ją zamówić od razu po quizie albo po rozmowie z konsultantem. Mapę Relacji dla Was (3 spotkania: z Tobą, z partnerem i wspólne, dwa kwestionariusze) omówisz z konsultantem.",
       },
       {
         q: "Czy moje odpowiedzi i informacje są poufne?",
