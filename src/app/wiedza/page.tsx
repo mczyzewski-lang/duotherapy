@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { KTrack } from "@/components/knowledge/client";
 import Link from "next/link";
 import { ArticleCard } from "@/components/articles/article";
+import { articleImageMap, heroKey } from "@/lib/article-images";
 import { KnowledgeGrid } from "@/components/knowledge/grid";
 import { ARTICLES, ARTICLES_PATH } from "@/content/articles";
 import { coverPhotoMap } from "@/lib/cover-photos";
@@ -24,6 +25,7 @@ export const metadata: Metadata = {
 export default async function KnowledgeHub() {
   const s = await getSettings();
   const photos = await coverPhotoMap();
+  const images = await articleImageMap();
   return (
     <>
       <KTrack event="knowledge_hub_view" />
@@ -46,7 +48,7 @@ export default async function KnowledgeHub() {
             </div>
             <Link href={ARTICLES_PATH} className="text-sm font-semibold text-forest hover:underline">Wszystkie artykuły →</Link>
           </div>
-          <ul className="mt-6 grid gap-5 md:grid-cols-2 lg:grid-cols-3">{ARTICLES.slice(0, 6).map((a) => <li key={a.slug}><ArticleCard a={a} /></li>)}</ul>
+          <ul className="mt-6 grid gap-5 md:grid-cols-2 lg:grid-cols-3">{ARTICLES.slice(0, 6).map((a) => <li key={a.slug}><ArticleCard a={a} image={images[heroKey(a.slug)]} /></li>)}</ul>
         </section>
       </main>
       <SiteFooter contactEmail={s.site.contactEmail} />

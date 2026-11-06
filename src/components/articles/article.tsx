@@ -1,12 +1,12 @@
 // Renderer artykułu: tekst z **pogrubieniem** i [linkami](/adres), bloki, kontenery z materiałem, karty artykułów.
 import clsx from "clsx";
-import { ArrowRight, Clock, Info, ShieldAlert } from "lucide-react";
+import { ArrowRight, Clock, Info, ShieldAlert, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { Fragment } from "react";
 import { CoverBook } from "@/components/knowledge/cover-book";
 import { Cover } from "@/components/knowledge/doc";
 import { MagnetIcon } from "@/components/knowledge/icons";
-import { MapaExplainer } from "@/components/knowledge/mapa-explainer";
+import { BrandSymbol, MapaSymbol } from "@/components/brand";
 import { articleHref } from "@/content/articles";
 import type { Article, ArticleBlock } from "@/content/articles/types";
 import { magnetBySlug } from "@/knowledge/registry";
@@ -61,7 +61,44 @@ export function MagnetCta({ slug, hook, photo, idSuffix, side }: { slug: string;
   );
 }
 
-export function ArticleBody({ a, photos }: { a: Article; photos: Record<string, string> }) {
+/** Ilustracja-infografika z OpenAI (albo spokojny zastępnik, dopóki nie zostanie wygenerowana) + podpis z ideą. */
+export function ArtFigure({ id, title, alt, caption, src }: { id: string; title: string; alt: string; caption: string; src?: string }) {
+  return (
+    <figure className="relative my-8 overflow-hidden rounded-[1.6rem] bg-white shadow-soft ring-1 ring-sand" aria-labelledby={`${id}-t`} data-testid="art-figure">
+      <div className="relative aspect-[3/2] bg-gradient-to-br from-linen via-ivory to-sage-soft/60">
+        {src ? (
+          <img src={src} alt={alt} loading="lazy" decoding="async" width={1536} height={1024} className="h-full w-full object-cover" />
+        ) : (
+          <div className="grid h-full place-items-center p-8 text-center" role="img" aria-label={alt}>
+            <span className="grid h-14 w-14 place-items-center rounded-2xl bg-white/80 text-clay ring-1 ring-sand"><Sparkles size={24} aria-hidden /></span>
+          </div>
+        )}
+        {/* logo w narożniku */}
+        <span className="absolute right-3 top-3 flex items-center gap-1.5 rounded-full bg-white/90 px-2.5 py-1 shadow-soft ring-1 ring-sand" aria-hidden>
+          <BrandSymbol id={`af-${id}`} className="h-3.5 w-auto" />
+          <span className="font-wordmark text-[12px] font-medium text-forest">DUO®</span>
+        </span>
+      </div>
+      <figcaption className="p-5 sm:p-6">
+        <p id={`${id}-t`} className="font-display text-[1.2rem] leading-snug text-ink">{title}</p>
+        <p className="mt-1.5 text-[15px] leading-relaxed text-ink-soft">{caption}</p>
+      </figcaption>
+    </figure>
+  );
+}
+
+/** Dyskretny odnośnik do Mapy Relacji na końcu artykułu. */
+export function MapaSlim() {
+  return (
+    <aside className="mt-12 flex flex-col gap-3 rounded-2xl bg-sage-soft/50 p-4 ring-1 ring-sage/40 sm:flex-row sm:items-center sm:p-5" aria-label="Mapa Relacji" data-testid="mapa-slim">
+      <span className="flex items-center gap-2"><MapaSymbol id="ms-art" className="h-4 w-auto" /><span className="font-wordmark text-[15px] text-forest">Mapa Relacji</span></span>
+      <p className="flex-1 text-[14.5px] leading-snug text-ink-soft">Chcesz spojrzeć na całą sytuację z psychologiem? Kwestionariusz, spotkanie i pisemne podsumowanie.</p>
+      <Link href="/mapa-relacji" data-mapa-cta className="inline-flex shrink-0 items-center gap-1.5 text-sm font-semibold text-forest underline underline-offset-4">Poznaj Mapę Relacji <ArrowRight size={15} aria-hidden /></Link>
+    </aside>
+  );
+}
+
+export function ArticleBody({ a, photos, images = {} }: { a: Article; photos: Record<string, string>; images?: Record<string, string> }) {
   let cta = 0;
   return (
     <div className="article-body">
@@ -105,12 +142,10 @@ export function ArticleBody({ a, photos }: { a: Article; photos: Record<string, 
             return <Infographic key={i} id={`${a.slug}-${i}`} graphic={b.graphic} title={b.title} caption={b.caption} />;
           case "cta":
             return <MagnetCta key={i} slug={b.magnet} hook={b.hook} photo={photos[b.magnet]} idSuffix={`-a${cta++}`} />;
+          case "art":
+            return <ArtFigure key={i} id={`${a.slug}-${b.key}`} title={b.title} alt={b.alt} caption={b.caption} src={images[`${a.slug}--${b.key}`]} />;
           case "mapa":
-            return (
-              <div key={i} className="mt-12">
-                <MapaExplainer id={`art-${a.slug}`} lead="Artykuł pomaga zrozumieć jeden temat." href="/mapa-relacji" compact />
-              </div>
-            );
+            return <MapaSlim key={i} />;
         }
       })}
     </div>
@@ -118,9 +153,13 @@ export function ArticleBody({ a, photos }: { a: Article; photos: Record<string, 
 }
 
 /** Karta artykułu – na listach i w „Powiązanych artykułach”. */
-export function ArticleCard({ a, className }: { a: Article; className?: string }) {
+export function ArticleCard({ a, className, image }: { a: Article; className?: string; image?: string }) {
   return (
-    <Link href={articleHref(a.slug)} className={clsx("group flex h-full flex-col rounded-[1.4rem] bg-white p-5 shadow-soft ring-1 ring-sand transition hover:-translate-y-0.5 hover:ring-forest/40 sm:p-6", className)} data-testid="article-card">
+    <Link href={articleHref(a.slug)} className={clsx("group flex h-full flex-col overflow-hidden rounded-[1.4rem] bg-white shadow-soft ring-1 ring-sand transition hover:-translate-y-0.5 hover:ring-forest/40", className)} data-testid="article-card">
+      <div className="aspect-[16/9] overflow-hidden bg-gradient-to-br from-linen via-ivory to-clay-soft/60">
+        {image && <img src={image} alt="" loading="lazy" decoding="async" className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]" />}
+      </div>
+      <div className="flex flex-1 flex-col p-5 sm:p-6">
       <p className="flex flex-wrap gap-1.5">
         {a.tags.slice(0, 2).map((t) => <span key={t} className="rounded-full bg-linen px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-[0.12em] text-clay">{t}</span>)}
       </p>
@@ -130,6 +169,7 @@ export function ArticleCard({ a, className }: { a: Article; className?: string }
         <span className="inline-flex items-center gap-1.5"><Clock size={14} aria-hidden /> {a.minutes} min czytania</span>
         <span className="inline-flex items-center gap-1 font-semibold text-forest">Czytaj <ArrowRight size={15} className="transition group-hover:translate-x-0.5" aria-hidden /></span>
       </p>
+      </div>
     </Link>
   );
 }

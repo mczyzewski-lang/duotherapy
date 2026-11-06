@@ -18,7 +18,12 @@ export type ArticleBlock =
   | { t: "figure"; graphic: GraphicKey; title: string; caption: string }
   /** Kontener z bezpłatnym materiałem dopasowanym do miejsca w tekście. */
   | { t: "cta"; magnet: string; hook: string }
-  /** Krótkie wyjaśnienie Mapy Relacji z infografiką. */
+  /**
+   * Ilustracja-infografika generowana w panelu (OpenAI): minimalistyczna, w barwach DUO, bez tekstu w obrazie.
+   * Tytuł i podpis (podsumowanie idei) są w HTML – czytelne dla Google i czytników ekranu.
+   */
+  | { t: "art"; key: string; title: string; prompt: string; alt: string; caption: string }
+  /** Krótki, dyskretny odnośnik do Mapy Relacji. */
   | { t: "mapa" };
 
 export interface Article {
@@ -41,6 +46,8 @@ export interface Article {
   updated: string;
   minutes: number;
   lead: string;
+  /** Grafika na górze artykułu (generowana w panelu). */
+  hero: { prompt: string; alt: string };
   blocks: ArticleBlock[];
   faq: { q: string; a: string }[];
   /** Ręcznie wybrane powiązane artykuły (slugi); uzupełniane automatycznie po wspólnych tagach. */

@@ -17,6 +17,12 @@ test("artykuły: /wiedza → lista → artykuł z infografiką, kontenerem mater
   await expect(page.locator('meta[name="description"]')).toHaveAttribute("content", /terapię par/);
   const ld = (await page.locator('script[type="application/ld+json"]').allTextContents()).flatMap((x) => JSON.parse(x));
   expect(ld.map((x: { "@type": string }) => x["@type"])).toEqual(["Article", "BreadcrumbList", "FAQPage"]);
+  await expect(page.getByTestId("article-author").first()).toContainText("Klaudia Bosek");
+  await expect(page.getByTestId("article-hero")).toBeVisible();
+  expect(await page.getByTestId("art-figure").count()).toBeGreaterThanOrEqual(2);
+  await expect(page.getByTestId("mapa-slim")).toBeVisible();
+  await expect(page.getByTestId("mapa-explainer")).toHaveCount(0);
+  expect(ld[0].author.name).toBe("Klaudia Bosek");
   await expect(page.getByTestId("infographic").first()).toContainText("9 sygnałów");
   await expect(page.getByTestId("infographic").first()).toContainText("DUO®");
 

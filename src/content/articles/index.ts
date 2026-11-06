@@ -9,6 +9,14 @@ import { article as online } from "./terapia-par-online";
 export const ARTICLES: Article[] = [kiedyIsc, pierwszaWizyta, partnerNieChce, czyRozwod, online];
 
 export const ARTICLES_PATH = "/wiedza/artykuly";
+
+/** Autorka wszystkich artykułów (opis zgodny z prezentacją na stronie DUO). */
+export const AUTHOR = {
+  name: "Klaudia Bosek",
+  role: "Psycholog i psychoterapeutka relacji",
+  bio: "Psycholog i psychoterapeutka relacji w DUO. Pracuje pod regularną superwizją.",
+  avatar: "/img/klaudia-bosek-avatar.jpg",
+};
 export const articleHref = (slug: string) => `${ARTICLES_PATH}/${slug}`;
 export const articleBySlug = (slug: string) => ARTICLES.find((a) => a.slug === slug);
 

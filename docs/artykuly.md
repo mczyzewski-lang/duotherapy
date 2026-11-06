@@ -22,11 +22,20 @@ a na stronie materiału – sekcja „Przeczytaj też” z artykułami, które g
 ## Bloki treści
 
 `h2` (z `id` – kotwica do spisu treści), `h3`, `p`, `list` (`ordered`), `quote`, `callout` (`tone: "safety"` dla treści o bezpieczeństwie),
-`figure` (infografika), `cta` (kontener z materiałem i własnym zdaniem `hook` dopasowanym do miejsca w tekście), `mapa` (wyjaśnienie Mapy Relacji).
+`figure` (infografika HTML), `art` (ilustracja z OpenAI), `cta` (kontener z materiałem i własnym zdaniem `hook` dopasowanym do miejsca w tekście), `mapa` (dyskretny odnośnik do Mapy Relacji).
 
 W tekście: `**pogrubienie**` i `[tekst linku](/adres)`. **Każdy artykuł linkuje w treści do co najmniej jednego innego artykułu** (pilnuje test) oraz do materiałów i ścieżek (`/odbudowa`, `/czas-na-decyzje`, `/swiadome-rozstanie`, `/mapa-relacji`).
 
-## Infografiki
+## Grafiki i infografiki
+
+- **Grafika na górze** (`hero.prompt`, `hero.alt`) i **ilustracje-infografiki** (blok `art`: `key`, `title`, `prompt`, `alt`, `caption`) –
+  generowane w panelu: **Panel → Wiedza → Grafiki artykułów** (OpenAI, klucz na serwerze). Minimalistyczne, w barwach DUO,
+  z delikatnymi elementami komiksowymi, **bez tekstu w obrazie** – tytuł i podpis („W skrócie: …” – podsumowanie idei) są pod grafiką w HTML
+  (czytelne dla Google). Logo DUO w narożniku dokłada strona. Dopóki grafika nie jest wygenerowana, widać spokojne tło w barwach marki.
+- Każdy artykuł ma **min. 2 ilustracje** (`art`) i grafikę na górze; pilnuje test. Prompty piszemy po angielsku, opisując scenę (styl dokłada system).
+- Autorka wszystkich artykułów: **Klaudia Bosek** (`AUTHOR` w `src/content/articles/index.ts`) – widoczna pod tytułem, w ramce na końcu i w danych strukturalnych.
+
+## Infografiki HTML
 
 HTML/CSS w barwach DUO z logo w narożniku (`src/components/articles/infographics.tsx`) – ostre na każdym ekranie, lekkie,
 z tekstem czytelnym dla Google i czytników ekranu. Nowa infografika: funkcja w tym pliku + klucz w `GraphicKey` (`types.ts`).

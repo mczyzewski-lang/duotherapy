@@ -4,6 +4,7 @@ import { Badge, Card, PageTitle } from "@/components/ui";
 import { asStaff, requireStaff } from "@/lib/auth";
 import { MAGNETS } from "@/knowledge/registry";
 import { CoverAdmin } from "@/components/knowledge/cover-admin";
+import { ArticleImagesAdmin } from "@/components/articles/images-admin";
 import { customerMailConfigured } from "@/lib/notify";
 
 export const metadata = { title: "Wiedza – zapisy" };
@@ -59,6 +60,7 @@ export default async function KnowledgeAdmin({ searchParams }: { searchParams: P
       </div>
 
       <CoverAdmin />
+      <ArticleImagesAdmin />
 
       <Card className="mb-6 overflow-x-auto p-6">
         <h2 className="font-display text-xl text-ink">Materiały: landing → e-mail → dostarczenie → Mapa Relacji</h2>

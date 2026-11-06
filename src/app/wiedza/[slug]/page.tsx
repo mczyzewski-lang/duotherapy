@@ -10,6 +10,7 @@ import { MagnetCard, MagnetRail } from "@/components/knowledge/magnet-card";
 import { CoverBook } from "@/components/knowledge/cover-book";
 import { MapaExplainer } from "@/components/knowledge/mapa-explainer";
 import { ArticleCard } from "@/components/articles/article";
+import { articleImageMap, heroKey } from "@/lib/article-images";
 import { articlesForMagnet } from "@/content/articles";
 import { SampleAnswers } from "@/components/knowledge/answers";
 import { SAMPLE_ANSWERS } from "@/knowledge/samples";
@@ -42,6 +43,7 @@ export default async function MagnetLanding({ params }: { params: Promise<{ slug
   if (!m) notFound();
   const s = await getSettings();
   const photos = await coverPhotoMap();
+  const images = await articleImageMap();
   const articles = articlesForMagnet(m.slug);
   const related = MAGNETS.filter((x) => x.slug !== m.slug && x.category === m.category).slice(0, 3);
   const jsonLd = {
@@ -211,7 +213,7 @@ export default async function MagnetLanding({ params }: { params: Promise<{ slug
         {articles.length > 0 && (
           <section className="mx-auto max-w-6xl px-5 pb-12" aria-labelledby="art-h">
             <h2 id="art-h" className="font-display text-2xl text-ink">Przeczytaj też</h2>
-            <ul className="mt-4 grid gap-5 md:grid-cols-3">{articles.map((a) => <li key={a.slug}><ArticleCard a={a} /></li>)}</ul>
+            <ul className="mt-4 grid gap-5 md:grid-cols-3">{articles.map((a) => <li key={a.slug}><ArticleCard a={a} image={images[heroKey(a.slug)]} /></li>)}</ul>
           </section>
         )}
 

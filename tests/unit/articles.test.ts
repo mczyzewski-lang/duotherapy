@@ -26,9 +26,18 @@ describe("artykuły", () => {
     }
   });
 
-  it("każdy artykuł ma infografikę, kontener z materiałem i unikalne kotwice nagłówków", () => {
+  it("każdy artykuł: min. 2 infografiki, grafika na górze, długa treść, kontener z materiałem, unikalne kotwice", async () => {
+    const { articleImageJobs } = await import("@/lib/article-images");
     for (const a of ARTICLES) {
-      expect(a.blocks.some((b) => b.t === "figure"), a.slug).toBe(true);
+      expect(a.blocks.filter((b) => b.t === "figure" || b.t === "art").length, `${a.slug}: infografiki`).toBeGreaterThanOrEqual(2);
+      expect(a.blocks.filter((b) => b.t === "art").length, `${a.slug}: ilustracje`).toBeGreaterThanOrEqual(2);
+      expect(a.hero.prompt.length, a.slug).toBeGreaterThan(40);
+      expect(a.hero.alt.length, a.slug).toBeGreaterThan(20);
+      const jobs = articleImageJobs(a.slug);
+      expect(new Set(jobs.map((j) => j.key)).size, a.slug).toBe(jobs.length);
+      for (const j of jobs) expect(j.key, j.key).toMatch(/^[a-z0-9-]{3,160}$/);
+      const words = a.blocks.flatMap((b) => (b.t === "p" ? [b.text] : b.t === "list" ? b.items : b.t === "callout" ? [b.text] : [])).join(" ").split(/\s+/).length;
+      expect(words, `${a.slug}: liczba słów treści`).toBeGreaterThanOrEqual(480);
       const ctas = a.blocks.filter((b) => b.t === "cta");
       expect(ctas.length, a.slug).toBeGreaterThanOrEqual(1);
       for (const c of ctas) if (c.t === "cta") expect(magnetBySlug(c.magnet), `${a.slug} → ${c.magnet}`).toBeTruthy();

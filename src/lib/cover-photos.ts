@@ -33,11 +33,14 @@ const IMAGE_MODELS = ["gpt-image-1.5", "gpt-image-1", "gpt-image-1-mini", "dall-
 const modelMissing = (status: number, msg: string) =>
   status === 404 || /does not exist|model_not_found|not have access|must be verified|not supported/i.test(msg);
 
-async function requestImage(model: string, prompt: string): Promise<{ ok: true; data: Buffer; mime: string } | { ok: false; status: number; error: string }> {
+export type Orientation = "portrait" | "landscape";
+
+async function requestImage(model: string, prompt: string, orientation: Orientation = "portrait"): Promise<{ ok: true; data: Buffer; mime: string } | { ok: false; status: number; error: string }> {
   const dalle = model.startsWith("dall-e");
+  const land = orientation === "landscape";
   const body = dalle
-    ? { model, prompt, size: "1024x1792", quality: "hd", response_format: "b64_json", n: 1 }
-    : { model, prompt, size: "1024x1536", quality: "high", output_format: "webp", output_compression: 82, n: 1 };
+    ? { model, prompt, size: land ? "1792x1024" : "1024x1792", quality: "hd", response_format: "b64_json", n: 1 }
+    : { model, prompt, size: land ? "1536x1024" : "1024x1536", quality: "high", output_format: "webp", output_compression: 80, n: 1 };
   const res = await fetch("https://api.openai.com/v1/images/generations", {
     method: "POST",
     headers: { Authorization: `Bearer ${process.env.OPENAI_API_KEY}`, "Content-Type": "application/json" },
@@ -61,25 +64,15 @@ async function availableImageModels(): Promise<string[]> {
   }
 }
 
-/** Generuje zdjęcie okładki na podstawie projektu (photoBrief) i zapisuje w bazie. */
-export async function generateCoverPhoto(slug: string): Promise<{ ok: true; model: string } | { ok: false; error: string }> {
-  const brief = COVERS[slug]?.photoBrief;
-  if (!brief) return { ok: false, error: "Brak projektu zdjęcia dla tego materiału." };
+/** Generuje obraz przez OpenAI – próbuje kolejnych modeli; przy braku dostępu podaje modele dostępne dla klucza. */
+export async function generateImageBytes(prompt: string, orientation: Orientation = "portrait"): Promise<{ ok: true; data: Buffer; mime: string; model: string } | { ok: false; error: string }> {
   if (!coverGenConfigured()) return { ok: false, error: "Brak OPENAI_API_KEY w zmiennych środowiskowych aplikacji." };
   const forced = process.env.OPENAI_IMAGE_MODEL;
   const models = forced ? [forced] : IMAGE_MODELS;
-  const prompt = `${brief}\n\n${COVER_STYLE}`;
-  const tried: string[] = [];
   try {
     for (const model of models) {
-      const r = await requestImage(model, prompt);
-      if (r.ok) {
-        await system((tx) => tx`insert into cover_images (slug, mime, data, model) values (${slug}, ${r.mime}, ${r.data}, ${model})
-                                on conflict (slug) do update set mime = excluded.mime, data = excluded.data, model = excluded.model, updated_at = now()`);
-        invalidateCoverPhotos();
-        return { ok: true, model };
-      }
-      tried.push(`${model}: ${r.error}`);
+      const r = await requestImage(model, prompt, orientation);
+      if (r.ok) return { ok: true, data: r.data, mime: r.mime, model };
       if (!modelMissing(r.status, r.error)) return { ok: false, error: `OpenAI (${model}): ${r.error}` };
     }
     const avail = await availableImageModels();
@@ -92,4 +85,16 @@ export async function generateCoverPhoto(slug: string): Promise<{ ok: true; mode
   } catch (e) {
     return { ok: false, error: (e as Error).name === "TimeoutError" ? "OpenAI nie odpowiedział w 3 minuty – spróbuj ponownie." : (e as Error).message };
   }
+}
+
+/** Generuje zdjęcie okładki na podstawie projektu (photoBrief) i zapisuje w bazie. */
+export async function generateCoverPhoto(slug: string): Promise<{ ok: true; model: string } | { ok: false; error: string }> {
+  const brief = COVERS[slug]?.photoBrief;
+  if (!brief) return { ok: false, error: "Brak projektu zdjęcia dla tego materiału." };
+  const r = await generateImageBytes(`${brief}\n\n${COVER_STYLE}`, "portrait");
+  if (!r.ok) return r;
+  await system((tx) => tx`insert into cover_images (slug, mime, data, model) values (${slug}, ${r.mime}, ${r.data}, ${r.model})
+                          on conflict (slug) do update set mime = excluded.mime, data = excluded.data, model = excluded.model, updated_at = now()`);
+  invalidateCoverPhotos();
+  return { ok: true, model: r.model };
 }

@@ -2,6 +2,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArticleCard } from "@/components/articles/article";
+import { articleImageMap, heroKey } from "@/lib/article-images";
 import { SiteFooter } from "@/components/site/footer";
 import { SiteHeader } from "@/components/site/header";
 import { ARTICLES, ARTICLES_PATH, articleHref } from "@/content/articles";
@@ -18,7 +19,7 @@ export const metadata: Metadata = {
 };
 
 export default async function ArticlesIndex() {
-  const s = await getSettings();
+  const [s, images] = await Promise.all([getSettings(), articleImageMap()]);
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "ItemList",
@@ -34,7 +35,7 @@ export default async function ArticlesIndex() {
         <p className="mt-4 max-w-2xl text-[17px] leading-relaxed text-ink-soft">
           Kiedy warto zgłosić się na terapię, jak wygląda pierwsze spotkanie, co zrobić, gdy partner nie chce – i jak spokojnie podjąć decyzję o przyszłości związku.
         </p>
-        <ul className="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-3">{ARTICLES.map((a) => <li key={a.slug}><ArticleCard a={a} /></li>)}</ul>
+        <ul className="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-3">{ARTICLES.map((a) => <li key={a.slug}><ArticleCard a={a} image={images[heroKey(a.slug)]} /></li>)}</ul>
         <p className="mt-10 text-[15px] text-ink-soft">Szukasz ćwiczeń i pytań do pracy? Zobacz <Link href="/wiedza" className="font-medium text-forest underline underline-offset-4">bezpłatne materiały DUO</Link>.</p>
       </main>
       <SiteFooter contactEmail={s.site.contactEmail} />
