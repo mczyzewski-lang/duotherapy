@@ -15,7 +15,7 @@ export const article: Article = {
   lead:
     "„To przez Ciebie się spóźniliśmy”. „Gdybyś nie zaczął, nie byłoby kłótni”. „Ty zawsze wszystko psujesz”. Gdy rozmowy w związku zamieniają się w szukanie winnego, każde z Was czuje się oskarżone i przestaje słuchać. W tym artykule wyjaśniamy, dlaczego obwinianie jest tak kuszące, czym różni się od odpowiedzialności i jak krok po kroku wyjść z tej gry – nawet jeśli na razie robisz to tylko Ty.",
   hero: {
-    prompt: "Two simple rounded figures standing on opposite sides of a small courtroom-like scale, each pointing toward the other; beside them a soft open doorway leads to a quiet garden where the same two figures sit together looking at a shared puzzle.",
+    prompt: "Two people standing on opposite sides of a small courtroom-like scale, each pointing toward the other; beside them a soft open doorway leads to a quiet garden where the same two people sit together looking at a shared puzzle.",
     alt: "Ilustracja: para wskazująca na siebie przy wadze, obok otwarte drzwi do ogrodu, gdzie razem układają puzzle – wyjście z obwiniania",
   },
   blocks: [
@@ -56,7 +56,7 @@ export const article: Article = {
       t: "art",
       key: "palec-i-lustro",
       title: "Oskarżenie wywołuje obronę",
-      prompt: "Two rounded figures facing each other, each holding up a small round shield; tiny soft arrows bounce between the shields back and forth endlessly, while nothing reaches the problem lying on the ground between them.",
+      prompt: "Two rounded people facing each other, each holding up a small round shield; tiny soft arrows bounce between the shields back and forth endlessly, while nothing reaches the problem lying on the ground between them.",
       alt: "Ilustracja: dwie postacie z tarczami odbijają strzałki, a problem leży nietknięty na ziemi między nimi",
       caption: "W skrócie: gdy jedno oskarża, drugie się broni – energia idzie na odbijanie zarzutów, a sam problem zostaje nierozwiązany.",
     },
@@ -136,7 +136,7 @@ export const article: Article = {
       t: "art",
       key: "problem-przed-nami",
       title: "Problem przed Wami, nie między Wami",
-      prompt: "Two rounded figures sitting side by side on the same side of a table, together looking at a single simple object on the table in front of them, like a knotted rope they are untangling together. Calm and cooperative mood.",
+      prompt: "Two rounded people sitting side by side on the same side of a table, together looking at a single simple object on the table in front of them, like a knotted rope they are untangling together. Calm and cooperative mood.",
       alt: "Ilustracja: dwie postacie siedzą po tej samej stronie stołu i razem rozplątują węzeł – wspólny problem zamiast wzajemnych oskarżeń",
       caption: "W skrócie: gdy problem leży przed Wami, a nie między Wami, przestajecie być przeciwnikami i stajecie się drużyną.",
     },

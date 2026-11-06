@@ -15,7 +15,7 @@ export const article: Article = {
   lead:
     "„Nie potrzebujemy żadnego terapeuty”, „sami sobie poradzimy”, „to Twój problem” – takie zdania często słyszy osoba, która proponuje terapię par. Odmowa partnera boli, ale nie zamyka drogi. W tym artykule znajdziesz najczęstsze powody odmowy, błędy, których warto unikać, przykładowe zdania na początek rozmowy i to, co możesz zrobić sam lub sama – nie biorąc na siebie całej odpowiedzialności za związek.",
   hero: {
-    prompt: "One figure holding out an open hand toward another figure who is turned slightly away, sitting on the other end of a sofa; a soft warm light between them suggests possibility, not pressure.",
+    prompt: "One person holding out an open hand toward another person who is turned slightly away, sitting on the other end of a sofa; a soft warm light between them suggests possibility, not pressure.",
     alt: "Ilustracja: jedna osoba wyciąga dłoń do partnera siedzącego na drugim końcu kanapy – propozycja terapii bez nacisku",
   },
   blocks: [
@@ -60,7 +60,7 @@ export const article: Article = {
       t: "art",
       key: "zaproszenie-nie-nacisk",
       title: "Zaproszenie zamiast nacisku",
-      prompt: "Two side-by-side mini scenes: on the left a figure pointing a finger and pushing a heavy box toward another figure who leans back (pressure); on the right the same figure gently offering a small open envelope while both sit relaxed at a table (invitation). A soft check mark shape near the right scene drawn as a simple line icon.",
+      prompt: "Two side-by-side mini scenes: on the left a person pointing a finger and pushing a heavy box toward another person who leans back (pressure); on the right the same person gently offering a small open envelope while both sit relaxed at a table (invitation). A soft check mark shape near the right scene drawn as a simple line icon.",
       alt: "Ilustracja: porównanie nacisku i spokojnego zaproszenia do rozmowy o terapii",
       caption: "W skrócie: terapia proponowana jako spokojne zaproszenie ma większą szansę niż ultimatum czy argument w kłótni.",
     },
@@ -112,7 +112,7 @@ export const article: Article = {
       t: "art",
       key: "dbanie-o-siebie",
       title: "Nie musisz nieść związku w pojedynkę",
-      prompt: "A single figure gently setting down a heavy backpack labelled only with a simple heart icon onto a bench, while a few supportive simple figures (friend, therapist) stand nearby; light sage background, sense of relief and support.",
+      prompt: "A single person gently setting down a heavy backpack labelled only with a simple heart icon onto a bench, while a few supportive people (friend, therapist) stand nearby; light sage background, sense of relief and support.",
       alt: "Ilustracja: osoba odkłada ciężki plecak z sercem, obok wspierające ją osoby",
       caption: "W skrócie: dbanie o siebie nie jest egoizmem. Wsparcie bliskich lub specjalisty daje siłę na kolejne kroki – jakiekolwiek będą.",
     },

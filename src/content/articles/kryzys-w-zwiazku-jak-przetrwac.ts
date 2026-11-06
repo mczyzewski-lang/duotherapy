@@ -15,7 +15,7 @@ export const article: Article = {
   lead:
     "Kryzys w związku rzadko przychodzi nagle – zwykle narasta, aż pewnego dnia okazuje się, że trudno już rozmawiać, odpocząć i ufać. W takim momencie łatwo działać pod wpływem emocji: wyprowadzić się w nocy, powiedzieć coś, czego nie da się cofnąć, albo zamknąć się w milczeniu. Ten artykuł nie obiecuje szybkiego rozwiązania. Pokazuje za to, jak przejść przez najtrudniejszy czas tak, żeby nie zniszczyć tego, co jeszcze między Wami jest – i żeby decyzję o przyszłości podjąć spokojnie.",
   hero: {
-    prompt: "Two simple rounded figures holding one umbrella together during a gentle rain, standing on a small island of light; the clouds above are slowly parting at the edges, hinting that the storm will pass.",
+    prompt: "Two people holding one umbrella together during a gentle rain, standing on a small island of light; the clouds above are slowly parting at the edges, hinting that the storm will pass.",
     alt: "Ilustracja: dwie osoby pod jednym parasolem w deszczu, nad nimi rozchodzą się chmury – symbol wspólnego przetrwania kryzysu w związku",
   },
   blocks: [
@@ -87,7 +87,7 @@ export const article: Article = {
       t: "art",
       key: "zatrzymaj-burze",
       title: "Najpierw zatrzymać burzę, potem budować",
-      prompt: "Two simple rounded figures standing back to back during a small storm, each gently holding up a hand in a calm pause gesture; a tiny shelter is visible nearby where they can sit down together later.",
+      prompt: "Two people standing back to back during a small storm, each gently holding up a hand in a calm pause gesture; a tiny shelter is visible nearby where they can sit down together later.",
       alt: "Ilustracja: dwie osoby w czasie burzy robią gest pauzy, obok czeka schronienie – najpierw zatrzymanie eskalacji, potem rozmowa",
       caption: "W skrócie: w kryzysie najpierw przestajecie dokładać nowe rany, a dopiero potem szukacie rozwiązań.",
     },
@@ -141,7 +141,7 @@ export const article: Article = {
       t: "art",
       key: "rozdroze-kryzysu",
       title: "Kryzys to rozdroże, nie ściana",
-      prompt: "Two simple rounded figures standing calmly together at a crossroads with three soft paths leading in different directions, each path lit gently; the figures look at a small map in their hands.",
+      prompt: "Two people standing calmly together at a crossroads with three soft paths leading in different directions, each path lit gently; the people look at a small map in their hands.",
       alt: "Ilustracja: para na rozdrożu z trzema ścieżkami i mapą w rękach – kryzys jako moment wyboru kierunku",
       caption: "W skrócie: kryzys nie jest ścianą, tylko rozdrożem – warto zatrzymać się i spokojnie zobaczyć, dokąd prowadzi każda droga.",
     },

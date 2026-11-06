@@ -15,7 +15,7 @@ export const article: Article = {
   lead:
     "Po odkryciu zdrady wiele osób słyszy dwa sprzeczne głosy: „Zdrady się nie wybacza” i „Przecież tyle razem przeszliście”. Do tego dochodzą rady rodziny, znajomych i własne myśli, które zmieniają się z dnia na dzień. Nie ma jednej właściwej odpowiedzi na pytanie, czy ratować związek po zdradzie. Są jednak pytania, które pomagają zobaczyć sytuację wyraźniej – i podjąć decyzję, która będzie naprawdę Twoja.",
   hero: {
-    prompt: "A single rounded figure standing calmly at a gentle crossroads in a soft meadow at dusk; one path leads to a small lit house, another to an open horizon, a third to a quiet resting bench; soft warm light, no rush.",
+    prompt: "A single rounded person standing calmly at a gentle crossroads in a soft meadow at dusk; one path leads to a small lit house, another to an open horizon, a third to a quiet resting bench; soft warm light, no rush.",
     alt: "Ilustracja: osoba stoi na rozstaju trzech ścieżek – symbol decyzji, czy ratować związek po zdradzie",
   },
   blocks: [
@@ -32,7 +32,7 @@ export const article: Article = {
       t: "art",
       key: "najpierw-burza",
       title: "Najpierw burza, potem decyzja",
-      prompt: "A small rounded figure sheltering calmly under a simple umbrella while a short rain shower passes; in the distance the clouds are already parting and a soft clear sky appears over a calm landscape.",
+      prompt: "A small rounded person sheltering calmly under a simple umbrella while a short rain shower passes; in the distance the clouds are already parting and a soft clear sky appears over a calm landscape.",
       alt: "Ilustracja: osoba pod parasolem przeczekuje deszcz, a w oddali niebo się przejaśnia – najpierw emocje, potem decyzja",
       caption: "W skrócie: w pierwszym szoku po zdradzie emocje są jak burza – łatwiej zobaczyć drogę, gdy trochę się przejaśni.",
     },
@@ -132,7 +132,7 @@ export const article: Article = {
       t: "art",
       key: "waga-decyzji",
       title: "Decyzja nie musi zapaść od razu",
-      prompt: "A simple balance scale resting on a calm table; on each side small soft stones, and beside it an hourglass with sand slowly flowing; a rounded figure sits nearby observing patiently, no rush.",
+      prompt: "A simple balance scale resting on a calm table; on each side small soft stones, and beside it an hourglass with sand slowly flowing; a rounded person sits nearby observing patiently, no rush.",
       alt: "Ilustracja: waga z kamykami i klepsydra obok spokojnej postaci – decyzja po zdradzie potrzebuje czasu",
       caption: "W skrócie: zamiast wybierać w pierwszym szoku, warto zebrać „argumenty” po obu stronach i dać sobie czas – decyzja dojrzewa razem z emocjami.",
     },

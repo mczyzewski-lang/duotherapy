@@ -15,7 +15,7 @@ export const article: Article = {
   lead:
     "Chcesz tylko porozmawiać o czymś ważnym, a po pięciu minutach oboje podnosicie głos. Znasz to? Większość kłótni nie zaczyna się od złych intencji, tylko od sposobu, w jaki zaczynamy rozmowę, i od reakcji, które przychodzą automatycznie. W tym artykule znajdziesz 6 zasad, które pomagają rozmawiać spokojnie nawet o trudnych sprawach, oraz gotowe zdania, które możesz wypróbować już dziś.",
   hero: {
-    prompt: "Two simple rounded figures sitting face to face on soft cushions, between them a small calm pond with gentle ripples meeting in the middle; warm evening light, relaxed body language.",
+    prompt: "Two people sitting face to face on soft cushions, between them a small calm pond with gentle ripples meeting in the middle; warm evening light, relaxed body language.",
     alt: "Ilustracja: dwie postacie siedzą naprzeciw siebie nad spokojną wodą, fale spotykają się pośrodku – spokojna rozmowa w związku",
   },
   blocks: [
@@ -90,7 +90,7 @@ export const article: Article = {
       t: "art",
       key: "lagodny-start",
       title: "Łagodny start rozmowy",
-      prompt: "Two paths starting from the same point: on one path a rounded figure throws a small spiky ball toward another figure who raises a shield; on the other path the same figure offers an open hand and the other figure leans in to listen.",
+      prompt: "Two paths starting from the same point: on one path a rounded person throws a small spiky ball toward another person who raises a shield; on the other path the same person offers an open hand and the other person leans in to listen.",
       alt: "Ilustracja: dwie drogi rozmowy – po jednej leci kolczasta kula i partner się zasłania, po drugiej otwarta dłoń i partner się przybliża",
       caption: "W skrócie: pierwsze zdanie ustawia całą rozmowę – zarzut wywołuje obronę, a łagodne zaproszenie otwiera na słuchanie.",
     },
@@ -144,7 +144,7 @@ export const article: Article = {
       t: "art",
       key: "most-zrozumienia",
       title: "Zrozumieć to nie znaczy się zgodzić",
-      prompt: "Two rounded figures standing on two different small hills, each seeing a different view; a simple light bridge connects the hills so each figure can step over and look at the other's view without leaving their own hill behind.",
+      prompt: "Two rounded people standing on two different small hills, each seeing a different view; a simple light bridge connects the hills so each person can step over and look at the other's view without leaving their own hill behind.",
       alt: "Ilustracja: dwie postacie na różnych wzgórzach połączonych mostem – każda może zobaczyć widok drugiej",
       caption: "W skrócie: możesz zrozumieć, co czuje partner, i nadal widzieć sprawę po swojemu – zrozumienie buduje most, a nie wymaga kapitulacji.",
     },

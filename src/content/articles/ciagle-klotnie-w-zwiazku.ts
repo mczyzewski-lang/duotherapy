@@ -15,7 +15,7 @@ export const article: Article = {
   lead:
     "Wystarczy jedno zdanie o naczyniach, spóźnieniu albo telefonie i po chwili jesteście w środku tej samej kłótni co zawsze. Zmieniają się tematy, ale przebieg jest niemal identyczny: te same słowa, te same reakcje, ten sam chłód po wszystkim. To nie znaczy, że Wasz związek jest „zepsuty” – zwykle znaczy, że wpadliście w powtarzalny schemat. W tym artykule znajdziesz 7 powodów, które najczęściej go napędzają, i konkretne sposoby, jak zacząć go przerywać.",
   hero: {
-    prompt: "Two simple rounded figures walking on a circular path that loops back on itself like a gentle racetrack, small storm cloud above the loop; at one point of the circle a soft side path opens toward warm light.",
+    prompt: "Two people walking on a circular path that loops back on itself like a gentle racetrack, small storm cloud above the loop; at one point of the circle a soft side path opens toward warm light.",
     alt: "Ilustracja: dwie postacie idą po zamkniętym okręgu pod chmurką, a z boku otwiera się jasna ścieżka – wyjście z kręgu kłótni",
   },
   blocks: [
@@ -32,7 +32,7 @@ export const article: Article = {
       t: "art",
       key: "petla-klotni",
       title: "Pętla kłótni",
-      prompt: "Two rounded figures on opposite sides of a circular arrow loop; one figure leans forward reaching out, the other turns slightly away, and the loop arrow connects their movements so each one pushes the other. Minimalist, calm colours.",
+      prompt: "Two rounded people on opposite sides of a circular arrow loop; one person leans forward reaching out, the other turns slightly away, and the loop arrow connects their movements so each one pushes the other. Minimalist, calm colours.",
       alt: "Ilustracja: dwie postacie połączone okrągłą strzałką – nacisk jednej osoby wywołuje wycofanie drugiej i odwrotnie",
       caption: "W skrócie: w pętli konfliktu reakcja każdego z Was napędza reakcję drugiej osoby – dlatego kłótnia wraca, choć temat się zmienia.",
     },
@@ -115,7 +115,7 @@ export const article: Article = {
       t: "art",
       key: "hamulec-w-rozmowie",
       title: "Przerwa zamiast eskalacji",
-      prompt: "Two rounded figures on a gently descending road, one of them softly pressing a large friendly brake lever beside the road; ahead, the road continues calmly instead of dropping into a storm.",
+      prompt: "Two rounded people on a gently descending road, one of them softly pressing a large friendly brake lever beside the road; ahead, the road continues calmly instead of dropping into a storm.",
       alt: "Ilustracja: para na drodze, jedna osoba spokojnie zaciąga hamulec – umówiona przerwa zatrzymuje eskalację kłótni",
       caption: "W skrócie: umówiona przerwa to nie ucieczka, tylko hamulec – pozwala wrócić do rozmowy, zanim padną słowa, których będziecie żałować.",
     },

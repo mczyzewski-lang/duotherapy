@@ -15,7 +15,7 @@ export const article: Article = {
   lead:
     "Gdy w małżeństwie robi się zbyt ciężko, myśl o separacji może brzmieć jak ulga: wreszcie trochę ciszy, przestrzeni, czasu do namysłu. Dla jednych par taka przerwa staje się początkiem odbudowy, dla innych – łagodnym wstępem do rozstania. Wiele zależy od tego, po co się na nią decydujecie i jak ją zaplanujecie. W tym artykule wyjaśniamy, czym jest separacja, kiedy może pomóc, jakie zasady warto ustalić i jakie pytania zadać sobie, zanim spakujesz walizkę.",
   hero: {
-    prompt: "Two rounded figures standing on two small separate islands connected by a thin gentle rope bridge over calm water; one island has a small tent, the other a small chair; soft dawn light, quiet reflective mood, minimalist, no text.",
+    prompt: "Two rounded people standing on two small separate islands connected by a thin gentle rope bridge over calm water; one island has a small tent, the other a small chair; soft dawn light, quiet reflective mood, minimalist, no text.",
     alt: "Ilustracja: dwie osoby na osobnych wysepkach połączonych cienkim mostem – separacja jako przestrzeń, która nie musi oznaczać końca",
   },
   blocks: [
@@ -57,7 +57,7 @@ export const article: Article = {
       t: "art",
       key: "przerwa-z-mapa",
       title: "Przerwa z mapą czy bez",
-      prompt: "Two paths leaving a small house: on the left a rounded figure walking with a simple folded map toward a calm clearing; on the right a figure walking into a soft fog without a map; minimalist, gentle colors, quiet mood, no text.",
+      prompt: "Two paths leaving a small house: on the left a rounded person walking with a simple folded map toward a calm clearing; on the right a person walking into a soft fog without a map; minimalist, gentle colors, quiet mood, no text.",
       alt: "Ilustracja: dwie ścieżki od domu – jedna osoba idzie z mapą ku polanie, druga bez mapy w mgłę",
       caption: "W skrócie: separacja z jasnym celem i zasadami może dać przestrzeń do zrozumienia; bez nich łatwo zgubić drogę do siebie.",
     },
@@ -130,7 +130,7 @@ export const article: Article = {
       t: "art",
       key: "pokoj-do-myslenia",
       title: "Przestrzeń do myślenia",
-      prompt: "A quiet room with an open window and a single chair facing the view; a rounded figure sitting calmly with a cup, looking at a distant soft horizon where a small house is visible; light airy colors, minimalist, no text.",
+      prompt: "A quiet room with an open window and a single chair facing the view; a rounded person sitting calmly with a cup, looking at a distant soft horizon where a small house is visible; light airy colors, minimalist, no text.",
       alt: "Ilustracja: osoba siedzi przy otwartym oknie z kubkiem i patrzy w dal na mały dom na horyzoncie",
       caption: "W skrócie: dobrze przeżyta separacja to czas na myślenie i zrozumienie – nie tylko odpoczynek od kłótni.",
     },

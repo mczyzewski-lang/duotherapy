@@ -15,7 +15,7 @@ export const article: Article = {
   lead:
     "Nie ma wielkiej kłótni ani zdrady. Jest raczej zmęczenie: wieczorem każde z Was zasypia nad telefonem, rozmowy kręcą się wokół zakupów i rachunków, a myśl o wspólnym weekendzie budzi bardziej obowiązek niż radość. Tak często wygląda wypalenie w związku – stan, w którym uczucie niby jest, ale nie ma już siły go okazywać. W tym artykule znajdziesz sygnały, najczęstsze przyczyny i małe kroki, od których można zacząć.",
   hero: {
-    prompt: "Two simple rounded figures sitting on a sofa next to each other, each holding a small candle with a very low flame; between them a tiny spark is gently rising, suggesting the warmth can be rekindled.",
+    prompt: "Two people sitting on a sofa next to each other, each holding a small candle with a very low flame; between them a tiny spark is gently rising, suggesting the warmth can be rekindled.",
     alt: "Ilustracja: dwie osoby na kanapie trzymają świece z małym płomieniem, między nimi unosi się iskra – symbol wypalenia i odbudowy energii w związku",
   },
   blocks: [
@@ -50,7 +50,7 @@ export const article: Article = {
       t: "art",
       key: "pusty-bak",
       title: "Związek na rezerwie",
-      prompt: "A small rounded car with two simple figures inside, driving on a calm road; its fuel gauge is shown as a nearly empty soft circle, while ahead there is a cozy rest stop with a warm light.",
+      prompt: "A small rounded car with two people inside, driving on a calm road; its fuel gauge is shown as a nearly empty soft circle, while ahead there is a cozy rest stop with a warm light.",
       alt: "Ilustracja: para w samochodzie z prawie pustym bakiem, przed nimi przystanek z ciepłym światłem – związek jadący na rezerwie",
       caption: "W skrócie: wypalenie to zwykle nie brak miłości, tylko długa jazda na rezerwie – bez przystanków na odpoczynek i bliskość.",
     },
@@ -109,7 +109,7 @@ export const article: Article = {
       t: "art",
       key: "male-iskry",
       title: "Energia wraca małymi iskrami",
-      prompt: "Two simple rounded figures sitting by a small campfire, each adding one small twig at a time; the fire is modest but steady and warm, with a few gentle sparks rising.",
+      prompt: "Two people sitting by a small campfire, each adding one small twig at a time; the fire is modest but steady and warm, with a few gentle sparks rising.",
       alt: "Ilustracja: para dokłada po jednej gałązce do małego ogniska – energia w związku wraca dzięki drobnym gestom",
       caption: "W skrócie: zamiast czekać na wielki zryw, dokładajcie po jednej małej gałązce – regularne drobne gesty podtrzymują ogień.",
     },

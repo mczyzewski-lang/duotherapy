@@ -15,7 +15,7 @@ export const article: Article = {
   lead:
     "„Ile to potrwa?” – to jedno z pierwszych pytań, które pary zadają przed terapią. To zrozumiałe: chcecie wiedzieć, na co się piszecie, ile czasu i energii będzie to kosztować. Uczciwa odpowiedź brzmi: to zależy – ale wcale nie jest to odpowiedź wymijająca. W tym artykule pokazujemy, od czego zależy długość terapii par, jak zwykle przebiega i kiedy możecie spodziewać się pierwszych zmian.",
   hero: {
-    prompt: "Two simple rounded figures walking hand in hand along a gently winding path through soft hills, small milestone stones along the way without any markings, a warm sun rising slowly at the horizon.",
+    prompt: "Two people walking hand in hand along a gently winding path through soft hills, small milestone stones along the way without any markings, a warm sun rising slowly at the horizon.",
     alt: "Ilustracja: para idzie krętą ścieżką z kamieniami milowymi – terapia par jako droga z kolejnymi etapami",
   },
   blocks: [
@@ -45,7 +45,7 @@ export const article: Article = {
       t: "art",
       key: "wiele-pokretel",
       title: "Długość terapii to kilka pokręteł naraz",
-      prompt: "A simple control panel with several round soft knobs, each knob shaped slightly differently, and two small rounded figures adjusting them together; a gentle hourglass shape glowing softly above the panel. Minimalist, calm colours.",
+      prompt: "A simple control panel with several round soft knobs, each knob shaped slightly differently, and two small rounded people adjusting them together; a gentle hourglass shape glowing softly above the panel. Minimalist, calm colours.",
       alt: "Ilustracja: para wspólnie ustawia kilka pokręteł pod klepsydrą – na długość terapii wpływa wiele czynników",
       caption: "W skrócie: długość terapii par zależy od wielu czynników naraz – rodzaju trudności, celu, motywacji i rytmu spotkań.",
     },
@@ -97,7 +97,7 @@ export const article: Article = {
       t: "art",
       key: "pierwsze-kielki",
       title: "Pierwsze efekty są małe, ale widoczne",
-      prompt: "A close-up of a small flower pot on a windowsill with a single tiny green sprout just breaking through the soil; two rounded figures leaning in from both sides, looking at it with quiet surprise. Soft morning light.",
+      prompt: "A close-up of a small flower pot on a windowsill with a single tiny green sprout just breaking through the soil; two rounded people leaning in from both sides, looking at it with quiet surprise. Soft morning light.",
       alt: "Ilustracja: para pochyla się nad doniczką, w której pojawił się pierwszy kiełek – pierwsze efekty terapii są małe",
       caption: "W skrócie: pierwsze efekty terapii par to zwykle drobne zmiany w rozmowach – łatwo je przeoczyć, dlatego warto je zauważać.",
     },

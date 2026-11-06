@@ -15,7 +15,7 @@ export const article: Article = {
   lead:
     "Po kłótni zapada cisza. Mijacie się w kuchni, odpowiadacie półsłówkami, każde czeka, aż to drugie zrobi pierwszy krok. Dzień, dwa, czasem tydzień. Ciche dni wydają się sposobem na uniknięcie kolejnej awantury, ale bardzo często bolą bardziej niż sama kłótnia. W tym artykule wyjaśniamy, skąd biorą się ciche dni, czym różnią się od potrzebnej przerwy i jak je przerwać tak, żeby nikt nie musiał „przegrać”.",
   hero: {
-    prompt: "Two simple rounded figures sitting at opposite ends of a long quiet kitchen table, a soft wall of fog between them; a small warm candle in the middle of the table glows faintly, suggesting the chance to reconnect.",
+    prompt: "Two people sitting at opposite ends of a long quiet kitchen table, a soft wall of fog between them; a small warm candle in the middle of the table glows faintly, suggesting the chance to reconnect.",
     alt: "Ilustracja: dwie postacie siedzą na przeciwnych końcach stołu oddzielone mgłą, pośrodku tli się mała świeczka – cisza w związku",
   },
   blocks: [
@@ -32,7 +32,7 @@ export const article: Article = {
       t: "art",
       key: "przerwa-czy-mur",
       title: "Przerwa czy mur",
-      prompt: "Split composition: on the left two rounded figures sitting apart on a bench with a small hourglass between them and a visible path back to each other; on the right the same figures separated by a tall grey wall with no door.",
+      prompt: "Split composition: on the left two rounded people sitting apart on a bench with a small hourglass between them and a visible path back to each other; on the right the same people separated by a tall grey wall with no door.",
       alt: "Ilustracja: po lewej para z klepsydrą i ścieżką powrotu, po prawej ta sama para oddzielona murem bez drzwi",
       caption: "W skrócie: przerwa ma czas i drogę powrotu, a ciche dni stawiają mur bez drzwi – i właśnie dlatego tak bardzo bolą.",
     },
@@ -106,7 +106,7 @@ export const article: Article = {
       t: "art",
       key: "otwarte-drzwi",
       title: "Otwarte drzwi zamiast nacisku",
-      prompt: "A rounded figure gently holding a door ajar with warm light coming through, while another rounded figure sits quietly in a dim room on the other side, slowly turning toward the light. No pressure, a calm invitation.",
+      prompt: "A rounded person gently holding a door ajar with warm light coming through, while another rounded person sits quietly in a dim room on the other side, slowly turning toward the light. No pressure, a calm invitation.",
       alt: "Ilustracja: jedna postać uchyla drzwi, przez które wpada ciepłe światło, druga powoli odwraca się w ich stronę",
       caption: "W skrócie: zamiast naciskać na milczącą osobę, zostaw jej otwarte drzwi i konkretną propozycję rozmowy.",
     },

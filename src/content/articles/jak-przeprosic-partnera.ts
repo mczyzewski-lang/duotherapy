@@ -15,7 +15,7 @@ export const article: Article = {
   lead:
     "„Przepraszam” to jedno z najważniejszych słów w związku – i jedno z najłatwiej psutych. Czasem mówimy je szybko, żeby zakończyć kłótnię. Czasem dodajemy „ale”, które przekreśla wszystko, co było przed nim. A czasem przepraszamy tyle razy za to samo, że słowo traci znaczenie. W tym artykule pokazujemy, z czego składają się przeprosiny, które naprawdę docierają do drugiej osoby, jakich błędów unikać i co zrobić, gdy partner nie chce ich przyjąć.",
   hero: {
-    prompt: "Two rounded figures standing facing each other in a quiet room; one gently offers a small glowing paper boat across a short distance, the other looks at it with cautious openness; soft warm light, calm atmosphere.",
+    prompt: "Two rounded people standing facing each other in a quiet room; one gently offers a small glowing paper boat across a short distance, the other looks at it with cautious openness; soft warm light, calm atmosphere.",
     alt: "Ilustracja: jedna osoba podaje drugiej świecącą papierową łódkę – symbol szczerych przeprosin w związku",
   },
   blocks: [
@@ -32,7 +32,7 @@ export const article: Article = {
       t: "art",
       key: "most-przeprosin",
       title: "Przeprosiny jako most, a nie drzwi do zamknięcia",
-      prompt: "A small gap between two cliffs with one rounded figure on each side; one figure is laying down simple wooden planks to form a bridge toward the other, who waits and watches; calm sky, gentle colors.",
+      prompt: "A small gap between two cliffs with one rounded person on each side; one person is laying down simple wooden planks to form a bridge toward the other, who waits and watches; calm sky, gentle colors.",
       alt: "Ilustracja: jedna osoba układa deski mostu w stronę drugiej – przeprosiny jako sposób na odbudowanie połączenia",
       caption: "W skrócie: dobre przeprosiny nie zamykają tematu – budują most, po którym druga osoba może znów do Ciebie podejść.",
     },

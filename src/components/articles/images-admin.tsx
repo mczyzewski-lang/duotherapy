@@ -4,7 +4,7 @@ import { AutoRefresh } from "./auto-refresh";
 import { ActionForm, SubmitButton } from "@/components/form-bits";
 import { Badge, Card } from "@/components/ui";
 import { ARTICLES } from "@/content/articles";
-import { allArticleImageJobs, articleImageJobs, articleImageMap, bulkStatus, invalidateArticleImages } from "@/lib/article-images";
+import { allArticleImageJobs, articleImageJobs, articleImageMap, bulkStatus, invalidateArticleImages, outdatedArticleImages } from "@/lib/article-images";
 import { coverGenConfigured } from "@/lib/cover-photos";
 
 export async function ArticleImagesAdmin() {
@@ -14,6 +14,8 @@ export async function ArticleImagesAdmin() {
   const ready = coverGenConfigured();
   const all = allArticleImageJobs();
   const missingAll = all.filter((j) => !images[j.key]).length;
+  const outdated = await outdatedArticleImages();
+  const outdatedAll = all.filter((j) => images[j.key] && outdated.has(j.key)).length;
   return (
     <Card className="mb-6 p-6" data-testid="article-images-admin">
       <div className="flex flex-wrap items-start justify-between gap-3">
@@ -31,14 +33,26 @@ export async function ArticleImagesAdmin() {
           <p className="text-sm text-ink">
             <strong>{all.length - missingAll}/{all.length}</strong> grafik gotowych w {ARTICLES.length} artykułach
             {missingAll > 0 && <> · brakuje {missingAll} (ok. {Math.ceil((missingAll * 45) / 2 / 60)} min przy generowaniu w tle)</>}
+            {outdatedAll > 0 && <> · {outdatedAll} w starym stylu postaci</>}
           </p>
           {bulk?.running ? (
             <ActionForm action={stopAllArticleImagesAction as never}><SubmitButton size="sm" variant="ghost">Zatrzymaj</SubmitButton></ActionForm>
-          ) : missingAll > 0 ? (
-            <ActionForm action={generateAllArticleImagesAction as never}>
-              <SubmitButton size="sm" className={ready ? "" : "pointer-events-none opacity-50"} confirm={`Wygenerować ${missingAll} grafik w tle? Każda to jedno płatne wywołanie OpenAI.`}>Wygeneruj wszystkie brakujące ({missingAll})</SubmitButton>
-            </ActionForm>
-          ) : null}
+          ) : (
+            <div className="flex flex-wrap gap-2">
+              {missingAll > 0 && (
+                <ActionForm action={generateAllArticleImagesAction as never}>
+                  <input type="hidden" name="mode" value="missing" />
+                  <SubmitButton size="sm" className={ready ? "" : "pointer-events-none opacity-50"} confirm={`Wygenerować ${missingAll} grafik w tle? Każda to jedno płatne wywołanie OpenAI.`}>Wygeneruj wszystkie brakujące ({missingAll})</SubmitButton>
+                </ActionForm>
+              )}
+              {outdatedAll > 0 && (
+                <ActionForm action={generateAllArticleImagesAction as never}>
+                  <input type="hidden" name="mode" value="outdated" />
+                  <SubmitButton size="sm" variant="secondary" className={ready ? "" : "pointer-events-none opacity-50"} confirm={`Wygenerować ponownie ${outdatedAll} grafik w starym stylu${missingAll ? ` i ${missingAll} brakujących` : ""}? Każda to jedno płatne wywołanie OpenAI.`}>Odśwież grafiki w starym stylu ({outdatedAll})</SubmitButton>
+                </ActionForm>
+              )}
+            </div>
+          )}
         </div>
         {bulk && (
           <div className="mt-3">
@@ -79,14 +93,15 @@ export async function ArticleImagesAdmin() {
                     <div className="aspect-[3/2] overflow-hidden rounded-lg bg-gradient-to-br from-linen to-sage-soft">
                       {images[j.key] && <img src={images[j.key]} alt="" loading="lazy" className="h-full w-full object-cover" />}
                     </div>
-                    <p className="mt-2 line-clamp-2 text-xs font-medium text-ink">{j.label}</p>
-                    <div className="mt-2 flex flex-wrap gap-1.5">
-                      <ActionForm action={generateArticleImageAction as never}>
+                    <p className="mt-2 line-clamp-2 text-xs font-medium text-ink">{j.label} {images[j.key] && outdated.has(j.key) && <Badge tone="clay">stary styl</Badge>}</p>
+                    {/* formularze „contents” – przyciski w jednym rzędzie, komunikat (Gotowe / błąd) w pełnej szerokości pod nimi */}
+                    <div className="mt-2 flex flex-wrap items-center gap-1.5 [&_[role=alert]]:mt-1 [&_[role=alert]]:basis-full [&_[role=alert]]:order-last [&_[role=alert]]:p-2.5 [&_[role=alert]]:text-xs [&_[role=status]]:mt-1 [&_[role=status]]:basis-full [&_[role=status]]:order-last [&_[role=status]]:p-2.5 [&_[role=status]]:text-xs">
+                      <ActionForm action={generateArticleImageAction as never} className="contents">
                         <input type="hidden" name="key" value={j.key} />
                         <SubmitButton size="sm" variant="secondary" className={ready ? "" : "pointer-events-none opacity-50"}>{images[j.key] ? "Ponownie" : "Wygeneruj"}</SubmitButton>
                       </ActionForm>
                       {images[j.key] && (
-                        <ActionForm action={deleteArticleImageAction as never}>
+                        <ActionForm action={deleteArticleImageAction as never} className="contents">
                           <input type="hidden" name="key" value={j.key} />
                           <SubmitButton size="sm" variant="ghost" confirm="Usunąć grafikę?">Usuń</SubmitButton>
                         </ActionForm>

@@ -35,6 +35,9 @@ W tekście: `**pogrubienie**` i `[tekst linku](/adres)`. **Każdy artykuł linku
 - Każdy artykuł ma **min. 2 ilustracje** (`art`) i grafikę na górze; pilnuje test. Prompty piszemy po angielsku, opisując scenę (styl dokłada system).
 - **Wszystkie naraz:** przycisk „Wygeneruj wszystkie brakujące” w tej samej karcie – generuje w tle (po 2 naraz, ponawia przy limitach OpenAI,
   przerywa po 3 błędach z rzędu). Postęp odświeża się sam; stronę można zamknąć. Po restarcie serwera wystarczy kliknąć ponownie – robią się tylko brakujące.
+- **Spójne postacie:** `ART_STYLE` w `src/lib/article-images.ts` opisuje stały projekt postaci (ludzie infograficzni: fryzura, ubranie, prosta twarz;
+  nigdy manekiny z kropką zamiast głowy). W promptach artykułów pisz „people / person”, nie „figures”. Zmiana stylu → podbij `ART_STYLE_VERSION`;
+  panel oznaczy starsze grafiki jako „stary styl” i pozwoli je odświeżyć hurtowo.
 - Przed dodaniem do rejestru sprawdź plik: `npx tsx scripts/check-article.ts src/content/articles/<slug>.ts` (te same zasady co test + typografia).
 - Autorka wszystkich artykułów: **Klaudia Bosek** (`AUTHOR` w `src/content/articles/index.ts`) – widoczna pod tytułem, w ramce na końcu i w danych strukturalnych.
 

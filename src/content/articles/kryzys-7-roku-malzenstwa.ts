@@ -15,7 +15,7 @@ export const article: Article = {
   lead:
     "O kryzysie siódmego roku słyszał chyba każdy – z filmów, od znajomych, z żartów przy rodzinnym stole. Kiedy po kilku latach małżeństwa zaczyna być trudniej, łatwo pomyśleć: „no tak, to ten słynny kryzys”. Czy rzeczywiście istnieje magiczna data, po której związki się psują? Raczej nie. Ale okres po kilku latach razem często zbiega się z wieloma zmianami naraz – i właśnie o nich jest ten artykuł.",
   hero: {
-    prompt: "Two simple rounded figures walking side by side along a winding path through gentle hills; the path reaches a small bend with a signpost without text, and beyond it the landscape opens to a soft sunrise.",
+    prompt: "Two people walking side by side along a winding path through gentle hills; the path reaches a small bend with a signpost without text, and beyond it the landscape opens to a soft sunrise.",
     alt: "Ilustracja: para idzie krętą ścieżką i dochodzi do zakrętu, za którym wschodzi słońce – kryzys po latach małżeństwa jako zakręt na wspólnej drodze",
   },
   blocks: [
@@ -32,7 +32,7 @@ export const article: Article = {
       t: "art",
       key: "nie-kalendarz",
       title: "Kryzys to nie data w kalendarzu",
-      prompt: "A large simple calendar shape made of blank squares, with two small rounded figures sitting on it calmly and looking past it toward a gentle landscape with a few small hills symbolising life changes.",
+      prompt: "A large simple calendar shape made of blank squares, with two small rounded people sitting on it calmly and looking past it toward a gentle landscape with a few small hills symbolising life changes.",
       alt: "Ilustracja: para siedzi na kalendarzu i patrzy na krajobraz z pagórkami – kryzys zależy od zmian w życiu, a nie od daty",
       caption: "W skrócie: kryzys nie przychodzi w konkretnym roku – pojawia się wtedy, gdy zmiany w życiu przerastają sposób, w jaki para sobie z nimi radzi.",
     },
@@ -116,7 +116,7 @@ export const article: Article = {
       t: "art",
       key: "przeglad-domu",
       title: "Przegląd zamiast remontu generalnego",
-      prompt: "Two simple rounded figures together gently fixing a small cozy house: one tightens a window hinge, the other waters a flower box; the house is intact and warm, just needing small care.",
+      prompt: "Two people together gently fixing a small cozy house: one tightens a window hinge, the other waters a flower box; the house is intact and warm, just needing small care.",
       alt: "Ilustracja: para wspólnie naprawia drobiazgi w przytulnym domu – regularna troska o małżeństwo po latach",
       caption: "W skrócie: po kilku latach małżeństwo częściej potrzebuje regularnego przeglądu i drobnych napraw niż wielkiego remontu.",
     },

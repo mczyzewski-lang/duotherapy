@@ -77,10 +77,10 @@ export async function deleteArticleImageAction(_: R, fd: FormData): Promise<R> {
 }
 
 /** Wszystkie brakujące ilustracje wszystkich artykułów – w tle (postęp widać w panelu, strona sama się odświeża). */
-export async function generateAllArticleImagesAction(_: R): Promise<R> {
+export async function generateAllArticleImagesAction(_: R, fd: FormData): Promise<R> {
   const s = await requireStaff("admin");
   if (!coverGenConfigured()) return { error: "Brak OPENAI_API_KEY na serwerze." };
-  const r = await startBulkGeneration();
+  const r = await startBulkGeneration(fd.get("mode") === "outdated" ? "outdated" : "missing");
   if (!r.started) return r.total ? { ok: "Generowanie już trwa." } : { ok: "Wszystkie grafiki są gotowe." };
   await asStaff(s, (tx) => audit(tx, s.actor, "article_images_bulk_started", "article_image", null, null, { count: r.total }));
   revalidatePath("/app/wiedza");

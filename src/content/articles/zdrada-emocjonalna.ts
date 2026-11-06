@@ -15,7 +15,7 @@ export const article: Article = {
   lead:
     "Nie było randek, pocałunków ani nocy poza domem. A jednak masz poczucie, że ktoś trzeci wszedł między Was – że partner dzieli się z inną osobą tym, czym kiedyś dzielił się z Tobą. Zdrada emocjonalna jest trudna do nazwania, bo nie ma jednej wyraźnej granicy. W tym artykule znajdziesz 8 sygnałów, które pomagają odróżnić bliską przyjaźń od relacji, która zaczyna zagrażać związkowi, i wskazówki, jak o tym rozmawiać.",
   hero: {
-    prompt: "A couple sitting on a sofa in a cozy room; one figure is turned slightly away, softly lit by the glow of a phone, and a faint translucent thread of light leads from the phone out through the window; the other figure looks on quietly.",
+    prompt: "A couple sitting on a sofa in a cozy room; one person is turned slightly away, softly lit by the glow of a phone, and a faint translucent thread of light leads from the phone out through the window; the other person looks on quietly.",
     alt: "Ilustracja: para na kanapie, jedna osoba odwrócona w stronę telefonu, z którego biegnie świetlista nić za okno – symbol zdrady emocjonalnej",
   },
   blocks: [
@@ -36,7 +36,7 @@ export const article: Article = {
       t: "art",
       key: "przyjazn-czy-cos-wiecej",
       title: "Przyjaźń czy coś więcej?",
-      prompt: "Two simple scenes side by side: on the left two figures chatting openly on a park bench while a third figure sits comfortably with them; on the right two figures whispering behind a closed half-transparent door while a third figure stands outside, unaware.",
+      prompt: "Two simple scenes side by side: on the left two people chatting openly on a park bench while a third person sits comfortably with them; on the right two people whispering behind a closed half-transparent door while a third person stands outside, unaware.",
       alt: "Ilustracja: po lewej otwarta rozmowa w trójkę na ławce, po prawej dwie osoby szepczą za zamkniętymi drzwiami – różnica między przyjaźnią a zdradą emocjonalną",
       caption: "W skrócie: przyjaźń jest otwarta i nie ma przed kim się ukrywać – zdrada emocjonalna zaczyna się tam, gdzie pojawiają się zamknięte drzwi i tajemnica.",
     },
@@ -115,7 +115,7 @@ export const article: Article = {
       t: "art",
       key: "wspolne-granice",
       title: "Wspólne granice zamiast domysłów",
-      prompt: "Two simple rounded figures sitting at a small round table, together drawing a soft circle around a little house shape on a large sheet of paper; calm warm light, sense of cooperation.",
+      prompt: "Two people sitting at a small round table, together drawing a soft circle around a little house shape on a large sheet of paper; calm warm light, sense of cooperation.",
       alt: "Ilustracja: dwie osoby przy stole wspólnie rysują okrąg wokół domku – ustalanie granic w związku",
       caption: "W skrócie: granice w znajomościach nie są oczywiste – warto ustalić je razem, zamiast zakładać, że druga osoba myśli tak samo.",
     },

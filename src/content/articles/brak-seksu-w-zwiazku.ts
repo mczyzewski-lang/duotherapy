@@ -22,7 +22,7 @@ export const article: Article = {
   lead:
     "Brak seksu w związku to temat, o którym pary często milczą najdłużej. Jedna osoba czuje się odrzucona i niechciana, druga – pod presją i winna. Każda rozmowa grozi kłótnią, więc łatwiej udawać, że problemu nie ma. W tym artykule znajdziesz możliwe przyczyny, przykładowe zdania na początek rozmowy i wskazówki, jak mówić o seksie tak, żeby Was to zbliżało.",
   hero: {
-    prompt: "Two rounded figures lying in bed facing away from each other in soft night light, a gentle glowing thread starting to curve between their backs toward each other; quiet, tender, non-explicit, minimalist.",
+    prompt: "Two rounded people lying in bed facing away from each other in soft night light, a gentle glowing thread starting to curve between their backs toward each other; quiet, tender, non-explicit, minimalist.",
     alt: "Ilustracja: para leży w łóżku odwrócona do siebie plecami, między nimi zaczyna łączyć ich delikatna świecąca nić",
   },
   blocks: [
@@ -56,7 +56,7 @@ export const article: Article = {
       t: "art",
       key: "pogon-i-ucieczka",
       title: "Pogoń i ucieczka",
-      prompt: "Two rounded figures on a circular path: one reaching forward with open arms, the other stepping away with hunched shoulders; the circle suggests that the more one reaches, the more the other retreats; calm minimalist explainer style.",
+      prompt: "Two rounded people on a circular path: one reaching forward with open arms, the other stepping away with hunched shoulders; the circle suggests that the more one reaches, the more the other retreats; calm minimalist explainer style.",
       alt: "Ilustracja: jedna osoba wyciąga ręce, druga się odsuwa, obie idą po okręgu – schemat nacisku i wycofania",
       caption: "W skrócie: im mocniej jedno zabiega o seks, tym bardziej drugie się wycofuje – ten krąg przerywa rozmowa bez presji, a nie większy nacisk.",
     },
@@ -111,7 +111,7 @@ export const article: Article = {
       t: "art",
       key: "dotyk-bez-oczekiwan",
       title: "Dotyk bez oczekiwań",
-      prompt: "Two rounded figures sitting side by side on a bench, simply holding hands, with a soft open sky above them and a small feather floating down, symbolizing lightness and no pressure; minimalist, warm palette.",
+      prompt: "Two rounded people sitting side by side on a bench, simply holding hands, with a soft open sky above them and a small feather floating down, symbolizing lightness and no pressure; minimalist, warm palette.",
       alt: "Ilustracja: para siedzi na ławce i trzyma się za ręce, nad nimi lekko opada piórko – czułość bez presji",
       caption: "W skrócie: gdy dotyk przestaje być zapowiedzią obowiązku, czułość może znowu stać się przyjemna – i często od niej zaczyna się powrót bliskości.",
     },

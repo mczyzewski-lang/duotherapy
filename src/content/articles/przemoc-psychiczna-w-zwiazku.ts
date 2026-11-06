@@ -15,7 +15,7 @@ export const article: Article = {
   lead:
     "Przemoc psychiczna rzadko zaczyna się od wielkich słów. Częściej od drobnych uwag, kontroli „z troski”, milczenia, które ma ukarać, albo poczucia, że wszystko, co robisz, jest nie tak. Z czasem trudno odróżnić, co jest zwykłym konfliktem, a co czymś, co Cię niszczy. W tym artykule znajdziesz sygnały, których nie warto bagatelizować, wyjaśnienie, dlaczego terapia par nie jest wtedy pierwszym krokiem, i informacje, gdzie szukać pomocy.",
   hero: {
-    prompt: "A single simple rounded figure standing under a small sheltering umbrella in gentle rain, a warm light from an open door nearby with a softly outlined helping hand reaching out; calm, protective and hopeful mood.",
+    prompt: "A single person standing under a small sheltering umbrella in gentle rain, a warm light from an open door nearby with a softly outlined helping hand reaching out; calm, protective and hopeful mood.",
     alt: "Ilustracja: osoba pod parasolem w deszczu, obok otwarte drzwi i wyciągnięta pomocna dłoń – wsparcie w sytuacji przemocy psychicznej",
   },
   blocks: [
@@ -58,7 +58,7 @@ export const article: Article = {
       t: "art",
       key: "chodzenie-po-skorupkach",
       title: "Życie „na palcach”",
-      prompt: "A single rounded figure carefully tiptoeing across a floor covered with delicate eggshells, shoulders tense; at the far edge of the room a calm open window with soft light and a small green plant. Minimalist, gentle, no harsh elements.",
+      prompt: "A single rounded person carefully tiptoeing across a floor covered with delicate eggshells, shoulders tense; at the far edge of the room a calm open window with soft light and a small green plant. Minimalist, gentle, no harsh elements.",
       alt: "Ilustracja: osoba ostrożnie idzie po skorupkach jajek w stronę jasnego okna – ciągłe napięcie w związku",
       caption: "W skrócie: jeśli w domu ciągle uważasz na każde słowo i boisz się reakcji partnera, to sygnał, którego nie warto bagatelizować.",
     },
@@ -110,7 +110,7 @@ export const article: Article = {
       t: "art",
       key: "najpierw-bezpieczny-grunt",
       title: "Najpierw bezpieczny grunt",
-      prompt: "A small rounded figure stepping off a wobbly, cracked plank bridge onto solid, flat ground with soft grass and a sturdy small house nearby; the bridge stays behind, the ground ahead is calm and stable. Minimalist line style.",
+      prompt: "A small rounded person stepping off a wobbly, cracked plank bridge onto solid, flat ground with soft grass and a sturdy small house nearby; the bridge stays behind, the ground ahead is calm and stable. Minimalist line style.",
       alt: "Ilustracja: osoba schodzi z chwiejnego mostu na stabilny grunt – najpierw bezpieczeństwo, potem praca nad relacją",
       caption: "W skrócie: gdy w związku jest przemoc, najpierw liczy się bezpieczeństwo i wsparcie indywidualne – dopiero potem ewentualna praca nad relacją.",
     },

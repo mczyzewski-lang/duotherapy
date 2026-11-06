@@ -15,7 +15,7 @@ export const article: Article = {
   lead:
     "Rzadko kto mówi: „rozstajemy się przez zmywarkę”. A jednak nierówny podział obowiązków potrafi powoli odbierać parze bliskość, życzliwość i ochotę na wspólny czas. Nie chodzi tylko o to, kto odkurza – chodzi o poczucie, że jedno z Was dźwiga więcej, a drugie tego nie widzi. W tym artykule znajdziesz wyjaśnienie, dlaczego ten temat tak bardzo boli, i konkretne sposoby, jak o nim rozmawiać, żeby coś się naprawdę zmieniło.",
   hero: {
-    prompt: "A simple balance scale in a cozy kitchen: on one side a tall wobbly stack of small household items (laundry, grocery bag, calendar, cup) next to a tired rounded figure, on the other side almost nothing next to a relaxed figure; soft warm light, gentle tone, no text.",
+    prompt: "A simple balance scale in a cozy kitchen: on one side a tall wobbly stack of small household items (laundry, grocery bag, calendar, cup) next to a tired rounded person, on the other side almost nothing next to a relaxed person; soft warm light, gentle tone, no text.",
     alt: "Ilustracja: przechylona waga z wysokim stosem domowych spraw po jednej stronie – symbol nierównego podziału obowiązków",
   },
   blocks: [
@@ -54,7 +54,7 @@ export const article: Article = {
       t: "art",
       key: "niewidzialny-plecak",
       title: "Niewidzialny plecak obowiązków",
-      prompt: "Two rounded figures walking side by side on a calm path; one carries a small visible bag, the other carries the same small bag plus a large translucent backpack filled with floating simple icons like a calendar, a shopping list shape and a bell; soft pastel colors, minimalist, no text.",
+      prompt: "Two rounded people walking side by side on a calm path; one carries a small visible bag, the other carries the same small bag plus a large translucent backpack filled with floating simple icons like a calendar, a shopping list shape and a bell; soft pastel colors, minimalist, no text.",
       alt: "Ilustracja: dwie osoby idą obok siebie, jedna niesie dodatkowo duży przezroczysty plecak pełen spraw do zapamiętania",
       caption: "W skrócie: obowiązki to nie tylko to, co widać – planowanie i pamiętanie o wszystkim to osobny, często niewidzialny ciężar.",
     },
@@ -139,7 +139,7 @@ export const article: Article = {
       t: "art",
       key: "obszary-zamiast-zadan",
       title: "Obszary zamiast pojedynczych zadań",
-      prompt: "A simple house cross-section divided into a few soft colored zones; two rounded figures each standing confidently in their own zones, holding a small key; calm composition, lots of empty space, minimalist, no text.",
+      prompt: "A simple house cross-section divided into a few soft colored zones; two rounded people each standing confidently in their own zones, holding a small key; calm composition, lots of empty space, minimalist, no text.",
       alt: "Ilustracja: dom podzielony na kolorowe strefy, w każdej stoi osoba z kluczem – podział obszarów odpowiedzialności",
       caption: "W skrócie: zamiast „pomagać” w pojedynczych zadaniach, przejmijcie całe obszary – od planowania do wykonania.",
     },
