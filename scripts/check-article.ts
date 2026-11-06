@@ -44,7 +44,7 @@ function check(a: Article): string[] {
   for (const l of links) if (!known(l)) e.push(`nieznany link ${l}`);
   if (!links.some((l) => l.startsWith("/wiedza/artykuly/"))) e.push("brak linku do innego artykułu");
   for (const r of a.related) if (!articleSlugs.has(r)) e.push(`related: nieznany ${r}`);
-  if (JSON.stringify(a).includes("—")) e.push("pauza (U+2014) – użyj półpauzy –");
+  if (JSON.stringify(a).includes(String.fromCharCode(0x2014))) e.push("pauza (U+2014) – użyj półpauzy –");
   if (/"[^"]*"/.test(texts(a).join(" ").replace(/\]\([^)]*\)/g, ""))) e.push("proste cudzysłowy w treści – użyj „…”");
   return e;
 }

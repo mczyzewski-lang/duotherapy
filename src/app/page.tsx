@@ -11,16 +11,19 @@ import { HeroMap, HeroMapVertical } from "@/components/mapa/flow";
 import { SiteFooter } from "@/components/site/footer";
 import { SiteHeader } from "@/components/site/header";
 import { PATHS } from "@/content/paths";
-import { env } from "@/lib/env";
+import { faqJsonLd, orgJsonLd, pageMeta } from "@/lib/seo";
+import { JsonLd } from "@/components/json-ld";
 import { getSettings } from "@/lib/settings";
 import { MAGNETS, magnetBySlug } from "@/knowledge/registry";
 
 export const dynamic = "force-dynamic";
-export const metadata: Metadata = {
-  title: { absolute: "DUO® – terapia małżeństw i par | Odbudowa, decyzja, świadome rozstanie" },
+export const metadata: Metadata = pageMeta({
+  title: "DUO® – terapia małżeństw i par | Odbudowa, decyzja, świadome rozstanie",
   description: "DUO pomaga parom i osobom w kryzysie związku zrozumieć, co dalej: Mapa Relacji z psychologiem, a potem odbudowa relacji, wsparcie w decyzji albo świadome rozstanie.",
-  alternates: { canonical: `${env.appUrl}/` },
-};
+  path: "/",
+  ogTitle: "Pomagamy zrozumieć, co dalej z Waszym związkiem",
+  kicker: "Terapia małżeństw i par",
+});
 
 const FAQ: [string, string][] = [
   ["Od czego zacząć?", "Od Mapy Relacji. To jednorazowy proces z psychologiem – kwestionariusz, konsultacja i pisemne podsumowanie – który pomaga zrozumieć Waszą sytuację i wybrać drogę. Możesz zacząć sam lub sama."],
@@ -39,6 +42,7 @@ export default async function Home() {
     <>
       <SiteHeader />
       <main id="main">
+        <JsonLd data={[...orgJsonLd({ email: s.site.contactEmail || undefined, phone: s.site.contactPhone || undefined }), faqJsonLd(FAQ.map(([q, a]) => ({ q, a })))]} />
         {/* HERO */}
         <section className="overflow-x-clip">
           <div className="mx-auto grid max-w-6xl items-center gap-10 px-5 pb-12 pt-6 md:grid-cols-[1.05fr_0.95fr] md:gap-12 md:pb-20 md:pt-14">

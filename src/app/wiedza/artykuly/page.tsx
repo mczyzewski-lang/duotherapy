@@ -1,5 +1,7 @@
 // Spis artykułów o terapii par i terapii małżeńskiej (SEO: strona zbiorcza, ItemList).
 import type { Metadata } from "next";
+import { breadcrumbJsonLd, pageMeta } from "@/lib/seo";
+import { JsonLd } from "@/components/json-ld";
 import Link from "next/link";
 import { ArticleCard } from "@/components/articles/article";
 import { TagFilter } from "@/components/articles/tag-filter";
@@ -12,12 +14,13 @@ import { getSettings } from "@/lib/settings";
 
 export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = {
-  title: { absolute: "Terapia par i terapia małżeńska – artykuły | DUO" },
+export const metadata: Metadata = pageMeta({
+  title: "Terapia par i terapia małżeńska – artykuły | DUO",
   description: "Artykuły o terapii par i małżeńskiej: kłótnie, ciche dni, zdrada, brak bliskości, kryzys w związku, decyzja o rozstaniu i to, jak wygląda terapia.",
-  alternates: { canonical: `${env.appUrl}${ARTICLES_PATH}` },
-  openGraph: { title: "Terapia par i terapia małżeńska – artykuły DUO", description: "Praktyczne artykuły o terapii par, kryzysie w związku i decyzjach.", url: `${env.appUrl}${ARTICLES_PATH}`, type: "website", locale: "pl_PL" },
-};
+  path: ARTICLES_PATH,
+  ogTitle: "Terapia par i terapia małżeńska – artykuły",
+  kicker: "Wiedza DUO",
+});
 
 export default async function ArticlesIndex() {
   const [s, images] = await Promise.all([getSettings(), articleImageMap()]);
@@ -33,7 +36,7 @@ export default async function ArticlesIndex() {
   const tagId = new Map(tags.map((t) => [t.label, t.id]));
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify([jsonLd, breadcrumbJsonLd([["DUO", "/"], ["Wiedza", "/wiedza"], ["Artykuły", ARTICLES_PATH]])]).replace(/</g, "\\u003c") }} />
       <SiteHeader />
       <main id="main" className="mx-auto max-w-6xl px-5 pb-16 pt-8 md:pt-14">
         <nav aria-label="Ścieżka" className="text-xs text-muted"><Link href="/wiedza" className="hover:text-forest">Wiedza</Link> / Artykuły</nav>

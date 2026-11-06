@@ -3,9 +3,10 @@ import { Alert, Logo } from "@/components/ui";
 import { env } from "@/lib/env";
 import { getSettings } from "@/lib/settings";
 import { TERMS_DRAFT } from "@/lib/terms-draft";
+import { pageMeta } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "Regulamin usługi Mapa Relacji" };
+export const metadata = pageMeta({ title: "Regulamin usługi Mapa Relacji | DUO®", description: "Regulamin usługi Mapa Relacji DUO: zakres usługi, zamówienie i płatność, terminy spotkań online, odstąpienie od umowy, reklamacje i ochrona danych.", path: "/regulamin", ogTitle: "Regulamin usługi Mapa Relacji", kicker: "Informacje" });
 
 export default async function Terms() {
   const s = await getSettings();

@@ -1,6 +1,9 @@
 import { Check, ClipboardList, FileText, MessagesSquare, PhoneCall, ShieldCheck, Users, X } from "lucide-react";
 import { cookies, headers } from "next/headers";
+import type { Metadata } from "next";
 import Link from "next/link";
+import { absUrl, breadcrumbJsonLd, faqJsonLd, orgId, pageMeta } from "@/lib/seo";
+import { JsonLd } from "@/components/json-ld";
 import { AskDialog } from "@/components/landing/ask-dialog";
 import { SiteFooter } from "@/components/site/footer";
 import { SiteHeader } from "@/components/site/header";
@@ -25,6 +28,16 @@ const STEPS = [
   { icon: FileText, t: "Twoja Mapa Relacji", time: "online i PDF", d: "Pisemne podsumowanie przygotowane przez psychologa – do przeczytania pod prywatnym linkiem z kodem i do pobrania jako PDF." },
 ];
 
+export const metadata: Metadata = pageMeta({
+  title: "Mapa Relacji – konsultacja z psychologiem dla par i osób w kryzysie | DUO®",
+  description: "Nie wiesz, co dalej z Waszą relacją? Mapa Relacji: poufny kwestionariusz, spotkanie online z psychologiem i pisemne podsumowanie. Indywidualnie lub we dwoje.",
+  path: "/mapa-relacji",
+  ogTitle: "Nie wiesz, co dalej z Waszą relacją? Zacznij od Mapy Relacji",
+  kicker: "Mapa Relacji z psychologiem",
+});
+
+const zl = (v: string) => Number(String(v).replace(/[^\d,.]/g, "").replace(",", ".")) || null;
+
 export default async function Landing() {
   const s = await getSettings();
   const v = (await cookies()).get("duo_hero2")?.value ?? (await headers()).get("x-duo-hero");
@@ -34,8 +47,34 @@ export default async function Landing() {
   const individual = s.site.priceIndividual || (s.offer.pricePln ? `${s.offer.pricePln} zł` : "");
   const prices = [individual && ["Dla Ciebie", individual], s.site.priceCouple && ["Dla Was", s.site.priceCouple]].filter(Boolean) as [string, string][];
 
+  const offers = [
+    { name: "Mapa Relacji dla Ciebie", desc: "Kwestionariusz, 1 spotkanie online z psychologiem (60 minut) i pisemne podsumowanie.", price: zl(individual) },
+    { name: "Mapa Relacji dla Was", desc: "Dwa kwestionariusze, 3 spotkania online: z Tobą, z partnerem i wspólne, oraz pisemne podsumowanie.", price: zl(s.site.priceCouple) },
+  ];
+  const jsonLd = [
+    {
+      "@context": "https://schema.org",
+      "@type": "Service",
+      name: "Mapa Relacji",
+      serviceType: "Konsultacja psychologiczna dla par i osób w kryzysie związku",
+      description: "Poufny kwestionariusz, spotkanie online z psychologiem i pisemne podsumowanie – żeby zrozumieć, co dzieje się w relacji, zanim podejmiecie decyzję.",
+      url: absUrl("/mapa-relacji"),
+      provider: { "@id": orgId() },
+      areaServed: "PL",
+      availableChannel: { "@type": "ServiceChannel", name: "Spotkania online" },
+      hasOfferCatalog: {
+        "@type": "OfferCatalog",
+        name: "Warianty Mapy Relacji",
+        itemListElement: offers.map((o) => ({ "@type": "Offer", name: o.name, description: o.desc, ...(o.price ? { price: o.price, priceCurrency: "PLN" } : {}), url: absUrl("/mapa-relacji") })),
+      },
+    },
+    breadcrumbJsonLd([["DUO", "/"], ["Mapa Relacji", "/mapa-relacji"]]),
+    ...(s.site.faq.length ? [faqJsonLd(s.site.faq)] : []),
+  ];
+
   return (
     <>
+      <JsonLd data={jsonLd} />
       <LandingTracker />
       <SiteHeader variant="mapa" />
 

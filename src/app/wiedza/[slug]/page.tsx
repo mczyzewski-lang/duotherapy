@@ -1,6 +1,8 @@
 // Landing bezpłatnego materiału – wspólny szablon dla wszystkich materiałów (treść z rejestru).
 import { ArrowRight, Check, Clock, FileText } from "lucide-react";
 import type { Metadata } from "next";
+import { breadcrumbJsonLd, orgId, pageMeta } from "@/lib/seo";
+import { JsonLd } from "@/components/json-ld";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { KTrack, LeadMagnetForm, MagnetStickyBar } from "@/components/knowledge/client";
@@ -28,14 +30,7 @@ export const dynamic = "force-dynamic";
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const m = magnetBySlug((await params).slug);
   if (!m) return {};
-  const url = `${env.appUrl}/wiedza/${m.slug}`;
-  return {
-    title: { absolute: m.seo.title },
-    description: m.seo.description,
-    alternates: { canonical: url },
-    openGraph: { title: m.seo.title, description: m.seo.description, url, type: "article", locale: "pl_PL", siteName: "DUO® – Mapa Relacji" },
-    robots: { index: true, follow: true },
-  };
+  return pageMeta({ title: m.seo.title, description: m.seo.description, path: `/wiedza/${m.slug}`, ogTitle: m.title, kicker: "Bezpłatny materiał", type: "article" });
 }
 
 export default async function MagnetLanding({ params }: { params: Promise<{ slug: string }> }) {
@@ -55,15 +50,16 @@ export default async function MagnetLanding({ params }: { params: Promise<{ slug
     isAccessibleForFree: true,
     learningResourceType: m.format,
     url: `${env.appUrl}/wiedza/${m.slug}`,
-    publisher: { "@type": "Organization", name: "DUO" },
+    publisher: { "@id": orgId() },
   };
+  const crumbs = breadcrumbJsonLd([["DUO", "/"], ["Wiedza", "/wiedza"], [m.title, `/wiedza/${m.slug}`]]);
 
   return (
     <>
       <KTrack event="lead_magnet_landing_view" step={m.n} />
       <SiteHeader variant="magnet" />
       <main id="main">
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+        <JsonLd data={[jsonLd, crumbs]} />
         {/* 1. HERO */}
         <section className="overflow-x-clip">
           <div className="mx-auto grid max-w-6xl items-center gap-8 px-5 pb-12 pt-6 md:grid-cols-[1.1fr_0.9fr] md:gap-12 md:pb-16 md:pt-12">

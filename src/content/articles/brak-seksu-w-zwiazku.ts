@@ -1,0 +1,160 @@
+import type { Article } from "./types";
+
+export const article: Article = {
+  slug: "brak-seksu-w-zwiazku",
+  h1: "Brak seksu w związku: jak o tym rozmawiać bez wstydu, presji i oskarżeń?",
+  title: "Brak seksu w związku",
+  seoTitle: "Brak seksu w związku – jak o tym rozmawiać bez wstydu?",
+  description: "Brak seksu w związku boli obie strony, a rozmowa o nim bywa najtrudniejsza. Zobacz, skąd się bierze i jak o tym mówić bez wstydu, presji i wzajemnych oskarżeń.",
+  excerpt: "Jedno chce bliskości, drugie się wycofuje – i obojgu jest z tym źle. Zobacz, jak rozmawiać o braku seksu w związku tak, żeby zbliżyć się, a nie oddalić.",
+  keywords: [
+    "brak seksu w związku",
+    "jak rozmawiać o seksie z partnerem",
+    "różne potrzeby seksualne w związku",
+    "partner nie chce seksu co robić",
+    "spadek libido w związku",
+    "brak współżycia w małżeństwie",
+  ],
+  tags: ["bliskość", "komunikacja", "kryzys w związku"],
+  published: "2026-11-06",
+  updated: "2026-11-06",
+  minutes: 9,
+  lead:
+    "Brak seksu w związku to temat, o którym pary często milczą najdłużej. Jedna osoba czuje się odrzucona i niechciana, druga – pod presją i winna. Każda rozmowa grozi kłótnią, więc łatwiej udawać, że problemu nie ma. W tym artykule znajdziesz możliwe przyczyny, przykładowe zdania na początek rozmowy i wskazówki, jak mówić o seksie tak, żeby Was to zbliżało.",
+  hero: {
+    prompt: "Two rounded figures lying in bed facing away from each other in soft night light, a gentle glowing thread starting to curve between their backs toward each other; quiet, tender, non-explicit, minimalist.",
+    alt: "Ilustracja: para leży w łóżku odwrócona do siebie plecami, między nimi zaczyna łączyć ich delikatna świecąca nić",
+  },
+  blocks: [
+    { t: "h2", id: "nie-jestescie-sami", text: "Nie jesteście jedyną parą, która ma ten problem" },
+    {
+      t: "p",
+      text: "Częstotliwość współżycia zmienia się w każdym długim związku. Są okresy większego zbliżenia i okresy, kiedy seks schodzi na dalszy plan – po narodzinach dziecka, w czasie choroby, stresu w pracy czy żałoby. Samo to, że kochacie się rzadziej niż na początku, nie jest problemem. **Problem pojawia się wtedy, gdy któreś z Was z tego powodu cierpi**, a temat staje się źródłem napięcia, wstydu albo milczenia.",
+    },
+    {
+      t: "p",
+      text: "Nie ma jednej „właściwej” liczby zbliżeń. Ważniejsze od statystyk jest to, czy oboje czujecie się w tej sferze dobrze, bezpiecznie i chciani.",
+    },
+    { t: "h2", id: "przyczyny", text: "Skąd bierze się brak seksu w związku?" },
+    {
+      t: "p",
+      text: "Przyczyn zwykle jest kilka naraz i rzadko dotyczą tylko jednej osoby. Najczęściej spotykane to:",
+    },
+    {
+      t: "list",
+      items: [
+        "**Zmęczenie i przeciążenie** – praca, dzieci, dom. Gdy brakuje sił na rozmowę, trudno o ochotę na seks. O wpływie napięcia na relację piszemy w artykule [Stres a związek](/wiedza/artykuly/stres-a-zwiazek).",
+        "**Niewyjaśnione konflikty i urazy** – trudno chcieć bliskości z kimś, na kogo jest się w środku złym lub złą.",
+        "**Brak bliskości emocjonalnej** – dla wielu osób pożądanie rodzi się z poczucia, że są widziane i ważne. Szerzej o tym w tekście [Brak bliskości w małżeństwie](/wiedza/artykuly/brak-bliskosci-w-malzenstwie).",
+        "**Presja i schemat „naciskam – wycofuję się”** – im bardziej jedno zabiega, tym bardziej drugie się zamyka. Obie strony czują się coraz gorzej.",
+        "**Zmiany w ciele i zdrowiu** – po porodzie, w czasie choroby, przy przyjmowaniu niektórych leków, przy bólu lub dyskomforcie. W takich sytuacjach warto porozmawiać z lekarzem.",
+        "**Rutyna i przewidywalność** – seks, który zawsze wygląda tak samo, może zacząć przypominać obowiązek.",
+        "**Wstyd i trudne doświadczenia** – kompleksy, przekonania wyniesione z domu albo wcześniejsze zranienia sprawiają, że ta sfera staje się trudna.",
+      ],
+    },
+    {
+      t: "art",
+      key: "pogon-i-ucieczka",
+      title: "Pogoń i ucieczka",
+      prompt: "Two rounded figures on a circular path: one reaching forward with open arms, the other stepping away with hunched shoulders; the circle suggests that the more one reaches, the more the other retreats; calm minimalist explainer style.",
+      alt: "Ilustracja: jedna osoba wyciąga ręce, druga się odsuwa, obie idą po okręgu – schemat nacisku i wycofania",
+      caption: "W skrócie: im mocniej jedno zabiega o seks, tym bardziej drugie się wycofuje – ten krąg przerywa rozmowa bez presji, a nie większy nacisk.",
+    },
+    { t: "h2", id: "dwie-perspektywy", text: "Dwie perspektywy, ten sam ból" },
+    {
+      t: "p",
+      text: "Osoba, która chce więcej bliskości, często słyszy w odmowie: „nie jesteś dla mnie atrakcyjny”, „nie kocham Cię”. Czuje się odrzucona, a z czasem może przestać inicjować, żeby nie ranić się kolejny raz.",
+    },
+    {
+      t: "p",
+      text: "Osoba, która ma mniejszą ochotę, często czuje się winna i „zepsuta”. Każdy dotyk zaczyna odbierać jako zapowiedź prośby o seks, więc unika także przytulania. Nie dlatego, że nie kocha – tylko dlatego, że czuje presję.",
+    },
+    {
+      t: "quote",
+      text: "W tej sytuacji zwykle nie ma winnego. Są dwie osoby, które tęsknią za bliskością, tylko każda wyraża to inaczej.",
+    },
+    { t: "h2", id: "jak-rozmawiac", text: "Jak rozmawiać o braku seksu bez oskarżeń" },
+    { t: "h3", text: "Wybierz dobry moment" },
+    {
+      t: "p",
+      text: "Najgorszym czasem na tę rozmowę jest sypialnia tuż po odmowie. Wtedy emocje są najsilniejsze, a słowa najłatwiej ranią. Lepiej umówić się na rozmowę w neutralnym miejscu i czasie – na spacerze, przy kawie, gdy oboje macie chwilę spokoju.",
+    },
+    { t: "h3", text: "Mów o sobie, nie o drugiej osobie" },
+    {
+      t: "list",
+      items: [
+        "Zamiast „Ty nigdy nie masz ochoty” – „Brakuje mi naszej bliskości i czasem czuję się przez to niechciany.”",
+        "Zamiast „Ciągle tylko o tym myślisz” – „Kiedy czuję presję, zamykam się. Chciałabym, żeby dotyk nie zawsze oznaczał seks.”",
+        "„Chcę zrozumieć, co się dzieje u Ciebie. Nie chcę Cię do niczego namawiać.”",
+        "„Czy jest coś, co sprawiłoby, że czułbyś się przy mnie swobodniej?”",
+      ],
+    },
+    { t: "h3", text: "Słuchaj, zanim zaczniesz się bronić" },
+    {
+      t: "p",
+      text: "Jeśli usłyszysz coś trudnego, spróbuj najpierw powtórzyć własnymi słowami, co zrozumiałeś lub zrozumiałaś: „Czyli czujesz, że…”. To prosty sposób, żeby druga osoba poczuła się wysłuchana. Więcej sprawdzonych zasad znajdziesz w artykule [Jak rozmawiać z partnerem bez kłótni](/wiedza/artykuly/jak-rozmawiac-z-partnerem-bez-klotni).",
+    },
+    { t: "cta", magnet: "trudna-rozmowa", hook: "Boisz się, że rozmowa o seksie skończy się kłótnią albo łzami? Ten przewodnik pomoże Ci ją zaplanować krok po kroku." },
+    { t: "h2", id: "co-mozna-zrobic", text: "Co możecie zrobić razem" },
+    {
+      t: "list",
+      ordered: true,
+      items: [
+        "**Zdejmijcie presję na jakiś czas** – umówcie się, że przez kilka tygodni dotyk nie musi prowadzić do seksu. Wiele osób dopiero wtedy na nowo zaczyna cieszyć się czułością.",
+        "**Odbudujcie bliskość poza sypialnią** – rozmowy, wspólne chwile, docenianie. Dla wielu osób to fundament, na którym może wrócić pożądanie.",
+        "**Rozmawiajcie o tym, co lubicie** – z ciekawością, bez oceniania. Po latach Wasze potrzeby mogły się zmienić.",
+        "**Szukajcie wspólnego obszaru** – nie chodzi o to, żeby jedno ustąpiło, tylko żeby znaleźć formę bliskości, w której oboje czujecie się dobrze.",
+        "**Zadbajcie o zdrowie** – jeśli pojawia się ból, dyskomfort albo wyraźna zmiana, którą trudno wyjaśnić, warto skonsultować się z lekarzem lub seksuologiem.",
+      ],
+    },
+    {
+      t: "art",
+      key: "dotyk-bez-oczekiwan",
+      title: "Dotyk bez oczekiwań",
+      prompt: "Two rounded figures sitting side by side on a bench, simply holding hands, with a soft open sky above them and a small feather floating down, symbolizing lightness and no pressure; minimalist, warm palette.",
+      alt: "Ilustracja: para siedzi na ławce i trzyma się za ręce, nad nimi lekko opada piórko – czułość bez presji",
+      caption: "W skrócie: gdy dotyk przestaje być zapowiedzią obowiązku, czułość może znowu stać się przyjemna – i często od niej zaczyna się powrót bliskości.",
+    },
+    { t: "h2", id: "czego-unikac", text: "Czego lepiej unikać" },
+    {
+      t: "list",
+      items: [
+        "**Zliczania i wypominania** – „Ostatni raz był trzy miesiące temu”. Liczby zwiększają presję i wstyd, a rzadko przybliżają do siebie.",
+        "**Porównywania z innymi lub z początkiem związku** – każdy etap życia ma swój rytm. Tęsknota za dawną bliskością jest w porządku, ale wyrzut „kiedyś było inaczej” zwykle zamyka rozmowę.",
+        "**Seksu z poczucia obowiązku** – zgoda na zbliżenie tylko po to, żeby „mieć spokój”, często pogłębia niechęć. Lepiej uczciwie powiedzieć, co się czuje.",
+        "**Wycofania się z wszelkiej czułości** – jeśli nie masz ochoty na seks, nie musisz rezygnować z przytulenia. Warto powiedzieć wprost: „Chcę się przytulić, ale dziś bez seksu”.",
+        "**Szukania winnego** – pytanie „kto ma problem?” zwykle prowadzi do obrony. Pytanie „co się z nami dzieje?” otwiera rozmowę. Jeśli to Wasz częsty schemat, przeczytaj artykuł o [obwinianiu w związku](/wiedza/artykuly/obwinianie-w-zwiazku).",
+      ],
+    },
+    { t: "h2", id: "granice", text: "Seks zawsze z obopólną zgodą" },
+    {
+      t: "p",
+      text: "Ani długość związku, ani ślub, ani dawne obietnice nie oznaczają obowiązku współżycia. Rozmowa o potrzebach jest czymś zupełnie innym niż wymuszanie. Nacisk, szantaż emocjonalny („jeśli nie, to znajdę kogoś innego”) czy zmuszanie do zbliżenia to przemoc – nawet w małżeństwie.",
+    },
+    {
+      t: "callout",
+      tone: "safety",
+      title: "Gdy czujesz presję lub strach",
+      text: "Jeśli jesteś zmuszany lub zmuszana do seksu, boisz się odmówić albo partner Ci grozi, to nie jest problem do rozwiązania na terapii par – najpierw zadbaj o swoje bezpieczeństwo. Możesz zadzwonić na Niebieską Linię (800 120 002), a w sytuacji bezpośredniego zagrożenia na numer 112. Więcej przeczytasz w artykule [Przemoc psychiczna w związku](/wiedza/artykuly/przemoc-psychiczna-w-zwiazku).",
+    },
+    { t: "h2", id: "kiedy-pomoc", text: "Kiedy warto poszukać pomocy" },
+    {
+      t: "p",
+      text: "Jeśli brak seksu trwa długo, budzi coraz więcej żalu, a rozmowy kończą się kłótnią lub milczeniem, warto skorzystać ze wsparcia specjalisty. Terapia par pomaga mówić o seksualności bezpiecznie, w obecności osoby, która nie ocenia i nie staje po żadnej stronie. Sprawdź, [kiedy iść na terapię par](/wiedza/artykuly/kiedy-isc-na-terapie-par). Jeśli Twój partner nie chce o tym rozmawiać, przeczytaj, co możesz zrobić, [gdy partner nie chce iść na terapię](/wiedza/artykuly/terapia-par-gdy-partner-nie-chce).",
+    },
+    { t: "h2", id: "jak-pomoze-duo", text: "Jak może pomóc DUO" },
+    {
+      t: "p",
+      text: "Czasem trudno nawet nazwać, co tak naprawdę dzieje się między Wami. [Mapa Relacji](/mapa-relacji) to poufny kwestionariusz, spotkanie lub spotkania online z psychologiem i pisemne podsumowanie (pod prywatnym linkiem i jako PDF). Mapa Relacji dla Ciebie to jedno 60-minutowe spotkanie, Mapa Relacji dla Was – trzy: osobno z każdym z Was i jedno wspólne. Indywidualne spotkania to bezpieczne miejsce, żeby powiedzieć to, czego trudno powiedzieć przy partnerze. Możesz też zacząć od [bezpłatnego quizu](/start) – 6 krótkich pytań, około 2 minut.",
+    },
+    { t: "mapa" },
+  ],
+  faq: [
+    { q: "Ile seksu w związku to „normalnie”?", a: "Nie ma jednej normy. Ważne jest, czy oboje czujecie się w tej sferze dobrze. Problemem staje się sytuacja, w której któreś z Was cierpi albo temat budzi napięcie i wstyd." },
+    { q: "Jak zacząć rozmowę o braku seksu?", a: "W spokojnym momencie, poza sypialnią. Mów o swoich uczuciach i tęsknocie, a nie o winie drugiej osoby, i zapytaj, jak ona przeżywa tę sytuację." },
+    { q: "Partner nie ma ochoty na seks – czy to znaczy, że mnie nie kocha?", a: "Niekoniecznie. Spadek ochoty często wiąże się ze zmęczeniem, stresem, zdrowiem, urazami w relacji albo presją. Warto o tym porozmawiać z ciekawością, a nie z założeniem odrzucenia." },
+    { q: "Kiedy warto iść do lekarza lub seksuologa?", a: "Gdy pojawia się ból, dyskomfort, wyraźna zmiana w ciele lub ochocie, której trudno znaleźć przyczynę, albo gdy problem trwa długo mimo rozmów." },
+  ],
+  related: ["brak-bliskosci-w-malzenstwie", "jak-rozmawiac-z-partnerem-bez-klotni", "kryzys-po-narodzinach-dziecka"],
+  magnets: ["trudna-rozmowa", "7-dni-lepszych-rozmow", "kryzys-czy-koniec-milosci"],
+};

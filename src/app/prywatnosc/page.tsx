@@ -1,9 +1,10 @@
 import Link from "next/link";
 import { Alert, Logo } from "@/components/ui";
 import { getSettings } from "@/lib/settings";
+import { pageMeta } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "Polityka prywatności" };
+export const metadata = pageMeta({ title: "Polityka prywatności | DUO®", description: "Jak DUO przetwarza dane osobowe: administrator, cele, podstawy prawne, okres przechowywania i Twoje prawa. Dane z kwestionariusza są chronione tajemnicą zawodową.", path: "/prywatnosc", ogTitle: "Polityka prywatności", kicker: "Informacje" });
 
 export default async function Privacy() {
   const s = await getSettings();

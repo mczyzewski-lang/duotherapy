@@ -2,9 +2,10 @@ import Link from "next/link";
 import { SafetyBox } from "@/components/safety-box";
 import { Logo } from "@/components/ui";
 import { getSettings } from "@/lib/settings";
+import { pageMeta } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "Gdzie szukać wsparcia" };
+export const metadata = pageMeta({ title: "Gdzie szukać wsparcia, gdy nie czujesz się bezpiecznie | DUO®", description: "Numery pomocy i miejsca wsparcia, gdy w związku pojawia się przemoc, zagrożenie albo kryzys psychiczny. W sytuacji zagrożenia życia dzwoń pod 112.", path: "/pomoc", ogTitle: "Gdzie szukać wsparcia", kicker: "Pomoc i bezpieczeństwo" });
 
 export default async function HelpPage() {
   const s = await getSettings();

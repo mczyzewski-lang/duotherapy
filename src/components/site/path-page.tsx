@@ -5,6 +5,8 @@ import Link from "next/link";
 import { MapaSymbol, RoadGlyph } from "@/components/brand";
 import { AskDialog } from "@/components/landing/ask-dialog";
 import { PATHS, type PathContent } from "@/content/paths";
+import { absUrl, breadcrumbJsonLd, faqJsonLd, orgId } from "@/lib/seo";
+import { JsonLd } from "@/components/json-ld";
 import { SiteFooter } from "./footer";
 import { SiteHeader } from "./header";
 
@@ -15,6 +17,13 @@ export function PathPage({ p, consentText, contactEmail }: { p: PathContent; con
     <>
       <SiteHeader variant="path" cta={{ href: "#kontakt", label: p.cta, short: "Porozmawiajmy" }} />
       <main id="main">
+        <JsonLd
+          data={[
+            { "@context": "https://schema.org", "@type": "Service", name: p.short, description: p.seo.description, serviceType: "Pomoc psychologiczna dla par", url: absUrl(`/${p.slug}`), provider: { "@id": orgId() }, areaServed: "PL", availableChannel: { "@type": "ServiceChannel", name: "Spotkania online" } },
+            breadcrumbJsonLd([["DUO", "/"], ["Mapa Relacji", "/mapa-relacji"], [p.short, `/${p.slug}`]]),
+            faqJsonLd(p.faq.map(([q, a]) => ({ q, a }))),
+          ]}
+        />
         {/* HERO */}
         <section className="overflow-x-clip">
           <div className="mx-auto grid max-w-6xl items-center gap-10 px-5 pb-12 pt-6 md:grid-cols-[1.15fr_0.85fr] md:pb-20 md:pt-12">

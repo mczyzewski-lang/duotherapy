@@ -1,18 +1,13 @@
 import type { Metadata } from "next";
 import { PathPage } from "@/components/site/path-page";
 import { pathByKey } from "@/content/paths";
-import { env } from "@/lib/env";
+import { pageMeta } from "@/lib/seo";
 import { getSettings } from "@/lib/settings";
 
 export const dynamic = "force-dynamic";
 const p = pathByKey("clarity");
 
-export const metadata: Metadata = {
-  title: { absolute: p.seo.title },
-  description: p.seo.description,
-  alternates: { canonical: `${env.appUrl}/${p.slug}` },
-  openGraph: { title: p.seo.title, description: p.seo.description, url: `${env.appUrl}/${p.slug}`, type: "website", locale: "pl_PL" },
-};
+export const metadata: Metadata = pageMeta({ title: p.seo.title, description: p.seo.description, path: `/${p.slug}`, ogTitle: p.h1, kicker: p.short });
 
 export default async function Page() {
   const s = await getSettings();

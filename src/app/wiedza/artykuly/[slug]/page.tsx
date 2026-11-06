@@ -3,6 +3,7 @@
 import { CalendarDays, Clock, ChevronDown } from "lucide-react";
 import { MapaSymbol } from "@/components/brand";
 import type { Metadata } from "next";
+import { absUrl, ogImage, SITE_NAME } from "@/lib/seo";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArticleBody, ArticleCard, MagnetCta } from "@/components/articles/article";
@@ -24,14 +25,14 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   if (!a) return {};
   const url = `${env.appUrl}${articleHref(a.slug)}`;
   const hero = (await articleImageMap())[heroKey(a.slug)];
-  const images = hero ? [{ url: `${env.appUrl}${hero}`, width: 1536, height: 1024, alt: a.hero.alt }] : undefined;
+  const images = hero ? [{ url: `${env.appUrl}${hero}`, width: 1536, height: 1024, alt: a.hero.alt }] : [{ url: absUrl(ogImage(a.title, "Artykuł · terapia par")), width: 1200, height: 630, alt: a.h1 }];
   return {
     title: { absolute: `${a.seoTitle} | DUO` },
     description: a.description,
     keywords: a.keywords,
     alternates: { canonical: url },
-    openGraph: { title: a.h1, description: a.description, url, type: "article", locale: "pl_PL", siteName: "DUO", publishedTime: a.published, modifiedTime: a.updated, tags: a.tags, authors: [AUTHOR.name], images },
-    twitter: { card: images ? "summary_large_image" : "summary", title: a.h1, description: a.description, images: images?.map((i) => i.url) },
+    openGraph: { title: a.h1, description: a.description, url, type: "article", locale: "pl_PL", siteName: SITE_NAME, publishedTime: a.published, modifiedTime: a.updated, tags: a.tags, authors: [AUTHOR.name], images },
+    twitter: { card: "summary_large_image", title: a.h1, description: a.description, images: images.map((i) => i.url) },
     authors: [{ name: AUTHOR.name }],
   };
 }

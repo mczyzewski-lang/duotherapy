@@ -5,8 +5,70 @@ import { article as pierwszaWizyta } from "./jak-wyglada-pierwsza-wizyta-terapia
 import { article as partnerNieChce } from "./terapia-par-gdy-partner-nie-chce";
 import { article as czyRozwod } from "./terapia-malzenska-czy-rozwod";
 import { article as online } from "./terapia-par-online";
+import { article as a_ciagle_klotnie_w_zwiazku } from "./ciagle-klotnie-w-zwiazku";
+import { article as a_ciche_dni_w_zwiazku } from "./ciche-dni-w-zwiazku";
+import { article as a_jak_rozmawiac_z_partnerem_bez_klotni } from "./jak-rozmawiac-z-partnerem-bez-klotni";
+import { article as a_komunikacja_w_zwiazku_cwiczenia } from "./komunikacja-w-zwiazku-cwiczenia";
+import { article as a_obwinianie_w_zwiazku } from "./obwinianie-w-zwiazku";
+import { article as a_jak_odbudowac_zaufanie_po_zdradzie } from "./jak-odbudowac-zaufanie-po-zdradzie";
+import { article as a_zdrada_emocjonalna } from "./zdrada-emocjonalna";
+import { article as a_czy_warto_ratowac_zwiazek_po_zdradzie } from "./czy-warto-ratowac-zwiazek-po-zdradzie";
+import { article as a_zazdrosc_w_zwiazku } from "./zazdrosc-w-zwiazku";
+import { article as a_jak_przeprosic_partnera } from "./jak-przeprosic-partnera";
+import { article as a_kryzys_w_zwiazku_jak_przetrwac } from "./kryzys-w-zwiazku-jak-przetrwac";
+import { article as a_wypalenie_w_zwiazku } from "./wypalenie-w-zwiazku";
+import { article as a_czy_to_jeszcze_milosc } from "./czy-to-jeszcze-milosc";
+import { article as a_partner_sie_oddala } from "./partner-sie-oddala";
+import { article as a_kryzys_siedem_roku_malzenstwa } from "./kryzys-7-roku-malzenstwa";
+import { article as a_kryzys_po_narodzinach_dziecka } from "./kryzys-po-narodzinach-dziecka";
+import { article as a_brak_bliskosci_w_malzenstwie } from "./brak-bliskosci-w-malzenstwie";
+import { article as a_brak_seksu_w_zwiazku } from "./brak-seksu-w-zwiazku";
+import { article as a_syndrom_pustego_gniazda } from "./syndrom-pustego-gniazda";
+import { article as a_stres_a_zwiazek } from "./stres-a-zwiazek";
+import { article as a_podzial_obowiazkow_w_zwiazku } from "./podzial-obowiazkow-w-zwiazku";
+import { article as a_klotnie_o_pieniadze } from "./klotnie-o-pieniadze";
+import { article as a_konflikt_z_tesciami } from "./konflikt-z-tesciami";
+import { article as a_separacja_w_malzenstwie } from "./separacja-w-malzenstwie";
+import { article as a_jak_powiedziec_dzieciom_o_rozwodzie } from "./jak-powiedziec-dzieciom-o-rozwodzie";
+import { article as a_czy_terapia_par_dziala } from "./czy-terapia-par-dziala";
+import { article as a_ile_trwa_terapia_par } from "./ile-trwa-terapia-par";
+import { article as a_ile_kosztuje_terapia_par } from "./ile-kosztuje-terapia-par";
+import { article as a_jak_wybrac_terapeute_par } from "./jak-wybrac-terapeute-par";
+import { article as a_przemoc_psychiczna_w_zwiazku } from "./przemoc-psychiczna-w-zwiazku";
 
-export const ARTICLES: Article[] = [kiedyIsc, pierwszaWizyta, partnerNieChce, czyRozwod, online];
+export const ARTICLES: Article[] = [
+  kiedyIsc, pierwszaWizyta, partnerNieChce, czyRozwod, online,
+  a_ciagle_klotnie_w_zwiazku,
+  a_ciche_dni_w_zwiazku,
+  a_jak_rozmawiac_z_partnerem_bez_klotni,
+  a_komunikacja_w_zwiazku_cwiczenia,
+  a_obwinianie_w_zwiazku,
+  a_jak_odbudowac_zaufanie_po_zdradzie,
+  a_zdrada_emocjonalna,
+  a_czy_warto_ratowac_zwiazek_po_zdradzie,
+  a_zazdrosc_w_zwiazku,
+  a_jak_przeprosic_partnera,
+  a_kryzys_w_zwiazku_jak_przetrwac,
+  a_wypalenie_w_zwiazku,
+  a_czy_to_jeszcze_milosc,
+  a_partner_sie_oddala,
+  a_kryzys_siedem_roku_malzenstwa,
+  a_kryzys_po_narodzinach_dziecka,
+  a_brak_bliskosci_w_malzenstwie,
+  a_brak_seksu_w_zwiazku,
+  a_syndrom_pustego_gniazda,
+  a_stres_a_zwiazek,
+  a_podzial_obowiazkow_w_zwiazku,
+  a_klotnie_o_pieniadze,
+  a_konflikt_z_tesciami,
+  a_separacja_w_malzenstwie,
+  a_jak_powiedziec_dzieciom_o_rozwodzie,
+  a_czy_terapia_par_dziala,
+  a_ile_trwa_terapia_par,
+  a_ile_kosztuje_terapia_par,
+  a_jak_wybrac_terapeute_par,
+  a_przemoc_psychiczna_w_zwiazku,
+];
 
 export const ARTICLES_PATH = "/wiedza/artykuly";
 

@@ -1,5 +1,6 @@
 // Strona zbiorcza „Wiedza” – 10 bezpłatnych materiałów w trzech kategoriach (filtr bez przeładowania).
 import type { Metadata } from "next";
+import { pageMeta } from "@/lib/seo";
 import { KTrack } from "@/components/knowledge/client";
 import Link from "next/link";
 import { ArticleCard } from "@/components/articles/article";
@@ -9,18 +10,18 @@ import { ARTICLES, ARTICLES_PATH } from "@/content/articles";
 import { coverPhotoMap } from "@/lib/cover-photos";
 import { SiteFooter } from "@/components/site/footer";
 import { SiteHeader } from "@/components/site/header";
-import { env } from "@/lib/env";
 import { getSettings } from "@/lib/settings";
 
 // treść zależy od ustawień w bazie – renderowanie przy żądaniu (baza nie jest dostępna podczas budowania)
 export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = {
-  title: { absolute: "Wiedza – bezpłatne poradniki o relacjach | DUO" },
+export const metadata: Metadata = pageMeta({
+  title: "Wiedza – bezpłatne poradniki o relacjach | DUO",
   description: "Bezpłatne poradniki, pytania i ćwiczenia DUO o kryzysie w związku, trudnych rozmowach, konflikcie, zdradzie i rozstaniu. Wybierz temat, który jest dla Ciebie ważny.",
-  alternates: { canonical: `${env.appUrl}/wiedza` },
-  openGraph: { title: "Wiedza, która pomaga lepiej zrozumieć relację | DUO", description: "Bezpłatne poradniki, pytania i ćwiczenia przygotowane przez DUO.", url: `${env.appUrl}/wiedza`, type: "website", locale: "pl_PL" },
-};
+  path: "/wiedza",
+  ogTitle: "Wiedza, która pomaga lepiej zrozumieć relację",
+  kicker: "Bezpłatne materiały i artykuły",
+});
 
 export default async function KnowledgeHub() {
   const s = await getSettings();

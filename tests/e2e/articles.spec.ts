@@ -4,10 +4,17 @@ import { expect, test } from "@playwright/test";
 test("artykuły: /wiedza → lista → artykuł z infografiką, kontenerem materiału, FAQ i danymi strukturalnymi", async ({ page, request }) => {
   await page.goto("/wiedza");
   await expect(page.getByRole("heading", { name: /Terapia par i terapia małżeńska – przeczytaj/ })).toBeVisible();
-  await expect(page.getByTestId("article-card")).toHaveCount(5);
-  await page.getByRole("link", { name: "Wszystkie artykuły →" }).click();
+  await expect(page.getByTestId("article-card")).toHaveCount(6);
+  await page.getByRole("link", { name: "Wszystkie artykuły →" }).first().click();
   await expect(page).toHaveURL(/\/wiedza\/artykuly$/);
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Terapia par i terapia małżeńska – artykuły");
+  // pełna lista + filtr tematów (karty zostają w HTML, filtr tylko je ukrywa)
+  await expect(page.getByTestId("article-card")).toHaveCount(35);
+  await page.getByTestId("article-tags").getByRole("button", { name: /^zdrada/ }).click();
+  const visible = await page.getByTestId("article-card").evaluateAll((els) => els.filter((e) => (e as HTMLElement).offsetParent !== null).length);
+  expect(visible).toBeGreaterThan(1);
+  expect(visible).toBeLessThan(35);
+  await page.getByTestId("article-tags").getByRole("button", { name: "Wszystkie" }).click();
 
   await page.getByTestId("article-card").filter({ hasText: "Kiedy iść na terapię par?" }).click();
   await expect(page).toHaveURL(/\/wiedza\/artykuly\/kiedy-isc-na-terapie-par$/);
