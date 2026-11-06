@@ -4,7 +4,7 @@
 // na danych FIKCYJNYCH z SAMPLE_REPORT. Bez nowej metodologii – te same sekcje, które psycholog wypełnia w panelu.
 import clsx from "clsx";
 import { ExternalLink, FileText } from "lucide-react";
-import { Fragment } from "react";
+import { Fragment, useEffect, useRef } from "react";
 import { RoadGlyph } from "@/components/brand";
 import { SectionGraphic, SectionIcon } from "./report-graphics";
 import { roadFor } from "@/lib/brand-mark";
@@ -209,8 +209,37 @@ function CompactBody({ k }: { k: (typeof SECTIONS)[number]["key"] }) {
  * Każda kartka: ikona części, co zawiera, poziomy schemat logiki części oraz fragment przykładu (dane fikcyjne).
  */
 export function ReportPreview() {
+  const stack = useRef<HTMLDivElement>(null);
+  // Kartka przykryta przez następną jest przycinana tuż pod jej górną krawędzią – inaczej dół dłuższej
+  // kartki (tekst, podpis pod stosem) wystaje spod krótszej, która na nią najechała.
+  useEffect(() => {
+    const el = stack.current;
+    if (!el) return;
+    let raf = 0;
+    const update = () => {
+      raf = 0;
+      const cards = [...el.querySelectorAll<HTMLElement>("[data-testid=pv-card]")];
+      cards.forEach((c, i) => {
+        const next = cards[i + 1];
+        if (!next) return;
+        const a = c.getBoundingClientRect();
+        const covered = a.bottom - next.getBoundingClientRect().top - 28; // 28px zostaje pod zaokrągloną krawędzią następnej
+        c.style.clipPath = covered > 0 ? `inset(-48px -48px ${Math.min(covered, a.height - 28)}px -48px)` : "";
+      });
+    };
+    const onScroll = () => { if (!raf) raf = requestAnimationFrame(update); };
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, []);
   return (
-    <div data-testid="pv-stack">
+    <>
+    <div ref={stack} data-testid="pv-stack">
       {SECTIONS.map((x, k) => (
         <article
           key={x.key}
@@ -244,8 +273,10 @@ export function ReportPreview() {
           </div>
         </article>
       ))}
-      <p className="text-center text-xs text-muted">Przykład na fikcyjnych danych (Anna i Marek). Pełna wersja – link poniżej.</p>
     </div>
+    {/* podpis poza stosem – inaczej ostatnia przyklejona kartka najeżdża na niego */}
+    <p className="text-center text-xs text-muted">Przykład na fikcyjnych danych (Anna i Marek). Pełna wersja – link poniżej.</p>
+    </>
   );
 }
 
