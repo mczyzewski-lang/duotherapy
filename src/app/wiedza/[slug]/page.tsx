@@ -3,12 +3,12 @@ import { ArrowRight, Check, Clock, FileText } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { MapaSymbol } from "@/components/brand";
 import { KTrack, LeadMagnetForm, MagnetStickyBar } from "@/components/knowledge/client";
 import { BlockView, Cover } from "@/components/knowledge/doc";
 import { MagnetIcon } from "@/components/knowledge/icons";
 import { MagnetCard, MagnetRail } from "@/components/knowledge/magnet-card";
 import { CoverBook } from "@/components/knowledge/cover-book";
+import { MapaExplainer } from "@/components/knowledge/mapa-explainer";
 import { SampleAnswers } from "@/components/knowledge/answers";
 import { SAMPLE_ANSWERS } from "@/knowledge/samples";
 import { coverPhotoMap } from "@/lib/cover-photos";
@@ -192,17 +192,16 @@ export default async function MagnetLanding({ params }: { params: Promise<{ slug
           </div>
         </section>
 
-        {/* 7. MAPA RELACJI */}
-        <section className="px-5 pb-12 md:pb-16" aria-labelledby="mapa-h">
-          <div className="mx-auto max-w-4xl rounded-[1.75rem] bg-gradient-to-br from-forest to-forest-800 p-6 text-white shadow-soft sm:p-9">
-            <div className="flex items-center gap-2"><MapaSymbol id={`lmm-${m.id}`} className="h-5 w-auto" /><span className="font-wordmark text-lg">Mapa Relacji</span></div>
-            <h2 id="mapa-h" className="sr-only">Mapa Relacji</h2>
-            <p className="mt-3 max-w-2xl text-[17px] leading-relaxed text-white/90">
-              {m.special === "sample-report" ? m.mapaText : `Ten materiał może pomóc Ci uporządkować jeden obszar relacji. ${m.mapaText}`}
-            </p>
-            <a href={mapaHref(m, "landing")} data-mapa-cta className="mt-5 inline-flex min-h-11 items-center gap-1.5 font-semibold text-white underline underline-offset-4">
-              {m.special ? "Poznaj pełną usługę – 670 zł" : "Poznaj Mapę Relacji"} <ArrowRight size={17} aria-hidden />
-            </a>
+        {/* 7. MAPA RELACJI – wyjaśnienie z infografiką: co to jest i jak wygląda */}
+        <section className="px-5 pb-12 md:pb-16" aria-label="Mapa Relacji">
+          <div className="mx-auto max-w-5xl">
+            <MapaExplainer
+              id={`lm-${m.id}`}
+              lead={m.special === "sample-report" ? "Ten przykład pokazuje, jak wygląda pisemne podsumowanie." : "Ten materiał pomaga uporządkować jeden obszar relacji."}
+              href={mapaHref(m, "landing")}
+              cta={m.special ? "Poznaj pełną usługę" : "Poznaj Mapę Relacji"}
+              sampleHref={m.special ? null : "/mapa-relacji-przyklad"}
+            />
           </div>
         </section>
 

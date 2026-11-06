@@ -11,6 +11,7 @@ import { Reveal } from "./reveal";
 import { fid, LOOP_STEPS } from "@/knowledge/fields";
 import { MagnetIcon } from "./icons";
 import { coverOf } from "@/knowledge/covers";
+import { MapaExplainer } from "./mapa-explainer";
 
 type Mode = "screen" | "print";
 
@@ -366,7 +367,16 @@ export function BlockView({ b, mode, i, first }: { b: Block; mode: Mode; i: numb
 }
 
 /** Stopka materiału: naturalny kolejny krok (Mapa Relacji) i nota o charakterze materiału. */
-function Closing({ m, mapaUrl }: { m: LeadMagnet; mapaUrl: string }) {
+function Closing({ m, mapaUrl, mode }: { m: LeadMagnet; mapaUrl: string; mode: Mode }) {
+  if (mode === "screen")
+    return (
+      <section className="mt-12 break-inside-avoid">
+        <MapaExplainer id={`cl-${m.id}`} lead="Ten materiał pomaga uporządkować jeden obszar relacji." href={mapaUrl} compact />
+        <p className="mt-4 px-1 text-xs leading-relaxed text-muted">
+          Materiał edukacyjny DUO®. Nie jest psychoterapią, diagnozą ani poradą prawną. Gdy nie czujesz się bezpiecznie: 112 · Kryzysowy Telefon Zaufania 116 123 · Centrum Wsparcia 800 70 2222 · Niebieska Linia 800 120 002.
+        </p>
+      </section>
+    );
   return (
     <section className="mt-12 break-inside-avoid rounded-3xl bg-forest p-6 text-white sm:p-8">
       <div className="flex items-center gap-2"><MapaSymbol id={`cl-${m.id}`} className="h-5 w-auto" /><span className="font-wordmark text-lg">Mapa Relacji</span></div>
@@ -387,7 +397,7 @@ export function MaterialDoc({ m, mode, mapaUrl }: { m: LeadMagnet; mode: Mode; m
       <div className={clsx(mode === "screen" ? "mt-8" : "")}>
         {m.blocks.map((b, i) => <BlockView key={i} b={b} mode={mode} i={i} first={i === firstH2} />)}
       </div>
-      <Closing m={m} mapaUrl={mapaUrl} />
+      <Closing m={m} mapaUrl={mapaUrl} mode={mode} />
     </div>
   );
 }
