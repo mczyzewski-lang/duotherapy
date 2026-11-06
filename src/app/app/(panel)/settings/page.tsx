@@ -1,4 +1,5 @@
-import { createUserAction, therapistProfileAction } from "@/actions/admin";
+import Link from "next/link";
+import { therapistProfileAction } from "@/actions/admin";
 import { ActionForm, SubmitButton } from "@/components/form-bits";
 import { SettingsForm } from "@/components/panel/settings-form";
 import { Alert, Badge, Card, Field, Input, PageTitle, Select, Textarea } from "@/components/ui";
@@ -69,16 +70,8 @@ export default async function SettingsPage() {
             <Card className="p-6"><h2 className="mb-4 font-display text-xl text-ink">Numery pomocy</h2><SettingsForm section="helplines" value={d.settings.helplines as never} labels={LABELS} /></Card>
             <Card className="p-6">
               <h2 className="font-display text-xl text-ink">Zespół</h2>
-              <ul className="mt-3 divide-y divide-sand/70 text-sm">
-                {d.team.map((u) => <li key={u.email} className="py-2">{u.name} <span className="text-muted">· {u.email} · {u.role === "admin" ? "administrator" : "psycholog"}</span> {u.mfa_enabled ? <Badge tone="ok">MFA</Badge> : <Badge tone="clay">bez MFA</Badge>} {u.is_public && <Badge>na stronie</Badge>}</li>)}
-              </ul>
-              <ActionForm action={createUserAction as never} className="mt-4 grid gap-3 sm:grid-cols-2">
-                <Field label="Imię i nazwisko"><Input name="name" /></Field>
-                <Field label="E-mail"><Input name="email" type="email" /></Field>
-                <Field label="Rola"><Select name="role"><option value="therapist">psycholog</option><option value="admin">administrator</option></Select></Field>
-                <Field label="Hasło tymczasowe (min. 12 znaków)"><Input name="password" type="password" autoComplete="new-password" /></Field>
-                <div className="sm:col-span-2"><SubmitButton size="sm">Dodaj osobę</SubmitButton></div>
-              </ActionForm>
+              <p className="mt-2 text-sm text-ink-soft">{d.team.filter((u) => !u.disabled).length} aktywnych kont. Dodawanie osób, role, hasła, MFA i wyłączanie kont – w zakładce Zespół.</p>
+              <Link href="/app/zespol" className="mt-3 inline-block text-sm font-medium text-forest hover:underline">Zarządzaj zespołem →</Link>
             </Card>
             <Card className="p-6">
               <h2 className="font-display text-xl text-ink">Integracje</h2>

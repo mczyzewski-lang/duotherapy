@@ -1,4 +1,4 @@
-import { BarChart3, BookOpen, CalendarClock, ClipboardList, FileCog, Inbox, LayoutDashboard, LogOut, Mail, ScrollText, Settings, Send } from "lucide-react";
+import { BarChart3, BookOpen, CalendarClock, ClipboardList, FileCog, Inbox, LayoutDashboard, LogOut, Mail, ScrollText, Settings, Send, Users } from "lucide-react";
 import Link from "next/link";
 import { Logo } from "@/components/ui";
 import { requireStaff } from "@/lib/auth";
@@ -20,6 +20,7 @@ export default async function PanelLayout({ children }: { children: React.ReactN
           { href: "/app/funnel", label: "Lejek", icon: BarChart3 },
           { href: "/app/wiedza", label: "Wiedza", icon: BookOpen },
           { href: "/app/mailing", label: "Mailing", icon: Send },
+          { href: "/app/zespol", label: "Zespół", icon: Users },
           { href: "/app/templates", label: "Kwestionariusze", icon: FileCog },
           { href: "/app/audit", label: "Dziennik", icon: ScrollText },
         ]

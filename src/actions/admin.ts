@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 import { asStaff, requireStaff } from "@/lib/auth";
 import { audit } from "@/lib/audit";
-import { hashPassword, newToken, passwordProblem } from "@/lib/crypto";
+import { newToken } from "@/lib/crypto";
 import { saveSettingsSection, type Settings } from "@/lib/settings";
 import { createDraft, insertQuestion, publishDraft } from "@/lib/templates";
 
@@ -183,28 +183,6 @@ export async function saveSettingsAction(_: R, fd: FormData): Promise<R> {
   });
   revalidatePath("/", "layout");
   return { ok: "Zapisano ustawienia." };
-}
-
-export async function createUserAction(_: R, fd: FormData): Promise<R> {
-  const s = await requireStaff("admin");
-  const email = String(fd.get("email") ?? "").trim().toLowerCase();
-  const name = String(fd.get("name") ?? "").trim();
-  const role = fd.get("role") === "admin" ? "admin" : "therapist";
-  const pw = String(fd.get("password") ?? "");
-  const prob = passwordProblem(pw);
-  if (!/^\S+@\S+\.\S+$/.test(email) || name.length < 3) return { error: "Podaj e-mail i imię i nazwisko." };
-  if (prob) return { error: prob };
-  try {
-    await asStaff(s, async (tx) => {
-      const [u] = await tx<{ id: string }[]>`insert into users (email, name, role, password_hash) values (${email}, ${name}, ${role}, ${await hashPassword(pw)}) returning id`;
-      await tx`insert into therapists (user_id, display_name) values (${u.id}, ${name})`;
-      await audit(tx, s.actor, "user_created", "user", u.id, null, { role });
-    });
-  } catch {
-    return { error: "Konto o tym adresie już istnieje." };
-  }
-  revalidatePath("/app/settings");
-  return { ok: "Utworzono konto. Przekaż hasło tymczasowe bezpiecznym kanałem – przy pierwszym logowaniu wymagane będzie MFA (w produkcji)." };
 }
 
 export async function therapistProfileAction(_: R, fd: FormData): Promise<R> {
