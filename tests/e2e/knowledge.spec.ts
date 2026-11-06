@@ -60,9 +60,9 @@ test("menu Wiedza: desktop (klik, Esc) i telefon; strona zbiorcza z filtrem", as
 
   await page.goto("/wiedza");
   await page.waitForLoadState("networkidle");
-  await expect(page.locator('main a[href^="/wiedza/"]')).toHaveCount(10);
+  await expect(page.locator('main a[href^="/wiedza/"]:not([href^="/wiedza/artykuly"])')).toHaveCount(10);
   await page.getByRole("button", { name: "Trudne sytuacje" }).click();
-  await expect(page.locator('main a[href^="/wiedza/"]')).toHaveCount(2);
+  await expect(page.locator('main a[href^="/wiedza/"]:not([href^="/wiedza/artykuly"])')).toHaveCount(2);
 });
 
 test("10 landingów i 10 pełnych podglądów /demo (noindex), /demo zgodne z PDF", async ({ page, request }) => {

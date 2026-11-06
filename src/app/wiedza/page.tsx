@@ -1,7 +1,10 @@
 // Strona zbiorcza „Wiedza” – 10 bezpłatnych materiałów w trzech kategoriach (filtr bez przeładowania).
 import type { Metadata } from "next";
 import { KTrack } from "@/components/knowledge/client";
+import Link from "next/link";
+import { ArticleCard } from "@/components/articles/article";
 import { KnowledgeGrid } from "@/components/knowledge/grid";
+import { ARTICLES, ARTICLES_PATH } from "@/content/articles";
 import { coverPhotoMap } from "@/lib/cover-photos";
 import { SiteFooter } from "@/components/site/footer";
 import { SiteHeader } from "@/components/site/header";
@@ -32,6 +35,19 @@ export default async function KnowledgeHub() {
           Bezpłatne poradniki, pytania i ćwiczenia przygotowane przez DUO. Wybierz temat, który jest teraz dla Ciebie ważny.
         </p>
         <KnowledgeGrid photos={photos} />
+
+        {/* ARTYKUŁY – pod materiałami */}
+        <section className="mt-20" aria-labelledby="art-h">
+          <div className="flex flex-wrap items-end justify-between gap-3">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-[0.18em] text-clay">Artykuły</p>
+              <h2 id="art-h" className="mt-2 font-display text-[1.9rem] leading-tight text-ink sm:text-4xl">Terapia par i terapia małżeńska – przeczytaj</h2>
+              <p className="mt-2 max-w-2xl text-ink-soft">Kiedy warto zacząć, jak wygląda pierwsza wizyta i jak spokojnie podjąć decyzję o przyszłości związku.</p>
+            </div>
+            <Link href={ARTICLES_PATH} className="text-sm font-semibold text-forest hover:underline">Wszystkie artykuły →</Link>
+          </div>
+          <ul className="mt-6 grid gap-5 md:grid-cols-2 lg:grid-cols-3">{ARTICLES.slice(0, 6).map((a) => <li key={a.slug}><ArticleCard a={a} /></li>)}</ul>
+        </section>
       </main>
       <SiteFooter contactEmail={s.site.contactEmail} />
     </>

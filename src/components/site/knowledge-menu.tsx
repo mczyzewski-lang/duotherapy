@@ -141,7 +141,10 @@ export function KnowledgeMenu() {
           <div className="grid grid-cols-3 gap-5"><KnowledgeItems onPick={close} /></div>
           <div className="mt-4 flex items-center justify-between border-t border-sand pt-3">
             <p className="text-xs text-muted">Bezpłatne poradniki, pytania i ćwiczenia DUO</p>
-            <Link href="/wiedza" onClick={close} className="text-sm font-semibold text-forest hover:underline">Zobacz wszystkie materiały →</Link>
+            <span className="flex gap-5">
+              <Link href="/wiedza/artykuly" onClick={close} className="text-sm font-semibold text-forest hover:underline">Artykuły o terapii par →</Link>
+              <Link href="/wiedza" onClick={close} className="text-sm font-semibold text-forest hover:underline">Zobacz wszystkie materiały →</Link>
+            </span>
           </div>
         </>
       )}
@@ -189,6 +192,7 @@ export function MobileMenu({ always, initialWiedza = false }: { always?: boolean
                 <>
                   <KnowledgeItems onPick={close} dense />
                   <Link href="/wiedza" onClick={close} className="block px-2 text-[15px] font-semibold text-forest">Zobacz wszystkie materiały →</Link>
+                  <Link href="/wiedza/artykuly" onClick={close} className="block px-2 text-[15px] font-semibold text-forest">Artykuły o terapii par →</Link>
                 </>
               ))}
               <a href="/#o-mnie" onClick={close} className="block rounded-xl px-2 py-3 text-lg text-ink">Kto pomaga</a>

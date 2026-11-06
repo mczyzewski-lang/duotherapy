@@ -1,0 +1,42 @@
+# Artykuły „Wiedzy” – jak dodać nowy (SEO, długi ogon)
+
+Adresy: spis `/wiedza/artykuly`, artykuł `/wiedza/artykuly/<slug>`. Lista pokazuje się też pod materiałami na `/wiedza`,
+a na stronie materiału – sekcja „Przeczytaj też” z artykułami, które go polecają.
+
+## Nowy artykuł w 3 krokach
+
+1. Skopiuj `src/content/articles/terapia-par-online.ts` jako `src/content/articles/<slug>.ts` i podmień treść.
+2. Dopisz import i wpis do tablicy `ARTICLES` w `src/content/articles/index.ts`.
+3. Uruchom `npx vitest run tests/unit/articles.test.ts` – test sprawdzi długości tytułu i opisu, frazę w H1, linki, materiały.
+
+## Pola i zasady SEO
+
+- `slug` – fraza z długiego ogona, małe litery i myślniki (np. `terapia-par-gdy-partner-nie-chce`).
+- `seoTitle` – do 60 znaków, z główną frazą na początku. `description` – 120–165 znaków, z frazą i obietnicą treści.
+- `keywords` – 3–6 fraz z długiego ogona; pierwsza = główna (musi pojawić się w H1 albo tytule SEO).
+- `h1` – pełny nagłówek; `title` – krótka nazwa do kart i okruszków.
+- `faq` – 2–4 pytania (trafiają do danych strukturalnych FAQPage – szansa na rozszerzony wynik w Google).
+- `related` – 2–3 artykuły do „Przeczytaj też” (reszta dobiera się po wspólnych `tags`).
+- `magnets` – materiały pasujące do tematu: pierwszy niepowtórzony w treści trafia do bocznego panelu, wszystkie na koniec.
+
+## Bloki treści
+
+`h2` (z `id` – kotwica do spisu treści), `h3`, `p`, `list` (`ordered`), `quote`, `callout` (`tone: "safety"` dla treści o bezpieczeństwie),
+`figure` (infografika), `cta` (kontener z materiałem i własnym zdaniem `hook` dopasowanym do miejsca w tekście), `mapa` (wyjaśnienie Mapy Relacji).
+
+W tekście: `**pogrubienie**` i `[tekst linku](/adres)`. **Każdy artykuł linkuje w treści do co najmniej jednego innego artykułu** (pilnuje test) oraz do materiałów i ścieżek (`/odbudowa`, `/czas-na-decyzje`, `/swiadome-rozstanie`, `/mapa-relacji`).
+
+## Infografiki
+
+HTML/CSS w barwach DUO z logo w narożniku (`src/components/articles/infographics.tsx`) – ostre na każdym ekranie, lekkie,
+z tekstem czytelnym dla Google i czytników ekranu. Nowa infografika: funkcja w tym pliku + klucz w `GraphicKey` (`types.ts`).
+Każda ma tytuł i podpis (`figcaption`).
+
+## Zasady treści
+
+Bez fikcyjnych badań, statystyk, opinii i danych specjalistów; bez obietnic efektów i presji. Półpauza „–”, polskie cudzysłowy „…”.
+Tematy przemocy zawsze z informacją o bezpieczeństwie (Niebieska Linia 800 120 002, 112).
+
+## Pomiar
+
+`article_view` i `article_cta_click` (krok = numer materiału) w `funnel_events` – bez tytułów, ścieżka zanonimizowana do `/wiedza/*`.
