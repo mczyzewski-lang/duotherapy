@@ -15,7 +15,7 @@ export const article: Article = {
   lead:
     "W kryzysie łatwo myśleć zero-jedynkowo: albo ratujemy związek, albo rozwód. W praktyce między tymi biegunami jest więcej możliwości – a decyzja podjęta pod wpływem najgorszego tygodnia rzadko jest tą, której później jesteśmy pewni. W tym artykule pokazujemy trzy możliwe drogi, pułapki, w które łatwo wpaść w kryzysie, pytania warte zadania sobie przed decyzją i to, jak terapia małżeńska pomaga wybrać spokojnie.",
   hero: {
-    prompt: "A calm crossroads in a gentle landscape with three soft paths: one with a small heart-shaped tree, one with a simple hourglass-shaped stone, one with two parallel paths diverging peacefully; a person standing at the start looking ahead calmly.",
+    prompt: "A calm crossroads in a gentle landscape with three soft paths: one with a small heart-shaped tree, one with a simple hourglass-shaped stone, one with two parallel paths diverging peacefully; a character standing at the start looking ahead calmly.",
     alt: "Ilustracja: rozdroże z trzema ścieżkami – odbudowa, czas na decyzję i świadome rozstanie",
   },
   blocks: [
@@ -28,7 +28,7 @@ export const article: Article = {
       t: "art",
       key: "ambiwalencja",
       title: "Ambiwalencja: dwa głosy naraz",
-      prompt: "A single calm person sitting thoughtfully with two small empty thought bubbles above, one containing a heart icon and one containing an open door icon; balanced composition, gentle and non-dramatic.",
+      prompt: "A single calm character sitting thoughtfully with two small empty thought bubbles above, one containing a heart icon and one containing an open door icon; balanced composition, gentle and non-dramatic.",
       alt: "Ilustracja: osoba z dwiema chmurkami myśli – serce i otwarte drzwi – symbol ambiwalencji w kryzysie",
       caption: "W skrócie: chcieć zostać i chcieć odejść jednocześnie to normalne w kryzysie. To informacja, a nie błąd.",
     },

@@ -15,7 +15,7 @@ export const article: Article = {
   lead:
     "Pierwsza wizyta na terapii małżeńskiej budzi zwykle dużo pytań: o co zapyta terapeuta, czy będzie oceniał, czy trzeba od razu mówić o wszystkim? Spokojnie – pierwsze spotkanie służy przede wszystkim poznaniu się i zrozumieniu, z czym przychodzicie. Poniżej opisujemy przebieg krok po kroku, najczęstsze pytania terapeuty, zasady poufności i to, jak zadbać o siebie po spotkaniu.",
   hero: {
-    prompt: "A calm, welcoming therapy room: two armchairs facing a third chair, a small plant, a window with soft daylight, a cup of tea on a side table; no people, peaceful atmosphere of a first visit.",
+    prompt: "A calm, welcoming therapy room: two armchairs facing a third chair, a small plant, a window with soft daylight, a cup of tea on a side table; no characters, peaceful atmosphere of a first visit.",
     alt: "Ilustracja: spokojny gabinet z dwoma fotelami i krzesłem terapeuty – atmosfera pierwszej wizyty na terapii par",
   },
   blocks: [
@@ -40,7 +40,7 @@ export const article: Article = {
       t: "art",
       key: "bezpieczna-przestrzen",
       title: "Gabinet jako bezpieczna przestrzeń dla obojga",
-      prompt: "Two people sitting in armchairs with a calm therapist person between them; a soft protective circle or dome drawn around all three, empty speech bubbles from both partners of equal size, conveying balance and safety.",
+      prompt: "Two characters sitting in armchairs with a calm therapist character between them; a soft protective circle or dome drawn around all three, empty speech bubbles from both partners of equal size, conveying balance and safety.",
       alt: "Ilustracja: para i terapeuta w bezpiecznym kręgu, oboje mają tyle samo miejsca na rozmowę",
       caption: "W skrócie: na terapii par każde z Was ma tyle samo miejsca. Terapeuta pilnuje, żeby rozmowa była bezpieczna dla obojga.",
     },
@@ -105,7 +105,7 @@ export const article: Article = {
       t: "art",
       key: "po-spotkaniu",
       title: "Po spotkaniu: oddech zamiast analizy",
-      prompt: "Two people walking side by side on a quiet tree-lined path after leaving a building, relaxed body language, a few soft leaves and gentle wind lines; calm, reflective mood.",
+      prompt: "Two characters walking side by side on a quiet tree-lined path after leaving a building, relaxed body language, a few soft leaves and gentle wind lines; calm, reflective mood.",
       alt: "Ilustracja: para spaceruje spokojną aleją po wizycie u terapeuty",
       caption: "W skrócie: po pierwszym spotkaniu nie musicie wszystkiego od razu analizować. Spacer i jedno zdanie od każdego wystarczą.",
     },

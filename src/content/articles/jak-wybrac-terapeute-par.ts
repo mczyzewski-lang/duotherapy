@@ -15,7 +15,7 @@ export const article: Article = {
   lead:
     "Wybór terapeuty par bywa trudniejszy niż decyzja o samej terapii. Szukasz kogoś, komu zaufacie oboje – a przecież każde z Was może mieć inne oczekiwania i inne obawy. W tym artykule znajdziesz 7 pytań, które warto zadać przed pierwszą wizytą, sygnały, na które warto uważać, i wskazówki, jak ocenić pierwsze spotkanie. Dzięki temu łatwiej Wam będzie wybrać spokojnie, a nie przypadkiem.",
   hero: {
-    prompt: "Two people standing together in front of a row of softly coloured doors, one door slightly open with a warm light coming through; the people hold hands and look toward it with calm curiosity.",
+    prompt: "Two characters standing together in front of a row of softly coloured doors, one door slightly open with a warm light coming through; the characters hold hands and look toward it with calm curiosity.",
     alt: "Ilustracja: para stoi przed rzędem drzwi, jedne są uchylone i ciepło oświetlone – wybór terapeuty par",
   },
   blocks: [
@@ -32,7 +32,7 @@ export const article: Article = {
       t: "art",
       key: "trojkat-zaufania",
       title: "Terapeuta w równej odległości od Was",
-      prompt: "Three people sitting in a calm triangle on soft chairs: two partners facing each other and a third calm person at an equal distance from both; faint gentle lines connect all three with the same length. Minimalist line style.",
+      prompt: "Three characters sitting in a calm triangle on soft chairs: two partners facing each other and a third calm character at an equal distance from both; faint gentle lines connect all three with the same length. Minimalist line style.",
       alt: "Ilustracja: terapeuta siedzi w równej odległości od obojga partnerów – bezstronność w terapii par",
       caption: "W skrócie: dobry terapeuta par stoi w równej odległości od Was obojga – nie trzyma niczyjej strony, tylko pomaga relacji.",
     },

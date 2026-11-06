@@ -15,7 +15,7 @@ export const article: Article = {
   lead:
     "Ukłucie, gdy partner długo rozmawia z kimś na imprezie. Niepokój, gdy nie odpisuje przez kilka godzin. Zazdrość w związku zna niemal każdy – i sama w sobie nie jest niczym złym. Problem zaczyna się wtedy, gdy przestaje być przelotną emocją, a staje się sposobem na życie: pytaniami, sprawdzaniem, ograniczaniem. W tym artykule pokazujemy, kiedy zazdrość jest naturalna, kiedy zaczyna niszczyć i co możecie z nią zrobić – niezależnie od tego, czy to Ty jesteś zazdrosny lub zazdrosna, czy partner.",
   hero: {
-    prompt: "Two rounded people sitting close together on a park bench; a small soft green cloud hovers above one of them, casting a light shadow, while the other gently reaches out a hand; calm park, gentle light.",
+    prompt: "Two rounded characters sitting close together on a park bench; a small soft green cloud hovers above one of them, casting a light shadow, while the other gently reaches out a hand; calm park, gentle light.",
     alt: "Ilustracja: para na ławce, nad jedną osobą mała zielona chmurka – zazdrość w związku, z którą można sobie poradzić razem",
   },
   blocks: [

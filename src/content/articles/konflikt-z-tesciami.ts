@@ -15,7 +15,7 @@ export const article: Article = {
   lead:
     "Konflikt z teściami rzadko zaczyna się od wielkiej awantury. Częściej od drobnych uwag, niezapowiedzianych wizyt i rad, o które nikt nie prosił. Najtrudniejsze jest jednak to, że taki spór łatwo przenosi się do związku – i nagle kłócicie się nie z rodzicami, tylko ze sobą. W tym artykule pokazujemy, jak razem ustalić granice, kto i jak powinien o nich mówić, i co zrobić, gdy jedno z Was czuje się zostawione samo.",
   hero: {
-    prompt: "A cozy small house with a low friendly garden fence and an open gate; inside the garden two rounded people holding hands; outside the fence two older rounded people with a basket, waving warmly; soft afternoon light, calm and kind atmosphere, no text.",
+    prompt: "A cozy small house with a low friendly garden fence and an open gate; inside the garden two rounded characters holding hands; outside the fence two older rounded characters with a basket, waving warmly; soft afternoon light, calm and kind atmosphere, no text.",
     alt: "Ilustracja: para w ogrodzie za niskim płotem z otwartą furtką, a za płotem starsi rodzice z koszykiem – zdrowe granice z rodziną",
   },
   blocks: [
@@ -64,7 +64,7 @@ export const article: Article = {
       t: "art",
       key: "wspolna-strona",
       title: "Po tej samej stronie",
-      prompt: "Two rounded people standing side by side under one shared umbrella, facing gentle rain of small abstract shapes coming from the side; a soft calm landscape behind them; simple minimalist style, pastel colors, no text.",
+      prompt: "Two rounded characters standing side by side under one shared umbrella, facing gentle rain of small abstract shapes coming from the side; a soft calm landscape behind them; simple minimalist style, pastel colors, no text.",
       alt: "Ilustracja: para stoi razem pod jednym parasolem – wspólny front wobec napięć w rodzinie",
       caption: "W skrócie: zanim postawicie granice rodzinie, ustalcie je między sobą – i stańcie po tej samej stronie.",
     },
@@ -113,7 +113,7 @@ export const article: Article = {
       t: "art",
       key: "most-lojalnosci",
       title: "Między dwiema lojalnościami",
-      prompt: "One rounded person standing in the middle of a small gentle bridge, with a warm house on one bank and a partner person on the other bank reaching out a hand; the middle person takes a step toward the partner while still waving to the house; soft colors, minimalist, no text.",
+      prompt: "One rounded character standing in the middle of a small gentle bridge, with a warm house on one bank and a partner character on the other bank reaching out a hand; the middle character takes a step toward the partner while still waving to the house; soft colors, minimalist, no text.",
       alt: "Ilustracja: osoba na moście między domem rodzinnym a partnerem robi krok w stronę partnera, wciąż machając rodzicom",
       caption: "W skrócie: można kochać rodziców i jednocześnie wybrać swój związek – granica nie oznacza zerwania więzi.",
     },

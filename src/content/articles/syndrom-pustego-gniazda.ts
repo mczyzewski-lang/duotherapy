@@ -22,7 +22,7 @@ export const article: Article = {
   lead:
     "Przez lata Wasz kalendarz wyznaczały szkoła, treningi, wywiadówki i rodzinne obiady. Potem dzieci wyprowadzają się z domu i nagle robi się bardzo cicho. Dla wielu par to moment ulgi i nowych możliwości, ale też zaskoczenia: „O czym my właściwie teraz rozmawiamy?”. W tym artykule zobaczysz, czym jest syndrom pustego gniazda, jak wpływa na związek i jak na nowo odnaleźć się we dwoje.",
   hero: {
-    prompt: "An empty bird nest on a branch of a tree in soft evening light, small birds flying away into the sky in the distance; below the tree two rounded adult people sitting together on a bench, looking at each other with gentle curiosity.",
+    prompt: "An empty bird nest on a branch of a tree in soft evening light, small birds flying away into the sky in the distance; below the tree two rounded adult characters sitting together on a bench, looking at each other with gentle curiosity.",
     alt: "Ilustracja: puste gniazdo na gałęzi, odlatujące ptaki i para dorosłych siedząca pod drzewem, patrząca na siebie",
   },
   blocks: [
@@ -39,7 +39,7 @@ export const article: Article = {
       t: "art",
       key: "pusty-stol",
       title: "Dwie osoby przy dużym stole",
-      prompt: "A large family dining table with many empty chairs, and two rounded people sitting at one end close to each other, looking at each other a bit uncertainly; soft warm light from a window; minimalist, calm.",
+      prompt: "A large family dining table with many empty chairs, and two rounded characters sitting at one end close to each other, looking at each other a bit uncertainly; soft warm light from a window; minimalist, calm.",
       alt: "Ilustracja: duży stół z wieloma pustymi krzesłami, przy jednym końcu siedzi para i patrzy na siebie niepewnie",
       caption: "W skrócie: gdy dzieci wychodzą z domu, przy stole zostajecie we dwoje – i to dobry moment, żeby zapytać, kim jesteście dla siebie teraz.",
     },
@@ -91,7 +91,7 @@ export const article: Article = {
       t: "art",
       key: "nowa-mapa-podrozy",
       title: "Nowa mapa we dwoje",
-      prompt: "Two rounded older adult people leaning together over a large blank unfolded map on a table, one pointing to a spot, the other smiling; a small pair of walking shoes beside them, symbolizing a new shared journey; minimalist and warm.",
+      prompt: "Two rounded older adult characters leaning together over a large blank unfolded map on a table, one pointing to a spot, the other smiling; a small pair of walking shoes beside them, symbolizing a new shared journey; minimalist and warm.",
       alt: "Ilustracja: para pochyla się nad pustą mapą i wspólnie wybiera kierunek – nowy etap związku",
       caption: "W skrócie: puste gniazdo może być początkiem nowego etapu – najlepiej, gdy kierunek wybieracie razem, a nie każde osobno.",
     },

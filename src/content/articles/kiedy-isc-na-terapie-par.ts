@@ -15,7 +15,7 @@ export const article: Article = {
   lead:
     "Wiele par zgłasza się na terapię dopiero wtedy, gdy są zmęczone latami tych samych kłótni. Tymczasem terapia par nie jest „ostatnią deską ratunku” – często najwięcej daje wtedy, gdy oboje jeszcze chcecie rozmawiać, tylko nie wiecie jak. W tym artykule znajdziesz sygnały, które warto potraktować poważnie, odpowiedź na pytanie, czym terapia par różni się od indywidualnej, i praktyczne wskazówki, jak wybrać terapeutę.",
   hero: {
-    prompt: "Two people sitting on a calm bench in a park at early morning, a small gentle path ahead of them splitting into soft light; a subtle sense of hope and a new beginning.",
+    prompt: "Two characters sitting on a calm bench in a park at early morning, a small gentle path ahead of them splitting into soft light; a subtle sense of hope and a new beginning.",
     alt: "Ilustracja: dwie osoby na ławce patrzą na ścieżkę, która prowadzi w jasną stronę – symbol decyzji o terapii par",
   },
   blocks: [
@@ -32,7 +32,7 @@ export const article: Article = {
       t: "art",
       key: "wczesnie-czy-pozno",
       title: "Wcześnie czy późno – kiedy łatwiej o zmianę",
-      prompt: "Split composition: on the left a small seedling that two hands gently water together (early, easy to change); on the right a tangled thorny bush with two people standing apart (late, hardened pattern). A soft arrow suggests moving from right to left.",
+      prompt: "Split composition: on the left a small seedling that two hands gently water together (early, easy to change); on the right a tangled thorny bush with two characters standing apart (late, hardened pattern). A soft arrow suggests moving from right to left.",
       alt: "Ilustracja: mała roślina podlewana wspólnie obok splątanego krzewu – im wcześniej, tym łatwiej o zmianę",
       caption: "W skrócie: im wcześniej zauważycie powtarzający się schemat, tym łatwiej go zmienić – zanim obrośnie w urazy i unikanie.",
     },
@@ -97,7 +97,7 @@ export const article: Article = {
       t: "art",
       key: "most-rozmowy",
       title: "Terapia par jako most do rozmowy",
-      prompt: "Two people standing on opposite sides of a gentle river, a calm third person (therapist) helping them build a simple wooden bridge between them; one empty speech bubble rising from each side meeting in the middle.",
+      prompt: "Two characters standing on opposite sides of a gentle river, a calm third character (therapist) helping them build a simple wooden bridge between them; one empty speech bubble rising from each side meeting in the middle.",
       alt: "Ilustracja: dwie osoby po obu stronach rzeki budują most z pomocą terapeuty – terapia par jako wsparcie w rozmowie",
       caption: "W skrócie: terapeuta par nie staje po żadnej stronie – pomaga zbudować most, po którym znów możecie do siebie dojść.",
     },

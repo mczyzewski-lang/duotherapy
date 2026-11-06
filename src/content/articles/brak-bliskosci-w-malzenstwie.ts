@@ -22,7 +22,7 @@ export const article: Article = {
   lead:
     "Nie kłócicie się, nikt nikogo nie zdradził, a jednak coś zniknęło. Rozmawiacie o rachunkach i zakupach, wieczorem każde siedzi w swoim telefonie, a czułość pojawia się coraz rzadziej. Brak bliskości w małżeństwie zwykle nie przychodzi nagle – narasta powoli, aż pewnego dnia zauważasz, że żyjecie obok siebie. Dobra wiadomość jest taka, że bliskość też da się odbudowywać małymi krokami.",
   hero: {
-    prompt: "Two rounded people sitting at opposite ends of a long sofa in a cozy living room, each lit by the glow of their own phone; a soft warm lamp between them casting a gentle circle of light they could both step into.",
+    prompt: "Two rounded characters sitting at opposite ends of a long sofa in a cozy living room, each lit by the glow of their own phone; a soft warm lamp between them casting a gentle circle of light they could both step into.",
     alt: "Ilustracja: dwie osoby na dwóch końcach kanapy, każda z telefonem, między nimi ciepłe światło lampy",
   },
   blocks: [
@@ -51,7 +51,7 @@ export const article: Article = {
       t: "art",
       key: "dwie-wyspy",
       title: "Dwie wyspy",
-      prompt: "Two small islands slowly drifting apart on a calm sea, each with one rounded person standing on it; between them a few stepping stones still visible just above the water, suggesting the way back is still possible; minimalist and soft.",
+      prompt: "Two small islands slowly drifting apart on a calm sea, each with one rounded character standing on it; between them a few stepping stones still visible just above the water, suggesting the way back is still possible; minimalist and soft.",
       alt: "Ilustracja: dwie wysepki z postaciami oddalają się od siebie, między nimi wciąż widać kamienie, po których można przejść",
       caption: "W skrócie: dystans w małżeństwie zwykle narasta powoli, jak dryfujące wyspy – ale dopóki widać kamienie między nimi, droga powrotna istnieje.",
     },
@@ -111,7 +111,7 @@ export const article: Article = {
       t: "art",
       key: "most-z-malych-krokow",
       title: "Most z małych kroków",
-      prompt: "Two rounded people on opposite sides of a small gap, each placing a small wooden plank to build a bridge toward the other; several planks already in place meeting in the middle; calm, hopeful, minimalist composition.",
+      prompt: "Two rounded characters on opposite sides of a small gap, each placing a small wooden plank to build a bridge toward the other; several planks already in place meeting in the middle; calm, hopeful, minimalist composition.",
       alt: "Ilustracja: dwie osoby układają deski, budując most w swoją stronę – bliskość odbudowuje się małymi krokami",
       caption: "W skrócie: bliskość rzadko wraca jednym wielkim gestem – częściej powstaje z wielu małych kroków, które oboje robicie w swoją stronę.",
     },

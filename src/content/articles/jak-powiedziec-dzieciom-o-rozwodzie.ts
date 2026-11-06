@@ -15,7 +15,7 @@ export const article: Article = {
   lead:
     "Kiedy decyzja o rozstaniu zapada, wielu rodziców najbardziej boi się jednego momentu: rozmowy z dziećmi. Nie da się jej przeprowadzić tak, żeby nic nie zabolało – ale da się ją przeprowadzić tak, żeby dziecko poczuło się bezpieczne, kochane i niewinne. W tym artykule znajdziesz zasady, które pomagają przygotować tę rozmowę, propozycje zdań dopasowanych do wieku dziecka i listę rzeczy, których lepiej unikać.",
   hero: {
-    prompt: "Two adult rounded people sitting on a soft rug at child height, gently facing a small child person between them who holds a teddy bear; warm lamp light, calm protective atmosphere, a small house-shaped shelter outline around the child; minimalist, no text.",
+    prompt: "Two adult rounded characters sitting on a soft rug at child height, gently facing a small child character between them who holds a teddy bear; warm lamp light, calm protective atmosphere, a small house-shaped shelter outline around the child; minimalist, no text.",
     alt: "Ilustracja: dwoje rodziców siedzi na dywanie obok dziecka z misiem – spokojna rozmowa o rozstaniu",
   },
   blocks: [
@@ -62,7 +62,7 @@ export const article: Article = {
       t: "art",
       key: "dwa-filary",
       title: "Dwa filary, jeden dach",
-      prompt: "A small child person standing safely under a simple roof supported by two separate pillars standing apart from each other; the pillars are slightly different colors but both stable; soft warm background, minimalist, no text.",
+      prompt: "A small child character standing safely under a simple roof supported by two separate pillars standing apart from each other; the pillars are slightly different colors but both stable; soft warm background, minimalist, no text.",
       alt: "Ilustracja: dziecko stoi pod dachem wspartym na dwóch oddzielnych, ale stabilnych filarach",
       caption: "W skrócie: rodzice mogą mieszkać osobno, a dziecko nadal może mieć nad sobą bezpieczny dach – wsparty na obojgu.",
     },
@@ -110,7 +110,7 @@ export const article: Article = {
       t: "art",
       key: "plecak-dziecka",
       title: "Nie dokładajmy dziecku ciężaru",
-      prompt: "A small rounded child person walking with a light small backpack, while two adult people behind carry larger heavy bags themselves, keeping them away from the child; gentle path, soft colors, minimalist, no text.",
+      prompt: "A small rounded child character walking with a light small backpack, while two adult characters behind carry larger heavy bags themselves, keeping them away from the child; gentle path, soft colors, minimalist, no text.",
       alt: "Ilustracja: dziecko idzie z lekkim plecakiem, a dorośli sami niosą swoje ciężkie torby",
       caption: "W skrócie: konflikt dorosłych zostaje u dorosłych – dziecko nie powinno nieść ich ciężaru ani wybierać strony.",
     },

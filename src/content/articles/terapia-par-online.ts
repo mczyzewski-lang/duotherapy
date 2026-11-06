@@ -15,7 +15,7 @@ export const article: Article = {
   lead:
     "Terapia par online to spotkania z psychologiem przez wideo – z domu, z dwóch miejsc albo nawet z dwóch miast. Dla wielu par to jedyny realny sposób, żeby w ogóle zacząć: bez dojazdów, bez szukania opieki do dzieci na kilka godzin. W tym artykule opisujemy, jak wygląda sesja online, kiedy sprawdza się dobrze, a kiedy lepiej spotkać się stacjonarnie, jak zadbać o prywatność i jak przygotować się do spotkania.",
   hero: {
-    prompt: "A cozy living room corner with a couple sitting together on a sofa in front of a laptop on a small table; the laptop screen shows a friendly person (therapist); warm lamp light, plant, calm atmosphere.",
+    prompt: "A cozy living room corner with a couple sitting together on a sofa in front of a laptop on a small table; the laptop screen shows a friendly character (therapist); warm lamp light, plant, calm atmosphere.",
     alt: "Ilustracja: para na kanapie przed laptopem podczas terapii par online w spokojnym domowym wnętrzu",
   },
   blocks: [
@@ -48,7 +48,7 @@ export const article: Article = {
       t: "art",
       key: "dom-bezpieczna-przestrzen",
       title: "Dom jako bezpieczna przestrzeń na rozmowę",
-      prompt: "A simple house outline with a warm glowing room inside where two small people sit together facing a laptop; outside the house soft trees and a quiet street; a gentle 'do not disturb' style hanging sign shape on the door without any text.",
+      prompt: "A simple house outline with a warm glowing room inside where two small characters sit together facing a laptop; outside the house soft trees and a quiet street; a gentle 'do not disturb' style hanging sign shape on the door without any text.",
       alt: "Ilustracja: dom z ciepło oświetlonym pokojem, w którym para rozmawia z terapeutą online",
       caption: "W skrócie: terapia online działa najlepiej, gdy w domu macie spokojne, prywatne miejsce, w którym nikt Wam nie przeszkodzi.",
     },

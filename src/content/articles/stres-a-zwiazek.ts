@@ -22,7 +22,7 @@ export const article: Article = {
   lead:
     "Cały dzień trzymasz się w pracy, a w domu wystarczy jedno pytanie o zakupy, żeby wybuchnąć. Albo odwrotnie – to partner wraca zamknięty w sobie i nie da się z nim porozmawiać. Stres sam w sobie nie niszczy związku, ale sposób, w jaki go przynosimy do domu, potrafi zrobić wiele szkód. Zobacz, jak to działa i co możecie zrobić, żeby napięcie z zewnątrz nie stawało między Wami.",
   hero: {
-    prompt: "A rounded person arriving at the front door of a cozy home carrying a heavy dark backpack full of storm clouds; on the doorstep a small bench where the backpack could be put down, a partner waiting inside in warm light.",
+    prompt: "A rounded character arriving at the front door of a cozy home carrying a heavy dark backpack full of storm clouds; on the doorstep a small bench where the backpack could be put down, a partner waiting inside in warm light.",
     alt: "Ilustracja: osoba wraca do domu z plecakiem pełnym burzowych chmur, przy drzwiach ławka, na której można go zostawić",
   },
   blocks: [
@@ -39,7 +39,7 @@ export const article: Article = {
       t: "art",
       key: "przelewajacy-sie-kubek",
       title: "Przelewający się kubek",
-      prompt: "A simple cup on a table filled almost to the brim with water, and one small drop falling into it causing it to overflow onto two rounded people sitting nearby; minimalist explainer style, calm palette.",
+      prompt: "A simple cup on a table filled almost to the brim with water, and one small drop falling into it causing it to overflow onto two rounded characters sitting nearby; minimalist explainer style, calm palette.",
       alt: "Ilustracja: pełny kubek, do którego wpada jedna kropla i woda wylewa się na siedzącą obok parę",
       caption: "W skrócie: gdy kubek stresu jest pełny, wystarczy drobiazg, żeby się przelał – i zwykle wylewa się na najbliższą osobę.",
     },
@@ -118,7 +118,7 @@ export const article: Article = {
       t: "art",
       key: "wspolny-parasol",
       title: "Wspólny parasol",
-      prompt: "Two rounded people walking together under one shared umbrella through a light rain, the rain cloud above representing outside pressure, both dry and close under the umbrella; minimalist, calm palette.",
+      prompt: "Two rounded characters walking together under one shared umbrella through a light rain, the rain cloud above representing outside pressure, both dry and close under the umbrella; minimalist, calm palette.",
       alt: "Ilustracja: para idzie razem pod jednym parasolem w deszczu – wspólne radzenie sobie ze stresem",
       caption: "W skrócie: stres z zewnątrz nie zniknie, ale możecie mierzyć się z nim razem – jak pod wspólnym parasolem, a nie przeciwko sobie.",
     },

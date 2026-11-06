@@ -15,7 +15,7 @@ export const article: Article = {
   lead:
     "Dobra komunikacja w związku nie jest talentem, z którym ktoś się rodzi albo nie. To umiejętność, którą można ćwiczyć – podobnie jak jazdę na rowerze czy język obcy. Najlepiej robić to wtedy, gdy nie ma kryzysu, w spokojnych, krótkich momentach. Poniżej znajdziesz 5 prostych ćwiczeń dla par, które zajmują od kilku do kilkunastu minut, z instrukcją krok po kroku i zdaniami, od których możecie zacząć.",
   hero: {
-    prompt: "Two people sitting together on a cozy sofa with two cups of tea, between them a small soft glowing thread that connects their hearts; a few simple shapes like a timer and a notebook on the table suggest a gentle daily practice.",
+    prompt: "Two characters sitting together on a cozy sofa with two cups of tea, between them a small soft glowing thread that connects their hearts; a few simple shapes like a timer and a notebook on the table suggest a gentle daily practice.",
     alt: "Ilustracja: para na kanapie z herbatą, połączona świecącą nicią – codzienne ćwiczenia komunikacji w związku",
   },
   blocks: [
@@ -77,7 +77,7 @@ export const article: Article = {
       t: "art",
       key: "codzienny-check-in",
       title: "Mały codzienny rytuał",
-      prompt: "A simple calendar-like row of seven small rounded windows, in each window the same two rounded people sitting close for a short moment, a little warm light growing slightly brighter from left to right.",
+      prompt: "A simple calendar-like row of seven small rounded windows, in each window the same two rounded characters sitting close for a short moment, a little warm light growing slightly brighter from left to right.",
       alt: "Ilustracja: rząd siedmiu okienek, w każdym ta sama para przez chwilę razem – światło rośnie z każdym dniem",
       caption: "W skrócie: krótka, codzienna rozmowa o sobie, a nie o logistyce, buduje bliskość skuteczniej niż jedna długa „poważna rozmowa”.",
     },
@@ -135,7 +135,7 @@ export const article: Article = {
       t: "art",
       key: "pretensja-w-prosbe",
       title: "Z pretensji w prośbę",
-      prompt: "A rounded person holding a heavy dark stone with sharp edges; in the next frame the same person gently transforms it into a small light paper boat and offers it to another rounded person who smiles and reaches for it.",
+      prompt: "A rounded character holding a heavy dark stone with sharp edges; in the next frame the same character gently transforms it into a small light paper boat and offers it to another rounded character who smiles and reaches for it.",
       alt: "Ilustracja: ciężki, ostry kamień zamienia się w lekką papierową łódkę podawaną partnerowi – pretensja zamieniona w prośbę",
       caption: "W skrócie: pod każdą pretensją kryje się potrzeba – wypowiedziana jako konkretna prośba, łatwiej trafia do drugiej osoby.",
     },

@@ -15,7 +15,7 @@ export const article: Article = {
   lead:
     "Kiedyś opowiadał o wszystkim, a teraz odpowiada półsłówkami. Wieczory spędza przy komputerze, w łóżku odwraca się plecami, a pytanie „co się dzieje?” kwituje krótkim „nic”. Kiedy partner się oddala, łatwo wpaść w lęk, podejrzenia albo w ciągłe dopytywanie. W tym artykule znajdziesz sygnały, które warto zauważyć, możliwe przyczyny dystansu i konkretne kroki, które możesz zrobić już dziś – nawet jeśli na razie działasz sam lub sama.",
   hero: {
-    prompt: "Two people on a small floating island that is slowly splitting into two parts with a narrow gap of calm water between them; one person gently reaches out a hand across the gap.",
+    prompt: "Two characters on a small floating island that is slowly splitting into two parts with a narrow gap of calm water between them; one character gently reaches out a hand across the gap.",
     alt: "Ilustracja: dwie osoby na rozdzielającej się wyspie, jedna wyciąga rękę do drugiej – symbol oddalania się partnera",
   },
   blocks: [
@@ -64,7 +64,7 @@ export const article: Article = {
       t: "art",
       key: "dwie-lodki",
       title: "Oddalanie się dzieje się powoli",
-      prompt: "Two small rounded boats on a calm lake, each with one person inside, drifting slowly apart with gentle ripples between them; a loose soft rope still connects them.",
+      prompt: "Two small rounded boats on a calm lake, each with one character inside, drifting slowly apart with gentle ripples between them; a loose soft rope still connects them.",
       alt: "Ilustracja: dwie łódki na jeziorze powoli dryfują w różne strony, wciąż połączone luźną liną – oddalanie się w związku",
       caption: "W skrócie: partnerzy zwykle nie odpływają od siebie nagle, tylko dryfują powoli – dlatego warto zauważyć dystans, póki lina jeszcze łączy.",
     },
@@ -131,7 +131,7 @@ export const article: Article = {
       t: "art",
       key: "pierwszy-krok",
       title: "Możesz zrobić pierwszy krok",
-      prompt: "A person placing a single stepping stone into a calm stream, creating the start of a path toward another person standing on the other bank, who is watching with curiosity.",
+      prompt: "A character placing a single stepping stone into a calm stream, creating the start of a path toward another character standing on the other bank, who is watching with curiosity.",
       alt: "Ilustracja: osoba kładzie pierwszy kamień w strumieniu, tworząc ścieżkę do partnera po drugiej stronie – pierwszy krok w stronę bliskości",
       caption: "W skrócie: nie masz wpływu na wszystko, ale możesz położyć pierwszy kamień – spokojny, mały krok, który zaprasza, a nie naciska.",
     },

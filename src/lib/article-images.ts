@@ -5,20 +5,21 @@ import { ARTICLES, articleBySlug } from "@/content/articles";
 
 /** Wspólny styl: minimalistyczna, profesjonalna ilustracja w barwach DUO, z delikatnymi elementami komiksowymi, bez tekstu. */
 export const ART_STYLE = [
-  "Minimalist editorial illustration for a couples-therapy article. Flat vector style with subtle paper grain, calm and professional.",
+  "Minimalist editorial illustration for a couples-therapy article. Flat vector style with subtle paper grain and soft matte shading, calm and professional.",
   "Strict palette: deep forest green #36493d, terracotta #a9512f, warm sand #eadccb, ivory background #fbf9f5, soft rose #e07f78, sage #97ac9c.",
-  // Stały projekt postaci – ten sam w całej serii (bez tego model raz rysuje ludzi, raz manekiny z kropką zamiast głowy).
-  "CHARACTER DESIGN – identical in every image of this series: friendly flat infographic-style adult people with natural proportions;",
-  "every head has a clear solid-colour hairstyle (varied styles and hair colours) and a warm skin tone (diverse range);",
-  "minimal friendly faces: tiny dot eyes, a small nose line, optionally a small soft mouth line; simple everyday clothes in the palette colours; visible hands.",
-  "NEVER draw faceless mannequins, featureless blob or pin-shaped figures, bald round heads, heads made of a dot or plain circle, stick figures, emoji faces, realistic, 3D or anime people.",
-  "Light comic-style elements: empty speech or thought bubbles, small motion marks, gentle arrows, simple icons.",
+  // Stały projekt postaci (maskotki DUO) – ten sam w całej serii; wybrany przez właściciela marki.
+  "CHARACTER DESIGN – identical in every image of this series (DUO mascots): soft rounded bean-shaped characters with a big round head and a chubby simple body, smooth solid colour with gentle matte shading;",
+  "the couple is always one deep forest green character and one terracotta character; any additional character is soft rose, sage or sand;",
+  "round heads with NO hair, NO clothes details, NO noses; only tiny dot eyes and at most a tiny simple mouth or a small blush; simple mitten-like hands; expressive through posture and gestures.",
+  "Whenever the scene mentions people, persons, figures, characters, a therapist or children, draw them ONLY as these mascots (children are smaller mascots). Never realistic, detailed, 3D-rendered, anime or stick-figure people.",
+  "One clear scene with one main idea; no grids, tiles, sequences of repeated small panels or icon rows.",
+  "Light comic-style elements: empty speech or thought bubbles, small motion marks, gentle arrows, small hearts, simple props.",
   "Lots of negative space, clean composition, no clutter. Absolutely no text, letters, numbers, captions or logos inside the image.",
   "Respectful and inclusive, no stereotypes, no drama, no violence.",
 ].join(" ");
 
-/** Wersja stylu – grafiki wygenerowane wcześniejszą wersją panel oznacza jako „stary styl” i pozwala je odświeżyć. */
-export const ART_STYLE_VERSION = 2;
+/** Wersja stylu – grafiki wygenerowane inną wersją panel oznacza jako „stary styl” i pozwala je odświeżyć. */
+export const ART_STYLE_VERSION = 3;
 
 export const heroKey = (slug: string) => `${slug}--hero`;
 export const artKey = (slug: string, key: string) => `${slug}--${key}`;

@@ -15,7 +15,7 @@ export const article: Article = {
   lead:
     "Pytanie o pieniądze to często pierwszy, choć niewypowiedziany, powód odkładania terapii par. Ceny w ogłoszeniach potrafią się wyraźnie różnić i trudno ocenić, co właściwie się za nimi kryje. W tym artykule wyjaśniamy, od czego zależy koszt terapii par, jak policzyć realny budżet i o co zapytać, zanim się umówicie. Na końcu znajdziesz też jasne ceny Mapy Relacji w DUO.",
   hero: {
-    prompt: "Two people sitting at a kitchen table with a small balance scale between them; on one side of the scale a tiny heart, on the other a small stack of plain coins; the scale is calmly balanced and a warm lamp lights the scene.",
+    prompt: "Two characters sitting at a kitchen table with a small balance scale between them; on one side of the scale a tiny heart, on the other a small stack of plain coins; the scale is calmly balanced and a warm lamp lights the scene.",
     alt: "Ilustracja: para przy stole z wagą, na której w równowadze leżą serce i monety – rozsądne planowanie kosztu terapii par",
   },
   blocks: [
@@ -100,7 +100,7 @@ export const article: Article = {
       t: "art",
       key: "pytania-przed-platnoscia",
       title: "Najpierw pytania, potem decyzja",
-      prompt: "Two rounded people standing in front of a simple open door, each holding a small empty speech bubble shape; behind the door a calm, softly lit room with two chairs. Minimalist, warm and inviting.",
+      prompt: "Two rounded characters standing in front of a simple open door, each holding a small empty speech bubble shape; behind the door a calm, softly lit room with two chairs. Minimalist, warm and inviting.",
       alt: "Ilustracja: para przed otwartymi drzwiami gabinetu z dymkami pytań – warto zapytać o zasady przed pierwszą wizytą",
       caption: "W skrócie: kilka prostych pytań przed pierwszą wizytą pomaga uniknąć niespodzianek i wybrać ofertę, która naprawdę pasuje.",
     },

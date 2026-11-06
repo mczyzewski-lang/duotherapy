@@ -15,7 +15,7 @@ export const article: Article = {
   lead:
     "„Znowu to kupiłeś?”, „Ty ciągle tylko liczysz!” – kłótnie o pieniądze potrafią wybuchać nagle i zostawiać po sobie długi niesmak. Często jednak kwota na paragonie jest tylko pretekstem. Pod spodem kryją się ważniejsze sprawy: poczucie bezpieczeństwa, wolności, szacunku i wpływu na wspólne życie. W tym artykule pokazujemy, o co naprawdę kłócicie się, kiedy kłócicie się o pieniądze – i jak zacząć rozmawiać o finansach bez oskarżeń.",
   hero: {
-    prompt: "Two rounded people sitting at a kitchen table with a single piggy bank between them; above each person a soft thought cloud, one containing a small sturdy house shape (security), the other a small open bird cage with a bird flying out (freedom); warm calm palette, minimalist, no text.",
+    prompt: "Two rounded characters sitting at a kitchen table with a single piggy bank between them; above each character a soft thought cloud, one containing a small sturdy house shape (security), the other a small open bird cage with a bird flying out (freedom); warm calm palette, minimalist, no text.",
     alt: "Ilustracja: para przy stole ze skarbonką, nad nimi chmurki z domem i wolnym ptakiem – różne znaczenia pieniędzy",
   },
   blocks: [
@@ -48,7 +48,7 @@ export const article: Article = {
       t: "art",
       key: "gora-lodowa-pieniedzy",
       title: "Góra lodowa kłótni o pieniądze",
-      prompt: "A calm sea with a small iceberg tip above the water shaped like a simple coin, and a much larger iceberg body below the surface containing soft abstract symbols: a small house, a heart, a scale, an open hand; two tiny rounded people in a boat looking only at the tip; minimalist, pastel, no text.",
+      prompt: "A calm sea with a small iceberg tip above the water shaped like a simple coin, and a much larger iceberg body below the surface containing soft abstract symbols: a small house, a heart, a scale, an open hand; two tiny rounded characters in a boat looking only at the tip; minimalist, pastel, no text.",
       alt: "Ilustracja: góra lodowa, której wierzchołek to moneta, a pod wodą kryją się potrzeby – bezpieczeństwo, szacunek, sprawiedliwość",
       caption: "W skrócie: kwota jest tylko wierzchołkiem – pod spodem kryją się potrzeby bezpieczeństwa, wolności, szacunku i wpływu.",
     },
@@ -133,7 +133,7 @@ export const article: Article = {
       t: "art",
       key: "trzy-sloiki",
       title: "Twoje, moje, nasze",
-      prompt: "Three simple glass jars on a shelf: a larger one in the middle with a small heart shape inside, and two smaller ones on each side with a leaf and a star inside; two rounded people each placing a coin into the middle jar; soft warm light, minimalist, no text.",
+      prompt: "Three simple glass jars on a shelf: a larger one in the middle with a small heart shape inside, and two smaller ones on each side with a leaf and a star inside; two rounded characters each placing a coin into the middle jar; soft warm light, minimalist, no text.",
       alt: "Ilustracja: trzy słoiki – duży wspólny i dwa mniejsze osobne – para wrzuca monety do wspólnego",
       caption: "W skrócie: model „twoje, moje, nasze” łączy wspólne cele z odrobiną finansowej niezależności dla każdego z Was.",
     },

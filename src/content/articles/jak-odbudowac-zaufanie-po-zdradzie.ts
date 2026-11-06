@@ -15,7 +15,7 @@ export const article: Article = {
   lead:
     "Po odkryciu zdrady wiele osób zadaje sobie to samo pytanie: czy kiedykolwiek jeszcze będę mógł albo mogła uwierzyć partnerowi? Zaufanie nie wraca od jednej szczerej rozmowy ani od obietnicy „to się więcej nie powtórzy”. Odbudowuje się powoli – z małych, powtarzalnych doświadczeń, że słowa i czyny znów się zgadzają. W tym artykule znajdziesz to, co w tym procesie zwykle pomaga, to, co po cichu go psuje, i wskazówki dla każdej ze stron.",
   hero: {
-    prompt: "Two people kneeling together by a cracked ceramic bowl, carefully joining its pieces with a thin golden seam in the style of kintsugi; soft morning light, calm and patient atmosphere.",
+    prompt: "Two characters kneeling together by a cracked ceramic bowl, carefully joining its pieces with a thin golden seam in the style of kintsugi; soft morning light, calm and patient atmosphere.",
     alt: "Ilustracja: dwie osoby wspólnie sklejają pękniętą miskę złotą linią – symbol powolnej odbudowy zaufania po zdradzie",
   },
   blocks: [
@@ -109,7 +109,7 @@ export const article: Article = {
       t: "art",
       key: "dwie-role",
       title: "Dwie role, jedna droga",
-      prompt: "Two people walking side by side on a long winding path; one carries a small heavy backpack, the other walks slightly behind holding a lantern that lights the way for both; gentle hills in the background.",
+      prompt: "Two characters walking side by side on a long winding path; one carries a small heavy backpack, the other walks slightly behind holding a lantern that lights the way for both; gentle hills in the background.",
       alt: "Ilustracja: dwie osoby idą razem krętą ścieżką, jedna niesie plecak, druga oświetla drogę latarnią – różne role w odbudowie zaufania",
       caption: "W skrócie: osoba zraniona i osoba, która zdradziła, mają w odbudowie różne zadania – ale idą tą samą drogą i potrzebują siebie nawzajem.",
     },

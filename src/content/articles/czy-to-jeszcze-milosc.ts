@@ -15,7 +15,7 @@ export const article: Article = {
   lead:
     "Patrzysz na partnera przy śniadaniu i łapiesz się na myśli: „Czy ja go jeszcze kocham, czy po prostu się przyzwyczaiłam?”. To pytanie potrafi przestraszyć, bo wydaje się, że odpowiedź może wszystko zmienić. Tymczasem jest ono naturalne – pojawia się w wielu długich związkach. Zamiast szukać natychmiastowego wyroku, warto przyjrzeć się temu, co naprawdę czujesz. Pomoże w tym 10 pytań, które znajdziesz poniżej.",
   hero: {
-    prompt: "A person sitting by a window holding a small glowing heart-shaped lantern, looking at it thoughtfully; in the background a second person is reading on a sofa, soft evening light filling the room.",
+    prompt: "A character sitting by a window holding a small glowing heart-shaped lantern, looking at it thoughtfully; in the background a second character is reading on a sofa, soft evening light filling the room.",
     alt: "Ilustracja: osoba przy oknie przygląda się świecącemu lampionowi w kształcie serca, w tle partner na kanapie – pytanie, czy to jeszcze miłość",
   },
   blocks: [
@@ -32,7 +32,7 @@ export const article: Article = {
       t: "art",
       key: "plomien-i-zar",
       title: "Płomień zakochania, żar dojrzałej miłości",
-      prompt: "Split composition: on the left a tall bright flickering flame, on the right a calm bed of glowing warm embers giving steady heat; two people warm their hands by the embers.",
+      prompt: "Split composition: on the left a tall bright flickering flame, on the right a calm bed of glowing warm embers giving steady heat; two characters warm their hands by the embers.",
       alt: "Ilustracja: wysoki płomień obok spokojnego żaru, przy którym para grzeje dłonie – zakochanie a dojrzała miłość",
       caption: "W skrócie: zakochanie przypomina płomień, dojrzała miłość – żar. Mniej widowiskowy, ale wciąż daje ciepło.",
     },
@@ -142,7 +142,7 @@ export const article: Article = {
       t: "art",
       key: "kompas-uczuc",
       title: "Uczucia jako kompas, nie wyrok",
-      prompt: "A person standing on a quiet hill holding a small glowing compass, the needle gently pointing toward a soft horizon; the landscape is calm and open.",
+      prompt: "A character standing on a quiet hill holding a small glowing compass, the needle gently pointing toward a soft horizon; the landscape is calm and open.",
       alt: "Ilustracja: osoba na wzgórzu trzyma świecący kompas – uczucia jako wskazówka kierunku, a nie ostateczny wyrok",
       caption: "W skrócie: to, co czujesz, nie jest wyrokiem, tylko kompasem – pomaga zobaczyć kierunek, w którym chcesz iść.",
     },

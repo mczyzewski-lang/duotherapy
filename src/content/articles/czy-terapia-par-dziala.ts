@@ -15,7 +15,7 @@ export const article: Article = {
   lead:
     "„Czy to w ogóle ma sens?” – to pytanie zadaje sobie prawie każda para, która myśli o terapii. Odpowiedź brzmi: terapia par często pomaga, ale nie działa sama z siebie i nie w każdej sytuacji tak samo. W tym artykule wyjaśniamy, co w praktyce zwiększa szanse na zmianę, co ją utrudnia i po czym poznać, że idziecie w dobrą stronę. Bez obietnic – za to z konkretami, na które macie wpływ.",
   hero: {
-    prompt: "Two people planting a small tree together in a garden bed, one holding a watering can, the other gently pressing the soil; a soft sunrise in the background and a few small sprouts already visible around them.",
+    prompt: "Two characters planting a small tree together in a garden bed, one holding a watering can, the other gently pressing the soil; a soft sunrise in the background and a few small sprouts already visible around them.",
     alt: "Ilustracja: dwie osoby wspólnie sadzą małe drzewko – symbol pracy, dzięki której terapia par może przynieść efekty",
   },
   blocks: [
@@ -32,7 +32,7 @@ export const article: Article = {
       t: "art",
       key: "ogrod-zamiast-naprawy",
       title: "Terapia to ogród, a nie warsztat naprawczy",
-      prompt: "Split composition: on the left a broken object placed on a workbench waiting to be fixed by someone else; on the right two small people tending a garden together with a third calm person pointing gently at the soil. Soft arrow pointing from left to right, minimalist line style.",
+      prompt: "Split composition: on the left a broken object placed on a workbench waiting to be fixed by someone else; on the right two small characters tending a garden together with a third calm character pointing gently at the soil. Soft arrow pointing from left to right, minimalist line style.",
       alt: "Ilustracja: zamiast oddawać związek do naprawy, para wspólnie pielęgnuje ogród z pomocą terapeuty",
       caption: "W skrócie: terapia par nie „naprawia” związku za Was – pomaga Wam samym zobaczyć, co rośnie, a co trzeba przyciąć.",
     },
@@ -121,7 +121,7 @@ export const article: Article = {
       t: "art",
       key: "male-kroki-zmiany",
       title: "Zmiana to małe kroki, nie skok",
-      prompt: "A gentle staircase made of small, low steps rising slowly toward a warm light; two rounded people walking up side by side, one step at a time, with small leaves appearing on each step they pass.",
+      prompt: "A gentle staircase made of small, low steps rising slowly toward a warm light; two rounded characters walking up side by side, one step at a time, with small leaves appearing on each step they pass.",
       alt: "Ilustracja: para wchodzi po niskich stopniach w stronę światła – zmiana w terapii dzieje się małymi krokami",
       caption: "W skrócie: efekty terapii par to zwykle seria drobnych zmian w codzienności, a nie jeden przełomowy moment.",
     },
