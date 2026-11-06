@@ -166,3 +166,33 @@ path.map-line[stroke-dasharray="6 7"] { stroke-dasharray: 6 7; stroke-dashoffset
 .hand-tick.on path { animation: hand-draw 0.45s ease-out forwards; }
 @keyframes hand-draw { to { stroke-dashoffset: 0; } }
 @media (prefers-reduced-motion: reduce) { .hand-caret::after { display: none; } .hand-tick path { stroke-dashoffset: 0; } }
+
+/* Formularz materiału: wędrujący gradient na górze kontenera z odblaskiem. */
+.lm-strip {
+  overflow: hidden;
+  background: linear-gradient(90deg, #a9512f, #e07f78, #36493d, #e07f78, #a9512f) 0 0 / 300% 100%;
+  animation: lm-strip-flow 9s linear infinite;
+}
+.lm-strip::after {
+  content: ""; position: absolute; top: 0; bottom: 0; left: -30%; width: 25%;
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.9), transparent);
+  animation: lm-strip-glare 4.5s ease-in-out infinite;
+}
+@keyframes lm-strip-flow { to { background-position: 300% 0; } }
+@keyframes lm-strip-glare { 0%, 30% { left: -30%; } 100% { left: 115%; } }
+
+/* Przycisk „wypukły”: gradient pod kątem, jasna górna krawędź, cień pod spodem i co kilka sekund przelatujący odblask. */
+.btn-convex {
+  background: linear-gradient(170deg, #c8693f 0%, #b0562f 45%, #93421f 100%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), inset 0 -2px 0 rgba(0, 0, 0, 0.12), 0 12px 26px -12px rgba(169, 81, 47, 0.85);
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.18);
+}
+.btn-glare { position: relative; overflow: hidden; isolation: isolate; }
+.btn-glare::after {
+  content: ""; position: absolute; inset: -20% auto -20% -40%; width: 30%; z-index: -1; pointer-events: none;
+  background: linear-gradient(105deg, transparent, rgba(255, 255, 255, 0.45), transparent);
+  transform: skewX(-18deg); animation: btn-glare 4.2s ease-in-out 1.2s infinite;
+}
+.btn-glare > * { position: relative; }
+@keyframes btn-glare { 0% { left: -40%; } 28%, 100% { left: 130%; } }
+@media (prefers-reduced-motion: reduce) { .lm-strip, .btn-glare::after { animation: none; } }

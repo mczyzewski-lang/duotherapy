@@ -157,7 +157,7 @@ export default async function MagnetLanding({ params }: { params: Promise<{ slug
             </div>
             {/* wyraźny kontener formularza: akcent u góry, mocniejszy cień i obramowanie */}
             <div className="relative overflow-hidden rounded-[1.75rem] bg-white p-5 shadow-[0_34px_70px_-34px_rgba(169,81,47,0.55)] ring-2 ring-clay/25 sm:p-7" data-testid="lm-form-box">
-              <div className="absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r from-clay via-[#e07f78] to-forest" aria-hidden />
+              <div className="lm-strip absolute inset-x-0 top-0 h-1.5" aria-hidden />
               <p className="inline-flex items-center gap-2 rounded-full bg-clay-soft px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-clay">
                 <MagnetIcon icon={m.icon} id={`frm-${m.id}`} className="h-4 w-4" /> Bezpłatnie · {m.format.split(" · ")[0]}
               </p>

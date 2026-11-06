@@ -167,7 +167,7 @@ export function LeadMagnetForm({
         </div>
       </div>
       {err && !["name", "email", "consent", "relationship", "children"].includes(err.field ?? "") && <p role="alert" className="rounded-xl bg-alert-soft px-3 py-2 text-sm text-alert">{err.text}</p>}
-      <button type="submit" disabled={pending} className={clsx("flex min-h-14 w-full items-center justify-center gap-2 rounded-full bg-clay px-6 text-[16px] font-semibold text-white shadow-soft transition hover:brightness-110 disabled:opacity-60")}>
+      <button type="submit" disabled={pending} className={clsx("btn-convex btn-glare flex min-h-14 w-full items-center justify-center gap-2 rounded-full px-6 text-[17px] font-bold tracking-[0.005em] text-white transition hover:brightness-105 active:translate-y-px disabled:opacity-60")}>
         {pending ? <Loader2 size={18} className="animate-spin" aria-hidden /> : <Mail size={18} aria-hidden />} {pending ? "Wysyłanie…" : "Wyślij mi materiał"}
       </button>
       <p className="text-center text-xs leading-relaxed text-muted">
