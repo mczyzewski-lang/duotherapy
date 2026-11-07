@@ -241,7 +241,7 @@ export function AnswerCheck({ id, label }: { id: string; label: string }) {
 }
 
 /** Dolny sticky bar „Podsumuj …”: sprawdza minimum (min. 1 odpowiedź w wymaganych częściach), zapisuje i przechodzi dalej. */
-export function SummarizeBar({ href, label, requirements, saveLater }: { href: string; label: string; requirements: Requirement[]; saveLater?: { slug: string; n: number; masked: string | null } }) {
+export function SummarizeBar({ href, label, requirements, saveLater }: { href: string; label: string; requirements: Requirement[]; saveLater?: { slug: string; n: number; masked: string | null; unlockList?: string[] } }) {
   const ctx = useContext(AnswersCtx);
   const router = useRouter();
   const [missing, setMissing] = useState<Requirement[]>([]);
@@ -287,7 +287,7 @@ export function SummarizeBar({ href, label, requirements, saveLater }: { href: s
         )}
         {/* „Zapisz zmiany na później” – po wpisaniu choć jednego słowa (wersja z e-maila, nie demo) */}
         {saveLater && (saveLater.masked || Object.values(ctx.data).some((v) => typeof v === "string" && /\S/.test(v))) && (
-          <div className="mb-2.5"><SaveForLater slug={saveLater.slug} n={saveLater.n} initialMasked={saveLater.masked} /></div>
+          <div className="mb-2.5"><SaveForLater slug={saveLater.slug} n={saveLater.n} initialMasked={saveLater.masked} unlockList={saveLater.unlockList ?? []} /></div>
         )}
         <button type="button" onClick={submit} disabled={busy}
           className="flex min-h-14 w-full items-center justify-center gap-2 rounded-full bg-clay px-6 text-[16px] font-semibold text-white shadow-soft transition hover:brightness-110 disabled:opacity-60">

@@ -10,7 +10,7 @@ import { AnswersProvider, SummarizeBar } from "./answers";
 import { coverOf } from "@/knowledge/covers";
 import { fieldsOf, requirementsOf } from "@/knowledge/fields";
 
-export function MaterialViewer({ m, variant, answers, phoneMasked = null }: { m: LeadMagnet; variant: "demo" | "material"; answers?: Record<string, string | boolean> | null; phoneMasked?: string | null }) {
+export function MaterialViewer({ m, variant, answers, phoneMasked = null, unlockList = [] }: { m: LeadMagnet; variant: "demo" | "material"; answers?: Record<string, string | boolean> | null; phoneMasked?: string | null; unlockList?: string[] }) {
   const summary = coverOf(m.slug)?.summary;
   // demo: pola zapisywane tylko w tej przeglądarce; material: autozapis przypisany do e-maila (gdy osoba jest zapisana)
   const local = variant === "demo" && !!summary;
@@ -51,7 +51,7 @@ export function MaterialViewer({ m, variant, answers, phoneMasked = null }: { m:
               href={local ? `/wiedza/${m.slug}/demo/podsumowanie` : `/wiedza/${m.slug}/podsumowanie`}
               label={local ? "Podsumuj moje odpowiedzi" : `Podsumuj ${summary}`}
               requirements={requirements}
-              saveLater={local ? undefined : { slug: m.slug, n: m.n, masked: phoneMasked }}
+              saveLater={local ? undefined : { slug: m.slug, n: m.n, masked: phoneMasked, unlockList }}
             />
           </AnswersProvider>
         ) : (

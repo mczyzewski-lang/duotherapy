@@ -7,7 +7,7 @@ export const czerwoneFlagiTerapiaPar: LeadMagnet = {
   n: 27,
   slug: "czerwone-flagi-terapia-par",
   category: "decyzje",
-  icon: "report",
+  icon: "flag",
   title: "5 czerwonych flag: kiedy terapia par nie jest pierwszym krokiem",
   short: "5 czerwonych flag",
   menuDesc: "Uczciwa checklista: kiedy wspólna terapia może poczekać, a co pomoże bardziej – z numerami pomocowymi.",

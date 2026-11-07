@@ -26,6 +26,8 @@ import { env } from "@/lib/env";
 import { getSettings } from "@/lib/settings";
 import { MAGNETS, magnetBySlug, mapaHref } from "@/knowledge/registry";
 import { hiddenMagnets } from "@/lib/magnet-visibility";
+import { contentReader } from "@/lib/content-access";
+import { system } from "@/lib/db";
 import { GoogleRating } from "@/components/google-rating";
 
 // formularz i zgody zależą od ustawień w bazie – renderowanie przy żądaniu (nieznany adres → 404)
@@ -61,6 +63,10 @@ export default async function MagnetLanding({ params }: { params: Promise<{ slug
   const crumbs = breadcrumbJsonLd([["DUO", "/"], ["Wiedza", "/wiedza"], [m.title, `/wiedza/${m.slug}`]]);
 
   const free = m.special === "sample-report";
+  // „zalogowany” numerem telefonu (potwierdzonym kodem SMS) – bez formularza, od razu do materiału
+  const reader = free ? null : await system((tx) => contentReader(tx)).catch(() => null);
+  const access = !!reader?.unlocked;
+  const materialHref = `/wiedza/${m.slug}/material`;
   return (
     <>
       <KTrack event="lead_magnet_landing_view" step={m.n} />
@@ -80,8 +86,8 @@ export default async function MagnetLanding({ params }: { params: Promise<{ slug
               <p className="mt-4 max-w-xl text-[17px] leading-relaxed text-ink-soft sm:text-lg">{m.hero.sub}</p>
               <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center">
                 {/* przykładowa Mapa jest publiczna – bez formularza i bez podawania danych */}
-                <a href={free ? "/mapa-relacji-przyklad" : "#odbierz"} className="inline-flex min-h-14 shrink-0 items-center whitespace-nowrap justify-center gap-2 rounded-full bg-clay px-7 text-[16px] font-semibold text-white shadow-[0_10px_30px_-10px_rgba(169,81,47,0.7)]" data-testid="hero-cta">
-                  {free ? "Zobacz przykład" : "Pobierz bezpłatnie"} <ArrowRight size={18} aria-hidden />
+                <a href={free ? "/mapa-relacji-przyklad" : access ? materialHref : "#odbierz"} className="inline-flex min-h-14 shrink-0 items-center whitespace-nowrap justify-center gap-2 rounded-full bg-clay px-7 text-[16px] font-semibold text-white shadow-[0_10px_30px_-10px_rgba(169,81,47,0.7)]" data-testid="hero-cta">
+                  {free ? "Zobacz przykład" : access ? "Otwórz materiał" : "Pobierz bezpłatnie"} <ArrowRight size={18} aria-hidden />
                 </a>
                 <p className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-muted">
                   <span className="inline-flex items-center gap-1.5"><FileText size={15} aria-hidden /> {m.format}</span>
@@ -143,8 +149,8 @@ export default async function MagnetLanding({ params }: { params: Promise<{ slug
                   <div className="pv-card relative z-10 mx-3 -mt-24 rounded-3xl bg-white/95 p-5 text-center shadow-[0_24px_50px_-24px_rgba(54,73,61,0.55)] ring-1 ring-sand backdrop-blur sm:absolute sm:inset-x-3 sm:bottom-6 sm:mx-auto sm:mt-0 sm:max-w-md sm:p-6">
                     <p className="font-display text-[1.3rem] leading-snug text-ink">To dopiero fragment – dalej jest więcej</p>
                     <p className="mt-1.5 text-[14px] leading-relaxed text-ink-soft">{m.previewNote}</p>
-                    <a href="#odbierz" className="mt-4 inline-flex min-h-12 items-center gap-2 rounded-full bg-clay px-6 text-[15px] font-semibold text-white">
-                      Czytam dalej – odbieram za darmo <ArrowRight size={17} aria-hidden />
+                    <a href={access ? materialHref : "#odbierz"} className="mt-4 inline-flex min-h-12 items-center gap-2 rounded-full bg-clay px-6 text-[15px] font-semibold text-white">
+                      {access ? "Czytam dalej – otwieram" : "Czytam dalej – odbieram za darmo"} <ArrowRight size={17} aria-hidden />
                     </a>
                   </div>
                 </PreviewParallax>
@@ -181,6 +187,19 @@ export default async function MagnetLanding({ params }: { params: Promise<{ slug
                 <p className="mb-5 mt-2 text-[15px] leading-relaxed text-ink-soft">Przykład jest dostępny od razu – nie musisz podawać imienia ani adresu e-mail.</p>
                 <a href="/mapa-relacji-przyklad" data-testid="lm-free-open" className="flex min-h-14 items-center justify-center gap-2 rounded-full bg-clay px-7 text-[16px] font-semibold text-white">
                   Otwórz przykładową Mapę Relacji <ArrowRight size={18} aria-hidden />
+                </a>
+              </div>
+            ) : access ? (
+              <div id="odbierz" className="relative scroll-mt-4 overflow-hidden rounded-[1.75rem] bg-white p-5 shadow-[0_34px_70px_-34px_rgba(54,73,61,0.5)] ring-2 ring-forest/25 sm:p-7" data-testid="lm-access-box">
+                <p className="inline-flex items-center gap-2 rounded-full bg-sage-soft px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-forest">
+                  <Check size={14} aria-hidden /> Masz dostęp do wszystkich materiałów
+                </p>
+                <h2 id="form-h" className="mt-3 font-display text-[1.75rem] leading-tight text-ink sm:text-[2rem]">Otwórz:<br />{m.short}</h2>
+                <p className="mb-5 mt-2 text-[15px] leading-relaxed text-ink-soft">
+                  Twój numer jest potwierdzony kodem SMS – otwierasz materiały bez podawania e-maila. Odpowiedzi zapisują się same.
+                </p>
+                <a href={materialHref} className="flex min-h-14 items-center justify-center gap-2 rounded-full bg-forest px-7 text-[16px] font-semibold text-white" data-testid="lm-access-open">
+                  Otwórz materiał <ArrowRight size={18} aria-hidden />
                 </a>
               </div>
             ) : (
@@ -255,7 +274,7 @@ export default async function MagnetLanding({ params }: { params: Promise<{ slug
         )}
       </main>
       <SiteFooter contactEmail={s.site.contactEmail} />
-      <MagnetStickyBar title={m.short} {...(free ? { href: "/mapa-relacji-przyklad", label: "Zobacz przykład" } : {})} />
+      <MagnetStickyBar title={m.short} {...(free ? { href: "/mapa-relacji-przyklad", label: "Zobacz przykład" } : access ? { href: materialHref, label: "Otwórz materiał" } : {})} />
     </>
   );
 }

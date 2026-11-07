@@ -33,3 +33,14 @@ Jeden kod = jeden SMS (ok. 70–160 znaków). Treść: „DUO: Twój kod … : 1
 E-mail z materiałem i SMS z kodem zawierają krótki link `duo.pl/plan/<7 znaków>` (np. `duo.pl/plan/k7m2xq9`).
 Kod ma 7 znaków, bo link daje dostęp do odpowiedzi – krótszy dałoby się odgadnąć. Próby zgadywania są ograniczone (limit na adres IP),
 a przy odpowiedziach zapisanych z numerem telefonu i tak wymagany jest kod SMS. Stare długie linki (`/wiedza/…/otworz?t=…`) dalej działają.
+
+## Potwierdzony numer = dostęp do wszystkich materiałów
+
+- Pierwsze potwierdzenie numeru kodem SMS („Zapisz zmiany na później”) odblokowuje wszystkie bezpłatne materiały:
+  na landingu zamiast formularza jest „Otwórz materiał”, a zapis na kolejny materiał powstaje przy pierwszym otwarciu
+  (status `unlocked`, zgody przeniesione z wcześniejszego zapisu, tag `lm-<materiał>` w mailingu).
+- Logowanie na innym urządzeniu: **/wiedza/zaloguj** – numer → kod SMS. Strona nie zdradza, czy numer jest w bazie.
+- Panel **Mailing → Automatyzacje**: „Gdy osoba wpisze kod SMS” → e-mail i/lub SMS (włączniki, treści, zmienne
+  `{imie}`, `{liczba}`, `{link}`). Link prowadzi do /wiedza/zaloguj. Uruchamia się tylko przy pierwszym potwierdzeniu;
+  wynik (wysłany / błąd / brak konfiguracji) trafia do dziennika i licznika w panelu.
+- Migracja `030_phone_unlock.sql` (status `unlocked`, indeks po numerze).

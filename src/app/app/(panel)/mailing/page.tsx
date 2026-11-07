@@ -9,6 +9,10 @@ import { system } from "@/lib/db";
 import { env } from "@/lib/env";
 import { ensureDefaults, renderMail, resendConfigured, type StepRow } from "@/lib/mailing";
 import { MailPreviewTip } from "@/components/mail-preview-tip";
+import { AutomationsCard } from "@/components/mailing-automations";
+import { readAutomations } from "@/lib/automations";
+import { customerMailConfigured } from "@/lib/notify";
+import { smsConfigured } from "@/lib/sms";
 
 export const metadata = { title: "Mailing" };
 export const dynamic = "force-dynamic";
@@ -32,6 +36,10 @@ export default async function MailingPage() {
       select count(*)::int as total, count(*) filter (where marketing_consent and unsubscribed_at is null)::int as consent,
              count(*) filter (where unsubscribed_at is not null)::int as unsub, count(*) filter (where purchased_at is not null)::int as buyers from mail_contacts`)[0],
     tags: await tx<{ tag: string; n: number }[]>`select t as tag, count(*)::int as n from mail_contacts, unnest(tags) t group by 1 order by 2 desc, 1 limit 40`,
+    automations: await readAutomations(tx),
+    autoStats: (await tx<{ runs: number; email: number; sms: number }[]>`
+      select count(*)::int as runs, count(*) filter (where meta->>'email' = 'wysłany')::int as email, count(*) filter (where meta->>'sms' = 'wysłany')::int as sms
+      from audit_logs where action = 'automation_sms_verified'`)[0],
   }));
   const resend = resendConfigured();
   const cron = (process.env.CRON_SECRET ?? "").length >= 24;
@@ -55,6 +63,8 @@ export default async function MailingPage() {
           <Card key={l} className="p-4"><p className="text-xs text-muted">{l}</p><p className="mt-1 font-display text-2xl text-ink">{n}</p></Card>
         ))}
       </div>
+
+      <AutomationsCard a={d.automations} stats={d.autoStats} mail={customerMailConfigured()} sms={smsConfigured()} />
 
       {d.sequences.map((q) => {
         const steps = d.steps.filter((x) => x.sequence_id === q.id);

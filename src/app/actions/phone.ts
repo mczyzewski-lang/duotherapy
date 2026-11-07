@@ -2,8 +2,10 @@
 
 // Materiały: „zapisz na później” – przypisanie numeru telefonu kodem SMS, i powrót z linku w e-mailu – potwierdzenie numeru kodem SMS.
 import { cookies } from "next/headers";
-import { CONTENT_COOKIE, contentReader, leadByAccess } from "@/lib/content-access";
-import { checkCode, CONTENT_PENDING_COOKIE, issueCode, pendingToken } from "@/lib/content-phone";
+import { runSmsVerifiedAutomation } from "@/lib/automations";
+import { CONTENT_COOKIE, contentReader, leadByAccess, shortAccess } from "@/lib/content-access";
+import { checkCode, CONTENT_PENDING_COOKIE, issueCode, pendingCookieOpts, pendingToken } from "@/lib/content-phone";
+import { visibleMagnets } from "@/lib/magnet-visibility";
 import { system } from "@/lib/db";
 import { env } from "@/lib/env";
 import { hit } from "@/lib/rate-limit";
@@ -35,16 +37,39 @@ export async function requestBindCode(slug: string, phoneInput: string): Promise
 export async function confirmBindCode(slug: string, code: string): Promise<Done> {
   const m = magnetBySlug(slug);
   if (!m) return { ok: false, error: "Nie znaleziono materiału." };
-  return system(async (tx) => {
+  const res = await system(async (tx) => {
     const who = await contentReader(tx);
     if (!who || !who.magnets.includes(m.id)) return { ok: false as const, error: "Zapis jest dostępny po odebraniu materiału na Twój e-mail." };
     const r = await checkCode(tx, "bind", who.email, code.trim());
     if (!r.ok) return r;
+    const [prev] = await tx<{ n: number; name: string | null }[]>`
+      select count(*) filter (where phone_verified_at is not null)::int as n, max(name) as name from content_leads where lower(email) = ${who.email}`;
     await tx`update content_leads set phone = ${r.phone}, phone_verified_at = now() where lower(email) = ${who.email}`;
     await tx`update mail_contacts set tags = (select array(select distinct unnest(tags || array['znumerem']::text[]))), updated_at = now() where email_lc = ${who.email}`;
     await tx`insert into audit_logs (actor_kind, action, entity, meta) values ('public', 'content_phone_verified', 'content_lead', ${tx.json({ magnet: m.id })})`;
-    return { ok: true as const, masked: maskPhone(r.phone) };
+    return { ok: true as const, masked: maskPhone(r.phone), first: prev.n === 0, email: who.email, name: prev.name, phone: r.phone };
   });
+  if (!res.ok) return res;
+  // automatyzacja „po potwierdzeniu numeru” (panel Mailing) – tylko przy pierwszym potwierdzeniu
+  if (res.first) {
+    const count = (await visibleMagnets()).filter((x) => !x.special).length;
+    await runSmsVerifiedAutomation({ email: res.email, name: res.name, phone: res.phone, count }).catch((e) => console.error("[automatyzacje]", e));
+  }
+  return { ok: true, masked: res.masked };
+}
+
+/** Logowanie numerem (strona /wiedza/zaloguj): numer → kod SMS. Nie zdradza, czy numer jest w bazie. */
+export async function requestLoginCode(phoneInput: string): Promise<Sent> {
+  const phone = normalizePhone(phoneInput);
+  if (!phone) return { ok: false, error: "Podaj polski numer komórkowy, np. 600 100 200." };
+  if (!(await hit(`smsl:${await clientIp()}`, 5, 15 * 60)) || !(await hit(`smsl:${phone}`, 4, 15 * 60)))
+    return { ok: false, error: "Wysłano już kilka kodów. Spróbuj za kilkanaście minut." };
+  const [lead] = await system((tx) => tx<{ email: string; short_code: string }[]>`
+    select lower(email) as email, short_code from content_leads
+    where phone = ${phone} and phone_verified_at is not null and short_code is not null order by created_at desc limit 1`);
+  if (!lead) return { ok: true, masked: maskPhone(phone) };
+  (await cookies()).set(CONTENT_PENDING_COOKIE, shortAccess(lead.short_code), pendingCookieOpts);
+  return system((tx) => issueCode(tx, "access", lead.email, phone));
 }
 
 /** Powrót z linku w e-mailu: zapis czekający na potwierdzenie numeru (ciasteczko z /otworz). */

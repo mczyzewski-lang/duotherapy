@@ -71,7 +71,7 @@ test("menu Wiedza: desktop (klik, Esc) i telefon; strona zbiorcza z filtrem", as
 
   await page.goto("/wiedza");
   await page.waitForLoadState("networkidle");
-  const cards = page.locator('main a[href^="/wiedza/"]:not([href^="/wiedza/artykuly"])');
+  const cards = page.locator('main a[href^="/wiedza/"]:not([href^="/wiedza/artykuly"]):not([href="/wiedza/zaloguj"])');
   await expect(cards).toHaveCount(9);
   await page.getByTestId("magnets-more").click();
   await expect(cards).toHaveCount(27);

@@ -1,4 +1,5 @@
 // Strona zbiorcza „Wiedza” – bezpłatne materiały w trzech kategoriach (filtr bez przeładowania, ?kategoria= z menu).
+import { ShieldCheck } from "lucide-react";
 import type { Metadata } from "next";
 import { LazyList } from "@/components/articles/lazy-list";
 import { pageMeta } from "@/lib/seo";
@@ -7,6 +8,8 @@ import Link from "next/link";
 import { ArticleCard } from "@/components/articles/article";
 import { articleImageMap, heroKey } from "@/lib/article-images";
 import { KnowledgeGrid } from "@/components/knowledge/grid";
+import { contentReader } from "@/lib/content-access";
+import { system } from "@/lib/db";
 import { ARTICLES, ARTICLES_PATH } from "@/content/articles";
 import { coverPhotoMap } from "@/lib/cover-photos";
 import { SiteFooter } from "@/components/site/footer";
@@ -27,6 +30,7 @@ export const metadata: Metadata = pageMeta({
 
 export default async function KnowledgeHub({ searchParams }: { searchParams: Promise<{ kategoria?: string }> }) {
   const { kategoria } = await searchParams;
+  const unlocked = !!(await system((tx) => contentReader(tx)).catch(() => null))?.unlocked;
   const s = await getSettings();
   const photos = await coverPhotoMap();
   const images = await articleImageMap();
@@ -40,6 +44,15 @@ export default async function KnowledgeHub({ searchParams }: { searchParams: Pro
         <p className="mt-4 max-w-2xl text-[17px] leading-relaxed text-ink-soft">
           Bezpłatne poradniki, pytania i ćwiczenia przygotowane przez DUO. Wybierz temat, który jest teraz dla Ciebie ważny.
         </p>
+        {unlocked ? (
+          <p className="mt-6 inline-flex items-center gap-2 rounded-full bg-sage-soft px-4 py-2 text-sm font-medium text-forest" data-testid="hub-unlocked">
+            <ShieldCheck size={16} aria-hidden /> Masz dostęp do wszystkich bezpłatnych materiałów – otwierasz je bez podawania e-maila.
+          </p>
+        ) : (
+          <p className="mt-4 text-sm text-muted">
+            Masz już zapisany numer w materiale DUO? <Link href="/wiedza/zaloguj" className="font-medium text-forest underline">Zaloguj się kodem SMS</Link> i otwieraj wszystkie materiały bez e-maila.
+          </p>
+        )}
         <KnowledgeGrid photos={photos} hidden={[...(await hiddenMagnets())]} initialCategory={kategoria} />
 
         {/* ARTYKUŁY – pod materiałami */}

@@ -29,7 +29,10 @@ export const CATEGORY_LABEL: Record<Category, string> = {
   trudne: "Trudne sytuacje",
 };
 
-export type IconKey = "roads" | "questions" | "crisis" | "report" | "days" | "talk" | "solo" | "loop" | "betrayal" | "separation";
+export type IconKey =
+  | "roads" | "questions" | "crisis" | "report" | "days" | "talk" | "solo" | "loop" | "betrayal" | "separation"
+  | "money" | "home" | "together" | "family" | "needs" | "silence" | "kids" | "boundary" | "signals" | "therapy"
+  | "hourglass" | "distance" | "stop" | "repair" | "three" | "scale" | "flag";
 
 export interface LeadMagnet {
   /** Identyfikator nieopisowy (do analityki i CRM – bez treści o problemie). */

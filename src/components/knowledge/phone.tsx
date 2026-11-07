@@ -7,7 +7,7 @@ import { Check, Loader2, Lock, MessageSquare, ShieldCheck, Smartphone, X } from 
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { confirmAccessCode, confirmBindCode, requestAccessCode, requestBindCode } from "@/app/actions/phone";
+import { confirmAccessCode, confirmBindCode, requestAccessCode, requestBindCode, requestLoginCode } from "@/app/actions/phone";
 import { track } from "@/lib/track-client";
 
 const input = "min-h-12 w-full rounded-2xl bg-white px-4 text-[17px] text-ink ring-1 ring-sand focus:outline-none focus:ring-2 focus:ring-forest";
@@ -25,8 +25,28 @@ function CodeInput({ value, onChange, autoFocus }: { value: string; onChange: (v
 const DemoNote = ({ code }: { code?: string }) =>
   code ? <p className="rounded-xl bg-clay-soft px-3 py-2 text-xs text-ink" data-testid="sms-demo">Tryb demo – SMS nie został wysłany. Kod: <b className="font-mono">{code}</b></p> : null;
 
+/** „Pokaż jakie” – rozwijana lista nazw materiałów (w ramce, mieści się na telefonie). */
+function UnlockList({ names }: { names: string[] }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <>
+      <button type="button" onClick={() => setOpen((v) => !v)} aria-expanded={open} className="font-semibold text-forest underline underline-offset-2" data-testid="unlock-show">
+        {open ? "Ukryj" : "Pokaż jakie"}
+      </button>
+      {open && (
+        <span role="region" aria-label="Lista bezpłatnych materiałów" className="mt-2 block max-h-52 w-full basis-full overflow-y-auto rounded-2xl bg-white p-3 text-left text-[13px] leading-snug text-ink-soft shadow-soft ring-1 ring-sand" data-testid="unlock-list">
+          <span className="mb-1.5 block text-[10.5px] font-semibold uppercase tracking-[0.16em] text-clay">Bezpłatne materiały ({names.length})</span>
+          {names.map((x) => (
+            <span key={x} className="flex gap-2 py-0.5"><Check size={14} className="mt-0.5 shrink-0 text-forest" aria-hidden />{x}</span>
+          ))}
+        </span>
+      )}
+    </>
+  );
+}
+
 /** Przycisk + okno: numer telefonu → kod SMS → odpowiedzi zapisane i chronione kodem. */
-export function SaveForLater({ slug, n, initialMasked }: { slug: string; n: number; initialMasked: string | null }) {
+export function SaveForLater({ slug, n, initialMasked, unlockList = [] }: { slug: string; n: number; initialMasked: string | null; unlockList?: string[] }) {
   const [open, setOpen] = useState(false);
   const [masked, setMasked] = useState(initialMasked);
   const [step, setStep] = useState<"phone" | "code" | "done">("phone");
@@ -86,6 +106,12 @@ export function SaveForLater({ slug, n, initialMasked }: { slug: string; n: numb
                 <p className="mt-2 text-[15px] leading-relaxed text-ink-soft">
                   Wrócisz przez link z e-maila – zanim zobaczysz odpowiedzi, potwierdzisz numer {masked} kodem z SMS-a.
                 </p>
+                {unlockList.length > 1 && (
+                  <p className="mt-3 rounded-2xl bg-sage-soft/60 p-3.5 text-[14.5px] leading-relaxed text-ink ring-1 ring-sage/30" data-testid="unlock-done">
+                    <b>Odblokowane:</b> wszystkie {unlockList.length} bezpłatne materiały DUO – otwierasz je bez podawania e-maila. <UnlockList names={unlockList} />
+                  </p>
+                )}
+                {unlockList.length > 1 && <a href="/wiedza" className="mt-3 block text-center text-sm font-semibold text-forest underline">Zobacz wszystkie materiały</a>}
                 <button type="button" onClick={() => setOpen(false)} className="mt-5 min-h-12 w-full rounded-full bg-forest px-6 text-[15px] font-semibold text-white">Wracam do uzupełniania</button>
               </div>
             ) : (
@@ -95,6 +121,12 @@ export function SaveForLater({ slug, n, initialMasked }: { slug: string; n: numb
                 <p className="mt-2 text-[15px] leading-relaxed text-ink-soft">
                   Z uwagi na wrażliwość tych danych dostęp do zapisanych odpowiedzi będzie chroniony kodem SMS. Podaj numer telefonu – gdy wrócisz przez link z e-maila, wyślemy na niego kod.
                 </p>
+                {unlockList.length > 1 && (
+                  <p className="mt-3 flex flex-wrap items-center gap-x-1.5 gap-y-1 rounded-2xl bg-sage-soft/60 p-3.5 text-[14.5px] leading-relaxed text-ink ring-1 ring-sage/30" data-testid="unlock-info">
+                    <span><b>Bonus:</b> po potwierdzeniu numeru od razu masz dostęp do wszystkich {unlockList.length} bezpłatnych materiałów DUO.</span>
+                    <UnlockList names={unlockList} />
+                  </p>
+                )}
                 {step === "phone" ? (
                   <form className="mt-5 space-y-3" onSubmit={(e) => { e.preventDefault(); void send(); }}>
                     <label htmlFor="sfl-phone" className="block text-sm font-medium text-ink">Numer telefonu</label>
@@ -190,5 +222,59 @@ export function PhoneAccess({ slug, masked }: { slug: string; masked: string }) 
         </form>
       )}
     </div>
+  );
+}
+
+/** Logowanie numerem telefonu (/wiedza/zaloguj): numer → kod SMS → dostęp do wszystkich bezpłatnych materiałów. */
+export function PhoneLogin({ count }: { count: number }) {
+  const router = useRouter();
+  const [step, setStep] = useState<"phone" | "code">("phone");
+  const [phone, setPhone] = useState("");
+  const [code, setCode] = useState("");
+  const [demo, setDemo] = useState<string>();
+  const [err, setErr] = useState("");
+  const [busy, setBusy] = useState(false);
+
+  const send = async () => {
+    setBusy(true); setErr("");
+    const r = await requestLoginCode(phone);
+    setBusy(false);
+    if (!r.ok) return setErr(r.error);
+    setDemo(r.demoCode); setStep("code"); setCode("");
+  };
+  const confirm = async () => {
+    setBusy(true); setErr("");
+    const r = await confirmAccessCode(code);
+    if (!r.ok) { setBusy(false); return setErr(r.error); }
+    router.replace("/wiedza?dostep=1");
+  };
+
+  return step === "phone" ? (
+    <form className="space-y-3" onSubmit={(e) => { e.preventDefault(); void send(); }} data-testid="phone-login">
+      <label htmlFor="pl-phone" className="block text-sm font-medium text-ink">Numer telefonu</label>
+      <div className="flex items-center gap-2">
+        <span className="inline-flex min-h-12 items-center rounded-2xl bg-linen px-3 text-ink-soft ring-1 ring-sand">+48</span>
+        <input id="pl-phone" className={input} type="tel" inputMode="tel" autoComplete="tel-national" placeholder="600 100 200" value={phone} onChange={(e) => setPhone(e.target.value)} required data-testid="pl-phone" />
+      </div>
+      {err && <p role="alert" className="text-sm text-alert">{err}</p>}
+      <button type="submit" disabled={busy} className="flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-clay px-6 text-[15px] font-semibold text-white disabled:opacity-60">
+        {busy ? <Loader2 size={17} className="animate-spin" aria-hidden /> : <MessageSquare size={17} aria-hidden />} Wyślij kod SMS
+      </button>
+      <p className="text-center text-xs text-muted">Po zalogowaniu masz dostęp do wszystkich {count} bezpłatnych materiałów i swoich zapisanych odpowiedzi.</p>
+    </form>
+  ) : (
+    <form className="space-y-3" onSubmit={(e) => { e.preventDefault(); void confirm(); }}>
+      <p className="rounded-2xl bg-linen/70 p-3.5 text-sm leading-relaxed text-ink-soft ring-1 ring-sand">
+        Jeśli ten numer jest zapisany w DUO, wysłaliśmy na niego 4-cyfrowy kod. Nie przyszedł? Sprawdź numer albo odbierz dowolny materiał i zapisz w nim numer telefonu.
+      </p>
+      <label className="block text-sm font-medium text-ink">Kod z SMS-a (4 cyfry)</label>
+      <CodeInput value={code} onChange={setCode} autoFocus />
+      <DemoNote code={demo} />
+      {err && <p role="alert" className="text-sm text-alert">{err}</p>}
+      <button type="submit" disabled={busy || code.length !== 4} className="flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-forest px-6 text-[15px] font-semibold text-white disabled:opacity-60" data-testid="pl-confirm">
+        {busy && <Loader2 size={17} className="animate-spin" aria-hidden />} Zaloguj się
+      </button>
+      <button type="button" onClick={() => { setStep("phone"); setErr(""); }} className="w-full text-center text-sm text-forest underline">Zmień numer / wyślij ponownie</button>
+    </form>
   );
 }
