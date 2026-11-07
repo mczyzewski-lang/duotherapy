@@ -7,15 +7,15 @@ import type { GraphicKey } from "@/content/articles/types";
 
 function Frame({ id, title, caption, children }: { id: string; title: string; caption: string; children: React.ReactNode }) {
   return (
-    <figure className="relative my-8 overflow-hidden rounded-[1.6rem] bg-gradient-to-br from-white via-ivory to-linen p-5 shadow-soft ring-1 ring-sand sm:p-7" aria-labelledby={`${id}-t`} data-testid="infographic">
+    <figure className="soft-inset relative my-10 overflow-hidden rounded-[1.6rem] p-5 sm:p-7" aria-labelledby={`${id}-t`} data-testid="infographic">
       {/* logo w narożniku */}
-      <span className="absolute right-4 top-4 flex items-center gap-1.5 rounded-full bg-white/80 px-2.5 py-1 ring-1 ring-sand" aria-hidden>
+      <span className="absolute right-4 top-4 flex items-center gap-1.5 rounded-full bg-white/80 px-2.5 py-1" aria-hidden>
         <BrandSymbol id={`ig-${id}`} className="h-3.5 w-auto" />
         <span className="font-wordmark text-[12px] font-medium text-forest">DUO®</span>
       </span>
       <p id={`${id}-t`} className="max-w-[80%] font-display text-[1.25rem] leading-snug text-ink sm:text-[1.45rem]">{title}</p>
       <div className="mt-5">{children}</div>
-      <figcaption className="mt-5 border-t border-sand pt-3 text-[13px] leading-relaxed text-muted">{caption}</figcaption>
+      <figcaption className="mt-5 border-t border-sand/60 pt-3 text-[13px] leading-relaxed text-muted">{caption}</figcaption>
     </figure>
   );
 }

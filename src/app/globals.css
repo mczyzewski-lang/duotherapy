@@ -206,3 +206,26 @@ path.map-line[stroke-dasharray="6 7"] { stroke-dasharray: 6 7; stroke-dashoffset
 @media (prefers-reduced-motion: reduce) {
   [class*="animate-[fadeUp"] { animation: none !important; }
 }
+
+/* Infografiki i ilustracje w artykułach: delikatny wewnętrzny cień bez obramowania – część tekstu, nie osobny kontener */
+.soft-inset {
+  background: #fbf9f5;
+  box-shadow: inset 10px 10px 30px rgba(196, 176, 150, 0.32), inset -10px -10px 30px rgba(255, 255, 255, 0.85);
+}
+.soft-inset-overlay {
+  box-shadow: inset 10px 10px 30px rgba(196, 176, 150, 0.3), inset -10px -10px 26px rgba(255, 255, 255, 0.55);
+}
+
+/* Miękkie wygaszanie krawędzi grafik (z przedrostkiem – Safari / starsze Chromium) */
+.mask-fade-bottom {
+  -webkit-mask-image: linear-gradient(to bottom, #000 80%, transparent);
+  mask-image: linear-gradient(to bottom, #000 80%, transparent);
+}
+.mask-fade-y {
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 10%, #000 90%, transparent);
+  mask-image: linear-gradient(to bottom, transparent, #000 10%, #000 90%, transparent);
+}
+.mask-fade-preview {
+  -webkit-mask-image: linear-gradient(to bottom, black 30%, transparent 100%);
+  mask-image: linear-gradient(to bottom, black 30%, transparent 100%);
+}

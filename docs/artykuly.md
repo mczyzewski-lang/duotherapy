@@ -38,6 +38,8 @@ W tekście: `**pogrubienie**` i `[tekst linku](/adres)`. **Każdy artykuł linku
 - **Spójne postacie (maskotki DUO):** `ART_STYLE` w `src/lib/article-images.ts` opisuje stały projekt postaci – zaokrąglone maskotki
   (para: zielona i terakotowa, okrągłe głowy bez włosów, oczy-kropki, gesty zamiast szczegółów). W promptach artykułów pisz „characters”.
   Zmiana stylu → podbij `ART_STYLE_VERSION`; panel oznaczy grafiki z innej wersji jako „stary styl” i pozwoli je odświeżyć hurtowo.
+- **Odstępy między kontenerami:** renderer sam układa bloki (`src/content/articles/layout.ts`) – między infografiką, ilustracją, blokiem z materiałem
+  i ramką zawsze min. 3 zdania tekstu; kontener, który wypadłby za blisko, przesuwa się o akapit niżej (ramek nie przesuwamy). Pilnuje test.
 - Przed dodaniem do rejestru sprawdź plik: `npx tsx scripts/check-article.ts src/content/articles/<slug>.ts` (te same zasady co test + typografia).
 - Autorka wszystkich artykułów: **Klaudia Bosek** (`AUTHOR` w `src/content/articles/index.ts`) – widoczna pod tytułem, w ramce na końcu i w danych strukturalnych.
 

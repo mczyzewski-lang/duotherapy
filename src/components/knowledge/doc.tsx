@@ -103,7 +103,7 @@ export function Cover({ m, mode, compact, hero, photo, idSuffix = "" }: { m: Lea
               src={photoSrc}
               alt=""
               loading={hero ? "eager" : "lazy"}
-              className="absolute inset-0 h-full w-full object-cover object-center [mask-image:linear-gradient(to_bottom,transparent,#000_10%,#000_90%,transparent)]"
+              className="absolute inset-0 h-full w-full object-cover object-center mask-fade-y"
             />
           </div>
           <p className={clsx(

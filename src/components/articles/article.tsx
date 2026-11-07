@@ -11,6 +11,7 @@ import { articleHref } from "@/content/articles";
 import type { Article, ArticleBlock } from "@/content/articles/types";
 import { magnetBySlug } from "@/knowledge/registry";
 import { Infographic } from "./infographics";
+import { layoutBlocks } from "@/content/articles/layout";
 
 /** **pogrubienie** i [tekst](/adres) – linki wewnętrzne przez next/link. */
 export function Rich({ text, hidden = [] }: { text: string; hidden?: string[] }) {
@@ -67,25 +68,27 @@ export function MagnetCta({ slug, hook, photo, idSuffix, side }: { slug: string;
 /** Ilustracja-infografika z OpenAI (albo spokojny zastępnik, dopóki nie zostanie wygenerowana) + podpis z ideą. */
 export function ArtFigure({ id, title, alt, caption, src }: { id: string; title: string; alt: string; caption: string; src?: string }) {
   return (
-    <figure className="relative my-8 overflow-hidden rounded-[1.6rem] bg-white shadow-soft ring-1 ring-sand" aria-labelledby={`${id}-t`} data-testid="art-figure">
-      <div className="relative aspect-[3/2] bg-gradient-to-br from-linen via-ivory to-sage-soft/60">
+    <figure className="soft-inset relative my-10 overflow-hidden rounded-[1.6rem]" aria-labelledby={`${id}-t`} data-testid="art-figure">
+      <div className="relative aspect-[3/2]">
         {src ? (
-          <img src={src} alt={alt} loading="lazy" decoding="async" width={1536} height={1024} className="h-full w-full object-cover" />
+          <img src={src} alt={alt} loading="lazy" decoding="async" width={1536} height={1024} className="h-full w-full object-cover mask-fade-bottom" />
         ) : (
           <div className="grid h-full place-items-center p-8 text-center" role="img" aria-label={alt}>
             <span className="grid h-14 w-14 place-items-center rounded-2xl bg-white/80 text-clay ring-1 ring-sand"><Sparkles size={24} aria-hidden /></span>
           </div>
         )}
         {/* logo w narożniku */}
-        <span className="absolute right-3 top-3 flex items-center gap-1.5 rounded-full bg-white/90 px-2.5 py-1 shadow-soft ring-1 ring-sand" aria-hidden>
+        <span className="absolute right-3 top-3 flex items-center gap-1.5 rounded-full bg-white/80 px-2.5 py-1" aria-hidden>
           <BrandSymbol id={`af-${id}`} className="h-3.5 w-auto" />
           <span className="font-wordmark text-[12px] font-medium text-forest">DUO®</span>
         </span>
       </div>
-      <figcaption className="p-5 sm:p-6">
+      <figcaption className="px-5 pb-6 pt-4 sm:px-7 sm:pb-7">
         <p id={`${id}-t`} className="font-display text-[1.2rem] leading-snug text-ink">{title}</p>
         <p className="mt-1.5 text-[15px] leading-relaxed text-ink-soft">{caption}</p>
       </figcaption>
+      {/* jeden wewnętrzny cień na całą figurę (grafika + podpis) – bez szwu, bez obramowania */}
+      <span className="soft-inset-overlay pointer-events-none absolute inset-0 z-10 rounded-[1.6rem]" aria-hidden />
     </figure>
   );
 }
@@ -108,7 +111,7 @@ export function ArticleBody({ a, photos, images = {}, hidden = [] }: { a: Articl
   let cta = 0;
   return (
     <div className="article-body">
-      {a.blocks.map((b: ArticleBlock, i) => {
+      {layoutBlocks(a.blocks).map((b: ArticleBlock, i) => {
         switch (b.t) {
           case "h2":
             return <h2 key={i} id={b.id} className="mt-12 scroll-mt-24 font-display text-[1.7rem] leading-tight text-ink sm:text-[2rem]">{b.text}</h2>;

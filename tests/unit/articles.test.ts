@@ -56,4 +56,21 @@ describe("artykuły", () => {
       expect(relatedArticles(a).length, a.slug).toBeGreaterThanOrEqual(2);
     }
   });
+
+  it("układ: między kontenerami (infografika, ilustracja, materiał, ramka) min. 3 zdania tekstu; żaden blok nie ginie", async () => {
+    const { isContainer, layoutBlocks, sentencesIn, MIN_SENTENCES_BETWEEN } = await import("@/content/articles/layout");
+    for (const a of ARTICLES) {
+      const out = layoutBlocks(a.blocks);
+      expect(out.length, a.slug).toBe(a.blocks.length);
+      expect(new Set(out), a.slug).toEqual(new Set(a.blocks));
+      let since = Number.POSITIVE_INFINITY;
+      for (const b of out) {
+        if (isContainer(b)) {
+          expect(since, `${a.slug}: ${b.t} za blisko poprzedniego kontenera`).toBeGreaterThanOrEqual(MIN_SENTENCES_BETWEEN);
+          since = 0;
+        } else since += sentencesIn(b);
+      }
+      expect(out[out.length - 1].t, a.slug).toBe("mapa");
+    }
+  });
 });
