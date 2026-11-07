@@ -283,7 +283,7 @@ export default async function Landing() {
                       {v.price ? (
                         <p className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
                           <span className="font-display text-[2.2rem] leading-none text-ink">{v.price}</span>
-                          {v.once && <span className="rounded-full bg-white px-2.5 py-1 text-[12px] font-semibold text-forest ring-1 ring-sand" data-testid={v.key === "solo" ? "price-once" : undefined}>jednorazowo</span>}
+                          {v.once && <span className="text-[13px] text-muted" data-testid={v.key === "solo" ? "price-once" : undefined}>jednorazowo</span>}
                         </p>
                       ) : (
                         <p className="text-[15px] font-medium text-ink">Cenę omówisz z konsultantem</p>
