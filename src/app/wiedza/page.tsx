@@ -12,6 +12,7 @@ import { coverPhotoMap } from "@/lib/cover-photos";
 import { SiteFooter } from "@/components/site/footer";
 import { SiteHeader } from "@/components/site/header";
 import { getSettings } from "@/lib/settings";
+import { hiddenMagnets } from "@/lib/magnet-visibility";
 
 // treść zależy od ustawień w bazie – renderowanie przy żądaniu (baza nie jest dostępna podczas budowania)
 export const dynamic = "force-dynamic";
@@ -38,7 +39,7 @@ export default async function KnowledgeHub() {
         <p className="mt-4 max-w-2xl text-[17px] leading-relaxed text-ink-soft">
           Bezpłatne poradniki, pytania i ćwiczenia przygotowane przez DUO. Wybierz temat, który jest teraz dla Ciebie ważny.
         </p>
-        <KnowledgeGrid photos={photos} />
+        <KnowledgeGrid photos={photos} hidden={[...(await hiddenMagnets())]} />
 
         {/* ARTYKUŁY – pod materiałami */}
         <section className="mt-20" aria-labelledby="art-h">

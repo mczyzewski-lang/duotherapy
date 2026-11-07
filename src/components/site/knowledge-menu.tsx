@@ -12,10 +12,10 @@ import { MagnetIcon } from "@/components/knowledge/icons";
 import { PATHS } from "@/content/paths";
 import { CATEGORIES } from "@/knowledge/registry";
 
-function KnowledgeItems({ onPick, dense }: { onPick?: () => void; dense?: boolean }) {
+function KnowledgeItems({ onPick, dense, hidden = [] }: { onPick?: () => void; dense?: boolean; hidden?: string[] }) {
   return (
     <>
-      {CATEGORIES.map((c) => (
+      {CATEGORIES.map((c) => ({ ...c, items: c.items.filter((m) => !hidden.includes(m.slug)) })).filter((c) => c.items.length).map((c) => (
         <div key={c.key}>
           <p className="px-2 text-[10.5px] font-semibold uppercase tracking-[0.18em] text-clay">{c.label}</p>
           <ul className={clsx("mt-2", dense ? "space-y-0.5" : "space-y-1")}>
@@ -133,12 +133,12 @@ export function OfferMenu() {
   return <Dropdown label="Jak pomagamy">{(close) => <OfferItems onPick={close} />}</Dropdown>;
 }
 
-export function KnowledgeMenu() {
+export function KnowledgeMenu({ hidden = [] }: { hidden?: string[] } = {}) {
   return (
     <Dropdown label="Wiedza" wide>
       {(close) => (
         <>
-          <div className="grid grid-cols-3 gap-5"><KnowledgeItems onPick={close} /></div>
+          <div className="grid grid-cols-3 gap-5"><KnowledgeItems onPick={close} hidden={hidden} /></div>
           <div className="mt-4 flex items-center justify-between border-t border-sand pt-3">
             <p className="text-xs text-muted">Bezpłatne poradniki, pytania i ćwiczenia DUO</p>
             <span className="flex gap-5">
@@ -153,7 +153,7 @@ export function KnowledgeMenu() {
 }
 
 /** Menu hamburgerowe: „Jak pomagamy” (rozwinięte), „Wiedza”, „Kto pomaga”, „Pytania”. */
-export function MobileMenu({ always, initialWiedza = false }: { always?: boolean; initialWiedza?: boolean } = {}) {
+export function MobileMenu({ always, initialWiedza = false, hidden = [] }: { always?: boolean; initialWiedza?: boolean; hidden?: string[] } = {}) {
   const [open, setOpen] = useState(false);
   const [offer, setOffer] = useState(!initialWiedza);
   const [wiedza, setWiedza] = useState(initialWiedza);
@@ -190,7 +190,7 @@ export function MobileMenu({ always, initialWiedza = false }: { always?: boolean
               {section("Jak pomagamy", offer, () => setOffer((x) => !x), <OfferItems onPick={close} dense />)}
               {section("Wiedza", wiedza, () => setWiedza((x) => !x), (
                 <>
-                  <KnowledgeItems onPick={close} dense />
+                  <KnowledgeItems onPick={close} dense hidden={hidden} />
                   <Link href="/wiedza" onClick={close} className="block px-2 text-[15px] font-semibold text-forest">Zobacz wszystkie materiały →</Link>
                   <Link href="/wiedza/artykuly" onClick={close} className="block px-2 text-[15px] font-semibold text-forest">Artykuły o terapii par →</Link>
                 </>

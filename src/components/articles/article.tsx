@@ -13,7 +13,7 @@ import { magnetBySlug } from "@/knowledge/registry";
 import { Infographic } from "./infographics";
 
 /** **pogrubienie** i [tekst](/adres) – linki wewnętrzne przez next/link. */
-export function Rich({ text }: { text: string }) {
+export function Rich({ text, hidden = [] }: { text: string; hidden?: string[] }) {
   const parts = text.split(/(\*\*[^*]+\*\*|\[[^\]]+\]\([^)]+\))/g).filter(Boolean);
   return (
     <>
@@ -23,6 +23,9 @@ export function Rich({ text }: { text: string }) {
         const l = p.match(/^\[([^\]]+)\]\(([^)]+)\)$/);
         if (l) {
           const inner = l[1].split(/(\*\*[^*]+\*\*)/g).map((x, j) => (x.startsWith("**") ? <strong key={j}>{x.slice(2, -2)}</strong> : <Fragment key={j}>{x}</Fragment>));
+          // link do materiału ukrytego w panelu → zwykły tekst (bez prowadzenia do 404)
+          const target = l[2].match(/^\/wiedza\/([a-z0-9-]+)(?:[#?].*)?$/)?.[1];
+          if (target && hidden.includes(target)) return <Fragment key={i}>{inner}</Fragment>;
           return l[2].startsWith("/") ? (
             <Link key={i} href={l[2]} className="font-medium text-forest underline decoration-sand-dark underline-offset-[3px] hover:decoration-forest">{inner}</Link>
           ) : (
@@ -98,7 +101,10 @@ export function MapaSlim() {
   );
 }
 
-export function ArticleBody({ a, photos, images = {} }: { a: Article; photos: Record<string, string>; images?: Record<string, string> }) {
+export function ArticleBody({ a, photos, images = {}, hidden = [] }: { a: Article; photos: Record<string, string>; images?: Record<string, string>; hidden?: string[] }) {
+  // kontener z materiałem ukrytym w panelu → zastępujemy innym widocznym materiałem artykułu (bez powtórzeń), a gdy brak – pomijamy
+  const inlineUsed = new Set(a.blocks.flatMap((b) => (b.t === "cta" && !hidden.includes(b.magnet) ? [b.magnet] : [])));
+  const spare = a.magnets.filter((x) => !hidden.includes(x) && !inlineUsed.has(x));
   let cta = 0;
   return (
     <div className="article-body">
@@ -109,7 +115,7 @@ export function ArticleBody({ a, photos, images = {} }: { a: Article; photos: Re
           case "h3":
             return <h3 key={i} className="mt-7 font-display text-[1.3rem] text-forest">{b.text}</h3>;
           case "p":
-            return <p key={i} className="mt-4 text-[17px] leading-[1.75] text-ink-soft"><Rich text={b.text} /></p>;
+            return <p key={i} className="mt-4 text-[17px] leading-[1.75] text-ink-soft"><Rich text={b.text} hidden={hidden} /></p>;
           case "list": {
             const L = b.ordered ? "ol" : "ul";
             return (
@@ -117,14 +123,14 @@ export function ArticleBody({ a, photos, images = {} }: { a: Article; photos: Re
                 {b.items.map((x, j) => (
                   <li key={j} className={b.ordered ? "pl-1" : "flex gap-3"}>
                     {!b.ordered && <span className="mt-[0.7em] h-1.5 w-1.5 shrink-0 rounded-full bg-clay" aria-hidden />}
-                    <span><Rich text={x} /></span>
+                    <span><Rich text={x} hidden={hidden} /></span>
                   </li>
                 ))}
               </L>
             );
           }
           case "quote":
-            return <blockquote key={i} className="mt-6 border-l-2 border-clay pl-5 font-display text-[1.35rem] italic leading-snug text-ink"><Rich text={b.text} /></blockquote>;
+            return <blockquote key={i} className="mt-6 border-l-2 border-clay pl-5 font-display text-[1.35rem] italic leading-snug text-ink"><Rich text={b.text} hidden={hidden} /></blockquote>;
           case "callout": {
             const safety = b.tone === "safety";
             const Icon = safety ? ShieldAlert : Info;
@@ -133,15 +139,21 @@ export function ArticleBody({ a, photos, images = {} }: { a: Article; photos: Re
                 <Icon size={20} className={clsx("mt-0.5 shrink-0", safety ? "text-alert" : "text-forest")} aria-hidden />
                 <div>
                   <p className="font-semibold text-ink">{b.title}</p>
-                  <p className="mt-1 text-[15.5px] leading-relaxed text-ink-soft"><Rich text={b.text} /></p>
+                  <p className="mt-1 text-[15.5px] leading-relaxed text-ink-soft"><Rich text={b.text} hidden={hidden} /></p>
                 </div>
               </div>
             );
           }
           case "figure":
             return <Infographic key={i} id={`${a.slug}-${i}`} graphic={b.graphic} title={b.title} caption={b.caption} />;
-          case "cta":
+          case "cta": {
+            if (hidden.includes(b.magnet)) {
+              const sub = spare.shift();
+              const sm = sub ? magnetBySlug(sub) : null;
+              return sm ? <MagnetCta key={i} slug={sm.slug} hook={sm.menuDesc} photo={photos[sm.slug]} idSuffix={`-a${cta++}`} /> : null;
+            }
             return <MagnetCta key={i} slug={b.magnet} hook={b.hook} photo={photos[b.magnet]} idSuffix={`-a${cta++}`} />;
+          }
           case "art":
             return <ArtFigure key={i} id={`${a.slug}-${b.key}`} title={b.title} alt={b.alt} caption={b.caption} src={images[`${a.slug}--${b.key}`]} />;
           case "mapa":

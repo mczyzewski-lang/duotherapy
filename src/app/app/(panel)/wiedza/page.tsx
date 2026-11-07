@@ -4,6 +4,7 @@ import { Badge, Card, PageTitle } from "@/components/ui";
 import { asStaff, requireStaff } from "@/lib/auth";
 import { MAGNETS } from "@/knowledge/registry";
 import { CoverAdmin } from "@/components/knowledge/cover-admin";
+import { MagnetVisibilityAdmin } from "@/components/knowledge/visibility-admin";
 import { ArticleImagesAdmin } from "@/components/articles/images-admin";
 import { customerMailConfigured } from "@/lib/notify";
 
@@ -59,6 +60,7 @@ export default async function KnowledgeAdmin({ searchParams }: { searchParams: P
         <Badge tone="forest"><a href="/app/mailing" className="underline">Nurturing e-mailowy → Mailing</a></Badge>
       </div>
 
+      <MagnetVisibilityAdmin />
       <CoverAdmin />
       <ArticleImagesAdmin />
 

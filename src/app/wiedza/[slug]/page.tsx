@@ -23,6 +23,7 @@ import { SiteHeader } from "@/components/site/header";
 import { env } from "@/lib/env";
 import { getSettings } from "@/lib/settings";
 import { MAGNETS, magnetBySlug, mapaHref } from "@/knowledge/registry";
+import { hiddenMagnets } from "@/lib/magnet-visibility";
 
 // formularz i zgody zależą od ustawień w bazie – renderowanie przy żądaniu (nieznany adres → 404)
 export const dynamic = "force-dynamic";
@@ -36,11 +37,13 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 export default async function MagnetLanding({ params }: { params: Promise<{ slug: string }> }) {
   const m = magnetBySlug((await params).slug);
   if (!m) notFound();
+  const hidden = await hiddenMagnets();
+  if (hidden.has(m.slug)) notFound(); // ukryty w panelu
   const s = await getSettings();
   const photos = await coverPhotoMap();
   const images = await articleImageMap();
   const articles = articlesForMagnet(m.slug);
-  const related = MAGNETS.filter((x) => x.slug !== m.slug && x.category === m.category).slice(0, 3);
+  const related = MAGNETS.filter((x) => x.slug !== m.slug && x.category === m.category && !hidden.has(x.slug)).slice(0, 3);
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "LearningResource",

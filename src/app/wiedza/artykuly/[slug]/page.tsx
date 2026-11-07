@@ -17,6 +17,7 @@ import { coverPhotoMap } from "@/lib/cover-photos";
 import { env } from "@/lib/env";
 import { getSettings } from "@/lib/settings";
 import { magnetBySlug } from "@/knowledge/registry";
+import { hiddenMagnets } from "@/lib/magnet-visibility";
 
 export const dynamic = "force-dynamic";
 
@@ -46,9 +47,10 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
   const heroSrc = images[heroKey(a.slug)];
   const toc = a.blocks.filter((b) => b.t === "h2") as { id: string; text: string }[];
   const related = relatedArticles(a);
-  const magnets = a.magnets.map(magnetBySlug).filter((m) => !!m);
+  const hidden = await hiddenMagnets();
+  const magnets = a.magnets.map(magnetBySlug).filter((m): m is NonNullable<typeof m> => !!m && !hidden.has(m.slug));
   // boczny panel poleca materiał, którego nie ma już w kontenerach w treści (bez powtórzeń obok siebie)
-  const inline = new Set(a.blocks.flatMap((b) => (b.t === "cta" ? [b.magnet] : [])));
+  const inline = new Set(a.blocks.flatMap((b) => (b.t === "cta" && !hidden.has(b.magnet) ? [b.magnet] : [])));
   const main = magnets.find((m) => !inline.has(m.slug)) ?? magnets[0];
   const url = `${env.appUrl}${articleHref(a.slug)}`;
   const jsonLd = [
@@ -124,7 +126,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
               <ol className="mt-3 space-y-2 text-[15px]">{toc.map((h, i) => <li key={h.id}><a href={`#${h.id}`} className="text-forest hover:underline">{i + 1}. {h.text}</a></li>)}</ol>
             </details>
 
-            <ArticleBody a={a} photos={photos} images={images} />
+            <ArticleBody a={a} photos={photos} images={images} hidden={[...hidden]} />
 
             {/* autorka */}
             <section className="mt-12 flex gap-4 rounded-2xl bg-white p-5 ring-1 ring-sand" aria-label="Autorka artykułu">

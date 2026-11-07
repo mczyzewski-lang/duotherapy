@@ -15,6 +15,7 @@ import { faqJsonLd, orgJsonLd, pageMeta } from "@/lib/seo";
 import { JsonLd } from "@/components/json-ld";
 import { getSettings } from "@/lib/settings";
 import { MAGNETS, magnetBySlug } from "@/knowledge/registry";
+import { hiddenMagnets } from "@/lib/magnet-visibility";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = pageMeta({
@@ -38,6 +39,8 @@ const FEATURED = ["mapa-trzech-drog", "petla-konfliktu", "21-pytan-o-relacji"];
 export default async function Home() {
   const s = await getSettings();
   const photos = await coverPhotoMap();
+  const hidden = await hiddenMagnets();
+  const magnets = MAGNETS.filter((m) => !hidden.has(m.slug));
   return (
     <>
       <SiteHeader />
@@ -133,9 +136,9 @@ export default async function Home() {
               </div>
               <Link href="/wiedza" className="text-sm font-semibold text-forest hover:underline">Wszystkie materiały →</Link>
             </div>
-            <div className="mt-6"><MagnetRail items={MAGNETS} photos={photos} label="Bezpłatne materiały" /></div>
+            <div className="mt-6"><MagnetRail items={magnets} photos={photos} label="Bezpłatne materiały" /></div>
             <ul className="mt-6 hidden gap-6 md:grid md:grid-cols-3">
-              {FEATURED.map((slug) => magnetBySlug(slug)!).map((m) => (
+              {[...FEATURED.map((slug) => magnetBySlug(slug)!).filter((m) => !hidden.has(m.slug)), ...magnets.filter((m) => !FEATURED.includes(m.slug))].slice(0, 3).map((m) => (
                 <li key={m.slug}>
                   <MagnetCard m={m} photo={photos[m.slug]} />
                 </li>

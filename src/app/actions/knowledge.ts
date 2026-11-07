@@ -16,6 +16,7 @@ import { readSettings } from "@/lib/settings";
 import { captureContact, verifyUnsubscribe } from "@/lib/mailing";
 import { deliveryMail } from "@/knowledge/emails";
 import { magnetBySlug } from "@/knowledge/registry";
+import { hiddenMagnets } from "@/lib/magnet-visibility";
 
 const Schema = z.object({
   slug: z.string().max(80),
@@ -42,7 +43,7 @@ export async function submitKnowledgeLead(input: z.input<typeof Schema>): Promis
   }
   const d = parsed.data;
   const m = magnetBySlug(d.slug);
-  if (!m) return { ok: false, error: "Nie znaleziono materiału." };
+  if (!m || (await hiddenMagnets()).has(m.slug)) return { ok: false, error: "Nie znaleziono materiału." };
   // boty: udajemy sukces, nic nie zapisujemy
   if (d.website || (d.startedAt && Date.now() - d.startedAt < 1500)) return { ok: true, emailSent: false };
   if (!(await hit(`kl:${await clientIp()}`, 8, 10 * 60))) return { ok: false, error: "Wysłano już kilka zgłoszeń. Spróbuj ponownie za kilka minut." };

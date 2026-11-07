@@ -11,9 +11,10 @@ import { CoverBook } from "./cover-book";
 import { Cover } from "./doc";
 import { MagnetIcon } from "./icons";
 
-export function KnowledgeGrid({ photos = {} }: { photos?: Record<string, string> }) {
+export function KnowledgeGrid({ photos = {}, hidden = [] }: { photos?: Record<string, string>; hidden?: string[] }) {
   const [cat, setCat] = useState<Category | "all">("all");
-  const list = cat === "all" ? MAGNETS : MAGNETS.filter((m) => m.category === cat);
+  const all = MAGNETS.filter((m) => !hidden.includes(m.slug));
+  const list = cat === "all" ? all : all.filter((m) => m.category === cat);
   return (
     <>
       <div role="group" aria-label="Filtruj według kategorii" className="mt-8 flex flex-wrap gap-2">
