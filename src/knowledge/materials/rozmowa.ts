@@ -8,17 +8,17 @@ export const siedemDni: LeadMagnet = {
   slug: "7-dni-lepszych-rozmow",
   category: "rozmowa",
   icon: "days",
-  title: "7 dni lepszych rozmów – jedno małe ćwiczenie dziennie",
+  title: "Tydzień bez awantury: 7-dniowy reset komunikacji dla par",
   short: "7 dni lepszych rozmów",
   menuDesc: "Siedem krótkich ćwiczeń, które pomagają spróbować nowego sposobu rozmowy.",
   format: "Wyzwanie 7 dni · online i PDF",
   minutes: "10–20 min dziennie przez 7 dni",
   hero: {
-    h1: "7 dni lepszych rozmów",
+    h1: "Tydzień bez awantury: 7 dni lepszych rozmów",
     sub: "Siedem krótkich ćwiczeń – jedno dziennie – które pomogą Ci spróbować nowego sposobu rozmowy. Możesz je robić we dwoje albo sam / sama.",
   },
   seo: {
-    title: "7 dni lepszych rozmów – wyzwanie dla par i osób w związku | DUO",
+    title: "Tydzień bez awantury – 7-dniowy reset komunikacji dla par | DUO",
     description: "Bezpłatne wyzwanie DUO: 7 krótkich ćwiczeń komunikacyjnych – słuchanie, potrzeby, docenianie, emocje, granice, przyszłość, refleksja. Każde także w wersji indywidualnej.",
   },
   gets: [
@@ -178,13 +178,13 @@ export const jednaOsoba: LeadMagnet = {
   slug: "partner-nie-chce-ratowac-zwiazku",
   category: "rozmowa",
   icon: "solo",
-  title: "Chcę ratować związek, ale partner nie chce. Co mogę zrobić?",
+  title: "Chcę ratować związek, ale mąż / żona nie chce. Co mogę zrobić sam / sama?",
   short: "Gdy tylko jedna osoba chce ratować związek",
   menuDesc: "Na co masz wpływ, od czego zacząć samodzielnie i czego nie brać na siebie.",
   format: "Poradnik z ćwiczeniem · PDF",
   minutes: "ok. 25 min",
   hero: {
-    h1: "Chcę ratować związek, ale partner nie chce. Co mogę zrobić?",
+    h1: "Chcę ratować związek, ale mąż / żona nie chce. Co mogę zrobić sam / sama?",
     sub: "Dowiedz się, na co masz wpływ, od czego możesz zacząć samodzielnie i czego nie musisz brać na siebie.",
   },
   seo: {
@@ -263,13 +263,13 @@ export const petlaKonfliktu: LeadMagnet = {
   slug: "petla-konfliktu",
   category: "rozmowa",
   icon: "loop",
-  title: "Dlaczego ciągle kłócicie się o to samo? Odkryj pętlę Waszych konfliktów",
+  title: "Kłócicie się o głupoty? Sprawdź, o co naprawdę chodzi w Waszej pętli konfliktu",
   short: "Pętla konfliktu",
   menuDesc: "Arkusz, który pokazuje, jak powtarza się Wasz konflikt i gdzie go przerwać.",
   format: "Workbook z arkuszem do druku · PDF",
   minutes: "ok. 20 min",
   hero: {
-    h1: "Dlaczego ciągle kłócicie się o to samo?",
+    h1: "Kłócicie się o głupoty – i ciągle o to samo?",
     sub: "Prosty arkusz, który pomoże Ci zobaczyć, jak powtarza się Wasz konflikt i gdzie można spróbować przerwać ten schemat.",
   },
   seo: {

@@ -122,17 +122,17 @@ export const przygotowanieDoTerapii: LeadMagnet = {
   slug: "przygotowanie-do-terapii",
   category: "decyzje",
   icon: "report",
-  title: "Zanim pójdziecie na terapię par: karta przygotowania do pierwszej wizyty",
+  title: "Czy terapia par ma sens w naszym przypadku? Karta gotowości przed pierwszą wizytą",
   short: "Przygotowanie do terapii",
   menuDesc: "Karta, która pomoże Ci przyjść na pierwszą wizytę z jasnymi powodami, pytaniami i obawami.",
   format: "Karta przygotowania i workbook · online",
   minutes: "20–30 min",
   hero: {
-    h1: "Zanim pójdziecie na terapię par",
-    sub: "Karta przygotowania do pierwszej wizyty: Twoje powody, obawy i pytania – także wtedy, gdy partner nie chce iść i zaczynasz sam / sama.",
+    h1: "Czy terapia par ma sens w naszym przypadku?",
+    sub: "Sprawdź, czy wspólna terapia to dobry krok teraz – i przygotuj się do pierwszej wizyty: Twoje powody, obawy i pytania. Także wtedy, gdy partner nie chce iść i zaczynasz sam / sama.",
   },
   seo: {
-    title: "Zanim pójdziecie na terapię par – karta przygotowania | DUO",
+    title: "Czy terapia par ma sens? Karta gotowości przed wizytą | DUO",
     description: "Bezpłatna karta DUO: jak przygotować się do pierwszej wizyty na terapii par – powody, obawy, pytania do terapeuty i co zrobić, gdy partner nie chce iść.",
   },
   gets: [

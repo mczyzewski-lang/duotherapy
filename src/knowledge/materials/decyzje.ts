@@ -11,17 +11,17 @@ export const mapaTrzechDrog: LeadMagnet = {
   slug: "mapa-trzech-drog",
   category: "decyzje",
   icon: "roads",
-  title: "Ratować związek, dać sobie czas czy się rozstać? Mapa 3 dróg",
+  title: "Ratować, dać sobie czas czy odejść? Sprawdź, na której z 3 dróg jesteście dziś",
   short: "Mapa 3 dróg",
   menuDesc: "Trzy możliwe kierunki i pytania, które warto zadać sobie przed decyzją.",
   format: "Poradnik i workbook · PDF",
   minutes: "ok. 25 min czytania + ćwiczenia",
   hero: {
-    h1: "Ratować związek, dać sobie czas czy się rozstać?",
+    h1: "Odbudowa, czas na decyzję czy rozstanie? Sprawdź, gdzie jesteście dziś",
     sub: "Poznaj trzy możliwe kierunki i pytania, które warto sobie zadać, zanim zdecydujesz, co dalej z Waszą relacją.",
   },
   seo: {
-    title: "Mapa 3 dróg – ratować związek, dać sobie czas czy się rozstać? | DUO",
+    title: "Ratować, dać sobie czas czy odejść? Mapa 3 dróg | DUO",
     description: "Bezpłatny poradnik i workbook DUO: trzy możliwe kierunki w kryzysie związku i ćwiczenia, które pomagają uporządkować myśli przed decyzją.",
   },
   gets: [
@@ -173,17 +173,17 @@ export const pytan21: LeadMagnet = {
   slug: "21-pytan-o-relacji",
   category: "decyzje",
   icon: "questions",
-  title: "21 pytań, które warto sobie zadać, zanim podejmiecie decyzję o przyszłości związku",
+  title: "Zostać czy odejść? 21 pytań, które warto sobie zadać przed decyzją o przyszłości związku",
   short: "21 pytań o relacji",
   menuDesc: "Gotowe pytania do rozmowy lub refleksji – w pięciu obszarach relacji.",
   format: "Karty do rozmowy i workbook · PDF",
   minutes: "15 min na start, resztę w swoim tempie",
   hero: {
-    h1: "21 pytań, które warto sobie zadać, zanim zdecydujecie o przyszłości związku",
+    h1: "Zostać czy odejść? 21 pytań, zanim zdecydujecie o przyszłości związku",
     sub: "Gotowe pytania, które pomagają rozmawiać o tym, co naprawdę ważne – samodzielnie albo razem.",
   },
   seo: {
-    title: "21 pytań o relacji – zanim podejmiecie decyzję o przyszłości związku | DUO",
+    title: "Zostać czy odejść? 21 pytań przed decyzją o związku | DUO",
     description: "Bezpłatne karty do rozmowy DUO: 21 pytań w pięciu obszarach – komunikacja, bliskość, zaufanie, potrzeby i granice, wspólna przyszłość.",
   },
   gets: [
