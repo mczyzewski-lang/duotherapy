@@ -99,6 +99,8 @@ function HandLines({ id, text, lines, compact }: { id: string; text: string; lin
   );
 }
 
+const unsavedKey = (slug: string) => `duo_unsaved_${slug}`;
+
 export function AnswersProvider({ slug, initial, local, children }: { slug: string; initial: Record<string, Val>; local?: boolean; children: React.ReactNode }) {
   const [data, setData] = useState(initial);
   const [invalid, setInvalid] = useState<Set<string>>(new Set());
@@ -107,6 +109,29 @@ export function AnswersProvider({ slug, initial, local, children }: { slug: stri
   const latest = useRef(data);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const dirty = useRef(false);
+  const retries = useRef(0);
+  const [stale, setStale] = useState(false);
+  const flushRef = useRef<() => Promise<boolean>>(async () => true);
+  const scheduleRetry = useCallback(() => {
+    if (retries.current >= 5) return;
+    retries.current++;
+    if (timer.current) clearTimeout(timer.current);
+    timer.current = setTimeout(() => void flushRef.current(), 2000 * retries.current);
+  }, []);
+
+  // odpowiedzi niezapisane przed odświeżeniem (np. po aktualizacji strony) – wracają i zapisują się
+  useEffect(() => {
+    if (local) return;
+    try {
+      const raw = sessionStorage.getItem(unsavedKey(slug));
+      if (!raw) return;
+      const v = { ...latest.current, ...(JSON.parse(raw) as Record<string, Val>) };
+      latest.current = v;
+      setData(v);
+      dirty.current = true;
+      timer.current = setTimeout(() => void flushRef.current(), 300);
+    } catch {}
+  }, [local, slug]);
 
   useEffect(() => {
     if (!local) return;
@@ -133,16 +158,34 @@ export function AnswersProvider({ slug, initial, local, children }: { slug: stri
     setStatus("saving");
     try {
       const r = await saveAnswers(slug, latest.current);
-      setStatus(r.ok ? "saved" : "error");
-      setError(r.ok ? null : r.error ?? "Nie udało się zapisać.");
-      return r.ok;
-    } catch {
+      if (r.ok) {
+        retries.current = 0;
+        setStatus("saved");
+        setError(null);
+        try { sessionStorage.removeItem(unsavedKey(slug)); } catch {}
+        return true;
+      }
       setStatus("error");
-      setError("Brak połączenia – zapiszemy, gdy wróci internet.");
+      setError(r.error ?? "Nie udało się zapisać.");
+      if (r.retry) scheduleRetry();
+      return false;
+    } catch (e) {
+      // nie zgadujemy „brak internetu”: rozróżniamy offline, nową wersję strony i chwilowy błąd serwera
       dirty.current = true;
+      try { sessionStorage.setItem(unsavedKey(slug), JSON.stringify(latest.current)); } catch {}
+      setStatus("error");
+      if (typeof navigator !== "undefined" && !navigator.onLine) setError("Brak internetu – zapiszemy, gdy wróci połączenie.");
+      else if (/server action|failed-to-find|unrecognized action/i.test(String((e as Error)?.message ?? e))) {
+        setStale(true);
+        setError("Strona została zaktualizowana – odśwież ją. Twoje odpowiedzi nie zginą.");
+      } else {
+        setError("Nie udało się zapisać – ponawiam…");
+        scheduleRetry();
+      }
       return false;
     }
-  }, [slug, local]);
+  }, [slug, local, scheduleRetry]);
+  flushRef.current = flush;
 
   const set = useCallback((id: string, v: Val) => {
     setData((d) => {
@@ -178,6 +221,7 @@ export function AnswersProvider({ slug, initial, local, children }: { slug: stri
         {status === "saving" && <><Loader2 size={13} className="animate-spin" aria-hidden /> Zapisywanie…</>}
         {status === "saved" && <><Check size={13} aria-hidden /> {local ? "Zapisano na tym urządzeniu" : "Zapisano"}</>}
         {status === "error" && <><CloudOff size={13} aria-hidden /> {error}</>}
+        {status === "error" && stale && <button type="button" onClick={() => window.location.reload()} className="ml-1 font-semibold underline">Odśwież</button>}
       </div>
     </AnswersCtx.Provider>
   );
@@ -222,7 +266,7 @@ export function AnswerText({ id, lines = 2, label, compact }: { id: string; line
       placeholder="Twoja odpowiedź…"
       rows={lines}
       className={clsx(
-        "block w-full scroll-mt-24 resize-none rounded-xl bg-ivory/70 px-3 py-2 text-[15px] leading-8 text-ink ring-1 placeholder:text-muted/60 focus:bg-white focus:outline-none focus:ring-2 focus:ring-forest",
+        "block w-full scroll-mt-24 resize-none rounded-xl bg-ivory/70 px-3 py-2 text-[16px] leading-8 text-ink ring-1 placeholder:text-muted/60 focus:bg-white focus:outline-none focus:ring-2 focus:ring-forest",
         ctx.invalid.has(id) ? "ring-2 ring-alert" : "ring-sand",
         compact ? "mt-1" : "mt-2",
       )}
@@ -251,6 +295,33 @@ export function SummarizeBar({ href, label, requirements, saveLater }: { href: s
   const router = useRouter();
   const [missing, setMissing] = useState<Requirement[]>([]);
   const [busy, setBusy] = useState(false);
+  // telefon: w trakcie pisania (otwarta klawiatura) pasek znika, żeby nie zasłaniał pola; lista braków zwija się
+  const [editing, setEditing] = useState(false);
+  useEffect(() => {
+    const touch = window.matchMedia("(pointer: coarse)").matches;
+    const isField = (t: EventTarget | null) => t instanceof HTMLTextAreaElement && t.hasAttribute("data-field");
+    let off: ReturnType<typeof setTimeout>;
+    const onIn = (e: FocusEvent) => {
+      if (!isField(e.target)) return;
+      clearTimeout(off);
+      if (touch) setEditing(true);
+    };
+    // lista braków zwija się, gdy ktoś zaczyna pisać (po kolejnym „Podsumuj” liczy się od nowa)
+    const onInput = (e: Event) => isField(e.target) && setMissing((m) => (m.length ? [] : m));
+    const onOut = (e: FocusEvent) => {
+      if (!isField(e.target)) return;
+      off = setTimeout(() => setEditing(false), 120);
+    };
+    document.addEventListener("focusin", onIn);
+    document.addEventListener("focusout", onOut);
+    document.addEventListener("input", onInput);
+    return () => {
+      document.removeEventListener("focusin", onIn);
+      document.removeEventListener("focusout", onOut);
+      document.removeEventListener("input", onInput);
+      clearTimeout(off);
+    };
+  }, []);
   if (!ctx) return null;
 
   const goTo = (r: Requirement) => {
@@ -274,15 +345,18 @@ export function SummarizeBar({ href, label, requirements, saveLater }: { href: s
   };
 
   return (
-    <div className="fixed inset-x-0 bottom-0 z-40 border-t border-sand/70 bg-ivory/95 px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 backdrop-blur" data-testid="summarize-bar">
+    <div className={clsx(
+      "fixed inset-x-0 bottom-0 z-40 border-t border-sand/70 bg-ivory/95 px-4 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 backdrop-blur transition-transform duration-200",
+      editing && "pointer-events-none translate-y-full",
+    )} data-testid="summarize-bar" data-editing={editing || undefined}>
       <div className="mx-auto max-w-3xl">
         {missing.length > 0 && ctx.invalid.size > 0 && (
           <div role="alert" className="mb-3 rounded-2xl bg-alert-soft p-3.5 text-sm leading-snug text-alert" data-testid="summarize-missing">
             <p className="font-semibold">Żeby podsumować, uzupełnij jeszcze min. 1 odpowiedź w:</p>
-            <ul className="mt-1.5 flex flex-wrap gap-1.5">
+            <ul className="-mx-1 mt-1.5 flex gap-1.5 overflow-x-auto px-1 pb-0.5 sm:flex-wrap sm:overflow-visible">
               {missing.map((r) => (
                 <li key={r.section}>
-                  <button type="button" onClick={() => goTo(r)} className="inline-flex min-h-8 items-center gap-1 rounded-full bg-white px-3 text-[13px] font-medium text-alert ring-1 ring-alert/30">
+                  <button type="button" onClick={() => goTo(r)} className="inline-flex min-h-8 shrink-0 items-center gap-1 whitespace-nowrap rounded-full bg-white px-3 text-[13px] font-medium text-alert ring-1 ring-alert/30">
                     <PenLine size={13} aria-hidden /> {r.section}
                   </button>
                 </li>

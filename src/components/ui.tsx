@@ -57,7 +57,7 @@ export function Field({ label, hint, error, children, htmlFor, required }: { lab
 }
 
 const inputCls =
-  "w-full rounded-xl bg-white px-3.5 py-2.5 text-[15px] text-ink ring-1 ring-sand-dark placeholder:text-muted/70 focus:outline-none focus:ring-2 focus:ring-forest transition";
+  "w-full rounded-xl bg-white px-3.5 py-2.5 text-[16px] text-ink ring-1 ring-sand-dark placeholder:text-muted/70 focus:outline-none focus:ring-2 focus:ring-forest transition";
 
 export function Input({ className, ...p }: ComponentProps<"input">) {
   return <input className={clsx(inputCls, className)} {...p} />;

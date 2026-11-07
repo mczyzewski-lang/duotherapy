@@ -29,7 +29,7 @@ export interface AState {
 
 const SCALE_LABELS = ["zupełnie nie", "raczej nie", "trudno powiedzieć", "raczej tak", "całkowicie tak"];
 
-const inputCls = "w-full rounded-xl bg-white px-3.5 py-2.5 text-[15px] ring-1 ring-sand-dark focus:outline-none focus:ring-2 focus:ring-forest";
+const inputCls = "w-full rounded-xl bg-white px-3.5 py-2.5 text-[16px] ring-1 ring-sand-dark focus:outline-none focus:ring-2 focus:ring-forest";
 
 export function QuestionInput({ q, a, onChange, compact }: { q: QView; a?: AState; onChange: (s: AState) => void; compact?: boolean }) {
   const na = a?.state === "not_applicable";
@@ -307,7 +307,7 @@ function BirthDateInput({ labelId, value, onChange }: { labelId: string; value: 
     const t = new Date();
     age = t.getFullYear() - cur.y - (t.getMonth() + 1 < cur.m || (t.getMonth() + 1 === cur.m && t.getDate() < cur.d) ? 1 : 0);
   }
-  const sel = "rounded-xl bg-white px-3 py-2.5 text-[15px] ring-1 ring-sand-dark focus:outline-none focus:ring-2 focus:ring-forest";
+  const sel = "rounded-xl bg-white px-3 py-2.5 text-[16px] ring-1 ring-sand-dark focus:outline-none focus:ring-2 focus:ring-forest";
   return (
     <div className="space-y-2">
       <div className="grid max-w-md grid-cols-[5rem_1fr_6.5rem] gap-2" role="group" aria-labelledby={labelId}>
