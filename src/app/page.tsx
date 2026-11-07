@@ -16,6 +16,8 @@ import { JsonLd } from "@/components/json-ld";
 import { getSettings } from "@/lib/settings";
 import { MAGNETS, magnetBySlug } from "@/knowledge/registry";
 import { hiddenMagnets } from "@/lib/magnet-visibility";
+import { StickyStart } from "@/components/site/sticky-start";
+import { GoogleRating } from "@/components/google-rating";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = pageMeta({
@@ -70,6 +72,7 @@ export default async function Home() {
                   <a href="#o-mnie" className="whitespace-nowrap text-forest underline decoration-sand-dark underline-offset-2">Poznaj mnie</a>
                 </p>
               </div>
+              <GoogleRating rating={s.site.googleRating} reviews={s.site.googleReviews} url={s.site.googleReviewsUrl} className="mt-3" />
             </div>
             <div className="md:hidden"><HeroMapVertical toPaths /></div>
             <div className="hidden md:block"><HeroMap toPaths /></div>
@@ -176,6 +179,7 @@ export default async function Home() {
           <div className="mt-8 text-center"><AskDialog consentText={s.legal.inquiryConsent} /></div>
         </section>
       </main>
+      <StickyStart />
       <SiteFooter contactEmail={s.site.contactEmail} />
     </>
   );

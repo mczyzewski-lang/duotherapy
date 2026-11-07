@@ -159,6 +159,9 @@ export async function saveSettingsAction(_: R, fd: FormData): Promise<R> {
       vslUrl: z.string().refine((v) => !v || /^https:\/\/(www\.youtube-nocookie\.com|player\.vimeo\.com)\//.test(v), "Wideo: dozwolone adresy youtube-nocookie.com lub player.vimeo.com"),
       paymentUrl: z.string().refine((v) => !v || v.startsWith("https://"), "Link do płatności musi zaczynać się od https://"),
       callbackPromise: z.string().max(120), funnelTracking: z.boolean(),
+      googleRating: z.string().regex(/^$|^[1-5]([,.][0-9])?$/, "Ocena Google: liczba od 1 do 5, np. 4,8"),
+      googleReviews: z.string().regex(/^$|^[0-9]{1,6}$/, "Liczba opinii Google: sama liczba, np. 141"),
+      googleReviewsUrl: z.string().refine((v) => !v || v.startsWith("https://"), "Link do opinii Google musi zaczynać się od https://"),
       faq: z.array(z.object({ q: z.string().min(3), a: z.string().min(3) })),
     }),
     offer: z.object({

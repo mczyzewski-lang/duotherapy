@@ -12,6 +12,7 @@ import { env } from "@/lib/env";
 import { leadFromCookie, ORDER_COOKIE, readCookie } from "@/lib/lead-session";
 import { salesAvailable } from "@/lib/payments";
 import { readSettings } from "@/lib/settings";
+import { GoogleRating } from "@/components/google-rating";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
@@ -102,6 +103,7 @@ export default async function VslPage({ searchParams }: { searchParams: Promise<
                 cancelled={sp.platnosc === "przerwana"}
                 demo={env.demoMode}
               />
+              <div className="mt-3 flex justify-center"><GoogleRating rating={s.site.googleRating} reviews={s.site.googleReviews} url={s.site.googleReviewsUrl} size="sm" /></div>
             </div>
           </div>
         </section>

@@ -17,6 +17,7 @@ import { captureContact, verifyUnsubscribe } from "@/lib/mailing";
 import { deliveryMail } from "@/knowledge/emails";
 import { magnetBySlug } from "@/knowledge/registry";
 import { hiddenMagnets } from "@/lib/magnet-visibility";
+import { newShortCode } from "@/lib/content-access";
 
 const Schema = z.object({
   slug: z.string().max(80),
@@ -59,14 +60,14 @@ export async function submitKnowledgeLead(input: z.input<typeof Schema>): Promis
     // idempotencja: ponowione żądanie z tym samym identyfikatorem
     const [same] = await tx`select id, delivery_status from content_leads where request_id = ${d.requestId}`;
     if (same) {
-      await tx`update content_leads set access_token_hash = ${hashToken(access)} where id = ${same.id}`;
+      await tx`update content_leads set access_token_hash = ${hashToken(access)}, short_code = coalesce(short_code, ${newShortCode()}) where id = ${same.id}`;
       return { id: same.id as string, status: same.delivery_status as string, send: false, s };
     }
     // ta sama osoba i ten sam materiał w ciągu doby, już dostarczony – bez ponownej wysyłki
     const [recent] = await tx`select id, delivery_status from content_leads
       where lower(email) = ${d.email} and magnet_id = ${m.id} and created_at > now() - interval '24 hours' and delivery_status = 'sent' order by created_at desc limit 1`;
     if (recent) {
-      await tx`update content_leads set access_token_hash = ${hashToken(access)} where id = ${recent.id}`;
+      await tx`update content_leads set access_token_hash = ${hashToken(access)}, short_code = coalesce(short_code, ${newShortCode()}) where id = ${recent.id}`;
       return { id: recent.id as string, status: "sent", send: false, s };
     }
     const series = m.slug === "7-dni-lepszych-rozmow"; // przy wyzwaniu zgoda obejmuje codzienne ćwiczenia
@@ -87,7 +88,7 @@ export async function submitKnowledgeLead(input: z.input<typeof Schema>): Promis
     if (s.site.funnelTracking && anon)
       await tx`insert into funnel_events (event, anon_id, step, utm_source, utm_medium, utm_campaign, path)
                values ('lead_magnet_submitted', ${anon}, ${m.n}, ${attribution.utm_source ?? null}, ${attribution.utm_medium ?? null}, ${attribution.utm_campaign ?? null}, '/wiedza/*')`;
-    await tx`update content_leads set access_token_hash = ${hashToken(access)} where id = ${row.id}`;
+    await tx`update content_leads set access_token_hash = ${hashToken(access)}, short_code = ${newShortCode()} where id = ${row.id}`;
     // nurturing: kontakt z tagiem materiału (wiadomości marketingowe tylko przy zgodzie – pilnuje tego sekwencja)
     await captureContact(tx, { email: d.email, name: d.name || null, tags: [`lm-${m.slug}`, ...(series ? ["seria-7-dni"] : []), d.relationship, d.children === "tak" ? "dzieci" : "bez-dzieci"], marketing });
     return { id: row.id, status: "pending", send: true, s };
@@ -97,7 +98,8 @@ export async function submitKnowledgeLead(input: z.input<typeof Schema>): Promis
   if (!r.send) return { ok: true, emailSent: r.status === "sent" };
 
   // dostarczenie: tylko gdy skonfigurowano wysyłkę – nie udajemy, że e-mail wyszedł
-  const mail = deliveryMail(m, d.name || null, env.appUrl, { email: r.s.site.contactEmail, phone: r.s.site.contactPhone }, access);
+  const [{ short_code }] = await system((tx) => tx<{ short_code: string }[]>`select short_code from content_leads where id = ${r.id}`);
+  const mail = deliveryMail(m, d.name || null, env.appUrl, { email: r.s.site.contactEmail, phone: r.s.site.contactPhone }, `${env.appUrl}/plan/${short_code}`);
   const configured = customerMailConfigured();
   const sent = configured ? await notifyCustomer(d.email, mail.subject, mail.text) : false;
   const status = !configured ? "not_configured" : sent ? "sent" : "failed";

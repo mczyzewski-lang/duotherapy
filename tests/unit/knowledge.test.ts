@@ -100,12 +100,13 @@ describe("treść zgodna ze specyfikacją", () => {
 
 describe("wiadomości", () => {
   const c = { email: "kontakt@duo.test" };
-  it("dostarczenie: link online i PDF, bez wypisu (to nie marketing)", () => {
+  it("dostarczenie: krótki link do materiału online, bez PDF i bez wypisu (to nie marketing)", () => {
     const m = magnetBySlug("po-zdradzie")!;
     const mail = deliveryMail(m, "Ola", "https://duo.test", c);
     expect(mail.subject).toBe(`Twój bezpłatny materiał DUO: ${m.short}`);
     expect(mail.text).toContain("https://duo.test/wiedza/po-zdradzie/material");
-    expect(mail.text).toContain("https://duo.test/wiedza/po-zdradzie/pdf");
+    expect(mail.text).not.toContain("/pdf");
+    expect(deliveryMail(m, "Ola", "https://duo.test", c, "https://duo.test/plan/k7m2xq9").text).toContain("https://duo.test/plan/k7m2xq9");
   });
   it("sekwencja: link wypisu w każdej wiadomości, trzecia prowadzi do Mapy Relacji z nieopisowym id", () => {
     const m = magnetBySlug("petla-konfliktu")!;

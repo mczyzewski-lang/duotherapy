@@ -21,7 +21,7 @@ export interface QuizAttach {
   title: string;
 }
 
-export function MapaQuiz({ consentText, marketingText, callbackPromise, attach, preset }: { consentText: string; marketingText: string; callbackPromise: string; attach?: QuizAttach | null; preset?: QuizAnswers }) {
+export function MapaQuiz({ consentText, marketingText, callbackPromise, attach, preset, prefill }: { consentText: string; marketingText: string; callbackPromise: string; attach?: QuizAttach | null; preset?: QuizAnswers; prefill?: { name: string; email: string; phone: string } | null }) {
   const [i, setI] = useState(0);
   // wariant wybrany na stronie Mapy Relacji (1 / 3 spotkania) – odpowiedź na pytanie o formę już zaznaczona
   const [answers, setAnswers] = useState<QuizAnswers>(preset ?? {});
@@ -63,7 +63,7 @@ export function MapaQuiz({ consentText, marketingText, callbackPromise, attach, 
 
   if (phase === "done") return <Done callbackPromise={callbackPromise} />;
   if (phase === "summary")
-    return <Summary answers={answers} attach={attach ?? null} consentText={consentText} marketingText={marketingText} onBack={() => { setPhase("questions"); setI(QUIZ.length - 1); }} onDone={() => setPhase("done")} headingRef={headingRef} />;
+    return <Summary answers={answers} attach={attach ?? null} prefill={prefill ?? null} consentText={consentText} marketingText={marketingText} onBack={() => { setPhase("questions"); setI(QUIZ.length - 1); }} onDone={() => setPhase("done")} headingRef={headingRef} />;
 
   return (
     <div className="flex min-h-[calc(100dvh-4.5rem)] flex-col">
@@ -129,6 +129,7 @@ export function MapaQuiz({ consentText, marketingText, callbackPromise, attach, 
 function Summary({
   answers,
   attach,
+  prefill,
   consentText,
   marketingText,
   onBack,
@@ -137,6 +138,7 @@ function Summary({
 }: {
   answers: QuizAnswers;
   attach: QuizAttach | null;
+  prefill: { name: string; email: string; phone: string } | null;
   consentText: string;
   marketingText: string;
   onBack: () => void;
@@ -144,7 +146,8 @@ function Summary({
   headingRef: React.RefObject<HTMLHeadingElement | null>;
 }) {
   const { lead, points } = summaryFor(answers);
-  const [f, setF] = useState({ name: "", phone: "", email: "", preferredTime: "", contactConsent: false, marketingConsent: false, attachConsent: false, website: "" });
+  // osoba z osobistego linku (materiał / mailing) – jej dane już w formularzu
+  const [f, setF] = useState({ name: prefill?.name ?? "", phone: prefill?.phone ?? "", email: prefill?.email ?? "", preferredTime: "", contactConsent: false, marketingConsent: false, attachConsent: false, website: "" });
   const [err, setErr] = useState<{ text: string; field?: string } | null>(null);
   const [pending, start] = useTransition();
   const [leaving, setLeaving] = useState(false);

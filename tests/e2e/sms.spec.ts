@@ -58,4 +58,34 @@ test("zapis na później z kodem SMS i powrót z linku w e-mailu z potwierdzenie
   // to samo urządzenie: link z e-maila otwiera od razu
   await page.goto(`/wiedza/petla-konfliktu/otworz?t=${token}`);
   await expect(page).toHaveURL(/\/wiedza\/petla-konfliktu\/material$/);
+
+  // osoba z osobistego linku: formularz Mapy Relacji ma już jej dane (imię, e-mail, potwierdzony telefon)
+  await page.goto("/start");
+  await page.waitForLoadState("networkidle");
+  for (const pick of ["Oddaliliśmy się", "Brakuje nam bliskości", "Raczej nie", "Czy możemy jeszcze", "Od kilku miesięcy", "Samodzielnie"]) {
+    await page.getByRole("radio", { name: new RegExp(pick) }).click();
+    await page.waitForTimeout(400);
+  }
+  await page.waitForTimeout(2600);
+  await expect(page.getByLabel("Imię")).toHaveValue("Sms Test");
+  await expect(page.getByLabel("Numer telefonu")).toHaveValue("600 100 123");
+});
+
+test("strona: „Napisz do mnie” pod autorką, sticky bar na głównej, ocena Google, materiał bez PDF", async ({ page }) => {
+  await page.goto("/wiedza/artykuly/terapia-par-online");
+  await page.getByTestId("author-contact").getByRole("button", { name: "Napisz do mnie" }).click();
+  await expect(page.getByRole("dialog")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Napisz do Klaudii" })).toBeVisible();
+  await page.keyboard.press("Escape");
+
+  await page.goto("/");
+  await expect(page.getByTestId("google-rating").first()).toHaveAttribute("aria-label", "Ocena 4,8 na 5 w Google na podstawie 141 opinii");
+  const bar = page.getByTestId("sticky-start");
+  await expect(bar).toHaveAttribute("inert", "");
+  await page.mouse.wheel(0, 1600);
+  await expect(bar).not.toHaveAttribute("inert", "");
+  await expect(bar.getByRole("link", { name: /Zacznij tutaj od Mapy Relacji/ })).toHaveAttribute("href", "/mapa-relacji");
+
+  await page.goto("/wiedza/petla-konfliktu/demo");
+  await expect(page.getByRole("link", { name: /Pobierz PDF/ })).toHaveCount(0);
 });

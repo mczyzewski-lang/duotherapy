@@ -111,15 +111,12 @@ export function LeadMagnetForm({
         <CheckCircle2 className="mx-auto text-ok" size={40} aria-hidden />
         <h3 className="mt-3 font-display text-[1.7rem] leading-tight text-ink">Twój materiał jest gotowy</h3>
         <p className="mx-auto mt-2 max-w-md leading-relaxed text-ink-soft">
-          {done.emailSent ? "Wysłaliśmy link do pobrania na podany adres e-mail. Możesz też otworzyć materiał od razu." : "Możesz otworzyć materiał od razu albo pobrać go jako PDF."}
+          {done.emailSent ? "Wysłaliśmy link do materiału na podany adres e-mail. Możesz też otworzyć go od razu." : "Możesz otworzyć materiał od razu."}
         </p>
         <div className="mt-5 flex flex-col justify-center gap-2.5 sm:flex-row">
           <Link href={`/wiedza/${slug}/material`} className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-clay px-6 font-semibold text-white">
             <MonitorSmartphone size={18} aria-hidden /> Otwórz materiał
           </Link>
-          <a href={`/wiedza/${slug}/pdf`} data-pdf onClick={() => track("lead_magnet_pdf_download", n)} className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-white px-6 font-semibold text-forest ring-1 ring-sand-dark">
-            <Download size={18} aria-hidden /> Pobierz PDF
-          </a>
         </div>
         <p className="mt-4 text-xs text-muted">„{title}”</p>
       </div>

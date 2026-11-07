@@ -44,6 +44,10 @@ export interface Settings {
     callbackPromise: string;
     /** Pierwszopartyjne zdarzenia lejka (bez treści odpowiedzi). */
     funnelTracking: boolean;
+    /** Ocena w Google (np. „4,8”) i liczba opinii (np. „141”) – puste = ukryte. Link do opinii (opcjonalnie). */
+    googleRating: string;
+    googleReviews: string;
+    googleReviewsUrl: string;
     faq: { q: string; a: string }[];
   };
   /** Sprzedaż Mapy Relacji online (strona VSL po quizie). Jedna oferta, jedna cena. */
@@ -117,6 +121,9 @@ export const DEFAULT_SETTINGS: Settings = {
     paymentUrl: "",
     callbackPromise: "",
     funnelTracking: true,
+    googleRating: "4,8",
+    googleReviews: "141",
+    googleReviewsUrl: "",
     faq: [
       {
         q: "Czy mogę zacząć bez udziału partnera?",

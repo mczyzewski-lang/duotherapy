@@ -5,6 +5,7 @@ import { hashToken } from "./crypto";
 import type { Tx } from "./db";
 import { env } from "./env";
 import { maskPhone, sendSms, smsDemoFallback } from "./sms";
+import { isAccessValue } from "./content-access";
 
 export const CONTENT_PENDING_COOKIE = "duo_clp"; // link z e-maila czeka na potwierdzenie kodem SMS
 const TTL_MIN = 10;
@@ -13,13 +14,13 @@ const MAX_ATTEMPTS = 5;
 const codeHash = (email: string, code: string) => hashToken(`sms:${email}:${code}`);
 
 /** Tworzy kod i wysyła SMS. W trybie DEMO bez SMSAPI zwraca kod do pokazania na ekranie. */
-export async function issueCode(tx: Tx, purpose: "bind" | "access", email: string, phone: string): Promise<{ ok: true; masked: string; demoCode?: string } | { ok: false; error: string }> {
+export async function issueCode(tx: Tx, purpose: "bind" | "access", email: string, phone: string, link?: string): Promise<{ ok: true; masked: string; demoCode?: string } | { ok: false; error: string }> {
   const code = String(randomInt(0, 10000)).padStart(4, "0");
   await tx`update sms_codes set used_at = now() where email_lc = ${email} and purpose = ${purpose} and used_at is null`;
   await tx`insert into sms_codes (purpose, email_lc, phone, code_hash, expires_at) values (${purpose}, ${email}, ${phone}, ${codeHash(email, code)}, ${new Date(Date.now() + TTL_MIN * 60_000)})`;
   if (smsDemoFallback()) return { ok: true, masked: maskPhone(phone), demoCode: code };
   const text = purpose === "bind"
-    ? `DUO: Twój kod do zapisania odpowiedzi: ${code}. Ważny ${TTL_MIN} min. Nie podawaj go nikomu.`
+    ? `DUO: Twój kod do zapisania odpowiedzi: ${code}. Ważny ${TTL_MIN} min. Nie podawaj go nikomu.${link ? ` Wrócisz tu: ${link}` : ""}`
     : `DUO: Twój kod dostępu do zapisanych odpowiedzi: ${code}. Ważny ${TTL_MIN} min. Nie podawaj go nikomu.`;
   const r = await sendSms(phone, text);
   return r.ok ? { ok: true, masked: maskPhone(phone) } : { ok: false, error: r.error };
@@ -42,6 +43,6 @@ export async function checkCode(tx: Tx, purpose: "bind" | "access", email: strin
 
 export async function pendingToken(): Promise<string | null> {
   const v = (await cookies()).get(CONTENT_PENDING_COOKIE)?.value ?? "";
-  return /^[A-Za-z0-9_-]{40,60}$/.test(v) ? v : null;
+  return isAccessValue(v) ? v : null;
 }
 export const pendingCookieOpts = { httpOnly: true, secure: env.isProd, sameSite: "lax" as const, path: "/", maxAge: 30 * 60 };

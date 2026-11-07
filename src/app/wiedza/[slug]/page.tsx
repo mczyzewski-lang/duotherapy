@@ -24,6 +24,7 @@ import { env } from "@/lib/env";
 import { getSettings } from "@/lib/settings";
 import { MAGNETS, magnetBySlug, mapaHref } from "@/knowledge/registry";
 import { hiddenMagnets } from "@/lib/magnet-visibility";
+import { GoogleRating } from "@/components/google-rating";
 
 // formularz i zgody zależą od ustawień w bazie – renderowanie przy żądaniu (nieznany adres → 404)
 export const dynamic = "force-dynamic";
@@ -83,6 +84,7 @@ export default async function MagnetLanding({ params }: { params: Promise<{ slug
                   <span className="inline-flex items-center gap-1.5"><Clock size={15} aria-hidden /> {m.minutes}</span>
                 </p>
               </div>
+              <GoogleRating rating={s.site.googleRating} reviews={s.site.googleReviews} url={s.site.googleReviewsUrl} size="sm" className="mt-4" />
             </div>
             <div className="mx-auto w-full max-w-[22rem] md:max-w-sm">
               <CoverBook size="lg">

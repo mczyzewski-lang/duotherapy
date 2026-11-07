@@ -2,9 +2,8 @@
 
 // Materiały: „zapisz na później” – przypisanie numeru telefonu kodem SMS, i powrót z linku w e-mailu – potwierdzenie numeru kodem SMS.
 import { cookies } from "next/headers";
-import { CONTENT_COOKIE, contentReader } from "@/lib/content-access";
+import { CONTENT_COOKIE, contentReader, leadByAccess } from "@/lib/content-access";
 import { checkCode, CONTENT_PENDING_COOKIE, issueCode, pendingToken } from "@/lib/content-phone";
-import { hashToken } from "@/lib/crypto";
 import { system } from "@/lib/db";
 import { env } from "@/lib/env";
 import { hit } from "@/lib/rate-limit";
@@ -26,7 +25,9 @@ export async function requestBindCode(slug: string, phoneInput: string): Promise
     const who = await contentReader(tx);
     if (!who || !who.magnets.includes(m.id)) return { ok: false as const, error: "Zapis jest dostępny po odebraniu materiału na Twój e-mail." };
     if (!(await hit(`smsb:${who.email}`, 4, 15 * 60))) return { ok: false as const, error: "Wysłano już kilka kodów. Spróbuj za kilkanaście minut." };
-    return issueCode(tx, "bind", who.email, phone);
+    // w SMS-ie także krótki link powrotu do materiału
+    const [l] = await tx<{ short_code: string | null }[]>`select short_code from content_leads where lower(email) = ${who.email} and magnet_id = ${m.id} and short_code is not null order by created_at desc limit 1`;
+    return issueCode(tx, "bind", who.email, phone, l?.short_code ? `${env.appUrl.replace(/^https?:\/\//, "")}/plan/${l.short_code}` : undefined);
   });
 }
 
@@ -50,8 +51,8 @@ export async function confirmBindCode(slug: string, code: string): Promise<Done>
 async function pendingLead() {
   const t = await pendingToken();
   if (!t) return null;
-  const [r] = await system((tx) => tx<{ email: string; phone: string | null }[]>`select lower(email) as email, phone from content_leads where access_token_hash = ${hashToken(t)} and phone_verified_at is not null`);
-  return r?.phone ? { token: t, email: r.email, phone: r.phone } : null;
+  const r = await system((tx) => leadByAccess(tx, t));
+  return r?.phone && r.phone_verified_at ? { token: t, email: r.email, phone: r.phone } : null;
 }
 
 export async function requestAccessCode(): Promise<Sent> {

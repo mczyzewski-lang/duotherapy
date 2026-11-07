@@ -6,7 +6,7 @@ import { notFound } from "next/navigation";
 import { PhoneAccess } from "@/components/knowledge/phone";
 import { Logo } from "@/components/ui";
 import { pendingToken } from "@/lib/content-phone";
-import { hashToken } from "@/lib/crypto";
+import { leadByAccess } from "@/lib/content-access";
 import { system } from "@/lib/db";
 import { maskPhone } from "@/lib/sms";
 import { magnetBySlug } from "@/knowledge/registry";
@@ -18,7 +18,8 @@ export default async function ConfirmPhonePage({ params }: { params: Promise<{ s
   const m = magnetBySlug((await params).slug);
   if (!m) notFound();
   const t = await pendingToken();
-  const [lead] = t ? await system((tx) => tx<{ phone: string | null }[]>`select phone from content_leads where access_token_hash = ${hashToken(t)} and phone_verified_at is not null`) : [];
+  const found = t ? await system((tx) => leadByAccess(tx, t)) : null;
+  const lead = found?.phone_verified_at ? found : null;
   return (
     <div className="min-h-dvh bg-linen/60">
       <header className="border-b border-sand/70 bg-ivory"><div className="mx-auto max-w-xl px-5 py-4"><Link href="/" aria-label="DUO – strona główna"><Logo /></Link></div></header>

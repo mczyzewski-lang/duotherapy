@@ -28,3 +28,8 @@ Tokenu nie wklejaj w czacie ani w repozytorium – tylko w zmiennych Railway.
 
 ## Koszt i treść
 Jeden kod = jeden SMS (ok. 70–160 znaków). Treść: „DUO: Twój kod … : 1234. Ważny 10 min. Nie podawaj go nikomu.”
+
+## Krótki link do materiału
+E-mail z materiałem i SMS z kodem zawierają krótki link `duo.pl/plan/<7 znaków>` (np. `duo.pl/plan/k7m2xq9`).
+Kod ma 7 znaków, bo link daje dostęp do odpowiedzi – krótszy dałoby się odgadnąć. Próby zgadywania są ograniczone (limit na adres IP),
+a przy odpowiedziach zapisanych z numerem telefonu i tak wymagany jest kod SMS. Stare długie linki (`/wiedza/…/otworz?t=…`) dalej działają.

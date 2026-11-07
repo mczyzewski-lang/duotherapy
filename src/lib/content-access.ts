@@ -1,6 +1,7 @@
 // Dostęp do wersji online materiału z autozapisem: przeglądarka powiązana z zapisem (e-mail) tokenem w ciasteczku httpOnly.
 // Odpowiedzi przypisane do e-maila i materiału, szyfrowane w bazie.
 import { cookies } from "next/headers";
+import { randomBytes } from "node:crypto";
 import { decrypt, encrypt, hashToken } from "./crypto";
 import type { Tx } from "./db";
 import { env } from "./env";
@@ -12,16 +13,43 @@ export async function setContentCookie(token: string) {
   (await cookies()).set(CONTENT_COOKIE, token, { httpOnly: true, secure: env.isProd, sameSite: "lax", path: "/", maxAge: 180 * 86400 });
 }
 
+/** Wartość dostępu: długi token (formularz, stary link z e-maila) albo krótki kod z podpisem (link /plan/<kod>). */
+const ACCESS_RE = /^([A-Za-z0-9_-]{40,60}|[a-z0-9]{7}\.[0-9a-f]{24})$/;
+export const SHORT_CODE_RE = /^[a-z0-9]{7}$/;
+const SHORT_ALPHABET = "abcdefghjkmnpqrstuvwxyz23456789";
+export function newShortCode(): string {
+  const b = randomBytes(7);
+  return [...b].map((x) => SHORT_ALPHABET[x % SHORT_ALPHABET.length]).join("");
+}
+/** Wartość ciasteczka dla krótkiego linku – podpis serwera, więc nie da się jej podrobić bez kodu z linku. */
+export const shortAccess = (code: string) => `${code}.${hashToken(`plan:${code}`).slice(0, 24)}`;
+export const isAccessValue = (v: string | undefined | null): v is string => !!v && ACCESS_RE.test(v);
+
 async function tokenFromCookie(): Promise<string | null> {
   const v = (await cookies()).get(CONTENT_COOKIE)?.value ?? "";
-  return /^[A-Za-z0-9_-]{40,60}$/.test(v) ? v : null;
+  return isAccessValue(v) ? v : null;
+}
+
+export interface AccessLead { id: string; email: string; magnet_id: string; phone: string | null; phone_verified_at: Date | null; short_code: string | null }
+
+/** Zapis na materiał wskazany wartością dostępu (token albo krótki kod z podpisem). */
+export async function leadByAccess(tx: Tx, v: string): Promise<AccessLead | null> {
+  if (!isAccessValue(v)) return null;
+  const short = /^([a-z0-9]{7})\.([0-9a-f]{24})$/.exec(v);
+  if (short) {
+    if (shortAccess(short[1]) !== v) return null;
+    const [r] = await tx<AccessLead[]>`select id, lower(email) as email, magnet_id, phone, phone_verified_at, short_code from content_leads where short_code = ${short[1]}`;
+    return r ?? null;
+  }
+  const [r] = await tx<AccessLead[]>`select id, lower(email) as email, magnet_id, phone, phone_verified_at, short_code from content_leads where access_token_hash = ${hashToken(v)}`;
+  return r ?? null;
 }
 
 /** Zapis materiału powiązany z tą przeglądarką (rola system). Zwraca e-mail i materiały, do których ta osoba się zapisała. */
 export async function contentReader(tx: Tx): Promise<{ email: string; magnets: string[] } | null> {
   const t = await tokenFromCookie();
   if (!t) return null;
-  const [r] = await tx`select lower(email) as email from content_leads where access_token_hash = ${hashToken(t)}`;
+  const r = await leadByAccess(tx, t);
   if (!r) return null;
   const all = await tx`select distinct magnet_id from content_leads where lower(email) = ${r.email}`;
   return { email: r.email, magnets: all.map((x) => x.magnet_id as string) };

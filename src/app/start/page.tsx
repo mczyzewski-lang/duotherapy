@@ -6,6 +6,7 @@ import { BrandSymbol, MapaLogo } from "@/components/brand";
 import { getSettings } from "@/lib/settings";
 import { coverOf } from "@/knowledge/covers";
 import { magnetBySlug } from "@/knowledge/registry";
+import { knownVisitor, phoneForInput } from "@/lib/known-visitor";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = {
@@ -20,6 +21,8 @@ export default async function StartPage({ searchParams }: { searchParams: Promis
   const attach = m && coverOf(m.slug)?.summary ? { slug: m.slug, title: m.short } : null;
   const preset = sp.forma === "solo" || sp.forma === "together" ? { q6: sp.forma } : undefined;
   const s = await getSettings();
+  const known = await knownVisitor();
+  const prefill = known ? { name: known.name, email: known.email, phone: phoneForInput(known.phone) } : null;
   return (
     <div className="min-h-dvh bg-gradient-to-b from-ivory to-linen">
       <header className="sticky top-0 z-30 border-b border-sand/50 bg-ivory/90 backdrop-blur">
@@ -35,7 +38,7 @@ export default async function StartPage({ searchParams }: { searchParams: Promis
         </div>
       </header>
       <main id="main">
-        <MapaQuiz attach={attach} preset={preset} consentText={s.legal.leadContactConsent} marketingText={s.legal.leadMarketingConsent} callbackPromise={s.site.callbackPromise} />
+        <MapaQuiz attach={attach} preset={preset} prefill={prefill} consentText={s.legal.leadContactConsent} marketingText={s.legal.leadMarketingConsent} callbackPromise={s.site.callbackPromise} />
       </main>
     </div>
   );

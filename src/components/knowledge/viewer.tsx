@@ -1,5 +1,5 @@
 // Widok pełnego materiału: /demo (podgląd dla właściciela, bez e-maila) i /material (po zapisie). Ta sama treść co PDF.
-import { ArrowLeft, Download, PenLine } from "lucide-react";
+import { ArrowLeft, PenLine } from "lucide-react";
 import Link from "next/link";
 import { mapaHref } from "@/knowledge/registry";
 import type { LeadMagnet } from "@/knowledge/types";
@@ -24,9 +24,6 @@ export function MaterialViewer({ m, variant, answers, phoneMasked = null }: { m:
             <p className="text-[10.5px] font-semibold uppercase tracking-[0.18em] text-clay">{variant === "demo" ? "Podgląd materiału DUO" : "Twój materiał DUO"}</p>
             <p className="truncate font-display text-[15px] text-ink sm:text-base">{m.short}</p>
           </div>
-          <a href={`/wiedza/${m.slug}/pdf`} data-pdf className="inline-flex min-h-10 shrink-0 items-center gap-1.5 rounded-full bg-forest px-4 text-sm font-semibold text-white">
-            <Download size={16} aria-hidden /> Pobierz PDF
-          </a>
         </div>
       </header>
       <main id="main" className={fillable ? "mx-auto max-w-3xl px-4 pb-64 pt-6 sm:px-5" : "mx-auto max-w-3xl px-4 pb-20 pt-6 sm:px-5"}>

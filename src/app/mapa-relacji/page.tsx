@@ -14,6 +14,7 @@ import { HeroMap, HeroMapVertical, Roads } from "@/components/mapa/flow";
 import { MapaEyebrow } from "@/components/mapa/mark";
 import { ReportPreview, SampleReportLink } from "@/components/mapa/report-preview";
 import { getSettings } from "@/lib/settings";
+import { GoogleRating } from "@/components/google-rating";
 
 export const dynamic = "force-dynamic";
 
@@ -106,6 +107,7 @@ export default async function Landing() {
               <div className="animate-rise delay-3 mt-6">
                 <QuizCta hero id="hero-cta" className="w-full sm:w-auto">Zacznij od 6 krótkich pytań</QuizCta>
                 <p className="mt-2.5 text-center text-sm text-muted sm:text-left">Bezpłatny quiz · około 2 minut</p>
+                <div className="mt-3 flex justify-center sm:justify-start"><GoogleRating rating={s.site.googleRating} reviews={s.site.googleReviews} url={s.site.googleReviewsUrl} /></div>
               </div>
               <div className="animate-rise delay-3 mt-6 flex items-center gap-3 rounded-2xl bg-white/75 p-3 ring-1 ring-sand">
                 <img src="/img/klaudia-bosek-avatar.jpg" alt="" width={48} height={48} className="h-12 w-12 shrink-0 rounded-full object-cover ring-2 ring-white" />
@@ -403,6 +405,7 @@ export default async function Landing() {
             <p className="mx-auto mt-4 max-w-xl leading-relaxed text-white/85">Wystarczy pierwszy krok: sześć pytań, które pomogą zobaczyć, gdzie dziś jesteś.</p>
             <QuizCta className="mt-8 w-full sm:w-auto">Zacznij od 6 krótkich pytań</QuizCta>
             <p className="mt-3 text-sm text-white/70">Bezpłatny quiz · około 2 minut · bez rejestracji</p>
+            <div className="mt-4 flex justify-center"><GoogleRating rating={s.site.googleRating} reviews={s.site.googleReviews} url={s.site.googleReviewsUrl} tone="dark" size="sm" /></div>
           </div>
           <div className="mt-8 text-center"><AskDialog consentText={s.legal.inquiryConsent} /></div>
         </section>

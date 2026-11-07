@@ -18,6 +18,7 @@ import { env } from "@/lib/env";
 import { getSettings } from "@/lib/settings";
 import { magnetBySlug } from "@/knowledge/registry";
 import { hiddenMagnets } from "@/lib/magnet-visibility";
+import { AskDialog } from "@/components/landing/ask-dialog";
 
 export const dynamic = "force-dynamic";
 
@@ -135,6 +136,16 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                 <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-muted">Autorka</p>
                 <p className="mt-0.5 font-display text-lg text-ink">{AUTHOR.name}</p>
                 <p className="mt-1 text-[14.5px] leading-relaxed text-ink-soft">{AUTHOR.bio}</p>
+                <div className="mt-3" data-testid="author-contact">
+                  <AskDialog
+                    consentText={s.legal.inquiryConsent}
+                    trigger="button"
+                    label="Napisz do mnie"
+                    title={`Napisz do ${AUTHOR.name.split(" ")[0] === "Klaudia" ? "Klaudii" : AUTHOR.name}`}
+                    topic={`Pytanie do autorki artykułu „${a.title}”`}
+                    triggerClassName="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-forest px-5 text-[15px] font-semibold text-white shadow-soft transition hover:brightness-110"
+                  />
+                </div>
               </div>
             </section>
 
