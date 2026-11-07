@@ -2,7 +2,7 @@
 
 // Część kliencka „Wiedzy”: formularz odbioru materiału, ekran podziękowania, pomiar (bez danych osobowych i bez tytułów).
 import clsx from "clsx";
-import { CheckCircle2, Download, Loader2, Mail, MonitorSmartphone } from "lucide-react";
+import { CheckCircle2, Download, Loader2, Mail, MonitorSmartphone, Zap } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useRef, useState, useTransition } from "react";
 import { submitKnowledgeLead } from "@/app/actions/knowledge";
@@ -31,14 +31,13 @@ export function LeadMagnetForm({
   slug,
   n,
   title,
-  deliveryInfo,
   marketingText,
   seriesText,
 }: {
   slug: string;
   n: number;
   title: string;
-  deliveryInfo: string;
+
   marketingText: string;
   seriesText?: string;
 }) {
@@ -161,7 +160,7 @@ export function LeadMagnetForm({
           <input type="checkbox" required className="mt-0.5 h-5 w-5 shrink-0 accent-[#36493d]" checked={f.consent}
             onChange={(e) => { setF({ ...f, consent: e.target.checked }); if (err?.field === "consent") setErr(null); }}
             aria-invalid={err?.field === "consent"} aria-describedby={err?.field === "consent" ? "lm-consent-e" : undefined} data-testid="lm-consent" />
-          <span>{marketingText}{seriesText ? ` ${seriesText}` : ""}</span>
+          <span>{marketingText}{seriesText ? ` ${seriesText}` : ""} <Link href="/prywatnosc" className="text-muted underline underline-offset-2">Polityka prywatności</Link></span>
         </label>
         {err?.field === "consent" && <p id="lm-consent-e" role="alert" className="-mt-2 text-sm text-alert">{err.text}</p>}
         </div>
@@ -170,8 +169,8 @@ export function LeadMagnetForm({
       <button type="submit" disabled={pending} className={clsx("btn-convex btn-glare flex min-h-14 w-full items-center justify-center gap-2 rounded-full px-6 text-[17px] font-bold tracking-[0.005em] text-white transition hover:brightness-105 active:translate-y-px disabled:opacity-60")}>
         {pending ? <Loader2 size={18} className="animate-spin" aria-hidden /> : <Mail size={18} aria-hidden />} {pending ? "Wysyłanie…" : "Wyślij mi materiał"}
       </button>
-      <p className="text-center text-xs leading-relaxed text-muted">
-        {deliveryInfo} <Link href="/prywatnosc" className="underline underline-offset-2">Polityka prywatności</Link>
+      <p className="flex items-center justify-center gap-1.5 text-center text-[13px] font-medium text-muted" data-testid="lm-instant">
+        <Zap size={14} className="fill-current" aria-hidden /> Dostęp natychmiast
       </p>
     </form>
   );

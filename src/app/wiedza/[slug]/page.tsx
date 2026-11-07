@@ -144,7 +144,7 @@ export default async function MagnetLanding({ params }: { params: Promise<{ slug
         </section>
 
         {/* 4. DLA KOGO + 5. FORMULARZ */}
-        <section id="odbierz" className="scroll-mt-4 bg-linen" aria-labelledby="form-h">
+        <section className="bg-linen" aria-labelledby="form-h">
           <div className={`mx-auto grid max-w-6xl gap-8 px-5 pb-12 md:grid-cols-2 md:gap-12 md:pb-16 ${m.special ? "pt-12 md:pt-16" : "pt-52"}`}>
             <div>
               <h2 className="font-display text-[1.75rem] leading-tight text-ink sm:text-4xl">Dla kogo to jest?</h2>
@@ -160,18 +160,18 @@ export default async function MagnetLanding({ params }: { params: Promise<{ slug
               </p>
             </div>
             {/* wyraźny kontener formularza: akcent u góry, mocniejszy cień i obramowanie */}
-            <div className="relative overflow-hidden rounded-[1.75rem] bg-white p-5 shadow-[0_34px_70px_-34px_rgba(169,81,47,0.55)] ring-2 ring-clay/25 sm:p-7" data-testid="lm-form-box">
+            {/* kotwica #odbierz na samym kontenerze – przyciski „Pobierz bezpłatnie” przewijają od razu do pól formularza */}
+            <div id="odbierz" className="relative scroll-mt-4 overflow-hidden rounded-[1.75rem] bg-white p-5 shadow-[0_34px_70px_-34px_rgba(169,81,47,0.55)] ring-2 ring-clay/25 sm:p-7" data-testid="lm-form-box">
               <div className="lm-strip absolute inset-x-0 top-0 h-1.5" aria-hidden />
               <p className="inline-flex items-center gap-2 rounded-full bg-clay-soft px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-clay">
                 <MagnetIcon icon={m.icon} id={`frm-${m.id}`} className="h-4 w-4" /> Bezpłatnie · {m.format.split(" · ")[0]}
               </p>
-              <h2 id="form-h" className="mt-3 font-display text-[1.75rem] leading-tight text-ink sm:text-[2rem]">Odbierz bezpłatny materiał</h2>
+              <h2 id="form-h" className="mt-3 font-display text-[1.75rem] leading-tight text-ink sm:text-[2rem]">Odbierz bezpłatnie: {m.short}</h2>
               <p className="mb-5 mt-2 text-[15px] leading-relaxed text-ink-soft">Podaj adres e-mail – od razu otworzysz materiał, a link wyślemy też na Twoją skrzynkę.</p>
               <LeadMagnetForm
                 slug={m.slug}
                 n={m.n}
                 title={m.title}
-                deliveryInfo={s.legal.contentDeliveryInfo}
                 marketingText={s.legal.contentMarketingConsent}
                 seriesText={m.slug === "7-dni-lepszych-rozmow" ? s.legal.contentSeriesConsent : undefined}
               />

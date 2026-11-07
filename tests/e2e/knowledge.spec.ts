@@ -69,7 +69,8 @@ test("10 landingów i 10 pełnych podglądów /demo (noindex), /demo zgodne z PD
   for (const s of SLUGS) {
     await page.goto(`/wiedza/${s}`);
     await expect(page.locator("h1")).toHaveCount(1);
-    await expect(page.getByRole("heading", { name: "Odbierz bezpłatny materiał" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: /^Odbierz bezpłatnie: / })).toBeVisible();
+    await expect(page.getByTestId("lm-instant")).toHaveText("Dostęp natychmiast");
     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", new RegExp(`/wiedza/${s}$`));
 
     const demo = await request.get(`/wiedza/${s}/demo`);
@@ -214,4 +215,13 @@ test("demo: pola do uzupełnienia, wymagane minimum, mini-podsumowanie i dołąc
   await admin.getByRole("link", { name: "Czytelnik Demo" }).click();
   await expect(admin.getByTestId("attached-summary")).toContainText("Najbardziej brakuje mi wspólnych wieczorów.");
   await admin.close();
+});
+
+test("telefon: „Pobierz bezpłatnie” przewija od razu do formularza – pole e-mail widoczne na ekranie", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/wiedza/swiadome-rozstanie");
+  await page.waitForLoadState("networkidle");
+  await page.getByTestId("hero-cta-below").click();
+  await expect(page.getByRole("heading", { name: "Odbierz bezpłatnie: Świadome rozstanie – co teraz?" })).toBeInViewport();
+  await expect(page.locator("#lm-email")).toBeInViewport();
 });
