@@ -6,6 +6,7 @@ import { redirect } from "next/navigation";
 import { asStaff, requireStaff } from "@/lib/auth";
 import { audit } from "@/lib/audit";
 import { parseTags, renderMail, resendConfigured, runMailing, sendViaResend, STEP_CODE_RE, type StepRow } from "@/lib/mailing";
+import { parseStepsCsv } from "@/lib/mailing-csv";
 
 type R = { error?: string; ok?: string } | undefined;
 const str = (fd: FormData, k: string) => String(fd.get(k) ?? "").trim();
@@ -128,4 +129,38 @@ export async function contactUnsubscribeAction(_: R, fd: FormData): Promise<R> {
   });
   revalidatePath(`/app/mailing/kontakty/${id}`);
   return { ok: "Kontakt wypisany – nie dostanie więcej wiadomości z sekwencji." };
+}
+
+/** Import e-maili z CSV: dopasowanie po kodzie – istniejące aktualizuje, nowe dodaje; niczego nie usuwa. Błąd w pliku = brak zmian. */
+export async function importStepsCsvAction(_: R, fd: FormData): Promise<R> {
+  const s = await requireStaff("admin");
+  const file = fd.get("file");
+  if (!(file instanceof File) || file.size === 0) return { error: "Wybierz plik CSV." };
+  if (file.size > 2_000_000) return { error: "Plik jest za duży (maks. 2 MB)." };
+  const { rows, errors } = parseStepsCsv(await file.text());
+  if (errors.length) return { error: `Nic nie zmieniono. ${errors.slice(0, 8).join(" · ")}${errors.length > 8 ? ` · …i ${errors.length - 8} więcej` : ""}` };
+  if (!rows.length) return { error: "Brak wierszy do zaimportowania." };
+  const res = await asStaff(s, async (tx) => {
+    let updated = 0;
+    let added = 0;
+    for (const r of rows) {
+      const [ex] = await tx<{ id: string }[]>`select id from mail_steps where code = ${r.code}`;
+      if (ex) {
+        await tx`update mail_steps set sequence_id = ${r.sequence_id}, position = case when ${r.position} > 0 then ${r.position} else position end,
+                   delay_days = ${r.delay_days}, subject = ${r.subject}, preheader = ${r.preheader}, body = ${r.body}, cta_label = ${r.cta_label},
+                   cta_url = ${r.cta_url}, include_tags = ${r.include_tags}, exclude_tags = ${r.exclude_tags}, active = ${r.active}, updated_at = now()
+                 where id = ${ex.id}`;
+        updated++;
+      } else {
+        const [{ pos }] = await tx<{ pos: number }[]>`select coalesce(max(position), 0) + 1 as pos from mail_steps where sequence_id = ${r.sequence_id}`;
+        await tx`insert into mail_steps (sequence_id, code, position, delay_days, subject, preheader, body, cta_label, cta_url, include_tags, exclude_tags, active)
+                 values (${r.sequence_id}, ${r.code}, ${r.position > 0 ? r.position : pos}, ${r.delay_days}, ${r.subject}, ${r.preheader}, ${r.body}, ${r.cta_label}, ${r.cta_url}, ${r.include_tags}, ${r.exclude_tags}, ${r.active})`;
+        added++;
+      }
+    }
+    await audit(tx, s.actor, "mail_steps_imported", "mail_step", null, null, { updated, added });
+    return { updated, added };
+  });
+  revalidatePath("/app/mailing");
+  return { ok: `Zaimportowano: zaktualizowane ${res.updated}, nowe ${res.added}. E-maili spoza pliku nie zmieniono.` };
 }

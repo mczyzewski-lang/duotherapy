@@ -1,13 +1,14 @@
 // Mailing (administrator): dwie ścieżki – przed zakupem (→ Mapa Relacji) i po zakupie – z e-mailami, warunkami tagów i wynikami.
 import Link from "next/link";
-import { runNowAction, saveSequenceAction } from "@/actions/mailing";
+import { importStepsCsvAction, runNowAction, saveSequenceAction } from "@/actions/mailing";
 import { ActionForm, SubmitButton } from "@/components/form-bits";
 import { TagChips } from "@/components/mailing";
 import { Badge, Card, LinkButton, PageTitle } from "@/components/ui";
 import { asStaff, requireStaff } from "@/lib/auth";
 import { system } from "@/lib/db";
 import { env } from "@/lib/env";
-import { ensureDefaults, resendConfigured, type StepRow } from "@/lib/mailing";
+import { ensureDefaults, renderMail, resendConfigured, type StepRow } from "@/lib/mailing";
+import { MailPreviewTip } from "@/components/mail-preview-tip";
 
 export const metadata = { title: "Mailing" };
 export const dynamic = "force-dynamic";
@@ -82,7 +83,7 @@ export default async function MailingPage() {
                   <tr key={st.id} className={st.active ? "" : "opacity-50"}>
                     <td className="py-2.5 font-mono text-xs">/{st.code}/…</td>
                     <td>+{st.delay_days}</td>
-                    <td className="max-w-[260px]"><span className="font-medium text-ink">{st.subject}</span><span className="block truncate text-xs text-muted">CTA → {st.cta_url}</span></td>
+                    <td className="max-w-[260px]"><MailPreviewTip html={renderMail(st, { code: "podglad0", name: "Anna" }).html} subject={st.subject} preheader={st.preheader}><span className="font-medium text-ink">{st.subject}</span></MailPreviewTip><span className="block truncate text-xs text-muted">CTA → {st.cta_url}</span></td>
                     <td><TagChips step={st} /></td>
                     <td>{st.sent}</td>
                     <td>{st.skipped}</td>
@@ -97,6 +98,24 @@ export default async function MailingPage() {
           </Card>
         );
       })}
+
+      <Card className="mb-6 p-6" data-testid="mail-csv">
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div className="max-w-2xl">
+            <h2 className="font-display text-xl text-ink">Treści e-maili w CSV</h2>
+            <p className="mt-1 text-sm text-ink-soft">
+              Pobierz wszystkie e-maile obu ścieżek, popraw treści w arkuszu (Excel, Google Sheets) i wgraj plik z powrotem. E-maile dopasowujemy po kolumnie <b>kod</b>:
+              istniejące są aktualizowane, nowe kody dodawane jako nowe e-maile, a e-maile spoza pliku zostają bez zmian. Jeśli w pliku jest błąd, nic się nie zmieni – zobaczysz, w którym wierszu.
+            </p>
+            <p className="mt-2 text-xs text-muted">Kolumny: sciezka (lead / customer), kod, kolejnosc, dzien, aktywny (tak / nie), temat, preheader, przycisk, link, tylko_z_tagami, bez_tagow, tresc. W treści {"{imie}"} = imię odbiorcy, pusta linia = nowy akapit.</p>
+          </div>
+          <a href="/app/mailing/csv" className="inline-flex min-h-11 items-center gap-2 rounded-full bg-white px-5 text-sm font-semibold text-forest shadow-soft ring-1 ring-sand hover:ring-forest/40" data-testid="mail-csv-download">Pobierz CSV</a>
+        </div>
+        <ActionForm action={importStepsCsvAction as never} className="mt-4 flex flex-wrap items-center gap-3">
+          <input type="file" name="file" accept=".csv,text/csv" required aria-label="Plik CSV z e-mailami" className="text-sm file:mr-3 file:min-h-10 file:rounded-full file:border-0 file:bg-linen file:px-4 file:text-sm file:font-medium file:text-ink" />
+          <SubmitButton size="sm" confirm="Zaimportować e-maile z pliku? Istniejące e-maile o tych samych kodach zostaną nadpisane.">Importuj CSV</SubmitButton>
+        </ActionForm>
+      </Card>
 
       <div className="grid gap-6 lg:grid-cols-2">
         <Card className="p-6">
