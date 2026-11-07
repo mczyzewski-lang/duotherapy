@@ -90,7 +90,8 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
       <ArticleTrack />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c") }} />
       <SiteHeader />
-      <main id="main" className="mx-auto max-w-6xl px-5 pb-16 pt-6 md:pt-10">
+      <main id="main">
+      <div className="mx-auto max-w-6xl px-5 pb-16 pt-6 md:pt-10">
         <nav aria-label="Ścieżka" className="text-xs text-muted">
           <Link href="/wiedza" className="hover:text-forest">Wiedza</Link> / <Link href={ARTICLES_PATH} className="hover:text-forest">Artykuły</Link> / <span>{a.title}</span>
         </nav>
@@ -177,17 +178,31 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
           </aside>
         </div>
 
+      </div>
+
+        {/* segmenty pod artykułem – tło na całą szerokość, każdy kolejny odrobinę ciemniejszy */}
         {related.length > 0 && (
-          <section className="mt-16" aria-labelledby="rel-h">
-            <h2 id="rel-h" className="font-display text-[1.6rem] text-ink sm:text-3xl">Przeczytaj też</h2>
-            <ul className="mt-5 grid gap-5 md:grid-cols-3">{related.map((r) => <li key={r.slug}><ArticleCard a={r} image={images[heroKey(r.slug)]} /></li>)}</ul>
+          <section className="bg-[#f5f0e8] py-12 md:py-16" aria-labelledby="rel-h" data-testid="related-section">
+            <div className="mx-auto max-w-6xl px-5">
+              <h2 id="rel-h" className="font-display text-[1.6rem] text-ink sm:text-3xl">Przeczytaj też</h2>
+              {/* telefon: przewijanie w bok; komputer: siatka */}
+              <ul
+                aria-label="Powiązane artykuły"
+                className="-mx-5 mt-5 flex snap-x snap-mandatory gap-4 overflow-x-auto scroll-px-5 px-5 pb-4 pt-1 [-webkit-overflow-scrolling:touch] [scrollbar-width:none] md:mx-0 md:grid md:grid-cols-3 md:gap-5 md:overflow-visible md:px-0 md:pb-0 [&::-webkit-scrollbar]:hidden"
+                data-testid="related-rail"
+              >
+                {related.map((r) => <li key={r.slug} className="w-[82%] max-w-[22rem] shrink-0 snap-start md:w-auto md:max-w-none"><ArticleCard a={r} image={images[heroKey(r.slug)]} /></li>)}
+              </ul>
+            </div>
           </section>
         )}
 
-        <section className="mt-16" aria-labelledby="mat-h">
-          <h2 id="mat-h" className="font-display text-[1.6rem] text-ink sm:text-3xl">Bezpłatne materiały do tego tematu</h2>
-          <div className="mt-5"><MagnetRail items={magnets} photos={photos} label="Bezpłatne materiały" /></div>
-          <ul className="mt-5 hidden gap-6 md:grid md:grid-cols-3">{magnets.map((m) => <li key={m.slug}><MagnetCard m={m} photo={photos[m.slug]} /></li>)}</ul>
+        <section className="bg-[#eee6da] py-12 md:py-16" aria-labelledby="mat-h" data-testid="materials-section">
+          <div className="mx-auto max-w-6xl px-5">
+            <h2 id="mat-h" className="font-display text-[1.6rem] text-ink sm:text-3xl">Bezpłatne materiały do tego tematu</h2>
+            <div className="mt-5"><MagnetRail items={magnets} photos={photos} label="Bezpłatne materiały" /></div>
+            <ul className="mt-5 hidden gap-6 md:grid md:grid-cols-3">{magnets.map((m) => <li key={m.slug}><MagnetCard m={m} photo={photos[m.slug]} /></li>)}</ul>
+          </div>
         </section>
       </main>
       <SiteFooter contactEmail={s.site.contactEmail} />
