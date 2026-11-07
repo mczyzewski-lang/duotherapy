@@ -77,14 +77,16 @@ export function ArtFigure({ id, title, alt, caption, src }: { id: string; title:
             <span className="grid h-14 w-14 place-items-center rounded-2xl bg-white/80 text-clay ring-1 ring-sand"><Sparkles size={24} aria-hidden /></span>
           </div>
         )}
-        {/* logo w narożniku */}
-        <span className="absolute right-3 top-3 flex items-center gap-1.5 rounded-full bg-white/80 px-2.5 py-1" aria-hidden>
-          <BrandSymbol id={`af-${id}`} className="h-3.5 w-auto" />
-          <span className="font-wordmark text-[12px] font-medium text-forest">DUO®</span>
-        </span>
       </div>
       <figcaption className="px-5 pb-6 pt-4 sm:px-7 sm:pb-7">
-        <p id={`${id}-t`} className="font-display text-[1.2rem] leading-snug text-ink">{title}</p>
+        <div className="flex items-start justify-between gap-3">
+          <p id={`${id}-t`} className="font-display text-[1.2rem] leading-snug text-ink">{title}</p>
+          {/* logo obok tytułu – nie nachodzi na grafikę ani tekst */}
+          <span className="mt-0.5 flex shrink-0 items-center gap-1.5 rounded-full bg-white/80 px-2.5 py-1" aria-hidden>
+            <BrandSymbol id={`af-${id}`} className="h-3.5 w-auto" />
+            <span className="font-wordmark text-[12px] font-medium text-forest">DUO®</span>
+          </span>
+        </div>
         <p className="mt-1.5 text-[15px] leading-relaxed text-ink-soft">{caption}</p>
       </figcaption>
       {/* jeden wewnętrzny cień na całą figurę (grafika + podpis) – bez szwu, bez obramowania */}
@@ -138,7 +140,7 @@ export function ArticleBody({ a, photos, images = {}, hidden = [] }: { a: Articl
             const safety = b.tone === "safety";
             const Icon = safety ? ShieldAlert : Info;
             return (
-              <div key={i} className={clsx("mt-6 flex gap-3 rounded-2xl p-4 sm:p-5", safety ? "bg-alert-soft/60 ring-1 ring-alert/20" : "bg-sage-soft/60 ring-1 ring-sage/40")}>
+              <div key={i} className={clsx("mt-6 flex gap-3 rounded-2xl p-4 sm:p-5", safety ? "inset-tint bg-alert-soft/60" : "inset-tint bg-sage-soft/60")}>
                 <Icon size={20} className={clsx("mt-0.5 shrink-0", safety ? "text-alert" : "text-forest")} aria-hidden />
                 <div>
                   <p className="font-semibold text-ink">{b.title}</p>

@@ -69,7 +69,7 @@ test("10 landingów i 10 pełnych podglądów /demo (noindex), /demo zgodne z PD
   for (const s of SLUGS) {
     await page.goto(`/wiedza/${s}`);
     await expect(page.locator("h1")).toHaveCount(1);
-    await expect(page.getByRole("heading", { name: /^Odbierz bezpłatnie: / })).toBeVisible();
+    await expect(page.getByRole("heading", { name: /^Odbierz bezpłatnie:/ })).toBeVisible();
     await expect(page.getByTestId("lm-instant")).toHaveText("Dostęp natychmiast");
     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", new RegExp(`/wiedza/${s}$`));
 
@@ -217,11 +217,18 @@ test("demo: pola do uzupełnienia, wymagane minimum, mini-podsumowanie i dołąc
   await admin.close();
 });
 
-test("telefon: „Pobierz bezpłatnie” przewija od razu do formularza – pole e-mail widoczne na ekranie", async ({ page }) => {
+test("telefon: „Pobierz” przewija od razu do formularza, „Zajrzyj do środka” – do podglądu", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/wiedza/swiadome-rozstanie");
   await page.waitForLoadState("networkidle");
-  await page.getByTestId("hero-cta-below").click();
-  await expect(page.getByRole("heading", { name: "Odbierz bezpłatnie: Świadome rozstanie – co teraz?" })).toBeInViewport();
+  // pod okładką: „Zajrzyj do środka” (nie drugi raz „Pobierz bezpłatnie”) → podgląd materiału
+  await expect(page.getByTestId("hero-peek")).toHaveText(/Zajrzyj do środka/);
+  await page.getByTestId("hero-peek").click();
+  await expect(page.getByRole("heading", { name: "Zajrzyj do środka" })).toBeInViewport();
+  // „Pobierz” w nagłówku → kontener z formularzem, pole e-mail na ekranie
+  await page.goto("/wiedza/swiadome-rozstanie");
+  await page.waitForLoadState("networkidle");
+  await page.locator('header a[href="#odbierz"]').click();
+  await expect(page.getByRole("heading", { name: /Odbierz bezpłatnie:\s*Świadome rozstanie – co teraz\?/ })).toBeInViewport();
   await expect(page.locator("#lm-email")).toBeInViewport();
 });

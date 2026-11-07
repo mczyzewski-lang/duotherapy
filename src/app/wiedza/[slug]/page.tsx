@@ -1,5 +1,5 @@
 // Landing bezpłatnego materiału – wspólny szablon dla wszystkich materiałów (treść z rejestru).
-import { ArrowRight, Check, Clock, FileText } from "lucide-react";
+import { ArrowDown, ArrowRight, Check, Clock, FileText } from "lucide-react";
 import type { Metadata } from "next";
 import { breadcrumbJsonLd, orgId, pageMeta } from "@/lib/seo";
 import { JsonLd } from "@/components/json-ld";
@@ -91,8 +91,8 @@ export default async function MagnetLanding({ params }: { params: Promise<{ slug
                 <Cover m={m} mode="screen" compact hero photo={photos[m.slug]} />
               </CoverBook>
               {/* telefon: przycisk także pod okładką */}
-              <a href="#odbierz" className="mt-4 flex min-h-14 items-center justify-center gap-2 rounded-full bg-clay px-7 text-[16px] font-semibold text-white shadow-[0_10px_30px_-10px_rgba(169,81,47,0.7)] md:hidden" data-testid="hero-cta-below">
-                Pobierz bezpłatnie <ArrowRight size={18} aria-hidden />
+              <a href="#w-srodku" className="mt-4 flex min-h-12 items-center justify-center gap-2 rounded-full bg-white px-6 text-[15px] font-semibold text-forest ring-1 ring-forest/30 md:hidden" data-testid="hero-peek">
+                Zajrzyj do środka <ArrowDown size={18} className="animate-nudge-down" aria-hidden />
               </a>
             </div>
           </div>
@@ -113,7 +113,7 @@ export default async function MagnetLanding({ params }: { params: Promise<{ slug
         </section>
 
         {/* 3. PRAWDZIWY PODGLĄD */}
-        <section className="overflow-x-clip" aria-labelledby="pv-h">
+        <section id="w-srodku" className="scroll-mt-6 overflow-x-clip" aria-labelledby="pv-h">
           <div className="mx-auto max-w-6xl px-5 py-12 md:py-16">
             <h2 id="pv-h" className="font-display text-[1.75rem] leading-tight text-ink sm:text-4xl">Zajrzyj do środka</h2>
             <p className="mt-3 max-w-2xl leading-relaxed text-ink-soft">Fragmenty pochodzą z materiału, który otrzymasz. {m.previewNote}</p>
@@ -168,7 +168,7 @@ export default async function MagnetLanding({ params }: { params: Promise<{ slug
               <p className="inline-flex items-center gap-2 rounded-full bg-clay-soft px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-clay">
                 <MagnetIcon icon={m.icon} id={`frm-${m.id}`} className="h-4 w-4" /> Bezpłatnie · {m.format.split(" · ")[0]}
               </p>
-              <h2 id="form-h" className="mt-3 font-display text-[1.75rem] leading-tight text-ink sm:text-[2rem]">Odbierz bezpłatnie: {m.short}</h2>
+              <h2 id="form-h" className="mt-3 font-display text-[1.75rem] leading-tight text-ink sm:text-[2rem]">Odbierz bezpłatnie:<br />{m.short}</h2>
               <p className="mb-5 mt-2 text-[15px] leading-relaxed text-ink-soft">Podaj adres e-mail – od razu otworzysz materiał, a link wyślemy też na Twoją skrzynkę.</p>
               <LeadMagnetForm
                 slug={m.slug}

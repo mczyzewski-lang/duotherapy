@@ -153,7 +153,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
             {a.faq.length > 0 && (
               <section className="mt-14" aria-labelledby="faq-h">
                 <h2 id="faq-h" className="font-display text-[1.7rem] text-ink sm:text-[2rem]">Najczęstsze pytania</h2>
-                <div className="mt-5 divide-y divide-sand rounded-3xl bg-white shadow-soft ring-1 ring-sand">
+                <div className="soft-inset mt-5 divide-y divide-sand/70 rounded-3xl">
                   {a.faq.map((f) => (
                     <details key={f.q} className="group px-5 py-4 sm:px-6">
                       <summary className="flex cursor-pointer list-none items-center justify-between gap-4 font-medium text-ink">{f.q}<span className="text-xl text-clay transition group-open:rotate-45" aria-hidden>+</span></summary>

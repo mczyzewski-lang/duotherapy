@@ -170,6 +170,7 @@ export default async function Home() {
         {/* KOŃCOWE CTA */}
         <section className="px-5 py-16" aria-labelledby="end-h">
           <div className="mx-auto max-w-4xl rounded-[2rem] bg-gradient-to-br from-forest to-forest-800 px-6 py-12 text-center text-white shadow-soft sm:px-12">
+            <span className="mx-auto mb-4 inline-flex items-center rounded-full bg-white/90 px-3 py-2 shadow-soft" data-testid="end-mapa-symbol"><MapaSymbol id="end-mapa" className="h-5 w-auto" title="Mapa Relacji" /></span>
             <h2 id="end-h" className="font-display text-[1.9rem] leading-tight sm:text-4xl">Nie musisz dziś wiedzieć, która droga jest Twoja</h2>
             <p className="mx-auto mt-4 max-w-xl leading-relaxed text-white/85">Zacznij od zrozumienia – Mapa Relacji pomoże zobaczyć, gdzie jesteście i co dalej.</p>
             <Link href="/mapa-relacji" className="mt-8 inline-flex min-h-14 items-center justify-center gap-2 rounded-full bg-clay px-7 text-[16px] font-semibold text-white">
