@@ -226,16 +226,17 @@ path.map-line[stroke-dasharray="6 7"] { stroke-dasharray: 6 7; stroke-dashoffset
   mask-image: linear-gradient(to bottom, transparent, #000 10%, #000 90%, transparent);
 }
 .mask-fade-preview {
-  /* telefon: karta „To dopiero fragment” jest pod podglądem, więc treść zanika dopiero przy samym dole */
-  -webkit-mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
-  mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
+  /* telefon: karta „To dopiero fragment” jest pod podglądem; zanikanie mocniejsze i narasta przy przewijaniu (--pv) */
+  -webkit-mask-image: linear-gradient(to bottom, black calc(58% - var(--pv, 0) * 35%), rgba(0, 0, 0, 0.35) calc(84% - var(--pv, 0) * 30%), transparent calc(96% - var(--pv, 0) * 26%));
+  mask-image: linear-gradient(to bottom, black calc(58% - var(--pv, 0) * 35%), rgba(0, 0, 0, 0.35) calc(84% - var(--pv, 0) * 30%), transparent calc(96% - var(--pv, 0) * 26%));
 }
 @media (min-width: 640px) {
   .mask-fade-preview {
-    -webkit-mask-image: linear-gradient(to bottom, black 30%, transparent 100%);
-    mask-image: linear-gradient(to bottom, black 30%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, black calc(25% - var(--pv, 0) * 15%), rgba(0, 0, 0, 0.3) calc(60% - var(--pv, 0) * 20%), transparent calc(88% - var(--pv, 0) * 18%));
+    mask-image: linear-gradient(to bottom, black calc(25% - var(--pv, 0) * 15%), rgba(0, 0, 0, 0.3) calc(60% - var(--pv, 0) * 20%), transparent calc(88% - var(--pv, 0) * 18%));
   }
 }
+
 
 /* Wskazówki (ramki) w artykułach: kolor zostaje, dochodzi delikatny wewnętrzny cień */
 .inset-tint {

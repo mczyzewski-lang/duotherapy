@@ -22,6 +22,8 @@ describe("rejestr materiałów „Wiedza”", () => {
     expect(new Set(MAGNETS.map((m) => m.id)).size).toBe(27);
     expect(new Set(MAGNETS.map((m) => m.n)).size).toBe(27);
     expect(CATEGORIES.map((c) => c.items.length)).toEqual([9, 12, 6]);
+    // numer materiału trafia do lejka jako „step” – ograniczenie w bazie: 1–99 (migracja 029)
+    for (const m of MAGNETS) expect(m.n, m.slug).toBeLessThanOrEqual(99);
   });
 
   it("każdy materiał: 3–5 elementów „co otrzymasz”, ≤ 4 punkty „dla kogo”, 3 wiadomości, poprawny podgląd", () => {

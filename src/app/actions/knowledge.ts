@@ -5,7 +5,7 @@
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { encrypt, hashToken, newToken } from "@/lib/crypto";
-import { system } from "@/lib/db";
+import { system, type Tx } from "@/lib/db";
 import { env } from "@/lib/env";
 import { ATTRIBUTION_KEYS } from "@/lib/mapa-quiz";
 import { customerMailConfigured, notifyCustomer } from "@/lib/notify";
@@ -36,7 +36,26 @@ const Schema = z.object({
 
 export type KnowledgeResult = { ok: true; emailSent: boolean } | { ok: false; error: string; field?: string };
 
+/** Krok dodatkowy (analityka, nurturing) w savepoincie: błąd jest logowany, a zapis materiału idzie dalej. */
+async function optional(tx: Tx, what: string, fn: (sp: Tx) => Promise<unknown>) {
+  try {
+    await tx.savepoint((sp) => fn(sp as unknown as Tx));
+  } catch (e) {
+    console.error(`[wiedza] pominięto krok „${what}”:`, e instanceof Error ? e.message : e);
+  }
+}
+
 export async function submitKnowledgeLead(input: z.input<typeof Schema>): Promise<KnowledgeResult> {
+  try {
+    return await submitKnowledgeLeadInner(input);
+  } catch (e) {
+    // błąd po naszej stronie (np. baza) – zapis w logach serwera, uczciwy komunikat zamiast „sprawdź połączenie”
+    console.error("[wiedza] zapis na materiał nie powiódł się:", e);
+    return { ok: false, error: "Coś poszło nie tak po naszej stronie. Spróbuj ponownie za chwilę – jeśli to się powtórzy, napisz do nas." };
+  }
+}
+
+async function submitKnowledgeLeadInner(input: z.input<typeof Schema>): Promise<KnowledgeResult> {
   const parsed = Schema.safeParse(input);
   if (!parsed.success) {
     const i = parsed.error.issues[0];
@@ -85,30 +104,38 @@ export async function submitKnowledgeLead(input: z.input<typeof Schema>): Promis
       (${row.id}, 'marketing', ${marketing}, ${v}, ${s.legal.contentMarketingConsent})`;
     if (m.slug === "7-dni-lepszych-rozmow")
       await tx`insert into content_lead_consents (content_lead_id, kind, granted, text_version, text_snapshot) values (${row.id}, 'challenge_series', ${series}, ${v}, ${s.legal.contentSeriesConsent})`;
-    if (s.site.funnelTracking && anon)
-      await tx`insert into funnel_events (event, anon_id, step, utm_source, utm_medium, utm_campaign, path)
-               values ('lead_magnet_submitted', ${anon}, ${m.n}, ${attribution.utm_source ?? null}, ${attribution.utm_medium ?? null}, ${attribution.utm_campaign ?? null}, '/wiedza/*')`;
     await tx`update content_leads set access_token_hash = ${hashToken(access)}, short_code = ${newShortCode()} where id = ${row.id}`;
+    // analityka i nurturing są dodatkiem: ich błąd (np. ograniczenie w bazie) nie może zablokować odbioru materiału
+    if (s.site.funnelTracking && anon)
+      await optional(tx, "funnel lead_magnet_submitted", (sp) => sp`insert into funnel_events (event, anon_id, step, utm_source, utm_medium, utm_campaign, path)
+               values ('lead_magnet_submitted', ${anon}, ${m.n}, ${attribution.utm_source ?? null}, ${attribution.utm_medium ?? null}, ${attribution.utm_campaign ?? null}, '/wiedza/*')`);
     // nurturing: kontakt z tagiem materiału (wiadomości marketingowe tylko przy zgodzie – pilnuje tego sekwencja)
-    await captureContact(tx, { email: d.email, name: d.name || null, tags: [`lm-${m.slug}`, ...(series ? ["seria-7-dni"] : []), d.relationship, d.children === "tak" ? "dzieci" : "bez-dzieci"], marketing });
+    await optional(tx, "nurturing captureContact", (sp) => captureContact(sp as Tx, { email: d.email, name: d.name || null, tags: [`lm-${m.slug}`, ...(series ? ["seria-7-dni"] : []), d.relationship, d.children === "tak" ? "dzieci" : "bez-dzieci"], marketing }));
     return { id: row.id, status: "pending", send: true, s };
   });
 
   await setContentCookie(access);
   if (!r.send) return { ok: true, emailSent: r.status === "sent" };
 
-  // dostarczenie: tylko gdy skonfigurowano wysyłkę – nie udajemy, że e-mail wyszedł
-  const [{ short_code }] = await system((tx) => tx<{ short_code: string }[]>`select short_code from content_leads where id = ${r.id}`);
-  const mail = deliveryMail(m, d.name || null, env.appUrl, { email: r.s.site.contactEmail, phone: r.s.site.contactPhone }, `${env.appUrl}/plan/${short_code}`);
-  const configured = customerMailConfigured();
-  const sent = configured ? await notifyCustomer(d.email, mail.subject, mail.text) : false;
-  const status = !configured ? "not_configured" : sent ? "sent" : "failed";
-  await system(async (tx) => {
-    await tx`update content_leads set delivery_status = ${status}, delivered_at = ${sent ? new Date() : null} where id = ${r.id}`;
-    await tx`insert into content_lead_messages (content_lead_id, kind, status, error) values (${r.id}, 'delivery', ${status}, ${status === "failed" ? "błąd wysyłki" : null})`;
-    if (configured && r.s.site.funnelTracking && anon)
-      await tx`insert into funnel_events (event, anon_id, step, path) values (${sent ? "lead_magnet_delivery_success" : "lead_magnet_delivery_error"}, ${anon}, ${m.n}, '/wiedza/*')`;
-  });
+  // dostarczenie: tylko gdy skonfigurowano wysyłkę – nie udajemy, że e-mail wyszedł.
+  // Materiał jest już zapisany i otwarty w tej przeglądarce – błąd wysyłki nie może zamienić sukcesu w błąd formularza.
+  let sent = false;
+  try {
+    // dostarczenie: tylko gdy skonfigurowano wysyłkę – nie udajemy, że e-mail wyszedł
+    const [{ short_code }] = await system((tx) => tx<{ short_code: string }[]>`select short_code from content_leads where id = ${r.id}`);
+    const mail = deliveryMail(m, d.name || null, env.appUrl, { email: r.s.site.contactEmail, phone: r.s.site.contactPhone }, `${env.appUrl}/plan/${short_code}`);
+    const configured = customerMailConfigured();
+    sent = configured ? await notifyCustomer(d.email, mail.subject, mail.text) : false;
+    const status = !configured ? "not_configured" : sent ? "sent" : "failed";
+    await system(async (tx) => {
+      await tx`update content_leads set delivery_status = ${status}, delivered_at = ${sent ? new Date() : null} where id = ${r.id}`;
+      await tx`insert into content_lead_messages (content_lead_id, kind, status, error) values (${r.id}, 'delivery', ${status}, ${status === "failed" ? "błąd wysyłki" : null})`;
+      if (configured && r.s.site.funnelTracking && anon)
+        await tx`insert into funnel_events (event, anon_id, step, path) values (${sent ? "lead_magnet_delivery_success" : "lead_magnet_delivery_error"}, ${anon}, ${m.n}, '/wiedza/*')`;
+    });
+  } catch (e) {
+    console.error("[wiedza] dostarczenie materiału nie powiodło się:", e);
+  }
   revalidatePath("/app/wiedza");
   return { ok: true, emailSent: sent };
 }
