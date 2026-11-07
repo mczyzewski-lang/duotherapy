@@ -1,6 +1,6 @@
 "use client";
 
-// Menu strony: „Jak pomagamy” (Mapa Relacji jako start, pod nią trzy ścieżki) i „Wiedza” (10 materiałów).
+// Menu strony: „Jak pomagamy” (Mapa Relacji jako start, pod nią trzy ścieżki) i „Wiedza” (materiały; max 6 na kategorię + link do reszty).
 // Desktop: panel na klik lub najechanie; Esc zamyka i wraca do przycisku. Telefon (i landingi materiałów): menu hamburgerowe.
 import clsx from "clsx";
 import { ChevronDown, Menu, X } from "lucide-react";
@@ -12,6 +12,8 @@ import { MagnetIcon } from "@/components/knowledge/icons";
 import { PATHS } from "@/content/paths";
 import { CATEGORIES } from "@/knowledge/registry";
 
+const MENU_PER_CATEGORY = 6;
+
 function KnowledgeItems({ onPick, dense, hidden = [] }: { onPick?: () => void; dense?: boolean; hidden?: string[] }) {
   return (
     <>
@@ -19,7 +21,7 @@ function KnowledgeItems({ onPick, dense, hidden = [] }: { onPick?: () => void; d
         <div key={c.key}>
           <p className="px-2 text-[10.5px] font-semibold uppercase tracking-[0.18em] text-clay">{c.label}</p>
           <ul className={clsx("mt-2", dense ? "space-y-0.5" : "space-y-1")}>
-            {c.items.map((m) => (
+            {c.items.slice(0, MENU_PER_CATEGORY).map((m) => (
               <li key={m.slug}>
                 <Link href={`/wiedza/${m.slug}`} onClick={onPick} className="group flex items-start gap-3 rounded-xl p-2 transition hover:bg-linen focus-visible:bg-linen">
                   <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-white shadow-soft ring-1 ring-sand">
@@ -33,6 +35,11 @@ function KnowledgeItems({ onPick, dense, hidden = [] }: { onPick?: () => void; d
               </li>
             ))}
           </ul>
+          {c.items.length > MENU_PER_CATEGORY && (
+            <Link href={`/wiedza?kategoria=${c.key}`} onClick={onPick} className="mt-1 block px-2 text-[13px] font-semibold text-forest hover:underline">
+              + {c.items.length - MENU_PER_CATEGORY} więcej w tej kategorii →
+            </Link>
+          )}
         </div>
       ))}
     </>

@@ -1,4 +1,4 @@
-// Strona zbiorcza „Wiedza” – 10 bezpłatnych materiałów w trzech kategoriach (filtr bez przeładowania).
+// Strona zbiorcza „Wiedza” – bezpłatne materiały w trzech kategoriach (filtr bez przeładowania, ?kategoria= z menu).
 import type { Metadata } from "next";
 import { LazyList } from "@/components/articles/lazy-list";
 import { pageMeta } from "@/lib/seo";
@@ -25,7 +25,8 @@ export const metadata: Metadata = pageMeta({
   kicker: "Bezpłatne materiały i artykuły",
 });
 
-export default async function KnowledgeHub() {
+export default async function KnowledgeHub({ searchParams }: { searchParams: Promise<{ kategoria?: string }> }) {
+  const { kategoria } = await searchParams;
   const s = await getSettings();
   const photos = await coverPhotoMap();
   const images = await articleImageMap();
@@ -39,7 +40,7 @@ export default async function KnowledgeHub() {
         <p className="mt-4 max-w-2xl text-[17px] leading-relaxed text-ink-soft">
           Bezpłatne poradniki, pytania i ćwiczenia przygotowane przez DUO. Wybierz temat, który jest teraz dla Ciebie ważny.
         </p>
-        <KnowledgeGrid photos={photos} hidden={[...(await hiddenMagnets())]} />
+        <KnowledgeGrid photos={photos} hidden={[...(await hiddenMagnets())]} initialCategory={kategoria} />
 
         {/* ARTYKUŁY – pod materiałami */}
         <section className="mt-20" aria-labelledby="art-h">

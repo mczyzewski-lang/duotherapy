@@ -11,10 +11,15 @@ import { CoverBook } from "./cover-book";
 import { Cover } from "./doc";
 import { MagnetIcon } from "./icons";
 
-export function KnowledgeGrid({ photos = {}, hidden = [] }: { photos?: Record<string, string>; hidden?: string[] }) {
-  const [cat, setCat] = useState<Category | "all">("all");
+const INITIAL = 9;
+
+export function KnowledgeGrid({ photos = {}, hidden = [], initialCategory }: { photos?: Record<string, string>; hidden?: string[]; initialCategory?: string }) {
+  const [cat, setCat] = useState<Category | "all">(CATEGORIES.some((c) => c.key === initialCategory) ? (initialCategory as Category) : "all");
   const all = MAGNETS.filter((m) => !hidden.includes(m.slug));
-  const list = cat === "all" ? all : all.filter((m) => m.category === cat);
+  const [more, setMore] = useState(false);
+  const filtered = cat === "all" ? all : all.filter((m) => m.category === cat);
+  // „Wszystkie”: najpierw 9 kart (3 rzędy), reszta po kliknięciu – artykuły pod spodem nie giną pod 20 okładkami
+  const list = cat === "all" && !more ? filtered.slice(0, INITIAL) : filtered;
   return (
     <>
       <div role="group" aria-label="Filtruj według kategorii" className="mt-8 flex flex-wrap gap-2">
@@ -51,6 +56,13 @@ export function KnowledgeGrid({ photos = {}, hidden = [] }: { photos?: Record<st
           </li>
         ))}
       </ul>
+      {list.length < filtered.length && (
+        <div className="mt-6 text-center">
+          <button type="button" onClick={() => setMore(true)} className="inline-flex min-h-12 items-center gap-2 rounded-full bg-white px-6 text-[15px] font-semibold text-forest ring-1 ring-forest/30 hover:bg-sage-soft" data-testid="magnets-more">
+            Pokaż wszystkie materiały ({filtered.length})
+          </button>
+        </div>
+      )}
     </>
   );
 }
