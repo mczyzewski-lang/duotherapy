@@ -43,17 +43,17 @@ export function MagnetCta({ slug, hook, photo, idSuffix, side }: { slug: string;
   const m = magnetBySlug(slug);
   if (!m) return null;
   return (
-    <aside className={clsx("overflow-hidden rounded-[1.6rem] bg-gradient-to-br from-clay-soft/80 via-ivory to-white shadow-soft ring-1 ring-clay/20", side ? "text-center" : "my-8")} aria-label={`Bezpłatny materiał: ${m.short}`} data-testid="article-cta">
+    <aside className={clsx("relative overflow-hidden rounded-[1.6rem] bg-gradient-to-br from-forest to-forest-800 text-white shadow-[0_24px_50px_-28px_rgba(31,42,35,0.7)]", side ? "text-center" : "my-8")} aria-label={`Bezpłatny materiał: ${m.short}`} data-testid="article-cta">
       <div className={clsx("grid items-center gap-4 p-5", !side && "sm:grid-cols-[8.5rem_1fr] sm:gap-6 sm:p-6")}>
         <div className="mx-auto h-[11rem] w-[8.4rem]">
           <div className="w-[14rem] origin-top-left scale-[0.6]"><CoverBook><Cover m={m} mode="screen" compact photo={photo} idSuffix={idSuffix} /></CoverBook></div>
         </div>
         <div>
-          <p className={clsx("flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-clay", side && "justify-center")}>
+          <p className={clsx("flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#f3c9b2]", side && "justify-center")}>
             <MagnetIcon icon={m.icon} id={`acta-${m.id}${idSuffix}`} className="h-4 w-4" /> Bezpłatny materiał · {m.format.split(" · ")[0]}
           </p>
-          <p className="mt-2 font-display text-[1.35rem] leading-snug text-ink">{m.short}</p>
-          <p className="mt-1.5 text-[15px] leading-relaxed text-ink-soft">{hook}</p>
+          <p className="mt-2 font-display text-[1.35rem] leading-snug text-white">{m.short}</p>
+          <p className="mt-1.5 text-[15px] leading-relaxed text-white/80">{hook}</p>
           <Link href={`/wiedza/${m.slug}#odbierz`} data-article-cta={m.n}
             className={clsx("btn-convex mt-4 inline-flex min-h-12 items-center justify-center gap-2 rounded-full px-6 text-[15px] font-bold text-white", side && "w-full")}>
             Pobierz bezpłatnie <ArrowRight size={17} aria-hidden />
