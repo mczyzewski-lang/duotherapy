@@ -6,6 +6,7 @@ import { ARTICLES, articleBySlug } from "@/content/articles";
 
 export { ART_STYLE, ART_STYLE_VERSION } from "./art-style";
 import { ART_STYLE, ART_STYLE_VERSION } from "./art-style";
+import { artPromptExtra, withExtra } from "./art-extra";
 
 export const heroKey = (slug: string) => `${slug}--hero`;
 export const artKey = (slug: string, key: string) => `${slug}--${key}`;
@@ -50,7 +51,7 @@ export async function outdatedArticleImages(): Promise<Set<string>> {
 export async function generateArticleImage(key: string): Promise<{ ok: true; model: string } | { ok: false; error: string }> {
   const job = allArticleImageJobs().find((j) => j.key === key);
   if (!job) return { ok: false, error: "Nieznana grafika." };
-  const r = await generateImageBytes(`${job.prompt}\n\n${ART_STYLE}`, "landscape");
+  const r = await generateImageBytes(withExtra(`${job.prompt}\n\n${ART_STYLE}`, await artPromptExtra()), "landscape");
   if (!r.ok) return r;
   await system((tx) => tx`insert into article_images (key, mime, data, model, style_version) values (${key}, ${r.mime}, ${r.data}, ${r.model}, ${ART_STYLE_VERSION})
                           on conflict (key) do update set mime = excluded.mime, data = excluded.data, model = excluded.model, style_version = excluded.style_version, updated_at = now()`);

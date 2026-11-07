@@ -5,6 +5,7 @@ import { asStaff, requireStaff } from "@/lib/auth";
 import { MAGNETS } from "@/knowledge/registry";
 import { CoverAdmin } from "@/components/knowledge/cover-admin";
 import { MagnetVisibilityAdmin } from "@/components/knowledge/visibility-admin";
+import { ArtExtraAdmin } from "@/components/knowledge/art-extra-admin";
 import { ArticleImagesAdmin } from "@/components/articles/images-admin";
 import { customerMailConfigured } from "@/lib/notify";
 
@@ -61,6 +62,7 @@ export default async function KnowledgeAdmin({ searchParams }: { searchParams: P
       </div>
 
       <MagnetVisibilityAdmin />
+      <ArtExtraAdmin />
       <CoverAdmin />
       <ArticleImagesAdmin />
 

@@ -13,6 +13,7 @@ export const COVER_STYLE = [
 export const coverGenConfigured = () => Boolean(process.env.OPENAI_API_KEY);
 /** Wariant okładki: zdjęcie albo grafika 2D (maskotki DUO). Który pokazuje strona – globalny wybór w panelu. */
 import { COVER_ART_LAYOUT, coverPhotoUrl, type CoverVariant } from "./cover-url";
+import { artPromptExtra, withExtra } from "./art-extra";
 export { COVER_ART_LAYOUT, coverPhotoUrl, isIllustrationCover, type CoverVariant } from "./cover-url";
 export const COVER_VARIANTS: CoverVariant[] = ["photo", "illustration"];
 export const COVER_VARIANT_LABEL: Record<CoverVariant, string> = { photo: "Zdjęcie", illustration: "Grafika 2D" };
@@ -115,7 +116,8 @@ export async function generateCoverPhoto(slug: string, variant: CoverVariant = "
   const c = COVERS[slug];
   const brief = variant === "illustration" ? c?.artBrief : c?.photoBrief;
   if (!brief) return { ok: false, error: "Brak projektu okładki dla tego materiału." };
-  const r = await generateImageBytes(`${brief}\n\n${variant === "illustration" ? COVER_ART_STYLE : COVER_STYLE}`, variant === "illustration" ? "landscape" : "portrait");
+  const base = `${brief}\n\n${variant === "illustration" ? COVER_ART_STYLE : COVER_STYLE}`;
+  const r = await generateImageBytes(variant === "illustration" ? withExtra(base, await artPromptExtra()) : base, variant === "illustration" ? "landscape" : "portrait");
   if (!r.ok) return r;
   const layout = variant === "illustration" ? COVER_ART_LAYOUT : 1;
   await system((tx) => tx`insert into cover_images (slug, variant, mime, data, model, layout_version) values (${slug}, ${variant}, ${r.mime}, ${r.data}, ${r.model}, ${layout})

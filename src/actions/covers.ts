@@ -137,3 +137,16 @@ export async function stopAllArticleImagesAction(_: R): Promise<R> {
   revalidatePath("/app/wiedza");
   return { ok: "Zatrzymano po bieżących grafikach." };
 }
+
+/** Dodatek do promptu grafik 2D (ilustracje artykułów i okładki 2D). */
+export async function saveArtExtraAction(_: R, fd: FormData): Promise<R> {
+  const s = await requireStaff("admin");
+  const extra = String(fd.get("extra") ?? "").trim().slice(0, 600);
+  await asStaff(s, async (tx) => {
+    await tx`insert into app_settings (key, value, updated_by, updated_at) values ('art', ${tx.json({ extra })}, ${s.user.id}, now())
+             on conflict (key) do update set value = excluded.value, updated_by = excluded.updated_by, updated_at = now()`;
+    await audit(tx, s.actor, "art_prompt_extra_saved", "app_settings", null, null, { length: extra.length });
+  });
+  revalidatePath("/app/wiedza");
+  return { ok: extra ? "Zapisano – dodatek trafi do każdego kolejnego generowania grafik 2D." : "Zapisano – bez dodatku do promptu." };
+}

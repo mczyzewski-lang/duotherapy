@@ -52,6 +52,7 @@ describe("okładki zdjęciowe", () => {
     expect((await generateCoverPhoto("petla-konfliktu", "illustration")).ok).toBe(true);
     expect(prompts[0]).toContain("DUO mascots");
     expect(prompts[0]).toContain("circular track");
+    expect(prompts[0]).toContain("niech ludzik nie ma żadnego stroke"); // domyślny dodatek do promptu grafik 2D
     // domyślnie zdjęcia – grafika 2D nie trafia na stronę
     expect((await coverPhotoMap())["petla-konfliktu"]).toBeUndefined();
     expect((await coverState()).all.illustration["petla-konfliktu"]).toMatch(/\?s=illustration&l=2&v=\d+$/);

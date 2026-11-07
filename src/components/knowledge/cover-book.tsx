@@ -12,7 +12,7 @@ export function CoverBook({ children, className, size = "md" }: { children: Reac
           "relative transition-transform duration-500 ease-out [transform-style:preserve-3d] motion-reduce:transition-none",
           "[transform:rotateY(-16deg)_rotateX(3deg)] group-hover/book:[transform:rotateY(-7deg)_rotateX(1deg)] group-hover:[transform:rotateY(-7deg)_rotateX(1deg)]",
           // sama okładka: grzbiet po lewej mniej zaokrąglony, cień rzucany w prawo
-          "[&>section]:rounded-l-[5px] [&>section]:rounded-r-[14px] [&>section]:shadow-[16px_22px_34px_-14px_rgba(40,28,20,.55),2px_2px_6px_-2px_rgba(40,28,20,.35)]",
+          "[&>section]:rounded-l-[5px] [&>section]:rounded-r-[14px] [&>section]:shadow-[16px_22px_34px_-14px_rgba(40,28,20,.42),2px_2px_6px_-2px_rgba(40,28,20,.22)]",
         )}
       >
         {/* blok kartek wystający zza okładki */}
@@ -27,7 +27,7 @@ export function CoverBook({ children, className, size = "md" }: { children: Reac
         />
         {children}
         {/* grzbiet: zagięcie i odblask */}
-        <div className="pointer-events-none absolute inset-y-0 left-0 w-[9%] rounded-l-[5px] bg-[linear-gradient(to_right,rgba(0,0,0,.32),rgba(255,255,255,.18)_45%,rgba(0,0,0,.08)_70%,transparent)]" aria-hidden />
+        <div className="pointer-events-none absolute inset-y-0 left-0 w-[9%] rounded-l-[5px] bg-[linear-gradient(to_right,rgba(0,0,0,.14),rgba(255,255,255,.22)_45%,rgba(0,0,0,.04)_70%,transparent)]" aria-hidden />
         {/* połysk okładki */}
         <div className="pointer-events-none absolute inset-0 rounded-l-[5px] rounded-r-[14px] bg-[linear-gradient(105deg,transparent_40%,rgba(255,255,255,.14)_55%,transparent_70%)]" aria-hidden />
       </div>

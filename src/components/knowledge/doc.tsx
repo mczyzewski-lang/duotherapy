@@ -97,7 +97,7 @@ export function Cover({ m, mode, compact, hero, photo, idSuffix = "" }: { m: Lea
       </div>
       {/* grafika 2D: duży, jasny pas między tytułem a cytatem; kategoria w jasnej plakietce na dolnej krawędzi grafiki */}
       {art && photoSrc && (
-        <div className={clsx("relative flex flex-1 flex-col", sm ? "-mx-4 mt-1 min-h-[6.5rem]" : "-mx-7 mt-3 min-h-[13rem] sm:-mx-10")}>
+        <div className={clsx("relative flex min-h-0 flex-1 flex-col", sm ? "-mx-4 mt-1 min-h-[6.5rem]" : compact ? "-mx-4 mt-2 min-h-[7rem]" : "-mx-7 mt-3 min-h-[13rem] sm:-mx-10")}>
           <div className="relative flex-1 overflow-hidden" data-testid="cover-art">
             <img
               src={photoSrc}
@@ -119,7 +119,7 @@ export function Cover({ m, mode, compact, hero, photo, idSuffix = "" }: { m: Lea
         {c.hook && (
           <p className={clsx("font-display italic leading-[1.15]", dark ? "text-white/95" : "text-ink-soft", hero ? "text-[1.15rem] sm:text-[1.3rem]" : sm ? "text-[0.8rem]" : mode === "print" ? "text-[18pt]" : "text-[1.3rem] sm:text-[1.55rem]")}>{c.hook}</p>
         )}
-        {!sm && (
+        {!compact && (
           <>
             <p className={clsx("mt-5 font-display leading-snug", dark ? "text-white" : "text-ink", mode === "print" ? "text-[14pt]" : "text-[1.05rem] sm:text-[1.15rem]")}>{m.title}</p>
             <p className={clsx("mt-1.5 max-w-xl text-[14px] leading-relaxed", dark ? "text-white/80" : "text-muted")}>{m.cover.subtitle} · {CATEGORY_LABEL[m.category]}</p>
