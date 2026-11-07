@@ -6,6 +6,10 @@ import { COVERS_B } from "./materials/nowe-b.covers";
 import { COVERS_C } from "./materials/nowe-c.covers";
 import { COVERS_D } from "./materials/nowe-d.covers";
 import { COVERS_E } from "./materials/nowe-e.covers";
+import { COVERS_F } from "./materials/nowe-f.covers";
+import { COVERS_G } from "./materials/nowe-g.covers";
+import { COVERS_H } from "./materials/nowe-h.covers";
+import { COVERS_I } from "./materials/nowe-i.covers";
 
 export interface CoverExtra {
   hook: string;
@@ -105,6 +109,10 @@ export const COVERS: Record<string, CoverExtra> = {
   ...COVERS_C,
   ...COVERS_D,
   ...COVERS_E,
+  ...COVERS_F,
+  ...COVERS_G,
+  ...COVERS_H,
+  ...COVERS_I,
 };
 
 export const coverOf = (slug: string) => COVERS[slug];

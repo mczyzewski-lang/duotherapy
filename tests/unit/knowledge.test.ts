@@ -9,17 +9,19 @@ const SLUGS = [
   "partner-nie-chce-ratowac-zwiazku", "petla-konfliktu", "po-zdradzie", "swiadome-rozstanie", "przykladowa-mapa-relacji",
   "rozmowa-o-pieniadzach", "kto-co-robi", "czas-we-dwoje", "bliskosc-po-dziecku", "jezyk-potrzeb", "ciche-dni",
   "klotnie-przy-dzieciach", "granice-z-rodzina", "sygnaly-kryzysu", "przygotowanie-do-terapii",
+  "szansa-czy-odwlekanie", "cicha-separacja", "7-zdan-w-klotni", "karta-naprawcza-po-klotni", "3-rozmowy-przed-rozwodem",
+  "dzieci-milosc-czy-strach", "czerwone-flagi-terapia-par",
 ];
 const of = <T extends Block["t"]>(slug: string, t: T) => magnetBySlug(slug)!.blocks.filter((b): b is Extract<Block, { t: T }> => b.t === t);
 const allText = (slug: string) => JSON.stringify(magnetBySlug(slug));
 
 describe("rejestr materiałów „Wiedza”", () => {
-  it("20 materiałów z wymaganymi adresami, unikalne id, 3 kategorie po 6/10/4", () => {
-    expect(MAGNETS).toHaveLength(20);
+  it("27 materiałów z wymaganymi adresami, unikalne id, 3 kategorie po 9/12/6", () => {
+    expect(MAGNETS).toHaveLength(27);
     expect(MAGNETS.map((m) => m.slug).sort()).toEqual([...SLUGS].sort());
-    expect(new Set(MAGNETS.map((m) => m.id)).size).toBe(20);
-    expect(new Set(MAGNETS.map((m) => m.n)).size).toBe(20);
-    expect(CATEGORIES.map((c) => c.items.length)).toEqual([6, 10, 4]);
+    expect(new Set(MAGNETS.map((m) => m.id)).size).toBe(27);
+    expect(new Set(MAGNETS.map((m) => m.n)).size).toBe(27);
+    expect(CATEGORIES.map((c) => c.items.length)).toEqual([9, 12, 6]);
   });
 
   it("każdy materiał: 3–5 elementów „co otrzymasz”, ≤ 4 punkty „dla kogo”, 3 wiadomości, poprawny podgląd", () => {
@@ -84,7 +86,8 @@ describe("treść zgodna ze specyfikacją", () => {
 
   it("materiały o konflikcie, zdradzie i rozstaniu zawierają ramkę bezpieczeństwa", () => {
     for (const s of ["trudna-rozmowa", "petla-konfliktu", "po-zdradzie", "swiadome-rozstanie", "7-dni-lepszych-rozmow", "21-pytan-o-relacji",
-      "rozmowa-o-pieniadzach", "ciche-dni", "klotnie-przy-dzieciach", "granice-z-rodzina", "sygnaly-kryzysu", "przygotowanie-do-terapii"])
+      "rozmowa-o-pieniadzach", "ciche-dni", "klotnie-przy-dzieciach", "granice-z-rodzina", "sygnaly-kryzysu", "przygotowanie-do-terapii",
+      "7-zdan-w-klotni", "karta-naprawcza-po-klotni", "3-rozmowy-przed-rozwodem", "dzieci-milosc-czy-strach", "czerwone-flagi-terapia-par"])
       expect(magnetBySlug(s)!.blocks.some((b) => b.t === "callout" && b.tone === "safety"), s).toBe(true);
   });
 

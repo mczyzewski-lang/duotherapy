@@ -7,30 +7,41 @@ import { bliskoscPoDziecku, czasWeDwoje } from "./materials/nowe-b";
 import { cicheDni, jezykPotrzeb } from "./materials/nowe-c";
 import { graniceZRodzina, klotniePrzyDzieciach } from "./materials/nowe-d";
 import { przygotowanieDoTerapii, sygnalyKryzysu } from "./materials/nowe-e";
+import { cichaSeparacja, szansaCzyOdwlekanie } from "./materials/nowe-f";
+import { kartaNaprawczaPoKlotni, siedemZdanWKlotni } from "./materials/nowe-g";
+import { dzieciMiloscCzyStrach, trzyRozmowyPrzedRozwodem } from "./materials/nowe-h";
+import { czerwoneFlagiTerapiaPar } from "./materials/nowe-i";
 import { CATEGORY_LABEL, type Category, type LeadMagnet } from "./types";
 
-/** Kolejność menu i strony /wiedza. */
+/** Kolejność strony /wiedza i menu (w kategoriach): najpierw materiały o najwyższej intencji – do testów kosztu pobrania i konwersji. */
 export const MAGNETS: LeadMagnet[] = [
   mapaTrzechDrog,
+  szansaCzyOdwlekanie,
+  siedemZdanWKlotni,
+  przygotowanieDoTerapii,
   pytan21,
-  kryzysCzyKoniec,
-  przykladowaMapa,
-  siedemDni,
+  cichaSeparacja,
   trudnaRozmowa,
   jednaOsoba,
-  petlaKonfliktu,
   poZdradzie,
-  swiadomeRozstanie,
+  kryzysCzyKoniec,
+  petlaKonfliktu,
+  trzyRozmowyPrzedRozwodem,
+  dzieciMiloscCzyStrach,
+  czerwoneFlagiTerapiaPar,
+  kartaNaprawczaPoKlotni,
+  siedemDni,
+  cicheDni,
+  jezykPotrzeb,
   rozmowaOPieniadzach,
   ktoCoRobi,
   czasWeDwoje,
   bliskoscPoDziecku,
-  jezykPotrzeb,
-  cicheDni,
+  sygnalyKryzysu,
   klotniePrzyDzieciach,
   graniceZRodzina,
-  sygnalyKryzysu,
-  przygotowanieDoTerapii,
+  swiadomeRozstanie,
+  przykladowaMapa,
 ];
 
 export const CATEGORIES: { key: Category; label: string; items: LeadMagnet[] }[] = (["decyzje", "rozmowa", "trudne"] as Category[]).map((key) => ({

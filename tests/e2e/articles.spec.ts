@@ -9,9 +9,13 @@ test("artykuły: /wiedza → lista → artykuł z infografiką, kontenerem mater
   await expect(lazy.getByTestId("article-card")).toHaveCount(6);
   await page.getByTestId("lazy-more").scrollIntoViewIfNeeded();
   await expect(lazy.getByTestId("article-card")).toHaveCount(12);
-  while (await page.getByTestId("lazy-more").count()) {
-    await page.getByTestId("lazy-more").click();
-    await page.waitForTimeout(500);
+  // przewijanie samo doładowuje karty – klikamy dopiero, gdy przycisk nie ładuje (szkielety nie przechwytują kliknięcia)
+  for (let i = 0; i < 12 && (await page.getByTestId("lazy-more").count()); i++) {
+    const more = page.getByTestId("lazy-more");
+    await expect(more.or(lazy.getByTestId("article-card").nth(34))).toBeVisible();
+    if (!(await more.count())) break;
+    if (await more.isEnabled()) await more.click({ trial: false }).catch(() => {});
+    await page.waitForTimeout(700);
   }
   await expect(lazy.getByTestId("article-card")).toHaveCount(35);
   await page.getByRole("link", { name: "Wszystkie artykuły →" }).first().click();

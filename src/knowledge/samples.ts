@@ -6,6 +6,10 @@ import { SAMPLES_B } from "./materials/nowe-b.samples";
 import { SAMPLES_C } from "./materials/nowe-c.samples";
 import { SAMPLES_D } from "./materials/nowe-d.samples";
 import { SAMPLES_E } from "./materials/nowe-e.samples";
+import { SAMPLES_F } from "./materials/nowe-f.samples";
+import { SAMPLES_G } from "./materials/nowe-g.samples";
+import { SAMPLES_H } from "./materials/nowe-h.samples";
+import { SAMPLES_I } from "./materials/nowe-i.samples";
 
 export const SAMPLE_ANSWERS: Record<string, Record<string, string | true>> = {
   "mapa-trzech-drog": {
@@ -35,4 +39,8 @@ export const SAMPLE_ANSWERS: Record<string, Record<string, string | true>> = {
   ...SAMPLES_C,
   ...SAMPLES_D,
   ...SAMPLES_E,
+  ...SAMPLES_F,
+  ...SAMPLES_G,
+  ...SAMPLES_H,
+  ...SAMPLES_I,
 };

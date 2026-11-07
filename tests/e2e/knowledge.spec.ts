@@ -1,4 +1,4 @@
-// „Wiedza”: menu, strona zbiorcza, 20 landingów, 20 podglądów /demo, zgodność /demo ↔ PDF, formularz i panel.
+// „Wiedza”: menu, strona zbiorcza, 27 landingów, 27 podglądów /demo, zgodność /demo ↔ PDF, formularz i panel.
 import { expect, test, type Page } from "@playwright/test";
 
 const SLUGS = [
@@ -6,12 +6,14 @@ const SLUGS = [
   "trudna-rozmowa", "partner-nie-chce-ratowac-zwiazku", "petla-konfliktu", "po-zdradzie", "swiadome-rozstanie",
   "rozmowa-o-pieniadzach", "kto-co-robi", "czas-we-dwoje", "bliskosc-po-dziecku", "jezyk-potrzeb", "ciche-dni",
   "klotnie-przy-dzieciach", "granice-z-rodzina", "sygnaly-kryzysu", "przygotowanie-do-terapii",
+  "szansa-czy-odwlekanie", "cicha-separacja", "7-zdan-w-klotni", "karta-naprawcza-po-klotni", "3-rozmowy-przed-rozwodem",
+  "dzieci-milosc-czy-strach", "czerwone-flagi-terapia-par",
 ];
 /** Pierwsze 6 w każdej kategorii – tyle pokazuje menu (reszta: „+ N więcej”). */
 const MENU_SLUGS = [
-  "mapa-trzech-drog", "21-pytan-o-relacji", "kryzys-czy-koniec-milosci", "przykladowa-mapa-relacji", "sygnaly-kryzysu", "przygotowanie-do-terapii",
-  "7-dni-lepszych-rozmow", "trudna-rozmowa", "partner-nie-chce-ratowac-zwiazku", "petla-konfliktu",
-  "po-zdradzie", "swiadome-rozstanie", "klotnie-przy-dzieciach", "granice-z-rodzina",
+  "mapa-trzech-drog", "szansa-czy-odwlekanie", "przygotowanie-do-terapii", "21-pytan-o-relacji", "cicha-separacja", "kryzys-czy-koniec-milosci",
+  "7-zdan-w-klotni", "trudna-rozmowa", "partner-nie-chce-ratowac-zwiazku", "petla-konfliktu", "karta-naprawcza-po-klotni", "7-dni-lepszych-rozmow",
+  "po-zdradzie", "3-rozmowy-przed-rozwodem", "dzieci-milosc-czy-strach", "klotnie-przy-dzieciach", "granice-z-rodzina", "swiadome-rozstanie",
 ];
 
 /** Klika „Podsumuj…”; dopóki brakuje odpowiedzi – przechodzi do wskazanego pola i je uzupełnia. */
@@ -52,7 +54,7 @@ test("menu Wiedza: desktop (klik, Esc) i telefon; strona zbiorcza z filtrem", as
   await btn.click();
   await expect(btn).toHaveAttribute("aria-expanded", "true");
   for (const s of MENU_SLUGS) await expect(page.locator(`a[href="/wiedza/${s}"]`).first()).toBeVisible();
-  await expect(page.locator('a[href="/wiedza?kategoria=rozmowa"]').first()).toContainText("+ 4 więcej");
+  await expect(page.locator('a[href="/wiedza?kategoria=rozmowa"]').first()).toContainText("+ 6 więcej");
   await page.keyboard.press("Escape");
   await expect(btn).toHaveAttribute("aria-expanded", "false");
   await expect(btn).toBeFocused();
@@ -72,14 +74,14 @@ test("menu Wiedza: desktop (klik, Esc) i telefon; strona zbiorcza z filtrem", as
   const cards = page.locator('main a[href^="/wiedza/"]:not([href^="/wiedza/artykuly"])');
   await expect(cards).toHaveCount(9);
   await page.getByTestId("magnets-more").click();
-  await expect(cards).toHaveCount(20);
+  await expect(cards).toHaveCount(27);
   await page.getByRole("button", { name: "Trudne sytuacje" }).click();
-  await expect(cards).toHaveCount(4);
+  await expect(cards).toHaveCount(6);
   await page.goto("/wiedza?kategoria=rozmowa");
-  await expect(cards).toHaveCount(10);
+  await expect(cards).toHaveCount(12);
 });
 
-test("20 landingów i 20 pełnych podglądów /demo (noindex), /demo zgodne z PDF", async ({ page, request }) => {
+test("27 landingów i 27 pełnych podglądów /demo (noindex), /demo zgodne z PDF", async ({ page, request }) => {
   for (const s of SLUGS) {
     await page.goto(`/wiedza/${s}`);
     await expect(page.locator("h1")).toHaveCount(1);
