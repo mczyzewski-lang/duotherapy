@@ -1,5 +1,6 @@
 // Strona zbiorcza „Wiedza” – 10 bezpłatnych materiałów w trzech kategoriach (filtr bez przeładowania).
 import type { Metadata } from "next";
+import { LazyList } from "@/components/articles/lazy-list";
 import { pageMeta } from "@/lib/seo";
 import { KTrack } from "@/components/knowledge/client";
 import Link from "next/link";
@@ -45,11 +46,13 @@ export default async function KnowledgeHub() {
             <div>
               <p className="text-sm font-semibold uppercase tracking-[0.18em] text-clay">Artykuły</p>
               <h2 id="art-h" className="mt-2 font-display text-[1.9rem] leading-tight text-ink sm:text-4xl">Terapia par i terapia małżeńska – przeczytaj</h2>
-              <p className="mt-2 max-w-2xl text-ink-soft">Kiedy warto zacząć, jak wygląda pierwsza wizyta i jak spokojnie podjąć decyzję o przyszłości związku.</p>
+              <p className="mt-2 max-w-2xl text-ink-soft">Kłótnie, ciche dni, zdrada, brak bliskości, decyzja o przyszłości związku – i to, jak może pomóc terapia par. Przewiń, żeby zobaczyć kolejne.</p>
             </div>
             <Link href={ARTICLES_PATH} className="text-sm font-semibold text-forest hover:underline">Wszystkie artykuły →</Link>
           </div>
-          <ul className="mt-6 grid gap-5 md:grid-cols-2 lg:grid-cols-3">{ARTICLES.slice(0, 6).map((a) => <li key={a.slug}><ArticleCard a={a} image={images[heroKey(a.slug)]} /></li>)}</ul>
+          <LazyList className="mt-6 grid gap-5 md:grid-cols-2 lg:grid-cols-3" initial={6} step={6} moreLabel="Pokaż więcej artykułów" testId="articles-lazy">
+            {ARTICLES.map((a) => <ArticleCard key={a.slug} a={a} image={images[heroKey(a.slug)]} />)}
+          </LazyList>
         </section>
       </main>
       <SiteFooter contactEmail={s.site.contactEmail} />

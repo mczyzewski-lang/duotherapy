@@ -197,3 +197,12 @@ path.map-line[stroke-dasharray="6 7"] { stroke-dasharray: 6 7; stroke-dashoffset
 .btn-glare > * { position: relative; }
 @keyframes btn-glare { 0% { left: -40%; } 25%, 100% { left: 130%; } }
 @media (prefers-reduced-motion: reduce) { .lm-strip, .btn-glare::after { animation: none; } }
+
+/* Doładowywane karty (lista artykułów w /wiedza) – łagodne pojawienie się */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  [class*="animate-[fadeUp"] { animation: none !important; }
+}

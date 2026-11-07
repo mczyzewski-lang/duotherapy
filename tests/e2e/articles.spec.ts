@@ -4,7 +4,16 @@ import { expect, test } from "@playwright/test";
 test("artykuły: /wiedza → lista → artykuł z infografiką, kontenerem materiału, FAQ i danymi strukturalnymi", async ({ page, request }) => {
   await page.goto("/wiedza");
   await expect(page.getByRole("heading", { name: /Terapia par i terapia małżeńska – przeczytaj/ })).toBeVisible();
-  await expect(page.getByTestId("article-card")).toHaveCount(6);
+  // lazy loader: na start 6 kart, przewinięcie doładowuje kolejne, przycisk – resztę
+  const lazy = page.getByTestId("articles-lazy");
+  await expect(lazy.getByTestId("article-card")).toHaveCount(6);
+  await page.getByTestId("lazy-more").scrollIntoViewIfNeeded();
+  await expect(lazy.getByTestId("article-card")).toHaveCount(12);
+  while (await page.getByTestId("lazy-more").count()) {
+    await page.getByTestId("lazy-more").click();
+    await page.waitForTimeout(500);
+  }
+  await expect(lazy.getByTestId("article-card")).toHaveCount(35);
   await page.getByRole("link", { name: "Wszystkie artykuły →" }).first().click();
   await expect(page).toHaveURL(/\/wiedza\/artykuly$/);
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Terapia par i terapia małżeńska – artykuły");
