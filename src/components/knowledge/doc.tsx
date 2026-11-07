@@ -12,7 +12,7 @@ import { fid, LOOP_STEPS } from "@/knowledge/fields";
 import { MagnetIcon } from "./icons";
 import { coverOf } from "@/knowledge/covers";
 import { MapaExplainer } from "./mapa-explainer";
-import { isIllustrationCover, isLegacyArtCover } from "@/lib/cover-url";
+import { isIllustrationCover } from "@/lib/cover-url";
 
 type Mode = "screen" | "print";
 
@@ -46,7 +46,7 @@ export function Cover({ m, mode, compact, hero, photo, idSuffix = "" }: { m: Lea
         dark ? "text-white" : "text-ink",
         mode === "print" ? "h-[255mm] break-after-page rounded-none p-[14mm]" : compact ? "aspect-[3/4] rounded-2xl p-4" : "min-h-[30rem] rounded-[1.75rem] p-7 shadow-soft sm:p-10",
       )}
-      style={{ background: `linear-gradient(160deg, ${c.mood[0]} 0%, #fbf9f5 55%, ${c.mood[0]} 100%)` }}
+      style={{ background: art ? "#fbf9f5" : `linear-gradient(160deg, ${c.mood[0]} 0%, #fbf9f5 55%, ${c.mood[0]} 100%)` }}
       aria-label="Okładka materiału"
     >
       {photoSrc && !art ? (
@@ -54,6 +54,9 @@ export function Cover({ m, mode, compact, hero, photo, idSuffix = "" }: { m: Lea
           <img src={photoSrc} alt="" loading={hero ? "eager" : "lazy"} className="absolute inset-0 -z-10 h-full w-full object-cover" />
           <div className="absolute inset-0 -z-10 bg-gradient-to-b from-black/50 via-black/5 to-black/70" aria-hidden />
         </>
+      ) : art ? (
+        // grafika 2D: jasne, jednolite tło (jak tło rysunku) z delikatnym ziarnem
+        <div className="absolute inset-0 -z-10 opacity-[0.12] mix-blend-multiply" style={{ backgroundImage: GRAIN }} aria-hidden />
       ) : (
         <div className="absolute inset-0 -z-10" aria-hidden>
           {/* miękkie światło jak z okna i dwa „ciepłe” punkty – bez stockowych zdjęć */}
@@ -66,23 +69,25 @@ export function Cover({ m, mode, compact, hero, photo, idSuffix = "" }: { m: Lea
       <div className="flex items-center gap-2">
         <BrandSymbol id={`cv-${uid}`} className={compact ? "h-3.5 w-auto" : "h-5 w-auto"} />
         <span className={clsx("font-wordmark font-medium", dark ? "text-white" : "text-forest", compact ? "text-xs" : "text-base")}>DUO®</span>
-        <span className={clsx("ml-auto rounded-full font-semibold uppercase tracking-[0.16em] backdrop-blur", dark ? "bg-white/20 text-white" : "bg-white/70 text-clay", compact ? "px-2 py-0.5 text-[7.5px]" : "px-3 py-1 text-[10px]")}>
-          Bezpłatny materiał
+        <span className={clsx("ml-auto rounded-full font-bold uppercase tracking-[0.16em] backdrop-blur", dark ? "bg-white/20 text-white" : art ? "bg-clay-soft text-clay" : "bg-white/70 text-clay", compact ? "px-2 py-0.5 text-[8px]" : "px-3 py-1 text-[11px]")}>
+          Bezpłatnie
         </span>
       </div>
       {/* nazwa materiału – najważniejsza na okładce, od razu pod znakiem */}
       <div className={clsx(sm ? "mt-3" : "mt-8")}>
-        <p className={clsx("flex items-center gap-1.5 font-semibold uppercase tracking-[0.16em]", dark ? "text-white/85" : "text-clay", sm ? "text-[7.5px]" : "text-[11px]")}>
-          <span className={clsx("grid shrink-0 place-items-center rounded-lg bg-white/85 shadow-soft", sm ? "h-5 w-5" : "h-8 w-8")}>
-            <MagnetIcon icon={m.icon} id={`cv-${uid}`} className={sm ? "h-3 w-3" : "h-5 w-5"} />
-          </span>
-          {m.cover.kicker}
-        </p>
+        {!(art && photoSrc) && (
+          <p className={clsx("flex items-center gap-1.5 font-semibold uppercase tracking-[0.16em]", dark ? "text-white/85" : "text-clay", sm ? "text-[7.5px]" : "text-[11px]")}>
+            <span className={clsx("grid shrink-0 place-items-center rounded-lg bg-white/85 shadow-soft", sm ? "h-5 w-5" : "h-8 w-8")}>
+              <MagnetIcon icon={m.icon} id={`cv-${uid}`} className={sm ? "h-3 w-3" : "h-5 w-5"} />
+            </span>
+            {m.cover.kicker}
+          </p>
+        )}
         <T
           className={clsx(
             "text-balance font-display font-semibold leading-[1.02] tracking-[-0.01em]",
             dark ? "text-white [text-shadow:0_1px_18px_rgba(0,0,0,.35)]" : "text-ink",
-            hero ? "mt-3 text-[2.1rem] sm:text-[2.5rem]" : sm ? "mt-1.5 text-[1.3rem]" : mode === "print" ? "mt-4 text-[34pt]" : "mt-4 text-[2.4rem] sm:text-[3.1rem]",
+            hero ? "mt-3 text-[2.1rem] sm:text-[2.5rem]" : sm ? (art && photoSrc ? "text-[1.3rem]" : "mt-1.5 text-[1.3rem]") : mode === "print" ? "mt-4 text-[34pt]" : "mt-4 text-[2.4rem] sm:text-[3.1rem]",
           )}
           data-testid="cover-title"
         >
@@ -90,22 +95,27 @@ export function Cover({ m, mode, compact, hero, photo, idSuffix = "" }: { m: Lea
         </T>
         <span className={clsx("block rounded-full", dark ? "bg-white/70" : "bg-clay", sm ? "mt-2 h-[2px] w-8" : "mt-4 h-[3px] w-14")} aria-hidden />
       </div>
-      {/* grafika 2D: osobny pas między tytułem a cytatem (kadr na środek sceny, miękko wygaszone krawędzie) – tekst nigdy nie nachodzi na rysunek */}
+      {/* grafika 2D: duży, jasny pas między tytułem a cytatem; kategoria w jasnej plakietce na dolnej krawędzi grafiki */}
       {art && photoSrc && (
-        <div className={clsx("relative flex-1 overflow-hidden", sm ? "-mx-4 my-1 min-h-[5rem]" : "-mx-7 my-4 min-h-[12rem] sm:-mx-10")} data-testid="cover-art">
-          {/* multiply: kremowe tło grafiki stapia się z kolorem okładki; maska wygasza krawędzie */}
-          <img
-            src={photoSrc}
-            alt=""
-            loading={hero ? "eager" : "lazy"}
-            className={clsx(
-              "absolute inset-0 h-full w-full object-center mix-blend-multiply",
-              isLegacyArtCover(photoSrc) ? "object-contain [mask-image:radial-gradient(ellipse_at_center,#000_58%,transparent_78%)]" : "object-cover [mask-image:linear-gradient(to_bottom,transparent,#000_12%,#000_88%,transparent)]",
-            )}
-          />
+        <div className={clsx("relative flex flex-1 flex-col", sm ? "-mx-4 mt-1 min-h-[6.5rem]" : "-mx-7 mt-3 min-h-[13rem] sm:-mx-10")}>
+          <div className="relative flex-1 overflow-hidden" data-testid="cover-art">
+            <img
+              src={photoSrc}
+              alt=""
+              loading={hero ? "eager" : "lazy"}
+              className="absolute inset-0 h-full w-full object-cover object-center [mask-image:linear-gradient(to_bottom,transparent,#000_10%,#000_90%,transparent)]"
+            />
+          </div>
+          <p className={clsx(
+            "relative z-10 mx-auto flex items-center gap-1.5 rounded-full bg-white/95 font-semibold uppercase tracking-[0.14em] text-clay shadow-soft ring-1 ring-sand",
+            sm ? "-mt-3 px-2 py-1 text-[7px]" : "-mt-5 px-3.5 py-1.5 text-[11px]",
+          )} data-testid="cover-kicker">
+            <MagnetIcon icon={m.icon} id={`cv-${uid}`} className={sm ? "h-3 w-3" : "h-4 w-4"} />
+            {m.cover.kicker}
+          </p>
         </div>
       )}
-      <div className={clsx(art && photoSrc ? "" : "mt-auto", sm ? (art && photoSrc ? "pt-1" : "pt-3") : art && photoSrc ? "pt-2" : "pt-10")}>
+      <div className={clsx(art && photoSrc ? "" : "mt-auto", sm ? (art && photoSrc ? "pt-2" : "pt-3") : art && photoSrc ? "pt-4" : "pt-10")}>
         {c.hook && (
           <p className={clsx("font-display italic leading-[1.15]", dark ? "text-white/95" : "text-ink-soft", hero ? "text-[1.15rem] sm:text-[1.3rem]" : sm ? "text-[0.8rem]" : mode === "print" ? "text-[18pt]" : "text-[1.3rem] sm:text-[1.55rem]")}>{c.hook}</p>
         )}

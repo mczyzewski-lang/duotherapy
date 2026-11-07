@@ -21,9 +21,10 @@ export interface QuizAttach {
   title: string;
 }
 
-export function MapaQuiz({ consentText, marketingText, callbackPromise, attach }: { consentText: string; marketingText: string; callbackPromise: string; attach?: QuizAttach | null }) {
+export function MapaQuiz({ consentText, marketingText, callbackPromise, attach, preset }: { consentText: string; marketingText: string; callbackPromise: string; attach?: QuizAttach | null; preset?: QuizAnswers }) {
   const [i, setI] = useState(0);
-  const [answers, setAnswers] = useState<QuizAnswers>({});
+  // wariant wybrany na stronie Mapy Relacji (1 / 3 spotkania) – odpowiedź na pytanie o formę już zaznaczona
+  const [answers, setAnswers] = useState<QuizAnswers>(preset ?? {});
   const [phase, setPhase] = useState<Phase>("questions");
   const started = useRef(false);
   const advancing = useRef(false);

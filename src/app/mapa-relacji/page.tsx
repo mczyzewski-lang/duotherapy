@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import { Check, ClipboardList, FileText, MessagesSquare, PhoneCall, ShieldCheck, Users, X } from "lucide-react";
 import { cookies, headers } from "next/headers";
 import type { Metadata } from "next";
@@ -289,6 +290,18 @@ export default async function Landing() {
                       )}
                       <p className="mt-1.5 text-[13px] text-muted">{v.price ? "Płacisz raz – to nie jest abonament." : "Konsultant dopasuje termin trzech spotkań do Was obojga."}</p>
                     </div>
+                    {/* wybór wariantu → quiz z zaznaczoną formą (samodzielnie / razem) */}
+                    <div className="relative mt-5">
+                      {v.key === "couple" && (
+                        <span className="absolute -top-3 left-1/2 z-10 -translate-x-1/2 whitespace-nowrap rounded-full bg-forest px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-white shadow-soft" data-testid="variant-recommended">Rekomendowana</span>
+                      )}
+                      <QuizCta href={`/start?forma=${v.key === "solo" ? "solo" : "together"}`} id={`cta-${v.key}`} className={clsx("min-h-16 w-full gap-3 py-2.5", v.key === "couple" && "ring-2 ring-forest/30 ring-offset-2")}>
+                        <span className="flex flex-col items-center leading-tight">
+                          <span className="text-[17px] font-semibold">{v.key === "solo" ? "Wybieram 1 spotkanie" : "Wybieram 3 spotkania"}</span>
+                          <span className="mt-0.5 text-[13px] font-medium text-white/80">{v.key === "solo" ? "Ścieżka dla Ciebie" : "Ścieżka dla Was"}</span>
+                        </span>
+                      </QuizCta>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -297,7 +310,6 @@ export default async function Landing() {
                 Przed zakupem rozmowa z konsultantem – bez zobowiązań. Quiz na stronie jest bezpłatny i do niczego nie zobowiązuje.
               </p>
             </div>
-            <div className="mt-8"><QuizCta className="w-full sm:w-auto">Zacznij od 6 krótkich pytań</QuizCta></div>
           </div>
         </section>
 

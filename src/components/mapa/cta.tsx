@@ -22,6 +22,7 @@ export function QuizCta({
   sticky,
   id,
   size = "lg",
+  href = "/start",
 }: {
   children: React.ReactNode;
   className?: string;
@@ -29,10 +30,11 @@ export function QuizCta({
   sticky?: boolean;
   id?: string;
   size?: "lg" | "sm";
+  href?: string;
 }) {
   return (
     <Link
-      href="/start"
+      href={href}
       id={id}
       onClick={() => (hero ? track("hero_cta_click") : sticky ? track("sticky_cta_click") : undefined)}
       className={clsx(

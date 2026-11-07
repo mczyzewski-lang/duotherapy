@@ -18,6 +18,7 @@ export default async function StartPage({ searchParams }: { searchParams: Promis
   const sp = await searchParams;
   const m = sp.dolacz ? magnetBySlug(sp.dolacz) : null;
   const attach = m && coverOf(m.slug)?.summary ? { slug: m.slug, title: m.short } : null;
+  const preset = sp.forma === "solo" || sp.forma === "together" ? { q6: sp.forma } : undefined;
   const s = await getSettings();
   return (
     <div className="min-h-dvh bg-gradient-to-b from-ivory to-linen">
@@ -34,7 +35,7 @@ export default async function StartPage({ searchParams }: { searchParams: Promis
         </div>
       </header>
       <main id="main">
-        <MapaQuiz attach={attach} consentText={s.legal.leadContactConsent} marketingText={s.legal.leadMarketingConsent} callbackPromise={s.site.callbackPromise} />
+        <MapaQuiz attach={attach} preset={preset} consentText={s.legal.leadContactConsent} marketingText={s.legal.leadMarketingConsent} callbackPromise={s.site.callbackPromise} />
       </main>
     </div>
   );

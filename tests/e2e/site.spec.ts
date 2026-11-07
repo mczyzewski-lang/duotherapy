@@ -21,6 +21,10 @@ test("strona główna i menu „Jak pomagamy”: Mapa Relacji nad trzema ścież
   await expect(page.getByTestId("variant-solo")).toContainText("670 zł");
   await expect(page.getByTestId("variant-couple")).toContainText("1270 zł");
   await expect(page.getByTestId("variant-couple")).toContainText("jednorazowo");
+  // dwa przyciski wyboru wariantu → quiz z zaznaczoną formą; drugi rekomendowany
+  await expect(page.getByTestId("variant-solo").getByRole("link", { name: /Wybieram 1 spotkanie\s*Ścieżka dla Ciebie/ })).toHaveAttribute("href", "/start?forma=solo");
+  await expect(page.getByTestId("variant-couple").getByRole("link", { name: /Wybieram 3 spotkania\s*Ścieżka dla Was/ })).toHaveAttribute("href", "/start?forma=together");
+  await expect(page.getByTestId("variant-recommended")).toHaveText("Rekomendowana");
 });
 
 test("podstrony ścieżek: jeden H1, plan, zapytanie z tematem trafia do panelu", async ({ page, browser }) => {
