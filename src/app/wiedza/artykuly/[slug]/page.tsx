@@ -113,16 +113,17 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
             </header>
 
             {/* grafika na górze artykułu (generowana w panelu; do tego czasu spokojne tło w barwach marki) */}
-            <div className="relative mt-7 aspect-[3/2] overflow-hidden rounded-[1.6rem] bg-gradient-to-br from-clay-soft/70 via-ivory to-sage-soft shadow-soft ring-1 ring-sand" data-testid="article-hero">
+            <div className="soft-inset relative mt-7 aspect-[3/2] overflow-hidden rounded-[1.6rem]" data-testid="article-hero">
               {heroSrc ? (
                 <img src={heroSrc} alt={a.hero.alt} width={1536} height={1024} fetchPriority="high" decoding="async" className="h-full w-full object-cover" />
               ) : (
                 <div className="grid h-full place-items-center" role="img" aria-label={a.hero.alt}><MapaSymbol id={`hero-${a.slug}`} className="h-10 w-auto opacity-70" /></div>
               )}
+              <span className="soft-inset-overlay pointer-events-none absolute inset-0 rounded-[1.6rem]" aria-hidden />
             </div>
 
             {/* spis treści – telefon */}
-            <details className="group mt-6 rounded-2xl bg-white p-4 ring-1 ring-sand lg:hidden">
+            <details className="soft-inset group mt-6 rounded-2xl p-4 lg:hidden">
               <summary className="flex cursor-pointer list-none items-center justify-between font-semibold text-ink">W tym artykule <ChevronDown size={18} className="transition group-open:rotate-180" aria-hidden /></summary>
               <ol className="mt-3 space-y-2 text-[15px]">{toc.map((h, i) => <li key={h.id}><a href={`#${h.id}`} className="text-forest hover:underline">{i + 1}. {h.text}</a></li>)}</ol>
             </details>
@@ -167,7 +168,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
           {/* boczny panel: spis treści + materiał (przyklejone przy przewijaniu) */}
           <aside className="hidden lg:block">
             <div className="sticky top-24 space-y-5">
-              <nav aria-label="Spis treści" className="rounded-2xl bg-white p-5 ring-1 ring-sand">
+              <nav aria-label="Spis treści" className="soft-inset rounded-2xl p-5">
                 <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-muted">W tym artykule</p>
                 <ol className="mt-3 space-y-2 text-[14.5px] leading-snug">{toc.map((h, i) => <li key={h.id}><a href={`#${h.id}`} className="text-ink-soft hover:text-forest">{i + 1}. {h.text}</a></li>)}</ol>
               </nav>

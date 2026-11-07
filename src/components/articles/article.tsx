@@ -96,7 +96,7 @@ export function ArtFigure({ id, title, alt, caption, src }: { id: string; title:
 /** Dyskretny odnośnik do Mapy Relacji na końcu artykułu. */
 export function MapaSlim() {
   return (
-    <aside className="mt-12 flex flex-col gap-3 rounded-2xl bg-sage-soft/50 p-4 ring-1 ring-sage/40 sm:flex-row sm:items-center sm:p-5" aria-label="Mapa Relacji" data-testid="mapa-slim">
+    <aside className="soft-inset mt-12 flex flex-col gap-3 rounded-2xl p-4 sm:flex-row sm:items-center sm:p-5" aria-label="Mapa Relacji" data-testid="mapa-slim">
       <span className="flex items-center gap-2"><MapaSymbol id="ms-art" className="h-4 w-auto" /><span className="font-wordmark text-[15px] text-forest">Mapa Relacji</span></span>
       <p className="flex-1 text-[14.5px] leading-snug text-ink-soft">Chcesz spojrzeć na całą sytuację z psychologiem? Kwestionariusz, spotkanie i pisemne podsumowanie.</p>
       <Link href="/mapa-relacji" data-mapa-cta className="inline-flex shrink-0 items-center gap-1.5 text-sm font-semibold text-forest underline underline-offset-4">Poznaj Mapę Relacji <ArrowRight size={15} aria-hidden /></Link>
