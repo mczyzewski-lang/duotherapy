@@ -8,6 +8,7 @@ import { Badge, Card } from "@/components/ui";
 import { bulkStatus } from "@/lib/bulk";
 import { COVER_VARIANT_LABEL, COVER_VARIANTS, coverGenConfigured, coverState, type CoverVariant } from "@/lib/cover-photos";
 import { COVERS } from "@/knowledge/covers";
+import { isLegacyArtCover } from "@/lib/cover-url";
 import { MAGNETS } from "@/knowledge/registry";
 import { Cover } from "./doc";
 
@@ -16,6 +17,7 @@ export async function CoverAdmin() {
   const ready = coverGenConfigured();
   const bulk = bulkStatus("covers");
   const missing = (v: CoverVariant) => MAGNETS.filter((m) => COVERS[m.slug] && !all[v][m.slug]).length;
+  const legacy = MAGNETS.filter((m) => isLegacyArtCover(all.illustration[m.slug])).length;
   return (
     <Card className="mb-6 p-6" data-testid="cover-admin">
       {bulk?.running && <AutoRefresh />}
@@ -61,6 +63,16 @@ export async function CoverAdmin() {
                   </SubmitButton>
                 </ActionForm>
               ) : null,
+            ).concat(
+              legacy > 0 ? (
+                <ActionForm key="legacy" action={generateMissingCoversAction as never}>
+                  <input type="hidden" name="variant" value="illustration" />
+                  <input type="hidden" name="legacy" value="1" />
+                  <SubmitButton size="sm" variant="secondary" className={ready ? "" : "pointer-events-none opacity-50"} confirm={`Wygenerować ponownie ${legacy} grafik 2D w nowym, poziomym układzie? Każda to jedno płatne wywołanie OpenAI.`}>
+                    Odśwież grafiki 2D w starym układzie ({legacy})
+                  </SubmitButton>
+                </ActionForm>
+              ) : null,
             )
           )}
         </div>
@@ -84,7 +96,7 @@ export async function CoverAdmin() {
                   <div key={v} className={clsx("flex flex-col rounded-xl bg-white p-2 ring-1", style === v ? "ring-2 ring-forest/50" : "ring-sand")} data-testid={`cover-${v}`}>
                     <div className="mx-auto h-[10.4rem] w-[7.8rem] overflow-hidden"><div className="w-[13rem] origin-top-left scale-[0.6]"><Cover m={m} mode="screen" compact photo={src ?? null} idSuffix={`-adm-${v}`} /></div></div>
                     <p className="mt-1.5 flex flex-wrap items-center gap-1 text-xs text-ink-soft">
-                      {COVER_VARIANT_LABEL[v]} {src ? <Badge tone="ok">jest</Badge> : <Badge>brak</Badge>} {style === v && <Badge tone="forest">na stronie</Badge>}
+                      {COVER_VARIANT_LABEL[v]} {src ? <Badge tone="ok">jest</Badge> : <Badge>brak</Badge>} {isLegacyArtCover(src) && <Badge tone="clay">stary układ</Badge>} {style === v && <Badge tone="forest">na stronie</Badge>}
                     </p>
                     <div className="mt-2 flex flex-wrap items-center gap-1.5 [&_[role=alert]]:order-last [&_[role=alert]]:mt-1 [&_[role=alert]]:basis-full [&_[role=alert]]:p-2 [&_[role=alert]]:text-xs [&_[role=status]]:order-last [&_[role=status]]:mt-1 [&_[role=status]]:basis-full [&_[role=status]]:p-2 [&_[role=status]]:text-xs">
                       <ActionForm action={generateCoverAction as never} className="contents">

@@ -12,13 +12,13 @@ export const COVER_STYLE = [
 
 export const coverGenConfigured = () => Boolean(process.env.OPENAI_API_KEY);
 /** Wariant okładki: zdjęcie albo grafika 2D (maskotki DUO). Który pokazuje strona – globalny wybór w panelu. */
-import { coverPhotoUrl, type CoverVariant } from "./cover-url";
-export { coverPhotoUrl, isIllustrationCover, type CoverVariant } from "./cover-url";
+import { COVER_ART_LAYOUT, coverPhotoUrl, type CoverVariant } from "./cover-url";
+export { COVER_ART_LAYOUT, coverPhotoUrl, isIllustrationCover, type CoverVariant } from "./cover-url";
 export const COVER_VARIANTS: CoverVariant[] = ["photo", "illustration"];
 export const COVER_VARIANT_LABEL: Record<CoverVariant, string> = { photo: "Zdjęcie", illustration: "Grafika 2D" };
 
-/** Kompozycja okładki 2D: pion, jasne tło, pusta górna część na tytuł. */
-export const COVER_ART_STYLE = `${ART_STYLE} Vertical book-cover composition: keep the upper 38% and the bottom 18% as calm empty ivory background (title on top, a short quote at the bottom); place the scene in the middle band.`;
+/** Kompozycja okładki 2D: poziomy kadr wyświetlany jako pas między tytułem a cytatem – scena wypełnia kadr. */
+export const COVER_ART_STYLE = `${ART_STYLE} Wide horizontal composition shown as a band in the middle of a book cover: the scene is centered and fills most of the frame with small even margins; nothing important near the edges; no large empty areas.`;
 
 
 let cache: { at: number; style: CoverVariant; map: Record<string, string>; all: Record<CoverVariant, Record<string, string>> } | null = null;
@@ -27,12 +27,12 @@ async function load() {
   if (cache && Date.now() - cache.at < 30_000) return cache;
   try {
     const [rows, st] = await system(async (tx) => [
-      await tx<{ slug: string; variant: CoverVariant; updated_at: Date }[]>`select slug, variant, updated_at from cover_images`,
+      await tx<{ slug: string; variant: CoverVariant; updated_at: Date; layout_version: number }[]>`select slug, variant, updated_at, layout_version from cover_images`,
       await tx<{ value: { style?: string } }[]>`select value from app_settings where key = 'covers'`,
     ] as const);
     const style: CoverVariant = st[0]?.value?.style === "illustration" ? "illustration" : "photo";
     const all: Record<CoverVariant, Record<string, string>> = { photo: {}, illustration: {} };
-    for (const r of rows) all[r.variant][r.slug] = coverPhotoUrl(r.slug, r.updated_at, r.variant);
+    for (const r of rows) all[r.variant][r.slug] = coverPhotoUrl(r.slug, r.updated_at, r.variant, r.layout_version);
     cache = { at: Date.now(), style, map: all[style], all };
   } catch {
     cache = { at: Date.now(), style: "photo", map: {}, all: { photo: {}, illustration: {} } };
@@ -115,10 +115,11 @@ export async function generateCoverPhoto(slug: string, variant: CoverVariant = "
   const c = COVERS[slug];
   const brief = variant === "illustration" ? c?.artBrief : c?.photoBrief;
   if (!brief) return { ok: false, error: "Brak projektu okładki dla tego materiału." };
-  const r = await generateImageBytes(`${brief}\n\n${variant === "illustration" ? COVER_ART_STYLE : COVER_STYLE}`, "portrait");
+  const r = await generateImageBytes(`${brief}\n\n${variant === "illustration" ? COVER_ART_STYLE : COVER_STYLE}`, variant === "illustration" ? "landscape" : "portrait");
   if (!r.ok) return r;
-  await system((tx) => tx`insert into cover_images (slug, variant, mime, data, model) values (${slug}, ${variant}, ${r.mime}, ${r.data}, ${r.model})
-                          on conflict (slug, variant) do update set mime = excluded.mime, data = excluded.data, model = excluded.model, updated_at = now()`);
+  const layout = variant === "illustration" ? COVER_ART_LAYOUT : 1;
+  await system((tx) => tx`insert into cover_images (slug, variant, mime, data, model, layout_version) values (${slug}, ${variant}, ${r.mime}, ${r.data}, ${r.model}, ${layout})
+                          on conflict (slug, variant) do update set mime = excluded.mime, data = excluded.data, model = excluded.model, layout_version = excluded.layout_version, updated_at = now()`);
   invalidateCoverPhotos();
   return { ok: true, model: r.model };
 }

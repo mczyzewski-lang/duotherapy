@@ -7,6 +7,7 @@ import { audit } from "@/lib/audit";
 import { coverGenConfigured, coverState, generateCoverPhoto, invalidateCoverPhotos, type CoverVariant } from "@/lib/cover-photos";
 import { runBulk, stopBulk } from "@/lib/bulk";
 import { MAGNETS } from "@/knowledge/registry";
+import { isLegacyArtCover } from "@/lib/cover-url";
 import { allArticleImageJobs, articleImageJobs, articleImageMap, generateArticleImage, invalidateArticleImages, startBulkGeneration, stopBulkGeneration } from "@/lib/article-images";
 import { COVERS } from "@/knowledge/covers";
 
@@ -59,7 +60,9 @@ export async function generateMissingCoversAction(_: R, fd: FormData): Promise<R
   if (!coverGenConfigured()) return { error: "Brak OPENAI_API_KEY na serwerze." };
   const variant = variantOf(fd);
   const { all } = await coverState();
-  const todo = MAGNETS.filter((m) => COVERS[m.slug] && !all[variant][m.slug]);
+  // „legacy” – także grafiki 2D w starym (pionowym) układzie
+  const legacy = fd.get("legacy") === "1" && variant === "illustration";
+  const todo = MAGNETS.filter((m) => COVERS[m.slug] && (!all[variant][m.slug] || (legacy && isLegacyArtCover(all.illustration[m.slug]))));
   if (!todo.length) return { ok: "Wszystkie okładki tego wariantu są gotowe." };
   const started = runBulk("covers", todo.map((m) => ({ key: m.slug, run: () => generateCoverPhoto(m.slug, variant) })), { onDone: invalidateCoverPhotos });
   if (!started) return { ok: "Generowanie okładek już trwa." };

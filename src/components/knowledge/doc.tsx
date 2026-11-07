@@ -12,7 +12,7 @@ import { fid, LOOP_STEPS } from "@/knowledge/fields";
 import { MagnetIcon } from "./icons";
 import { coverOf } from "@/knowledge/covers";
 import { MapaExplainer } from "./mapa-explainer";
-import { isIllustrationCover } from "@/lib/cover-url";
+import { isIllustrationCover, isLegacyArtCover } from "@/lib/cover-url";
 
 type Mode = "screen" | "print";
 
@@ -49,12 +49,7 @@ export function Cover({ m, mode, compact, hero, photo, idSuffix = "" }: { m: Lea
       style={{ background: `linear-gradient(160deg, ${c.mood[0]} 0%, #fbf9f5 55%, ${c.mood[0]} 100%)` }}
       aria-label="Okładka materiału"
     >
-      {photoSrc && art ? (
-        <>
-          <img src={photoSrc} alt="" loading={hero ? "eager" : "lazy"} className="absolute inset-0 -z-10 h-full w-full object-cover" data-testid="cover-art" />
-          <div className="absolute inset-0 -z-10 bg-gradient-to-b from-ivory/85 via-transparent via-45% to-ivory/90" aria-hidden />
-        </>
-      ) : photoSrc ? (
+      {photoSrc && !art ? (
         <>
           <img src={photoSrc} alt="" loading={hero ? "eager" : "lazy"} className="absolute inset-0 -z-10 h-full w-full object-cover" />
           <div className="absolute inset-0 -z-10 bg-gradient-to-b from-black/50 via-black/5 to-black/70" aria-hidden />
@@ -95,7 +90,22 @@ export function Cover({ m, mode, compact, hero, photo, idSuffix = "" }: { m: Lea
         </T>
         <span className={clsx("block rounded-full", dark ? "bg-white/70" : "bg-clay", sm ? "mt-2 h-[2px] w-8" : "mt-4 h-[3px] w-14")} aria-hidden />
       </div>
-      <div className={clsx("mt-auto", sm ? "pt-3" : "pt-10")}>
+      {/* grafika 2D: osobny pas między tytułem a cytatem (kadr na środek sceny, miękko wygaszone krawędzie) – tekst nigdy nie nachodzi na rysunek */}
+      {art && photoSrc && (
+        <div className={clsx("relative flex-1 overflow-hidden", sm ? "-mx-4 my-1 min-h-[5rem]" : "-mx-7 my-4 min-h-[12rem] sm:-mx-10")} data-testid="cover-art">
+          {/* multiply: kremowe tło grafiki stapia się z kolorem okładki; maska wygasza krawędzie */}
+          <img
+            src={photoSrc}
+            alt=""
+            loading={hero ? "eager" : "lazy"}
+            className={clsx(
+              "absolute inset-0 h-full w-full object-center mix-blend-multiply",
+              isLegacyArtCover(photoSrc) ? "object-contain [mask-image:radial-gradient(ellipse_at_center,#000_58%,transparent_78%)]" : "object-cover [mask-image:linear-gradient(to_bottom,transparent,#000_12%,#000_88%,transparent)]",
+            )}
+          />
+        </div>
+      )}
+      <div className={clsx(art && photoSrc ? "" : "mt-auto", sm ? (art && photoSrc ? "pt-1" : "pt-3") : art && photoSrc ? "pt-2" : "pt-10")}>
         {c.hook && (
           <p className={clsx("font-display italic leading-[1.15]", dark ? "text-white/95" : "text-ink-soft", hero ? "text-[1.15rem] sm:text-[1.3rem]" : sm ? "text-[0.8rem]" : mode === "print" ? "text-[18pt]" : "text-[1.3rem] sm:text-[1.55rem]")}>{c.hook}</p>
         )}

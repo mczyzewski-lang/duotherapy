@@ -54,10 +54,10 @@ describe("okładki zdjęciowe", () => {
     expect(prompts[0]).toContain("circular track");
     // domyślnie zdjęcia – grafika 2D nie trafia na stronę
     expect((await coverPhotoMap())["petla-konfliktu"]).toBeUndefined();
-    expect((await coverState()).all.illustration["petla-konfliktu"]).toMatch(/\?s=illustration&v=\d+$/);
+    expect((await coverState()).all.illustration["petla-konfliktu"]).toMatch(/\?s=illustration&l=2&v=\d+$/);
     await system((tx) => tx`insert into app_settings (key, value) values ('covers', '{"style":"illustration"}') on conflict (key) do update set value = excluded.value`);
     invalidateCoverPhotos();
-    expect((await coverPhotoMap())["petla-konfliktu"]).toMatch(/^\/wiedza-okladki\/petla-konfliktu\?s=illustration&v=\d+$/);
+    expect((await coverPhotoMap())["petla-konfliktu"]).toMatch(/^\/wiedza-okladki\/petla-konfliktu\?s=illustration&l=2&v=\d+$/);
     await system((tx) => tx`update app_settings set value = '{"style":"photo"}' where key = 'covers'`);
     await system((tx) => tx`delete from cover_images`);
     invalidateCoverPhotos();
