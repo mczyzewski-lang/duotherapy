@@ -11,6 +11,7 @@ import { system } from "@/lib/db";
 import { coverOf } from "@/knowledge/covers";
 import { summarize } from "@/knowledge/fields";
 import { magnetBySlug } from "@/knowledge/registry";
+import { KTrack } from "@/components/knowledge/client";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Twoje podsumowanie", robots: { index: false, follow: false } };
@@ -23,12 +24,15 @@ export default async function SummaryPage({ params }: { params: Promise<{ slug: 
     const who = await contentReader(tx);
     if (!who || !who.magnets.includes(m.id)) return null;
     const a = await loadAnswers(tx, who.email, m.id);
+    // lejek: osoba zrobiła podsumowanie swoich odpowiedzi
+    if (a) await tx`update content_answers set summary_at = coalesce(summary_at, now()) where id = ${a.id}`;
     return { groups: summarize(m, a?.data ?? {}), updatedAt: a?.updatedAt ?? null };
   });
   const title = `Twoje podsumowanie: ${m.short}`;
 
   return (
     <div className="min-h-dvh bg-linen/60">
+      {res && <KTrack event="lead_magnet_summary_view" step={m.n} />}
       <main id="main" className="mx-auto max-w-3xl px-4 pb-20 pt-6 sm:px-5">
         <Link href={`/wiedza/${m.slug}/material`} className="no-print mb-4 inline-flex min-h-10 items-center gap-1.5 text-sm font-medium text-forest">
           <ArrowLeft size={16} aria-hidden /> Wróć do uzupełniania

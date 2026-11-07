@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
 import { saveAnswers } from "@/app/actions/answers";
 import { missingRequirements, type Requirement } from "@/knowledge/fields";
+import { SaveForLater } from "./phone";
 
 /** Klucz odpowiedzi z podglądu /demo w pamięci przeglądarki (nic nie trafia na serwer, dopóki osoba ich nie dołączy). */
 export const demoKey = (slug: string) => `duo_demo_answers:${slug}`;
@@ -240,7 +241,7 @@ export function AnswerCheck({ id, label }: { id: string; label: string }) {
 }
 
 /** Dolny sticky bar „Podsumuj …”: sprawdza minimum (min. 1 odpowiedź w wymaganych częściach), zapisuje i przechodzi dalej. */
-export function SummarizeBar({ href, label, requirements }: { href: string; label: string; requirements: Requirement[] }) {
+export function SummarizeBar({ href, label, requirements, saveLater }: { href: string; label: string; requirements: Requirement[]; saveLater?: { slug: string; n: number; masked: string | null } }) {
   const ctx = useContext(AnswersCtx);
   const router = useRouter();
   const [missing, setMissing] = useState<Requirement[]>([]);
@@ -283,6 +284,10 @@ export function SummarizeBar({ href, label, requirements }: { href: string; labe
               ))}
             </ul>
           </div>
+        )}
+        {/* „Zapisz zmiany na później” – po wpisaniu choć jednego słowa (wersja z e-maila, nie demo) */}
+        {saveLater && (saveLater.masked || Object.values(ctx.data).some((v) => typeof v === "string" && /\S/.test(v))) && (
+          <div className="mb-2.5"><SaveForLater slug={saveLater.slug} n={saveLater.n} initialMasked={saveLater.masked} /></div>
         )}
         <button type="button" onClick={submit} disabled={busy}
           className="flex min-h-14 w-full items-center justify-center gap-2 rounded-full bg-clay px-6 text-[16px] font-semibold text-white shadow-soft transition hover:brightness-110 disabled:opacity-60">

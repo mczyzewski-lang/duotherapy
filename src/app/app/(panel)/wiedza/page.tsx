@@ -101,7 +101,7 @@ export default async function KnowledgeAdmin({ searchParams }: { searchParams: P
         <h2 className="font-display text-xl text-ink">Ostatnie zapisy</h2>
         {d.leads.length === 0 ? <p className="mt-3 text-sm text-muted">Brak zapisów w tym okresie.</p> : (
           <table className="mt-4 w-full min-w-[900px] text-sm">
-            <thead className="text-left text-xs text-muted"><tr><th className="py-2">Data</th><th>E-mail</th><th>Imię</th><th>Materiał</th><th>Źródło</th><th>Zgody</th><th>Dostarczenie</th><th>Kolejne wiadomości</th></tr></thead>
+            <thead className="text-left text-xs text-muted"><tr><th className="py-2">Data</th><th>E-mail</th><th>Imię</th><th>Telefon</th><th>Materiał</th><th>Źródło</th><th>Zgody</th><th>Dostarczenie</th><th>Kolejne wiadomości</th></tr></thead>
             <tbody className="divide-y divide-sand/60">
               {d.leads.map((l) => {
                 const [label, tone] = DELIVERY[l.delivery_status] ?? [l.delivery_status, "neutral"];
@@ -110,6 +110,7 @@ export default async function KnowledgeAdmin({ searchParams }: { searchParams: P
                     <td className="py-2 text-xs">{new Date(l.created_at).toLocaleString("pl-PL")}</td>
                     <td>{l.email}</td>
                     <td>{l.name ?? "–"}</td>
+                    <td className="whitespace-nowrap text-xs">{l.phone && l.phone_verified_at ? <>{l.phone} <Badge tone="ok">SMS</Badge></> : "–"}</td>
                     <td>{l.magnet_id}</td>
                     <td className="text-xs">{[l.attribution?.utm_source, l.attribution?.utm_campaign].filter(Boolean).join(" · ") || "bezpośrednio"}</td>
                     <td className="text-xs">{l.relationship ? (l.relationship === "para" ? "para" : "małżeństwo") : "–"} · {l.has_children === null ? "–" : l.has_children ? "dzieci" : "bez dzieci"}<br />marketing: {l.marketing_consent ? "tak" : "nie"}{l.series_consent ? " · seria 7 dni" : ""}{l.unsubscribed_at ? " · wypisany" : ""}</td>

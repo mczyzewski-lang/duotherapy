@@ -1,6 +1,7 @@
 import { Alert, Card, PageTitle } from "@/components/ui";
 import { asStaff, requireStaff } from "@/lib/auth";
 import { readSettings } from "@/lib/settings";
+import { system } from "@/lib/db";
 
 export const metadata = { title: "Lejek" };
 
@@ -25,6 +26,16 @@ export default async function FunnelPage({ searchParams }: { searchParams: Promi
       where l.created_at >= ${since} and l.product = 'mapa_relacji'`;
     return { ev, steps, leads: [...leads], settings: await readSettings(tx) };
   });
+
+  // materiały → podsumowanie → zapis z numerem → płatność za Mapę Relacji (osoby po e-mailu; same liczby, bez danych)
+  const since = new Date(Date.now() - days * 86400_000);
+  const [lm] = await system((tx) => tx<{ leads: number; summary: number; phone: number; paid: number }[]>`
+    with p as (select lower(email) as e, min(created_at) as first_at from content_leads where created_at >= ${since} group by 1)
+    select count(*)::int as leads,
+      count(*) filter (where exists (select 1 from content_answers a where a.email_lc = p.e and a.summary_at is not null))::int as summary,
+      count(*) filter (where exists (select 1 from content_leads c where lower(c.email) = p.e and c.phone_verified_at is not null))::int as phone,
+      count(*) filter (where exists (select 1 from mail_contacts m where m.email_lc = p.e and m.purchased_at > p.first_at))::int as paid
+    from p`);
 
   const count = (event: string, variant?: string) => d.ev.filter((e) => e.event === event && (!variant || e.variant === variant)).reduce((a, e) => a + e.n, 0);
   const reached = (stage: string, list = d.leads) => list.filter((l) => STAGE_RANK.indexOf(l.stage) >= STAGE_RANK.indexOf(stage)).length;
@@ -120,6 +131,28 @@ export default async function FunnelPage({ searchParams }: { searchParams: Promi
             </div>
           </div>
         )}
+      </Card>
+
+      <Card className="mb-6 overflow-x-auto p-6" data-testid="lm-funnel">
+        <h2 className="font-display text-xl text-ink">Materiał → podsumowanie → płatność za Mapę Relacji</h2>
+        <p className="mt-1 text-xs text-muted">Osoby (po adresie e-mail), które odebrały bezpłatny materiał w tym okresie. Płatność – zakup Mapy Relacji po odebraniu materiału.</p>
+        <div className="mt-4 grid gap-3 sm:grid-cols-4">
+          {(
+            [
+              ["Odebrany materiał", lm.leads, null],
+              ["Zrobione podsumowanie", lm.summary, lm.leads],
+              ["Zapis z numerem (#znumerem)", lm.phone, lm.leads],
+              ["Płatność za Mapę Relacji", lm.paid, lm.leads],
+            ] as [string, number, number | null][]
+          ).map(([label, n, base], i) => (
+            <div key={label} className="relative rounded-2xl bg-linen/60 p-4 ring-1 ring-sand">
+              <p className="text-xs text-muted">{i + 1}. {label}</p>
+              <p className="mt-1 font-display text-2xl text-ink">{n}</p>
+              {base !== null && <p className="text-xs text-forest">{pct(n, base)} z odebranych</p>}
+            </div>
+          ))}
+        </div>
+        <p className="mt-3 text-xs text-muted">Podsumowanie → płatność: <strong>{pct(lm.paid, lm.summary)}</strong> · Sesje: otwarcia podsumowania {count("lead_magnet_summary_view")}, zapisy z numerem {count("lead_magnet_phone_saved")}.</p>
       </Card>
 
       <Card className="mb-6 overflow-x-auto p-6" data-testid="vsl-funnel">
