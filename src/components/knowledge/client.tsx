@@ -174,7 +174,7 @@ export function LeadMagnetForm({
 }
 
 /** Dolny pasek na landingu materiału: pojawia się po przewinięciu nagłówka, znika przy formularzu. */
-export function MagnetStickyBar({ title }: { title: string }) {
+export function MagnetStickyBar({ title, href = "#odbierz", label = "Pobierz bezpłatnie" }: { title: string; href?: string; label?: string }) {
   const [show, setShow] = useState(false);
   useEffect(() => {
     let raf = 0;
@@ -204,7 +204,7 @@ export function MagnetStickyBar({ title }: { title: string }) {
           <span className="block text-[11px] font-semibold uppercase tracking-[0.16em] text-clay">Bezpłatny materiał</span>
           <span className="block truncate font-display text-[15px] text-ink">{title}</span>
         </span>
-        <a href="#odbierz" className="inline-flex min-h-12 shrink-0 items-center rounded-full bg-clay px-5 text-[15px] font-semibold text-white shadow-soft">Pobierz bezpłatnie</a>
+        <a href={href} className="inline-flex min-h-12 shrink-0 items-center rounded-full bg-clay px-5 text-[15px] font-semibold text-white shadow-soft">{label}</a>
       </div>
     </div>
   );

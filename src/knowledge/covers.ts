@@ -1,6 +1,11 @@
 // Okładki materiałów: emocjonalny cytat, nastrój kolorystyczny i projekt zdjęcia (brief dla fotografa / generatora).
 // Gdy zdjęcie zostanie dostarczone, wystarczy zapisać je jako public/img/wiedza/<slug>.jpg i ustawić photo: true.
 // Bez stockowych zdjęć „par z uśmiechem” – detale, światło, przestrzeń, dłonie, codzienność.
+import { COVERS_A } from "./materials/nowe-a.covers";
+import { COVERS_B } from "./materials/nowe-b.covers";
+import { COVERS_C } from "./materials/nowe-c.covers";
+import { COVERS_D } from "./materials/nowe-d.covers";
+import { COVERS_E } from "./materials/nowe-e.covers";
 
 export interface CoverExtra {
   hook: string;
@@ -95,6 +100,11 @@ export const COVERS: Record<string, CoverExtra> = {
     photoBrief: "Dziecięca dłoń w dłoni dorosłego na spacerze jesienią, kadr od tyłu; spokój i bezpieczeństwo, bez smutnych twarzy.",
     artBrief: "Two adult mascots, one green and one terracotta, walk on an autumn path on either side of a small rose child mascot, each holding one of the child's hands; falling leaves, calm and safe atmosphere.",
   },
+  ...COVERS_A,
+  ...COVERS_B,
+  ...COVERS_C,
+  ...COVERS_D,
+  ...COVERS_E,
 };
 
 export const coverOf = (slug: string) => COVERS[slug];

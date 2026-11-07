@@ -2,6 +2,11 @@
 import { kryzysCzyKoniec, mapaTrzechDrog, pytan21 } from "./materials/decyzje";
 import { jednaOsoba, petlaKonfliktu, siedemDni, trudnaRozmowa } from "./materials/rozmowa";
 import { poZdradzie, przykladowaMapa, SAMPLE_INTRO, swiadomeRozstanie } from "./materials/trudne";
+import { ktoCoRobi, rozmowaOPieniadzach } from "./materials/nowe-a";
+import { bliskoscPoDziecku, czasWeDwoje } from "./materials/nowe-b";
+import { cicheDni, jezykPotrzeb } from "./materials/nowe-c";
+import { graniceZRodzina, klotniePrzyDzieciach } from "./materials/nowe-d";
+import { przygotowanieDoTerapii, sygnalyKryzysu } from "./materials/nowe-e";
 import { CATEGORY_LABEL, type Category, type LeadMagnet } from "./types";
 
 /** Kolejność menu i strony /wiedza. */
@@ -16,6 +21,16 @@ export const MAGNETS: LeadMagnet[] = [
   petlaKonfliktu,
   poZdradzie,
   swiadomeRozstanie,
+  rozmowaOPieniadzach,
+  ktoCoRobi,
+  czasWeDwoje,
+  bliskoscPoDziecku,
+  jezykPotrzeb,
+  cicheDni,
+  klotniePrzyDzieciach,
+  graniceZRodzina,
+  sygnalyKryzysu,
+  przygotowanieDoTerapii,
 ];
 
 export const CATEGORIES: { key: Category; label: string; items: LeadMagnet[] }[] = (["decyzje", "rozmowa", "trudne"] as Category[]).map((key) => ({

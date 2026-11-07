@@ -1,9 +1,17 @@
-// „Wiedza”: menu, strona zbiorcza, 10 landingów, 10 podglądów /demo, zgodność /demo ↔ PDF, formularz i panel.
+// „Wiedza”: menu, strona zbiorcza, 20 landingów, 20 podglądów /demo, zgodność /demo ↔ PDF, formularz i panel.
 import { expect, test, type Page } from "@playwright/test";
 
 const SLUGS = [
   "mapa-trzech-drog", "21-pytan-o-relacji", "kryzys-czy-koniec-milosci", "przykladowa-mapa-relacji", "7-dni-lepszych-rozmow",
   "trudna-rozmowa", "partner-nie-chce-ratowac-zwiazku", "petla-konfliktu", "po-zdradzie", "swiadome-rozstanie",
+  "rozmowa-o-pieniadzach", "kto-co-robi", "czas-we-dwoje", "bliskosc-po-dziecku", "jezyk-potrzeb", "ciche-dni",
+  "klotnie-przy-dzieciach", "granice-z-rodzina", "sygnaly-kryzysu", "przygotowanie-do-terapii",
+];
+/** Pierwsze 6 w każdej kategorii – tyle pokazuje menu (reszta: „+ N więcej”). */
+const MENU_SLUGS = [
+  "mapa-trzech-drog", "21-pytan-o-relacji", "kryzys-czy-koniec-milosci", "przykladowa-mapa-relacji", "sygnaly-kryzysu", "przygotowanie-do-terapii",
+  "7-dni-lepszych-rozmow", "trudna-rozmowa", "partner-nie-chce-ratowac-zwiazku", "petla-konfliktu",
+  "po-zdradzie", "swiadome-rozstanie", "klotnie-przy-dzieciach", "granice-z-rodzina",
 ];
 
 /** Klika „Podsumuj…”; dopóki brakuje odpowiedzi – przechodzi do wskazanego pola i je uzupełnia. */
@@ -43,7 +51,8 @@ test("menu Wiedza: desktop (klik, Esc) i telefon; strona zbiorcza z filtrem", as
   const btn = page.getByRole("button", { name: "Wiedza" });
   await btn.click();
   await expect(btn).toHaveAttribute("aria-expanded", "true");
-  for (const s of SLUGS) await expect(page.locator(`a[href="/wiedza/${s}"]`).first()).toBeVisible();
+  for (const s of MENU_SLUGS) await expect(page.locator(`a[href="/wiedza/${s}"]`).first()).toBeVisible();
+  await expect(page.locator('a[href="/wiedza?kategoria=rozmowa"]').first()).toContainText("+ 4 więcej");
   await page.keyboard.press("Escape");
   await expect(btn).toHaveAttribute("aria-expanded", "false");
   await expect(btn).toBeFocused();
@@ -60,17 +69,30 @@ test("menu Wiedza: desktop (klik, Esc) i telefon; strona zbiorcza z filtrem", as
 
   await page.goto("/wiedza");
   await page.waitForLoadState("networkidle");
-  await expect(page.locator('main a[href^="/wiedza/"]:not([href^="/wiedza/artykuly"])')).toHaveCount(10);
+  const cards = page.locator('main a[href^="/wiedza/"]:not([href^="/wiedza/artykuly"])');
+  await expect(cards).toHaveCount(9);
+  await page.getByTestId("magnets-more").click();
+  await expect(cards).toHaveCount(20);
   await page.getByRole("button", { name: "Trudne sytuacje" }).click();
-  await expect(page.locator('main a[href^="/wiedza/"]:not([href^="/wiedza/artykuly"])')).toHaveCount(2);
+  await expect(cards).toHaveCount(4);
+  await page.goto("/wiedza?kategoria=rozmowa");
+  await expect(cards).toHaveCount(10);
 });
 
-test("10 landingów i 10 pełnych podglądów /demo (noindex), /demo zgodne z PDF", async ({ page, request }) => {
+test("20 landingów i 20 pełnych podglądów /demo (noindex), /demo zgodne z PDF", async ({ page, request }) => {
   for (const s of SLUGS) {
     await page.goto(`/wiedza/${s}`);
     await expect(page.locator("h1")).toHaveCount(1);
-    await expect(page.getByRole("heading", { name: /^Odbierz bezpłatnie:/ })).toBeVisible();
-    await expect(page.getByTestId("lm-instant")).toHaveText("Dostęp natychmiast");
+    if (s === "przykladowa-mapa-relacji") {
+      // przykład jest publiczny – bez formularza i bez podawania danych
+      await expect(page.getByRole("heading", { name: /^Zobacz bezpłatnie:/ })).toBeVisible();
+      await expect(page.getByTestId("lm-form-box")).toHaveCount(0);
+      await expect(page.getByTestId("hero-cta")).toHaveAttribute("href", "/mapa-relacji-przyklad");
+      await expect(page.getByTestId("lm-free-open")).toHaveAttribute("href", "/mapa-relacji-przyklad");
+    } else {
+      await expect(page.getByRole("heading", { name: /^Odbierz bezpłatnie:/ })).toBeVisible();
+      await expect(page.getByTestId("lm-instant")).toHaveText("Dostęp natychmiast");
+    }
     await expect(page.locator('link[rel="canonical"]')).toHaveAttribute("href", new RegExp(`/wiedza/${s}$`));
 
     const demo = await request.get(`/wiedza/${s}/demo`);

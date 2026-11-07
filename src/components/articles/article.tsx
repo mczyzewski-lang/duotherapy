@@ -55,9 +55,9 @@ export function MagnetCta({ slug, hook, photo, idSuffix, side }: { slug: string;
           </p>
           <p className="mt-2 font-display text-[1.35rem] leading-snug text-white">{m.short}</p>
           <p className="mt-1.5 text-[15px] leading-relaxed text-white/80">{hook}</p>
-          <Link href={`/wiedza/${m.slug}#odbierz`} data-article-cta={m.n}
+          <Link href={m.special ? `/wiedza/${m.slug}` : `/wiedza/${m.slug}#odbierz`} data-article-cta={m.n}
             className={clsx("btn-convex mt-4 inline-flex min-h-12 items-center justify-center gap-2 rounded-full px-6 text-[15px] font-bold text-white", side && "w-full")}>
-            Pobierz bezpłatnie <ArrowRight size={17} aria-hidden />
+            {m.special ? "Zobacz przykład" : "Pobierz bezpłatnie"} <ArrowRight size={17} aria-hidden />
           </Link>
         </div>
       </div>

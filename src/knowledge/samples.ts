@@ -1,6 +1,11 @@
 // Przykładowe odpowiedzi „pisane odręcznie” w podglądzie materiału na landingu (fikcyjne, krótkie, bez danych osobowych).
 // Klucz: identyfikator pola z fields.ts (fid) – pole musi należeć do bloków podglądu (pilnuje test).
 // true = odręczny ptaszek w checkliście.
+import { SAMPLES_A } from "./materials/nowe-a.samples";
+import { SAMPLES_B } from "./materials/nowe-b.samples";
+import { SAMPLES_C } from "./materials/nowe-c.samples";
+import { SAMPLES_D } from "./materials/nowe-d.samples";
+import { SAMPLES_E } from "./materials/nowe-e.samples";
 
 export const SAMPLE_ANSWERS: Record<string, Record<string, string | true>> = {
   "mapa-trzech-drog": {
@@ -25,4 +30,9 @@ export const SAMPLE_ANSWERS: Record<string, Record<string, string | true>> = {
   },
   "po-zdradzie": { "k11.0": true, "k11.1": true },
   "swiadome-rozstanie": { "k29.0": true, "k29.1": true },
+  ...SAMPLES_A,
+  ...SAMPLES_B,
+  ...SAMPLES_C,
+  ...SAMPLES_D,
+  ...SAMPLES_E,
 };

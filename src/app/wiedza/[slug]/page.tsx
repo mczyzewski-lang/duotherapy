@@ -249,7 +249,7 @@ export default async function MagnetLanding({ params }: { params: Promise<{ slug
         )}
       </main>
       <SiteFooter contactEmail={s.site.contactEmail} />
-      <MagnetStickyBar title={m.short} />
+      <MagnetStickyBar title={m.short} {...(free ? { href: "/mapa-relacji-przyklad", label: "Zobacz przykład" } : {})} />
     </>
   );
 }
