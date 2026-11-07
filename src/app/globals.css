@@ -249,3 +249,21 @@ path.map-line[stroke-dasharray="6 7"] { stroke-dasharray: 6 7; stroke-dashoffset
 }
 .animate-nudge-down { animation: nudge-down 1.4s ease-in-out infinite; }
 @media (prefers-reduced-motion: reduce) { .animate-nudge-down { animation: none; } }
+
+/* Podgląd materiału: treść „zapada się” za kartę „To dopiero fragment”, karta wychodzi na pierwszy plan (--pv: 0–1, ustawia PreviewParallax) */
+.pv-parallax { --pv: 0; }
+.pv-sink {
+  transform: translate3d(0, calc(var(--pv) * 9rem), 0) scale(calc(1 - var(--pv) * 0.04));
+  transform-origin: 50% 0;
+  opacity: calc(1 - var(--pv) * 0.55);
+  filter: saturate(calc(1 - var(--pv) * 0.4));
+  will-change: transform, opacity;
+}
+.pv-card {
+  transform: translate3d(0, calc(var(--pv) * -0.75rem), 0) scale(calc(1 + var(--pv) * 0.035));
+  box-shadow: 0 calc(24px + var(--pv) * 26px) calc(50px + var(--pv) * 40px) calc(-24px + var(--pv) * -4px) rgba(54, 73, 61, calc(0.55 + var(--pv) * 0.2));
+  will-change: transform;
+}
+@media (prefers-reduced-motion: reduce) {
+  .pv-sink, .pv-card { transform: none; opacity: 1; filter: none; }
+}
