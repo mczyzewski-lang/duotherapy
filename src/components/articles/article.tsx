@@ -50,7 +50,7 @@ export function MagnetCta({ slug, hook, photo, idSuffix, side }: { slug: string;
         </div>
         <div>
           <p className={clsx("flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#f3c9b2]", side && "justify-center")}>
-            <MagnetIcon icon={m.icon} id={`acta-${m.id}${idSuffix}`} className="h-4 w-4" /> Bezpłatny materiał · {m.format.split(" · ")[0]}
+            <MagnetIcon icon={m.icon} id={`acta-${m.id}${idSuffix}`} className="h-4 w-4" /> Bezpłatnie: {m.format.split(" · ")[0]}
           </p>
           <p className="mt-2 font-display text-[1.35rem] leading-snug text-white">{m.short}</p>
           <p className="mt-1.5 text-[15px] leading-relaxed text-white/80">{hook}</p>
