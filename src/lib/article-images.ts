@@ -1,25 +1,11 @@
 // Ilustracje artykułów: generowanie (OpenAI, klucz na serwerze), zapis w bazie, lista dostępnych.
 import { system } from "./db";
 import { generateImageBytes } from "./cover-photos";
+import { bulkStatus as bulkStatusOf, runBulk, stopBulk } from "./bulk";
 import { ARTICLES, articleBySlug } from "@/content/articles";
 
-/** Wspólny styl: minimalistyczna, profesjonalna ilustracja w barwach DUO, z delikatnymi elementami komiksowymi, bez tekstu. */
-export const ART_STYLE = [
-  "Minimalist editorial illustration for a couples-therapy article. Flat vector style with subtle paper grain and soft matte shading, calm and professional.",
-  "Strict palette: deep forest green #36493d, terracotta #a9512f, warm sand #eadccb, ivory background #fbf9f5, soft rose #e07f78, sage #97ac9c.",
-  // Stały projekt postaci (maskotki DUO) – ten sam w całej serii; wybrany przez właściciela marki.
-  "CHARACTER DESIGN – identical in every image of this series (DUO mascots): soft rounded bean-shaped characters with a big round head and a chubby simple body, smooth solid colour with gentle matte shading;",
-  "the couple is always one deep forest green character and one terracotta character; any additional character is soft rose, sage or sand;",
-  "round heads with NO hair, NO clothes details, NO noses; only tiny dot eyes and at most a tiny simple mouth or a small blush; simple mitten-like hands; expressive through posture and gestures.",
-  "Whenever the scene mentions people, persons, figures, characters, a therapist or children, draw them ONLY as these mascots (children are smaller mascots). Never realistic, detailed, 3D-rendered, anime or stick-figure people.",
-  "One clear scene with one main idea; no grids, tiles, sequences of repeated small panels or icon rows.",
-  "Light comic-style elements: empty speech or thought bubbles, small motion marks, gentle arrows, small hearts, simple props.",
-  "Lots of negative space, clean composition, no clutter. Absolutely no text, letters, numbers, captions or logos inside the image.",
-  "Respectful and inclusive, no stereotypes, no drama, no violence.",
-].join(" ");
-
-/** Wersja stylu – grafiki wygenerowane inną wersją panel oznacza jako „stary styl” i pozwala je odświeżyć. */
-export const ART_STYLE_VERSION = 3;
+export { ART_STYLE, ART_STYLE_VERSION } from "./art-style";
+import { ART_STYLE, ART_STYLE_VERSION } from "./art-style";
 
 export const heroKey = (slug: string) => `${slug}--hero`;
 export const artKey = (slug: string, key: string) => `${slug}--${key}`;
@@ -72,65 +58,18 @@ export async function generateArticleImage(key: string): Promise<{ ok: true; mod
   return { ok: true, model: r.model };
 }
 
-// ---------------------------------------------------------------------------
-// Generowanie hurtowe w tle: wszystkie brakujące ilustracje, po 2 naraz, z ponowieniem przy limitach OpenAI.
-// Stan żyje w procesie serwera (jedna instancja) – po restarcie wystarczy kliknąć ponownie: generują się tylko brakujące.
-// ---------------------------------------------------------------------------
-export interface BulkStatus {
-  running: boolean;
-  total: number;
-  done: number;
-  failed: { key: string; error: string }[];
-  current: string[];
-  startedAt: number;
-  finishedAt: number | null;
-  stoppedReason: string | null;
-}
-const g = globalThis as unknown as { __duoBulk?: BulkStatus };
-export const bulkStatus = (): BulkStatus | null => g.__duoBulk ?? null;
-
-const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
-const retryable = (e: string) => /429|rate|limit|timeout|ECONNRESET|5\d\d|overloaded|temporarily/i.test(e);
+// Generowanie hurtowe w tle (wspólny mechanizm z src/lib/bulk.ts).
+export const bulkStatus = () => bulkStatusOf("articles");
+export const stopBulkGeneration = () => stopBulk("articles");
 
 /** mode „missing” – brakujące; „outdated” – brakujące i te w starym stylu. */
-export async function startBulkGeneration(mode: "missing" | "outdated" = "missing", concurrency = 2): Promise<{ started: boolean; total: number }> {
-  if (g.__duoBulk?.running) return { started: false, total: g.__duoBulk.total };
+export async function startBulkGeneration(mode: "missing" | "outdated" = "missing"): Promise<{ started: boolean; total: number }> {
+  const cur = bulkStatusOf("articles");
+  if (cur?.running) return { started: false, total: cur.total };
   invalidateArticleImages();
   const have = await articleImageMap();
   const old = mode === "outdated" ? await outdatedArticleImages() : new Set<string>();
   const todo = allArticleImageJobs().filter((j) => !have[j.key] || old.has(j.key));
-  const st: BulkStatus = { running: todo.length > 0, total: todo.length, done: 0, failed: [], current: [], startedAt: Date.now(), finishedAt: todo.length ? null : Date.now(), stoppedReason: null };
-  g.__duoBulk = st;
-  if (!todo.length) return { started: false, total: 0 };
-  let next = 0;
-  let consecutiveFails = 0;
-  const worker = async () => {
-    while (st.running && next < todo.length) {
-      const job = todo[next++];
-      st.current.push(job.key);
-      let r: Awaited<ReturnType<typeof generateArticleImage>> = { ok: false, error: "" };
-      for (let attempt = 0; attempt < 4; attempt++) {
-        r = await generateArticleImage(job.key).catch((e) => ({ ok: false as const, error: String(e?.message ?? e) }));
-        if (r.ok || !retryable(r.error)) break;
-        await sleep(15_000 * (attempt + 1));
-      }
-      st.current = st.current.filter((k) => k !== job.key);
-      if (r.ok) { st.done++; consecutiveFails = 0; }
-      else {
-        st.failed.push({ key: job.key, error: r.error.slice(0, 300) });
-        // ten sam błąd kilka razy z rzędu (brak klucza, model, limit konta) – przerywamy, żeby nie mnożyć kosztów i błędów
-        if (++consecutiveFails >= 3) { st.running = false; st.stoppedReason = `Przerwano po 3 błędach z rzędu: ${r.error.slice(0, 200)}`; }
-      }
-    }
-  };
-  void Promise.all(Array.from({ length: Math.min(concurrency, todo.length) }, worker)).finally(() => {
-    st.running = false;
-    st.finishedAt = Date.now();
-    invalidateArticleImages();
-  });
-  return { started: true, total: todo.length };
-}
-
-export function stopBulkGeneration() {
-  if (g.__duoBulk?.running) { g.__duoBulk.running = false; g.__duoBulk.stoppedReason = "Zatrzymano ręcznie."; }
+  const started = runBulk("articles", todo.map((j) => ({ key: j.key, run: () => generateArticleImage(j.key) })), { onDone: invalidateArticleImages });
+  return { started, total: todo.length };
 }

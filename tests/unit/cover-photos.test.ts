@@ -1,7 +1,7 @@
 // Okładki: przejście na kolejny model obrazów, gdy pierwszy nie istnieje dla klucza; komunikat z dostępnymi modelami.
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { system } from "@/lib/db";
-import { coverPhotoMap, generateCoverPhoto } from "@/lib/cover-photos";
+import { coverPhotoMap, coverState, generateCoverPhoto, invalidateCoverPhotos } from "@/lib/cover-photos";
 
 const PNG = Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==", "base64");
 const json = (status: number, body: unknown) => new Response(JSON.stringify(body), { status, headers: { "content-type": "application/json" } });
@@ -40,5 +40,26 @@ describe("okładki zdjęciowe", () => {
     const r = await generateCoverPhoto("petla-konfliktu");
     expect(!r.ok && r.error).toContain("Rate limit");
     expect(f).toHaveBeenCalledTimes(1);
+  });
+
+  it("grafika 2D: osobny wariant z promptem maskotek; strona pokazuje wariant wybrany globalnie", async () => {
+    process.env.OPENAI_API_KEY = "sk-test";
+    const prompts: string[] = [];
+    vi.stubGlobal("fetch", vi.fn(async (_url: string, init: RequestInit) => {
+      prompts.push(JSON.parse(String(init.body)).prompt);
+      return json(200, { data: [{ b64_json: PNG.toString("base64") }] });
+    }));
+    expect((await generateCoverPhoto("petla-konfliktu", "illustration")).ok).toBe(true);
+    expect(prompts[0]).toContain("DUO mascots");
+    expect(prompts[0]).toContain("circular track");
+    // domyślnie zdjęcia – grafika 2D nie trafia na stronę
+    expect((await coverPhotoMap())["petla-konfliktu"]).toBeUndefined();
+    expect((await coverState()).all.illustration["petla-konfliktu"]).toMatch(/\?s=illustration&v=\d+$/);
+    await system((tx) => tx`insert into app_settings (key, value) values ('covers', '{"style":"illustration"}') on conflict (key) do update set value = excluded.value`);
+    invalidateCoverPhotos();
+    expect((await coverPhotoMap())["petla-konfliktu"]).toMatch(/^\/wiedza-okladki\/petla-konfliktu\?s=illustration&v=\d+$/);
+    await system((tx) => tx`update app_settings set value = '{"style":"photo"}' where key = 'covers'`);
+    await system((tx) => tx`delete from cover_images`);
+    invalidateCoverPhotos();
   });
 });

@@ -12,6 +12,7 @@ import { fid, LOOP_STEPS } from "@/knowledge/fields";
 import { MagnetIcon } from "./icons";
 import { coverOf } from "@/knowledge/covers";
 import { MapaExplainer } from "./mapa-explainer";
+import { isIllustrationCover } from "@/lib/cover-url";
 
 type Mode = "screen" | "print";
 
@@ -35,7 +36,9 @@ export function Cover({ m, mode, compact, hero, photo, idSuffix = "" }: { m: Lea
   const T = compact ? "p" : "h1"; // miniatura okładki nie jest nagłówkiem strony – jeden H1 na stronę
   // zdjęcie: wygenerowane w panelu (z bazy) albo plik w public/img/wiedza (photo: true w covers.ts)
   const photoSrc = photo ?? (c.photo ? `/img/wiedza/${m.slug}.jpg` : null);
-  const dark = !!photoSrc;
+  // grafika 2D (maskotki) ma jasne tło – tytuł zostaje ciemny; zdjęcie – ciemna nakładka i biały tekst
+  const art = isIllustrationCover(photoSrc);
+  const dark = !!photoSrc && !art;
   return (
     <section
       className={clsx(
@@ -46,7 +49,12 @@ export function Cover({ m, mode, compact, hero, photo, idSuffix = "" }: { m: Lea
       style={{ background: `linear-gradient(160deg, ${c.mood[0]} 0%, #fbf9f5 55%, ${c.mood[0]} 100%)` }}
       aria-label="Okładka materiału"
     >
-      {photoSrc ? (
+      {photoSrc && art ? (
+        <>
+          <img src={photoSrc} alt="" loading={hero ? "eager" : "lazy"} className="absolute inset-0 -z-10 h-full w-full object-cover" data-testid="cover-art" />
+          <div className="absolute inset-0 -z-10 bg-gradient-to-b from-ivory/85 via-transparent via-45% to-ivory/90" aria-hidden />
+        </>
+      ) : photoSrc ? (
         <>
           <img src={photoSrc} alt="" loading={hero ? "eager" : "lazy"} className="absolute inset-0 -z-10 h-full w-full object-cover" />
           <div className="absolute inset-0 -z-10 bg-gradient-to-b from-black/50 via-black/5 to-black/70" aria-hidden />

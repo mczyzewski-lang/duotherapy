@@ -4,34 +4,75 @@
 import { revalidatePath } from "next/cache";
 import { asStaff, requireStaff } from "@/lib/auth";
 import { audit } from "@/lib/audit";
-import { generateCoverPhoto, invalidateCoverPhotos } from "@/lib/cover-photos";
+import { coverGenConfigured, coverState, generateCoverPhoto, invalidateCoverPhotos, type CoverVariant } from "@/lib/cover-photos";
+import { runBulk, stopBulk } from "@/lib/bulk";
+import { MAGNETS } from "@/knowledge/registry";
 import { allArticleImageJobs, articleImageJobs, articleImageMap, generateArticleImage, invalidateArticleImages, startBulkGeneration, stopBulkGeneration } from "@/lib/article-images";
-import { coverGenConfigured } from "@/lib/cover-photos";
 import { COVERS } from "@/knowledge/covers";
 
 type R = { error?: string; ok?: string } | undefined;
 
+const variantOf = (fd: FormData): CoverVariant => (fd.get("variant") === "illustration" ? "illustration" : "photo");
+
 export async function generateCoverAction(_: R, fd: FormData): Promise<R> {
   const s = await requireStaff("admin");
   const slug = String(fd.get("slug") ?? "");
+  const variant = variantOf(fd);
   if (!COVERS[slug]) return { error: "Nieznany materiał." };
-  const r = await generateCoverPhoto(slug);
+  const r = await generateCoverPhoto(slug, variant);
   if (!r.ok) return { error: r.error };
-  await asStaff(s, (tx) => audit(tx, s.actor, "cover_generated", "cover", null, null, { slug }));
+  await asStaff(s, (tx) => audit(tx, s.actor, "cover_generated", "cover", null, null, { slug, variant }));
   revalidatePath("/app/wiedza");
-  return { ok: `Okładka gotowa (${r.model}) – widać ją już na stronie.` };
+  return { ok: `Gotowe (${r.model}).` };
 }
 
 export async function deleteCoverAction(_: R, fd: FormData): Promise<R> {
   const s = await requireStaff("admin");
   const slug = String(fd.get("slug") ?? "");
+  const variant = variantOf(fd);
   await asStaff(s, async (tx) => {
-    await tx`delete from cover_images where slug = ${slug}`;
-    await audit(tx, s.actor, "cover_deleted", "cover", null, null, { slug });
+    await tx`delete from cover_images where slug = ${slug} and variant = ${variant}`;
+    await audit(tx, s.actor, "cover_deleted", "cover", null, null, { slug, variant });
   });
   invalidateCoverPhotos();
   revalidatePath("/app/wiedza");
-  return { ok: "Usunięto – wraca okładka bez zdjęcia." };
+  return { ok: "Usunięto." };
+}
+
+/** Globalny wybór: co pokazuje strona – zdjęcia czy grafiki 2D. */
+export async function setCoverStyleAction(_: R, fd: FormData): Promise<R> {
+  const s = await requireStaff("admin");
+  const style = variantOf(fd);
+  await asStaff(s, async (tx) => {
+    await tx`insert into app_settings (key, value, updated_by, updated_at) values ('covers', ${tx.json({ style })}, ${s.user.id}, now())
+             on conflict (key) do update set value = excluded.value, updated_by = excluded.updated_by, updated_at = now()`;
+    await audit(tx, s.actor, "cover_style_set", "app_settings", null, null, { style });
+  });
+  invalidateCoverPhotos();
+  revalidatePath("/", "layout");
+  return { ok: style === "illustration" ? "Na stronie są teraz grafiki 2D." : "Na stronie są teraz zdjęcia." };
+}
+
+/** Wszystkie brakujące okładki danego wariantu – w tle. */
+export async function generateMissingCoversAction(_: R, fd: FormData): Promise<R> {
+  const s = await requireStaff("admin");
+  if (!coverGenConfigured()) return { error: "Brak OPENAI_API_KEY na serwerze." };
+  const variant = variantOf(fd);
+  const { all } = await coverState();
+  const todo = MAGNETS.filter((m) => COVERS[m.slug] && !all[variant][m.slug]);
+  if (!todo.length) return { ok: "Wszystkie okładki tego wariantu są gotowe." };
+  const started = runBulk("covers", todo.map((m) => ({ key: m.slug, run: () => generateCoverPhoto(m.slug, variant) })), { onDone: invalidateCoverPhotos });
+  if (!started) return { ok: "Generowanie okładek już trwa." };
+  await asStaff(s, (tx) => audit(tx, s.actor, "covers_bulk_started", "cover", null, null, { variant, count: todo.length }));
+  revalidatePath("/app/wiedza");
+  return { ok: `Start: ${todo.length} okładek w tle.` };
+}
+
+export async function stopCoversAction(_: R): Promise<R> {
+  await requireStaff("admin");
+  stopBulk("covers");
+  revalidatePath("/app/wiedza");
+  return { ok: "Zatrzymano po bieżących okładkach." };
 }
 
 /** Jedna ilustracja artykułu. */
