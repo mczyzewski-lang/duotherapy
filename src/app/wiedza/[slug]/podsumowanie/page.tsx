@@ -1,18 +1,18 @@
 // Podsumowanie odpowiedzi z materiału (tylko dla osoby, która je wpisała) + zaproszenie do dołączenia ich do quizu Mapy Relacji™.
-import { ArrowLeft, Check, Lock } from "lucide-react";
+import { Check, Lock } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { MapaSymbol } from "@/components/brand";
 import { MagnetIcon } from "@/components/knowledge/icons";
-import { PrintButton } from "@/components/knowledge/print-button";
+import { MaterialTopBar } from "@/components/knowledge/tabs";
 import { contentReader, loadAnswers } from "@/lib/content-access";
 import { system } from "@/lib/db";
 import { coverOf } from "@/knowledge/covers";
 import { summarize } from "@/knowledge/fields";
 import { magnetBySlug } from "@/knowledge/registry";
 import { KTrack } from "@/components/knowledge/client";
-import { EmailSummary, OfferLink } from "@/components/knowledge/summary-actions";
+import { AttachBar, OfferLink } from "@/components/knowledge/summary-actions";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Twoje podsumowanie", robots: { index: false, follow: false } };
@@ -34,10 +34,8 @@ export default async function SummaryPage({ params }: { params: Promise<{ slug: 
   return (
     <div className="min-h-dvh bg-linen/60">
       {res && <KTrack event="lead_magnet_summary_view" step={m.n} />}
-      <main id="main" className="mx-auto max-w-3xl px-4 pb-20 pt-6 sm:px-5">
-        <Link href={`/wiedza/${m.slug}/material`} className="no-print mb-4 inline-flex min-h-10 items-center gap-1.5 text-sm font-medium text-forest">
-          <ArrowLeft size={16} aria-hidden /> Wróć do uzupełniania
-        </Link>
+      <MaterialTopBar kicker="Twój materiał DUO" title={m.short} materialHref={`/wiedza/${m.slug}/material`} summaryHref={`/wiedza/${m.slug}/podsumowanie`} active="summary" />
+      <main id="main" className="mx-auto max-w-3xl px-4 pb-36 pt-6 sm:px-5">
         <header className="rounded-[1.75rem] bg-white p-6 shadow-soft ring-1 ring-sand sm:p-8">
           <p className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-clay">
             <MagnetIcon icon={m.icon} id={`sum-${m.id}`} className="h-5 w-5" /> {m.short}
@@ -47,13 +45,9 @@ export default async function SummaryPage({ params }: { params: Promise<{ slug: 
             {ready && <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-sage-soft text-forest"><Check size={22} aria-hidden /></span>}
             {ready ? "Twoje podsumowanie jest gotowe" : `Twoje podsumowanie: ${m.short}`}
           </h1>
-          {ready && <p className="mt-3 max-w-2xl text-[17px] leading-relaxed text-ink-soft">Zebraliśmy Twoje odpowiedzi w jednym miejscu. To Twoja perspektywa – możesz do niej wracać, wydrukować ją albo wysłać sobie na e-mail.</p>}
+          {ready && <p className="mt-3 max-w-2xl text-[17px] leading-relaxed text-ink-soft">Zebraliśmy Twoje odpowiedzi w jednym miejscu. To Twoja perspektywa – możesz do niej wracać w każdej chwili z zakładki „Podsumowanie”.</p>}
           {res?.updatedAt && <p className="mt-2 text-sm text-muted">Ostatni zapis: {new Date(res.updatedAt).toLocaleString("pl-PL")}</p>}
           <p className="mt-3 flex gap-2 text-sm text-ink-soft"><Lock size={15} className="mt-0.5 shrink-0" aria-hidden /> Twoje odpowiedzi widzisz tylko Ty. Nikt z DUO ich nie czyta, dopóki sam / sama ich nie dołączysz.</p>
-          <div className="no-print mt-5 flex flex-wrap items-start gap-2.5">
-            <PrintButton />
-            {ready && <EmailSummary slug={m.slug} n={m.n} />}
-          </div>
         </header>
 
         {!res ? (
@@ -116,6 +110,7 @@ export default async function SummaryPage({ params }: { params: Promise<{ slug: 
           </p>
         </section>
       </main>
+      {ready && <AttachBar slug={m.slug} n={m.n} />}
     </div>
   );
 }

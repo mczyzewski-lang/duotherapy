@@ -4,6 +4,7 @@ import Link from "next/link";
 import { mapaHref } from "@/knowledge/registry";
 import type { LeadMagnet } from "@/knowledge/types";
 import { KTrack } from "./client";
+import { MaterialTopBar } from "./tabs";
 import { MaterialDoc } from "./doc";
 import { AnswersProvider, SummarizeBar } from "./answers";
 import { coverOf } from "@/knowledge/covers";
@@ -18,14 +19,13 @@ export function MaterialViewer({ m, variant, answers, phoneMasked = null }: { m:
   return (
     <div className="min-h-dvh bg-linen/60">
       <KTrack event={variant === "demo" ? "lead_magnet_demo_view" : "lead_magnet_demo_view"} step={m.n} />
-      <header className="sticky top-0 z-30 border-b border-sand/70 bg-ivory/95 backdrop-blur">
-        <div className="mx-auto flex max-w-3xl items-center justify-between gap-3 px-4 py-2.5 sm:px-5">
-          <div className="min-w-0">
-            <p className="text-[10.5px] font-semibold uppercase tracking-[0.18em] text-clay">{variant === "demo" ? "Podgląd materiału DUO" : "Twój materiał DUO"}</p>
-            <p className="truncate font-display text-[15px] text-ink sm:text-base">{m.short}</p>
-          </div>
-        </div>
-      </header>
+      <MaterialTopBar
+        kicker={variant === "demo" ? "Podgląd materiału DUO" : "Twój materiał DUO"}
+        title={m.short}
+        materialHref={`/wiedza/${m.slug}/${variant}`}
+        summaryHref={summary && (variant === "material" || local) ? `/wiedza/${m.slug}/${variant === "demo" ? "demo/" : ""}podsumowanie` : undefined}
+        active="material"
+      />
       <main id="main" className={fillable ? "mx-auto max-w-3xl px-4 pb-64 pt-6 sm:px-5" : "mx-auto max-w-3xl px-4 pb-20 pt-6 sm:px-5"}>
         <Link href={`/wiedza/${m.slug}`} className="mb-4 inline-flex min-h-10 items-center gap-1.5 text-sm font-medium text-forest">
           <ArrowLeft size={16} aria-hidden /> {variant === "demo" ? "Wróć do strony materiału" : "Opis materiału"}

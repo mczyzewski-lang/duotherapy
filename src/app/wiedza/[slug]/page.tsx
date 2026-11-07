@@ -58,6 +58,7 @@ export default async function MagnetLanding({ params }: { params: Promise<{ slug
   };
   const crumbs = breadcrumbJsonLd([["DUO", "/"], ["Wiedza", "/wiedza"], [m.title, `/wiedza/${m.slug}`]]);
 
+  const free = m.special === "sample-report";
   return (
     <>
       <KTrack event="lead_magnet_landing_view" step={m.n} />
@@ -76,8 +77,9 @@ export default async function MagnetLanding({ params }: { params: Promise<{ slug
               <h1 className="mt-4 font-display text-[2.1rem] leading-[1.08] text-ink sm:text-5xl">{m.hero.h1}</h1>
               <p className="mt-4 max-w-xl text-[17px] leading-relaxed text-ink-soft sm:text-lg">{m.hero.sub}</p>
               <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center">
-                <a href="#odbierz" className="inline-flex min-h-14 shrink-0 items-center whitespace-nowrap justify-center gap-2 rounded-full bg-clay px-7 text-[16px] font-semibold text-white shadow-[0_10px_30px_-10px_rgba(169,81,47,0.7)]">
-                  Pobierz bezpłatnie <ArrowRight size={18} aria-hidden />
+                {/* przykładowa Mapa jest publiczna – bez formularza i bez podawania danych */}
+                <a href={free ? "/mapa-relacji-przyklad" : "#odbierz"} className="inline-flex min-h-14 shrink-0 items-center whitespace-nowrap justify-center gap-2 rounded-full bg-clay px-7 text-[16px] font-semibold text-white shadow-[0_10px_30px_-10px_rgba(169,81,47,0.7)]" data-testid="hero-cta">
+                  {free ? "Zobacz przykład" : "Pobierz bezpłatnie"} <ArrowRight size={18} aria-hidden />
                 </a>
                 <p className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-muted">
                   <span className="inline-flex items-center gap-1.5"><FileText size={15} aria-hidden /> {m.format}</span>
@@ -163,21 +165,35 @@ export default async function MagnetLanding({ params }: { params: Promise<{ slug
             </div>
             {/* wyraźny kontener formularza: akcent u góry, mocniejszy cień i obramowanie */}
             {/* kotwica #odbierz na samym kontenerze – przyciski „Pobierz bezpłatnie” przewijają od razu do pól formularza */}
+            {free ? (
+              <div id="odbierz" className="relative scroll-mt-4 overflow-hidden rounded-[1.75rem] bg-white p-5 shadow-[0_34px_70px_-34px_rgba(169,81,47,0.55)] ring-2 ring-clay/25 sm:p-7" data-testid="lm-free-box">
+                <div className="lm-strip absolute inset-x-0 top-0 h-1.5" aria-hidden />
+                <p className="inline-flex items-center gap-2 rounded-full bg-clay-soft px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-clay">
+                  <MagnetIcon icon={m.icon} id={`frm-${m.id}`} className="h-4 w-4" /> Bezpłatnie · bez zapisu
+                </p>
+                <h2 id="form-h" className="mt-3 font-display text-[1.75rem] leading-tight text-ink sm:text-[2rem]">Zobacz bezpłatnie:<br />{m.short}</h2>
+                <p className="mb-5 mt-2 text-[15px] leading-relaxed text-ink-soft">Przykład jest dostępny od razu – nie musisz podawać imienia ani adresu e-mail.</p>
+                <a href="/mapa-relacji-przyklad" data-testid="lm-free-open" className="flex min-h-14 items-center justify-center gap-2 rounded-full bg-clay px-7 text-[16px] font-semibold text-white">
+                  Otwórz przykładową Mapę Relacji <ArrowRight size={18} aria-hidden />
+                </a>
+              </div>
+            ) : (
             <div id="odbierz" className="relative scroll-mt-4 overflow-hidden rounded-[1.75rem] bg-white p-5 shadow-[0_34px_70px_-34px_rgba(169,81,47,0.55)] ring-2 ring-clay/25 sm:p-7" data-testid="lm-form-box">
-              <div className="lm-strip absolute inset-x-0 top-0 h-1.5" aria-hidden />
-              <p className="inline-flex items-center gap-2 rounded-full bg-clay-soft px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-clay">
-                <MagnetIcon icon={m.icon} id={`frm-${m.id}`} className="h-4 w-4" /> Bezpłatnie · {m.format.split(" · ")[0]}
-              </p>
-              <h2 id="form-h" className="mt-3 font-display text-[1.75rem] leading-tight text-ink sm:text-[2rem]">Odbierz bezpłatnie:<br />{m.short}</h2>
-              <p className="mb-5 mt-2 text-[15px] leading-relaxed text-ink-soft">Podaj adres e-mail – od razu otworzysz materiał, a link wyślemy też na Twoją skrzynkę.</p>
-              <LeadMagnetForm
-                slug={m.slug}
-                n={m.n}
-                title={m.title}
-                marketingText={s.legal.contentMarketingConsent}
-                seriesText={m.slug === "7-dni-lepszych-rozmow" ? s.legal.contentSeriesConsent : undefined}
-              />
-            </div>
+                <div className="lm-strip absolute inset-x-0 top-0 h-1.5" aria-hidden />
+                <p className="inline-flex items-center gap-2 rounded-full bg-clay-soft px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-clay">
+                  <MagnetIcon icon={m.icon} id={`frm-${m.id}`} className="h-4 w-4" /> Bezpłatnie · {m.format.split(" · ")[0]}
+                </p>
+                <h2 id="form-h" className="mt-3 font-display text-[1.75rem] leading-tight text-ink sm:text-[2rem]">Odbierz bezpłatnie:<br />{m.short}</h2>
+                <p className="mb-5 mt-2 text-[15px] leading-relaxed text-ink-soft">Podaj adres e-mail – od razu otworzysz materiał, a link wyślemy też na Twoją skrzynkę.</p>
+                <LeadMagnetForm
+                  slug={m.slug}
+                  n={m.n}
+                  title={m.title}
+                  marketingText={s.legal.contentMarketingConsent}
+                  seriesText={m.slug === "7-dni-lepszych-rozmow" ? s.legal.contentSeriesConsent : undefined}
+                />
+              </div>
+            )}
           </div>
         </section>
 
