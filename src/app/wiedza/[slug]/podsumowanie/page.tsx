@@ -5,11 +5,11 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { MapaSymbol } from "@/components/brand";
 import { MagnetIcon } from "@/components/knowledge/icons";
-import { MaterialTopBar } from "@/components/knowledge/tabs";
+import { MaterialTopBar, SummaryTabs } from "@/components/knowledge/tabs";
 import { contentReader, loadAnswers } from "@/lib/content-access";
 import { system } from "@/lib/db";
 import { coverOf } from "@/knowledge/covers";
-import { summarize } from "@/knowledge/fields";
+import { fieldsOf, missingRequirements, requirementsOf, summarize } from "@/knowledge/fields";
 import { magnetBySlug } from "@/knowledge/registry";
 import { KTrack } from "@/components/knowledge/client";
 import { AttachBar, OfferLink } from "@/components/knowledge/summary-actions";
@@ -27,14 +27,15 @@ export default async function SummaryPage({ params }: { params: Promise<{ slug: 
     const a = await loadAnswers(tx, who.email, m.id);
     // lejek: osoba zrobiła podsumowanie swoich odpowiedzi
     if (a) await tx`update content_answers set summary_at = coalesce(summary_at, now()) where id = ${a.id}`;
-    return { groups: summarize(m, a?.data ?? {}), updatedAt: a?.updatedAt ?? null };
+    return { groups: summarize(m, a?.data ?? {}), updatedAt: a?.updatedAt ?? null, complete: missingRequirements(requirementsOf(fieldsOf(m)), a?.data ?? {}).length === 0 };
   });
   const ready = !!res && res.groups.length > 0;
 
   return (
     <div className="min-h-dvh bg-linen/60">
       {res && <KTrack event="lead_magnet_summary_view" step={m.n} />}
-      <MaterialTopBar kicker="Twój materiał DUO" title={m.short} materialHref={`/wiedza/${m.slug}/material`} summaryHref={`/wiedza/${m.slug}/podsumowanie`} active="summary" />
+      <MaterialTopBar kicker="Twój materiał DUO" title={m.short}
+        tabs={ready && res?.complete ? <SummaryTabs materialHref={`/wiedza/${m.slug}/material`} summaryHref={`/wiedza/${m.slug}/podsumowanie`} active="summary" /> : undefined} />
       <main id="main" className="mx-auto max-w-3xl px-4 pb-36 pt-6 sm:px-5">
         <header className="rounded-[1.75rem] bg-white p-6 shadow-soft ring-1 ring-sand sm:p-8">
           <p className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-clay">

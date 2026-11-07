@@ -21,7 +21,7 @@ test("mailing: tag z materiału, ścieżki w panelu, warunki tagów, link śledz
   await page.getByTestId("lm-consent").check();
   await page.waitForTimeout(1600);
   await page.getByRole("button", { name: "Wyślij mi materiał" }).click();
-  await expect(page.getByRole("heading", { name: "Twój materiał jest gotowy" })).toBeVisible();
+  await page.waitForURL(/\/material\?witaj=1/);
 
   const admin = await browser.newPage();
   await adminLogin(admin);

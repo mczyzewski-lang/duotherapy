@@ -13,7 +13,9 @@ test("numer potwierdzony kodem SMS odblokowuje wszystkie materiały; logowanie n
   await page.getByTestId("lm-children").getByText("Mamy dzieci", { exact: true }).click();
   await page.getByTestId("lm-consent").check();
   await page.getByRole("button", { name: "Wyślij mi materiał" }).click();
-  await page.getByRole("link", { name: "Otwórz materiał" }).click();
+  await page.waitForURL(/\/material\?witaj=1/);
+  await expect(page.getByTestId("unlock-intro")).toBeVisible();
+  await expect(page.getByTestId("unlock-intro")).toHaveCount(0, { timeout: 8000 });
 
   // przed potwierdzeniem numeru inne materiały wymagają formularza
   await page.locator("textarea[data-field]").first().fill("Wieczorem w kuchni.");

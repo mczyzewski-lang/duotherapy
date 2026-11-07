@@ -183,6 +183,11 @@ export function AnswersProvider({ slug, initial, local, children }: { slug: stri
   );
 }
 
+/** Bieżące odpowiedzi (albo null poza AnswersProvider) – np. do pokazania tabów, gdy podsumowanie jest dostępne. */
+export function useAnswersData() {
+  return useContext(AnswersCtx)?.data ?? null;
+}
+
 export function useAnswersEnabled() {
   return useContext(AnswersCtx) !== null;
 }

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { mapaHref } from "@/knowledge/registry";
 import type { LeadMagnet } from "@/knowledge/types";
 import { KTrack } from "./client";
+import { LiveSummaryTabs } from "./live-tabs";
 import { MaterialTopBar } from "./tabs";
 import { MaterialDoc } from "./doc";
 import { AnswersProvider, SummarizeBar } from "./answers";
@@ -17,14 +18,13 @@ export function MaterialViewer({ m, variant, answers, phoneMasked = null, unlock
   const fillable = local || (variant === "material" && answers !== undefined && answers !== null && !!summary);
   const requirements = requirementsOf(fieldsOf(m));
   return (
+    <Wrap fillable={fillable} slug={m.slug} initial={answers ?? {}} local={local}>
     <div className="min-h-dvh bg-linen/60">
       <KTrack event={variant === "demo" ? "lead_magnet_demo_view" : "lead_magnet_demo_view"} step={m.n} />
       <MaterialTopBar
         kicker={variant === "demo" ? "Podgląd materiału DUO" : "Twój materiał DUO"}
         title={m.short}
-        materialHref={`/wiedza/${m.slug}/${variant}`}
-        summaryHref={summary && (variant === "material" || local) ? `/wiedza/${m.slug}/${variant === "demo" ? "demo/" : ""}podsumowanie` : undefined}
-        active="material"
+        tabs={fillable && summary ? <LiveSummaryTabs materialHref={`/wiedza/${m.slug}/${variant}`} summaryHref={`/wiedza/${m.slug}/${variant === "demo" ? "demo/" : ""}podsumowanie`} requirements={requirements} /> : undefined}
       />
       <main id="main" className={fillable ? "mx-auto max-w-3xl px-4 pb-64 pt-6 sm:px-5" : "mx-auto max-w-3xl px-4 pb-20 pt-6 sm:px-5"}>
         <Link href={`/wiedza/${m.slug}`} className="mb-4 inline-flex min-h-10 items-center gap-1.5 text-sm font-medium text-forest">
@@ -37,7 +37,7 @@ export function MaterialViewer({ m, variant, answers, phoneMasked = null, unlock
           </p>
         )}
         {fillable ? (
-          <AnswersProvider slug={m.slug} initial={answers ?? {}} local={local}>
+          <>
             <p className="mb-5 flex gap-2.5 rounded-2xl bg-sage-soft/70 p-4 text-sm leading-relaxed text-ink-soft ring-1 ring-sage/40">
               <PenLine size={17} className="mt-0.5 shrink-0 text-forest" aria-hidden />
               <span>
@@ -53,11 +53,17 @@ export function MaterialViewer({ m, variant, answers, phoneMasked = null, unlock
               requirements={requirements}
               saveLater={local ? undefined : { slug: m.slug, n: m.n, masked: phoneMasked, unlockList }}
             />
-          </AnswersProvider>
+          </>
         ) : (
           <MaterialDoc m={m} mode="screen" mapaUrl={mapaHref(m, variant)} />
         )}
       </main>
     </div>
+    </Wrap>
   );
+}
+
+/** Autozapis odpowiedzi obejmuje całą stronę (także pasek z tabami, które zależą od odpowiedzi). */
+function Wrap({ fillable, slug, initial, local, children }: { fillable: boolean; slug: string; initial: Record<string, string | boolean>; local: boolean; children: React.ReactNode }) {
+  return fillable ? <AnswersProvider slug={slug} initial={initial} local={local}>{children}</AnswersProvider> : <>{children}</>;
 }

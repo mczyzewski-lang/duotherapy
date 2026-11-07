@@ -4,6 +4,7 @@
 import clsx from "clsx";
 import { CheckCircle2, Download, Loader2, Mail, MonitorSmartphone, Zap } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, useTransition } from "react";
 import { submitKnowledgeLead } from "@/app/actions/knowledge";
 import { anonId, attribution, captureAttribution, track } from "@/lib/track-client";
@@ -45,6 +46,7 @@ export function LeadMagnetForm({
   const [err, setErr] = useState<{ text: string; field?: string } | null>(null);
   const [done, setDone] = useState<{ emailSent: boolean } | null>(null);
   const [pending, start] = useTransition();
+  const router = useRouter();
   const shownAt = useRef(Date.now());
   const requestId = useRef<string>("");
   const started = useRef(false);
@@ -97,7 +99,8 @@ export function LeadMagnetForm({
         });
         if (r.ok) {
           setDone({ emailSent: r.emailSent });
-          requestAnimationFrame(() => document.getElementById("lm-done")?.focus());
+          // od razu do materiału – tam krótka animacja „odblokowuję dla Ciebie” (imię bierzemy z zapisu, nie z adresu)
+          router.push(`/wiedza/${slug}/material?witaj=1${r.emailSent ? "&mail=1" : ""}`);
         } else setErr({ text: r.error, field: r.field });
       } catch {
         setErr({ text: "Nie udało się wysłać. Sprawdź połączenie i spróbuj ponownie." });
@@ -110,8 +113,8 @@ export function LeadMagnetForm({
       <div id="lm-done" tabIndex={-1} role="status" className="rounded-3xl bg-white p-6 text-center shadow-soft ring-1 ring-sand outline-none sm:p-8">
         <CheckCircle2 className="mx-auto text-ok" size={40} aria-hidden />
         <h3 className="mt-3 font-display text-[1.7rem] leading-tight text-ink">Twój materiał jest gotowy</h3>
-        <p className="mx-auto mt-2 max-w-md leading-relaxed text-ink-soft">
-          {done.emailSent ? "Wysłaliśmy link do materiału na podany adres e-mail. Możesz też otworzyć go od razu." : "Możesz otworzyć materiał od razu."}
+        <p className="mx-auto mt-2 flex max-w-md items-center justify-center gap-2 leading-relaxed text-ink-soft">
+          <Loader2 size={16} className="animate-spin" aria-hidden /> Otwieram materiał…
         </p>
         <div className="mt-5 flex flex-col justify-center gap-2.5 sm:flex-row">
           <Link href={`/wiedza/${slug}/material`} className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-clay px-6 font-semibold text-white">

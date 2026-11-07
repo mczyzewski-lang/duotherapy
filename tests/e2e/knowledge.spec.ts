@@ -150,10 +150,15 @@ test("formularz: jedna wymagana zgoda, uczciwy komunikat bez wysyłki, zapis w p
   await expect(page.locator("#odbierz input[type=checkbox]")).toHaveCount(1);
   await page.getByTestId("lm-consent").check();
   await page.getByRole("button", { name: "Wyślij mi materiał" }).click();
-  await expect(page.getByRole("heading", { name: "Twój materiał jest gotowy" })).toBeVisible();
-  // bez skonfigurowanej wysyłki nie twierdzimy, że e-mail wyszedł
-  await expect(page.getByText(/Wysłaliśmy link/)).toHaveCount(0);
-  await page.getByRole("link", { name: "Otwórz materiał" }).click();
+  // od razu do materiału: animacja z imieniem (z zapisu, nie z adresu), bez twierdzenia, że e-mail wyszedł
+  await page.waitForURL(/\/wiedza\/petla-konfliktu\/material\?witaj=1$/);
+  const intro = page.getByTestId("unlock-intro");
+  await expect(intro).toContainText("Czytelnik, odblokowuję dla Ciebie materiał");
+  await expect(intro).not.toContainText("wysłaliśmy");
+  await expect(intro).toHaveCount(0, { timeout: 8000 });
+  await expect(page).toHaveURL(/\/material$/);
+  // taby „Materiał | Podsumowanie” dopiero, gdy podsumowanie jest dostępne
+  await expect(page.getByTestId("material-tabs")).toHaveCount(0);
   await expect(page.getByText("Twój materiał DUO")).toBeVisible();
   await expect(page.getByRole("heading", { name: "Twój arkusz pętli" })).toBeVisible();
   // uzupełnianie na stronie z autozapisem (przypisane do e-maila) → odświeżenie → podsumowanie → dołączenie do quizu

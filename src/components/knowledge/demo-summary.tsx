@@ -9,7 +9,7 @@ import { groupAnswers, missingRequirements, type Field, type Requirement, type S
 import { track } from "@/lib/track-client";
 import { readDemoAnswers } from "./answers";
 import { AttachBar } from "./summary-actions";
-import { MaterialTopBar } from "./tabs";
+import { MaterialTopBar, SummaryTabs } from "./tabs";
 
 export function DemoSummary({ slug, n, short, icon, fields, requirements }: {
   slug: string;
@@ -27,7 +27,8 @@ export function DemoSummary({ slug, n, short, icon, fields, requirements }: {
 
   return (
     <div className="min-h-dvh bg-linen/60">
-      <MaterialTopBar kicker="Podgląd materiału DUO" title={short} materialHref={`/wiedza/${slug}/demo`} summaryHref={`/wiedza/${slug}/demo/podsumowanie`} active="summary" />
+      <MaterialTopBar kicker="Podgląd materiału DUO" title={short}
+        tabs={state?.complete ? <SummaryTabs materialHref={`/wiedza/${slug}/demo`} summaryHref={`/wiedza/${slug}/demo/podsumowanie`} active="summary" /> : undefined} />
       <main id="main" className="mx-auto max-w-3xl px-4 pb-36 pt-6 sm:px-5">
 
         <header className="rounded-[1.75rem] bg-white p-6 shadow-soft ring-1 ring-sand sm:p-8">

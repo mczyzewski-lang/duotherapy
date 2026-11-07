@@ -11,7 +11,9 @@ test("zapis na później z kodem SMS i powrót z linku w e-mailu z potwierdzenie
   await page.getByTestId("lm-children").getByText("Nie mamy dzieci", { exact: true }).click();
   await page.getByTestId("lm-consent").check();
   await page.getByRole("button", { name: "Wyślij mi materiał" }).click();
-  await page.getByRole("link", { name: "Otwórz materiał" }).click();
+  await page.waitForURL(/\/material\?witaj=1/);
+  await expect(page.getByTestId("unlock-intro")).toBeVisible();
+  await expect(page.getByTestId("unlock-intro")).toHaveCount(0, { timeout: 8000 });
   await expect(page.getByText("Twój materiał DUO")).toBeVisible();
 
   // przycisk pojawia się dopiero po wpisaniu słowa

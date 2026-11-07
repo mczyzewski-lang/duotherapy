@@ -1,4 +1,4 @@
-// Podsumowanie z materiału: od razu jako strona (taby „Materiał” | „Podsumowanie”), potem oferta Mapy Relacji i stały pasek „Załącz”; lejek krok po kroku.
+// Podsumowanie z materiału: od razu jako strona (taby „Materiał” | „Podsumowanie” – gdy podsumowanie jest dostępne), potem oferta Mapy Relacji i stały pasek „Załącz”; lejek krok po kroku.
 import { expect, test } from "@playwright/test";
 
 test("podsumowanie: taby, „gotowe” → treść → oferta; stały pasek „Załącz do Mapy Relacji”; lejek krok po kroku", async ({ page, browser }) => {
@@ -10,11 +10,26 @@ test("podsumowanie: taby, „gotowe” → treść → oferta; stały pasek „Z
   await page.getByTestId("lm-children").getByText("Nie mamy dzieci", { exact: true }).click();
   await page.getByTestId("lm-consent").check();
   await page.getByRole("button", { name: "Wyślij mi materiał" }).click();
-  await page.getByRole("link", { name: "Otwórz materiał" }).click();
+  await page.waitForURL(/\/material\?witaj=1/);
+  await expect(page.getByTestId("unlock-intro")).toBeVisible();
+  await expect(page.getByTestId("unlock-intro")).toHaveCount(0, { timeout: 8000 });
   await page.locator("textarea[data-field]").first().fill("Wieczorem, przy kolacji.");
   await expect(page.locator('[data-save-status="saved"]')).toBeVisible({ timeout: 10_000 });
 
-  // taby: z materiału od razu do podsumowania (bez wydruku, e-maila i plików)
+  // taby pojawiają się dopiero, gdy podsumowanie jest dostępne (min. 1 odpowiedź w każdej wymaganej części)
+  await expect(page.getByTestId("material-tabs")).toHaveCount(0);
+  const missing = page.getByTestId("summarize-missing");
+  const done = page.getByRole("heading", { name: /Twoje podsumowanie/ });
+  for (let i = 0; i < 8; i++) {
+    await page.getByTestId("summarize-bar").getByRole("button", { name: /Podsumuj/ }).click();
+    await expect(missing.or(done)).toBeVisible();
+    if (await done.isVisible()) break;
+    await missing.getByRole("button").first().click();
+    const f = page.locator(":focus");
+    if ((await f.getAttribute("type")) === "checkbox") await f.check();
+    else await f.fill(`Odpowiedź ${i + 1}`);
+  }
+  await page.goto("/wiedza/petla-konfliktu/material");
   await expect(page.getByTestId("tab-material")).toHaveAttribute("aria-current", "page");
   await page.getByTestId("tab-summary").click();
   await page.waitForURL(/\/wiedza\/petla-konfliktu\/podsumowanie$/);
