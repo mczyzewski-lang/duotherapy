@@ -11,7 +11,7 @@ export const poZdradzie: LeadMagnet = {
   title: "Co zrobić po odkryciu zdrady? Przewodnik pierwszych kroków",
   short: "Pierwsze kroki po zdradzie",
   menuDesc: "Jak zadbać o siebie, określić granice i nie decydować pod presją.",
-  format: "Poradnik z ćwiczeniem · PDF",
+  format: "Poradnik z ćwiczeniem · online",
   minutes: "ok. 25 min",
   hero: {
     h1: "Co zrobić po odkryciu zdrady?",
@@ -102,7 +102,7 @@ export const swiadomeRozstanie: LeadMagnet = {
   title: "Podjęliśmy decyzję o rozstaniu. Co teraz? Checklista pierwszych kroków",
   short: "Świadome rozstanie – co teraz?",
   menuDesc: "Uporządkuj sprawy emocjonalne, rodzinne i organizacyjne po decyzji.",
-  format: "Checklista i poradnik · PDF",
+  format: "Checklista i poradnik · online",
   minutes: "ok. 30 min + praca z checklistą",
   hero: {
     h1: "Podjęliśmy decyzję o rozstaniu. Co teraz?",
@@ -116,7 +116,7 @@ export const swiadomeRozstanie: LeadMagnet = {
     "8 obszarów do uporządkowania: wsparcie, komunikacja, dzieci, codzienność, mieszkanie, finanse, mediacja, pomoc prawna",
     "Jak rozmawiać z dziećmi o rozstaniu – co pomaga, czego unikać",
     "Kiedy rozważyć mediację, a kiedy poszukać pomocy prawnej",
-    "Checklista „Pierwsze ważne kroki” do wydruku",
+    "Checklista „Pierwsze ważne kroki” do odhaczania online",
   ],
   forWho: [
     "Dla Was, jeśli decyzja o rozstaniu już zapadła i nie wiecie, od czego zacząć.",
@@ -128,7 +128,7 @@ export const swiadomeRozstanie: LeadMagnet = {
   mapaText: "Jeśli potrzebujesz wsparcia psychologicznego w uporządkowaniu sytuacji po decyzji, możesz poznać Mapę Relacji albo zapytać o dostępne formy pomocy.",
   cover: { kicker: "Checklista i poradnik", subtitle: "Uporządkuj sprawy emocjonalne, rodzinne i organizacyjne po decyzji o rozstaniu" },
   purpose: "Pomaga uporządkować najważniejsze sprawy po decyzji o rozstaniu – emocjonalne, rodzinne i organizacyjne.",
-  howTo: "Przeczytaj osiem części, a potem wydrukuj checklistę „Pierwsze ważne kroki” i odhaczaj kolejne punkty w swoim tempie.",
+  howTo: "Przeczytaj osiem części, a potem odhaczaj na stronie kolejne punkty checklisty „Pierwsze ważne kroki” w swoim tempie.",
   blocks: [
     h2("Zanim zaczniesz", true),
     lead("Decyzja o rozstaniu to nie koniec trudnej drogi, tylko początek kolejnego etapu. Sposób, w jaki go przejdziecie, ma duże znaczenie – dla Was, a jeśli macie dzieci, także dla nich."),
@@ -211,7 +211,7 @@ export const przykladowaMapa: LeadMagnet = {
   title: "Zobacz, jak wygląda Mapa Relacji – przykładowy raport DUO",
   short: "Przykładowa Mapa Relacji",
   menuDesc: "Prawdziwy szablon podsumowania na fikcyjnych danych.",
-  format: "Przykładowy raport · PDF",
+  format: "Przykładowy raport · online",
   minutes: "ok. 10 min",
   hero: {
     h1: "Zobacz, jak wygląda Mapa Relacji",
@@ -234,7 +234,7 @@ export const przykladowaMapa: LeadMagnet = {
     "Jeśli chcesz wiedzieć, jak psycholog opisuje relację – bez ocen i diagnoz.",
   ],
   preview: [],
-  previewNote: "Pełny materiał: kompletny przykładowy raport (6 części + list i metryczka) w formacie PDF – dane fikcyjne.",
+  previewNote: "Pełny materiał: kompletny przykładowy raport (6 części + list i metryczka) – dane fikcyjne, bez podawania e-maila.",
   mapaText: "Chcesz otrzymać własną Mapę Relacji przygotowaną z pomocą psychologa? Poznaj pełną usługę za 670 zł.",
   cover: { kicker: "Przykładowy raport", subtitle: "Prawdziwy szablon Mapy Relacji wypełniony fikcyjnymi danymi" },
   purpose: "Pokazuje na przykładzie demonstracyjnym, jak wygląda dokument Mapy Relacji.",

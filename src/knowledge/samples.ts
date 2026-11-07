@@ -15,6 +15,7 @@ export const SAMPLE_ANSWERS: Record<string, Record<string, string | true>> = {
   "mapa-trzech-drog": {
     "e32.0": "zmęczona, cicha, wciąż ważna",
     "e32.1": "że mijamy się w kuchni jak współlokatorzy",
+    "e32.2": "nasze poranne kawy i to, jak śmieje się z dziećmi",
   },
   "21-pytan-o-relacji": {
     q6: "O pieniądzach. Po dwóch zdaniach ktoś wychodzi z pokoju.",

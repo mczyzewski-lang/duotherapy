@@ -6,6 +6,7 @@ import { JsonLd } from "@/components/json-ld";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { KTrack, LeadMagnetForm, MagnetStickyBar } from "@/components/knowledge/client";
+import { NoReveal } from "@/components/knowledge/reveal";
 import { BlockView, Cover } from "@/components/knowledge/doc";
 import { MagnetIcon } from "@/components/knowledge/icons";
 import { MagnetCard, MagnetRail } from "@/components/knowledge/magnet-card";
@@ -125,16 +126,18 @@ export default async function MagnetLanding({ params }: { params: Promise<{ slug
               ) : (
                 <div className="relative z-10 mx-auto -mb-40 max-w-3xl" data-testid="lm-preview">
                   {/* fragment stopniowo zanika (bez rozmycia) do końca ramki – widać, że treść biegnie dalej */}
-                  <div className="relative max-h-[36rem] overflow-hidden rounded-t-[1.75rem] bg-linen/60 p-3 ring-1 ring-sand mask-fade-preview sm:max-h-[40rem] sm:p-5">
+                  <div className="relative max-h-[40rem] overflow-hidden rounded-t-[1.75rem] bg-linen/60 p-3 ring-1 ring-sand mask-fade-preview sm:max-h-[40rem] sm:p-5">
                     <p className="mb-1 px-1 text-[10.5px] font-semibold uppercase tracking-[0.18em] text-muted">Fragment materiału</p>
                     {/* przykładowe odpowiedzi pisane odręcznie (fikcyjne) – pokazują, jak wygląda praca z materiałem */}
-                    <SampleAnswers answers={SAMPLE_ANSWERS[m.slug] ?? {}}>
-                      {m.preview.map((i) => (
-                        <div key={i} className="[&>*:first-child]:mt-2"><BlockView b={m.blocks[i]} mode="screen" i={i} first={false} /></div>
-                      ))}
-                    </SampleAnswers>
+                    <NoReveal>
+                      <SampleAnswers answers={SAMPLE_ANSWERS[m.slug] ?? {}}>
+                        {m.preview.map((i) => (
+                          <div key={i} className="[&>*:first-child]:mt-2"><BlockView b={m.blocks[i]} mode="screen" i={i} first={false} /></div>
+                        ))}
+                      </SampleAnswers>
+                    </NoReveal>
                   </div>
-                  <div className="absolute inset-x-3 bottom-6 z-10 mx-auto max-w-md rounded-3xl bg-white/95 p-5 text-center shadow-[0_24px_50px_-24px_rgba(54,73,61,0.55)] ring-1 ring-sand backdrop-blur sm:p-6">
+                  <div className="relative z-10 mx-3 -mt-24 rounded-3xl bg-white/95 p-5 text-center shadow-[0_24px_50px_-24px_rgba(54,73,61,0.55)] ring-1 ring-sand backdrop-blur sm:absolute sm:inset-x-3 sm:bottom-6 sm:mx-auto sm:mt-0 sm:max-w-md sm:p-6">
                     <p className="font-display text-[1.3rem] leading-snug text-ink">To dopiero fragment – dalej jest więcej</p>
                     <p className="mt-1.5 text-[14px] leading-relaxed text-ink-soft">{m.previewNote}</p>
                     <a href="#odbierz" className="mt-4 inline-flex min-h-12 items-center gap-2 rounded-full bg-clay px-6 text-[15px] font-semibold text-white">

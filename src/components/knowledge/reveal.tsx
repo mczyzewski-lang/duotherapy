@@ -3,9 +3,16 @@
 // Animacja pojawiania się schematów i kart przy przewinięciu (linie rysują się, punkty pojawiają się po kolei).
 // Z poszanowaniem prefers-reduced-motion; w druku nieużywana (treść zawsze widoczna).
 import clsx from "clsx";
-import { useEffect, useRef, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 
-export function Reveal({ children, className, off }: { children: React.ReactNode; className?: string; off?: boolean }) {
+/** Bez animacji (np. podgląd fragmentu na landingu – schemat ma być od razu widoczny, a nie czekać na przewinięcie). */
+const Still = createContext(false);
+export function NoReveal({ children }: { children: React.ReactNode }) {
+  return <Still.Provider value={true}>{children}</Still.Provider>;
+}
+
+export function Reveal({ children, className, off: offProp }: { children: React.ReactNode; className?: string; off?: boolean }) {
+  const off = useContext(Still) || offProp;
   const ref = useRef<HTMLDivElement>(null);
   const [on, setOn] = useState(false);
   useEffect(() => {

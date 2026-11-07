@@ -11,7 +11,7 @@ export const siedemDni: LeadMagnet = {
   title: "Tydzień bez awantury: 7-dniowy reset komunikacji dla par",
   short: "7 dni lepszych rozmów",
   menuDesc: "Siedem krótkich ćwiczeń, które pomagają spróbować nowego sposobu rozmowy.",
-  format: "Wyzwanie 7 dni · online i PDF",
+  format: "Wyzwanie 7 dni · online",
   minutes: "10–20 min dziennie przez 7 dni",
   hero: {
     h1: "Tydzień bez awantury: 7 dni lepszych rozmów",
@@ -25,7 +25,7 @@ export const siedemDni: LeadMagnet = {
     "7 ćwiczeń rozpisanych dzień po dniu: słuchanie, potrzeby, docenianie, trudna emocja, granice, przyszłość, refleksja",
     "Przy każdym dniu: wprowadzenie, przykład, czas wykonania i miejsce na notatkę",
     "Wariant indywidualny każdego ćwiczenia – nie potrzebujesz udziału partnera",
-    "Wersja online z odhaczaniem dni i wersja PDF do wydruku",
+    "Wersja online z odhaczaniem dni i notatkami, które zapisują się same",
   ],
   forWho: [
     "Dla Ciebie, jeśli chcesz rozmawiać inaczej, ale nie wiesz, od czego zacząć.",
@@ -86,7 +86,7 @@ export const trudnaRozmowa: LeadMagnet = {
   title: "Jak przeprowadzić trudną rozmowę z partnerem, żeby nie skończyła się kolejną kłótnią?",
   short: "Trudna rozmowa bez kłótni",
   menuDesc: "Plan rozmowy krok po kroku – od pierwszego zdania po spokojne zakończenie.",
-  format: "Checklista i scenariusz · PDF",
+  format: "Checklista i scenariusz · online",
   minutes: "ok. 20 min przygotowania",
   hero: {
     h1: "Jak przeprowadzić trudną rozmowę, żeby nie skończyła się kolejną kłótnią?",
@@ -101,7 +101,7 @@ export const trudnaRozmowa: LeadMagnet = {
     "Jak mówić o własnych emocjach i reagować na nieporozumienia",
     "Jak ustalić przerwę – i jak wrócić do rozmowy",
     "Dwa przykłady tej samej rozmowy: prowadzącej do eskalacji i wspierającej porozumienie",
-    "Karta „Nasza rozmowa – 20 minut” do wydruku",
+    "Karta „Nasza rozmowa – 20 minut” do wypełnienia online",
   ],
   forWho: [
     "Dla Ciebie, jeśli odkładasz ważną rozmowę, bo poprzednie kończyły się kłótnią.",
@@ -109,7 +109,7 @@ export const trudnaRozmowa: LeadMagnet = {
     "Dla par, które chcą ustalić wspólne zasady rozmawiania o trudnych sprawach.",
   ],
   preview: [10, 31],
-  previewNote: "Pełny materiał: 8 kroków rozmowy, dwa przykładowe dialogi i karta do wydruku.",
+  previewNote: "Pełny materiał: 8 kroków rozmowy, dwa przykładowe dialogi i karta do wypełnienia.",
   mapaText: "Jeśli trudne rozmowy wracają w kółko, Mapa Relacji pozwala z psychologiem przyjrzeć się szerzej Waszym powtarzającym się problemom komunikacyjnym.",
   cover: { kicker: "Checklista i scenariusz", subtitle: "Plan trudnej rozmowy – od pierwszego zdania po spokojne zakończenie" },
   purpose: "Pomaga przygotować i przeprowadzić trudną rozmowę tak, żeby nie zamieniła się w kłótnię.",
@@ -181,7 +181,7 @@ export const jednaOsoba: LeadMagnet = {
   title: "Chcę ratować związek, ale mąż / żona nie chce. Co mogę zrobić sam / sama?",
   short: "Gdy tylko jedna osoba chce ratować związek",
   menuDesc: "Na co masz wpływ, od czego zacząć samodzielnie i czego nie brać na siebie.",
-  format: "Poradnik z ćwiczeniem · PDF",
+  format: "Poradnik z ćwiczeniem · online",
   minutes: "ok. 25 min",
   hero: {
     h1: "Chcę ratować związek, ale mąż / żona nie chce. Co mogę zrobić sam / sama?",
@@ -266,7 +266,7 @@ export const petlaKonfliktu: LeadMagnet = {
   title: "Kłócicie się o głupoty? Sprawdź, o co naprawdę chodzi w Waszej pętli konfliktu",
   short: "Pętla konfliktu",
   menuDesc: "Arkusz, który pokazuje, jak powtarza się Wasz konflikt i gdzie go przerwać.",
-  format: "Workbook z arkuszem do druku · PDF",
+  format: "Workbook z arkuszem · online",
   minutes: "ok. 20 min",
   hero: {
     h1: "Kłócicie się o głupoty – i ciągle o to samo?",
@@ -274,13 +274,13 @@ export const petlaKonfliktu: LeadMagnet = {
   },
   seo: {
     title: "Pętla konfliktu – dlaczego ciągle kłócicie się o to samo? | DUO",
-    description: "Bezpłatny workbook DUO: schemat pętli konfliktu (wyzwalacz, interpretacja, emocje, reakcje, eskalacja, punkt przerwania), dwa przykłady i arkusz do druku.",
+    description: "Bezpłatny workbook DUO: schemat pętli konfliktu (wyzwalacz, interpretacja, emocje, reakcje, eskalacja, punkt przerwania), dwa przykłady i arkusz online.",
   },
   gets: [
     "Proste wyjaśnienie cyklu konfliktu w 7 krokach – od wyzwalacza po eskalację",
     "Gdzie szukać punktu, w którym można przerwać schemat",
     "Dwa wypełnione przykłady: kłótnia o obowiązki i o czas spędzany razem",
-    "Pusty arkusz pętli do wydruku i wypełnienia",
+    "Pusty arkusz pętli do wypełnienia online",
   ],
   forWho: [
     "Dla Ciebie, jeśli te same kłótnie wracają mimo prób ich rozwiązania.",
@@ -288,7 +288,7 @@ export const petlaKonfliktu: LeadMagnet = {
     "Jeśli chcesz zrozumieć, co się dzieje, bez szukania winnego.",
   ],
   preview: [3, 11],
-  previewNote: "Pełny materiał: wyjaśnienie 7 kroków pętli, dwa przykłady i pusty arkusz do druku.",
+  previewNote: "Pełny materiał: wyjaśnienie 7 kroków pętli, dwa przykłady i pusty arkusz do wypełnienia.",
   mapaText: "Jeśli te same trudności wracają, Mapa Relacji pozwala przyjrzeć się im z psychologiem – podsumowanie opisuje Wasz konflikt krok po kroku.",
   cover: { kicker: "Workbook", subtitle: "Zobacz, jak powtarza się Wasz konflikt – i gdzie można go przerwać" },
   purpose: "Pomaga zobaczyć schemat powtarzających się kłótni i znaleźć miejsce, w którym można go przerwać.",

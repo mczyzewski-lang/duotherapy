@@ -14,7 +14,7 @@ export const mapaTrzechDrog: LeadMagnet = {
   title: "Ratować, dać sobie czas czy odejść? Sprawdź, na której z 3 dróg jesteście dziś",
   short: "Mapa 3 dróg",
   menuDesc: "Trzy możliwe kierunki i pytania, które warto zadać sobie przed decyzją.",
-  format: "Poradnik i workbook · PDF",
+  format: "Poradnik i workbook · online",
   minutes: "ok. 25 min czytania + ćwiczenia",
   hero: {
     h1: "Odbudowa, czas na decyzję czy rozstanie? Sprawdź, gdzie jesteście dziś",
@@ -36,7 +36,8 @@ export const mapaTrzechDrog: LeadMagnet = {
     "Jeśli chcesz zobaczyć wszystkie możliwości, zanim cokolwiek postanowisz.",
     "Jeśli wolisz zacząć od spokojnej refleksji, a nie od decyzji.",
   ],
-  preview: [6, 32],
+  // najpierw ćwiczenie z odręcznymi odpowiedziami (to „kupuje”), pod nim schemat trzech dróg
+  preview: [32, 6],
   previewNote: "Pełny materiał: 9 części – trzy drogi, pytania do każdej z nich i dwa ćwiczenia do wypełnienia.",
   mapaText: "Jeżeli potrzebujesz przyjrzeć się swojej sytuacji bardziej indywidualnie, pełna Mapa Relacji pomaga uporządkować ją z psychologiem.",
   cover: { kicker: "Poradnik i workbook", subtitle: "Trzy możliwe kierunki i pytania, które warto sobie zadać przed decyzją" },
@@ -46,7 +47,7 @@ export const mapaTrzechDrog: LeadMagnet = {
     h2("Zanim zaczniesz", true),
     lead("Ten materiał nie powie Ci, co zrobić. Pomoże Ci zobaczyć, jakie masz możliwości, i zadać sobie pytania, które zwykle giną w natłoku emocji."),
     p("W kryzysie łatwo myśleć zero-jedynkowo: „ratujemy albo się rozstajemy”. W praktyce między tymi biegunami jest dużo miejsca – i właśnie tam często dojrzewa dobra decyzja."),
-    info("Jak korzystać", "Przeczytaj całość raz, bez pośpiechu. Do ćwiczeń wróć w innym dniu, gdy będziesz mieć 15–20 minut spokoju. Możesz wypełniać je na wydruku, w notesie albo w telefonie."),
+    info("Jak korzystać", "Przeczytaj całość raz, bez pośpiechu. Do ćwiczeń wróć w innym dniu, gdy będziesz mieć 15–20 minut spokoju. Możesz wypełniać je bezpośrednio na stronie – odpowiedzi zapiszą się same – albo w notesie."),
     h2("Dlaczego w kryzysie tak trudno zdecydować?"),
     p("Kryzys w związku uruchamia silne emocje: lęk, złość, smutek, poczucie winy, czasem ulgę. Każda z nich podsuwa inną „oczywistą” decyzję – i dlatego jednego dnia jesteśmy pewni, że chcemy walczyć, a następnego, że chcemy odejść."),
     { t: "roads" },
@@ -176,7 +177,7 @@ export const pytan21: LeadMagnet = {
   title: "Zostać czy odejść? 21 pytań, które warto sobie zadać przed decyzją o przyszłości związku",
   short: "21 pytań o relacji",
   menuDesc: "Gotowe pytania do rozmowy lub refleksji – w pięciu obszarach relacji.",
-  format: "Karty do rozmowy i workbook · PDF",
+  format: "Karty do rozmowy i workbook · online",
   minutes: "15 min na start, resztę w swoim tempie",
   hero: {
     h1: "Zostać czy odejść? 21 pytań, zanim zdecydujecie o przyszłości związku",
@@ -274,7 +275,7 @@ export const kryzysCzyKoniec: LeadMagnet = {
   title: "Kryzys czy koniec miłości? 10 pytań, które pomogą Ci uporządkować myśli",
   short: "Kryzys czy koniec miłości?",
   menuDesc: "10 pytań do autorefleksji, zanim wyciągniesz wnioski o całym związku.",
-  format: "Workbook · PDF",
+  format: "Workbook · online",
   minutes: "ok. 30 min",
   hero: {
     h1: "Kryzys czy koniec miłości?",
