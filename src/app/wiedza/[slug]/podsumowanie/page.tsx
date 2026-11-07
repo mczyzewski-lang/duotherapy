@@ -1,5 +1,5 @@
 // Podsumowanie odpowiedzi z materiału (tylko dla osoby, która je wpisała) + zaproszenie do dołączenia ich do quizu Mapy Relacji™.
-import { ArrowLeft, ArrowRight, Lock } from "lucide-react";
+import { ArrowLeft, Check, Lock } from "lucide-react";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -12,6 +12,7 @@ import { coverOf } from "@/knowledge/covers";
 import { summarize } from "@/knowledge/fields";
 import { magnetBySlug } from "@/knowledge/registry";
 import { KTrack } from "@/components/knowledge/client";
+import { EmailSummary, OfferLink } from "@/components/knowledge/summary-actions";
 
 export const dynamic = "force-dynamic";
 export const metadata: Metadata = { title: "Twoje podsumowanie", robots: { index: false, follow: false } };
@@ -28,7 +29,7 @@ export default async function SummaryPage({ params }: { params: Promise<{ slug: 
     if (a) await tx`update content_answers set summary_at = coalesce(summary_at, now()) where id = ${a.id}`;
     return { groups: summarize(m, a?.data ?? {}), updatedAt: a?.updatedAt ?? null };
   });
-  const title = `Twoje podsumowanie: ${m.short}`;
+  const ready = !!res && res.groups.length > 0;
 
   return (
     <div className="min-h-dvh bg-linen/60">
@@ -41,10 +42,18 @@ export default async function SummaryPage({ params }: { params: Promise<{ slug: 
           <p className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-clay">
             <MagnetIcon icon={m.icon} id={`sum-${m.id}`} className="h-5 w-5" /> {m.short}
           </p>
-          <h1 className="mt-3 font-display text-[1.9rem] leading-tight text-ink sm:text-4xl">{title}</h1>
+          {/* najpierw wartość: gotowe podsumowanie, które można zachować */}
+          <h1 className="mt-3 flex items-center gap-3 font-display text-[1.9rem] leading-tight text-ink sm:text-4xl">
+            {ready && <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-sage-soft text-forest"><Check size={22} aria-hidden /></span>}
+            {ready ? "Twoje podsumowanie jest gotowe" : `Twoje podsumowanie: ${m.short}`}
+          </h1>
+          {ready && <p className="mt-3 max-w-2xl text-[17px] leading-relaxed text-ink-soft">Zebraliśmy Twoje odpowiedzi w jednym miejscu. To Twoja perspektywa – możesz do niej wracać, wydrukować ją albo wysłać sobie na e-mail.</p>}
           {res?.updatedAt && <p className="mt-2 text-sm text-muted">Ostatni zapis: {new Date(res.updatedAt).toLocaleString("pl-PL")}</p>}
           <p className="mt-3 flex gap-2 text-sm text-ink-soft"><Lock size={15} className="mt-0.5 shrink-0" aria-hidden /> Twoje odpowiedzi widzisz tylko Ty. Nikt z DUO ich nie czyta, dopóki sam / sama ich nie dołączysz.</p>
-          <div className="mt-5"><PrintButton /></div>
+          <div className="no-print mt-5 flex flex-wrap items-start gap-2.5">
+            <PrintButton />
+            {ready && <EmailSummary slug={m.slug} n={m.n} />}
+          </div>
         </header>
 
         {!res ? (
@@ -73,16 +82,38 @@ export default async function SummaryPage({ params }: { params: Promise<{ slug: 
           </div>
         )}
 
-        <section className="no-print mt-8 rounded-[2rem] bg-gradient-to-br from-forest to-forest-800 p-6 text-white shadow-soft sm:p-9" aria-labelledby="att-h">
-          <div className="flex items-center gap-2"><MapaSymbol id={`sum-m-${m.id}`} className="h-5 w-auto" /><span className="font-wordmark text-lg">Mapa Relacji™</span></div>
-          <h2 id="att-h" className="mt-3 font-display text-[1.6rem] leading-tight sm:text-3xl">Dołącz to podsumowanie do quizu i otrzymaj Mapę Relacji™</h2>
+        {/* dopiero potem oferta: podsumowanie ≠ pełna Mapa Relacji */}
+        <section className="no-print mt-10 rounded-[2rem] bg-gradient-to-br from-forest to-forest-800 p-6 text-white shadow-soft sm:p-9" aria-labelledby="att-h" data-testid="summary-upsell">
+          <div className="flex items-center gap-2"><MapaSymbol id={`sum-m-${m.id}`} className="h-5 w-auto" /><span className="font-wordmark text-lg">Mapa Relacji</span></div>
+          <h2 id="att-h" className="mt-3 font-display text-[1.6rem] leading-tight sm:text-3xl">Rozszerz podsumowanie o Mapę Relacji</h2>
           <p className="mt-3 max-w-2xl leading-relaxed text-white/85">
-            Twoje odpowiedzi mogą być punktem wyjścia do rozmowy z psychologiem. W krótkim quizie zaznaczysz, że chcesz je dołączyć – psycholog zobaczy je przy Twoim zgłoszeniu i nie zaczniesz od zera.
+            Twoje podsumowanie pokazuje Twoją perspektywę. W Mapie Relacji możesz rozwinąć ją w pełny obraz sytuacji i otrzymać konkretne wskazówki, co zrobić dalej.
           </p>
-          <Link href={`/start?dolacz=${m.slug}`} className="mt-5 inline-flex min-h-14 items-center gap-2 rounded-full bg-clay px-7 text-[16px] font-semibold text-white">
-            Przejdź do quizu i dołącz podsumowanie <ArrowRight size={18} aria-hidden />
-          </Link>
-          <p className="mt-3 text-sm text-white/70">Dołączenie jest dobrowolne – zdecydujesz o nim na końcu quizu.</p>
+          <div className="mt-5 grid gap-3 sm:grid-cols-2">
+            <div className="rounded-2xl bg-white/10 p-4 ring-1 ring-white/15">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-white/60">To podsumowanie</p>
+              <ul className="mt-2 space-y-1.5 text-[14.5px] text-white/85">
+                <li>• Twoje odpowiedzi, uporządkowane</li>
+                <li>• Jedna perspektywa – Twoja</li>
+                <li>• Bez interpretacji i bez wskazówek</li>
+              </ul>
+            </div>
+            <div className="rounded-2xl bg-white p-4 text-ink">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-clay">Pełna Mapa Relacji</p>
+              <ul className="mt-2 space-y-1.5 text-[14.5px] text-ink-soft">
+                <li className="flex gap-2"><Check size={16} className="mt-0.5 shrink-0 text-forest" aria-hidden />Spotkanie z psychologiem (dla Was: z każdym z Was i wspólne)</li>
+                <li className="flex gap-2"><Check size={16} className="mt-0.5 shrink-0 text-forest" aria-hidden />Pełny obraz: co Was wspiera, gdzie jest najtrudniej, jak działa konflikt</li>
+                <li className="flex gap-2"><Check size={16} className="mt-0.5 shrink-0 text-forest" aria-hidden />Pisemne podsumowanie z konkretnymi wskazówkami, co dalej</li>
+              </ul>
+            </div>
+          </div>
+          <p className="mt-4 text-sm text-white/75">To podsumowanie nie jest pełną Mapą Relacji ani diagnozą.</p>
+          <OfferLink href={`/start?dolacz=${m.slug}`} n={m.n} className="mt-5 inline-flex min-h-14 items-center gap-2 rounded-full bg-clay px-7 text-[16px] font-semibold text-white">
+            Rozszerz podsumowanie o Mapę Relacji
+          </OfferLink>
+          <p className="mt-3 max-w-2xl text-sm text-white/70">
+            Na końcu krótkiego quizu możesz dołączyć te odpowiedzi do zgłoszenia – psycholog zobaczy je przy Twojej sprawie, także w wariancie dla Was, więc nie wypełniasz ich drugi raz. Dołączenie jest dobrowolne.
+          </p>
         </section>
       </main>
     </div>

@@ -12,7 +12,7 @@ import { magnetById } from "@/knowledge/registry";
 
 export const dynamic = "force-dynamic";
 
-export async function GET(_req: Request, { params }: { params: Promise<{ code: string }> }) {
+export async function GET(req: Request, { params }: { params: Promise<{ code: string }> }) {
   const code = (await params).code.toLowerCase();
   const notFound = () => NextResponse.redirect(`${env.appUrl}/wiedza?link=niewazny`, 303);
   // ochrona przed zgadywaniem kodów
@@ -25,7 +25,9 @@ export async function GET(_req: Request, { params }: { params: Promise<{ code: s
   if (!lead || !m) return notFound();
   const value = shortAccess(code);
   const already = (await cookies()).get(CONTENT_COOKIE)?.value === value;
-  const res = NextResponse.redirect(`${env.appUrl}/wiedza/${m.slug}/${lead.protected && !already ? "potwierdz" : "material"}`, 303);
+  // ?d=podsumowanie – link z e-maila z podsumowaniem (po ewentualnym potwierdzeniu numeru wraca do materiału)
+  const dest = new URL(req.url).searchParams.get("d") === "podsumowanie" ? "podsumowanie" : "material";
+  const res = NextResponse.redirect(`${env.appUrl}/wiedza/${m.slug}/${lead.protected && !already ? "potwierdz" : dest}`, 303);
   res.headers.set("x-robots-tag", "noindex, nofollow");
   if (lead.protected && !already) res.cookies.set(CONTENT_PENDING_COOKIE, value, pendingCookieOpts);
   else res.cookies.set(CONTENT_COOKIE, value, { httpOnly: true, secure: env.isProd, sameSite: "lax", path: "/", maxAge: 180 * 86400 });

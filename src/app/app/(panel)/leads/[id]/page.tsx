@@ -14,6 +14,7 @@ import { CONCERN_LABEL, INTENT_LABEL, LEAD_STAGES, PREFERRED_TIME_LABEL } from "
 import { decrypt } from "@/lib/crypto";
 import { optionLabel, QUIZ } from "@/lib/mapa-quiz";
 import { readSettings } from "@/lib/settings";
+import { AttachedSummary } from "@/components/panel/attached-summary";
 
 export const metadata = { title: "Zgłoszenie" };
 
@@ -67,24 +68,7 @@ export default async function LeadPage({ params }: { params: Promise<{ id: strin
               </div>
             </dl>
           </Card>
-          {attachedMagnet && (
-            <Card className="p-6" data-testid="attached-summary">
-              <h2 className="font-display text-lg text-ink">Dołączone podsumowanie: {attachedMagnet.short}</h2>
-              <p className="mt-1 text-xs text-muted">Klient dołączył je świadomie w quizie (zgoda w rejestrze zgód). Treść poufna – tylko do przygotowania rozmowy.</p>
-              {attachedGroups.length === 0 ? <p className="mt-3 text-sm text-muted">Brak uzupełnionych odpowiedzi.</p> : (
-                <div className="mt-4 space-y-4">
-                  {attachedGroups.map((g) => (
-                    <div key={g.section}>
-                      <p className="text-sm font-semibold text-forest">{g.section}</p>
-                      <dl className="mt-1.5 space-y-2 text-sm">
-                        {g.items.map((it) => <div key={it.label}><dt className="text-muted">{it.label}</dt><dd className="whitespace-pre-line text-ink">{it.value}</dd></div>)}
-                      </dl>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </Card>
-          )}
+          {attachedMagnet && <AttachedSummary m={attachedMagnet} groups={attachedGroups} />}
 
           <Card className="p-6">
             <h2 className="font-display text-lg text-ink">Odpowiedzi z quizu</h2>

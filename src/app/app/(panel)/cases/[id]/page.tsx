@@ -21,6 +21,7 @@ import { loadCase } from "@/lib/case-data";
 import { CASE_STATUSES, Q_STATUS_LABEL } from "@/lib/cases";
 import { decrypt } from "@/lib/crypto";
 import { audit } from "@/lib/audit";
+import { AttachedSummary, loadAttached } from "@/components/panel/attached-summary";
 
 export const metadata = { title: "Karta sprawy" };
 
@@ -44,6 +45,9 @@ export default async function CasePage({ params }: { params: Promise<{ id: strin
       reports: await tx`select r.*, p.display_name as for_name, (select max(version) from report_versions where report_id = r.id) as v from reports r left join participants p on p.id = r.participant_id where r.case_id = ${id} order by r.created_at desc`,
       timeline: await tx`select a.created_at, a.action, a.actor_kind, u.name from audit_logs a left join users u on u.id = a.actor_id where a.case_id = ${id} and a.action <> 'case_viewed' order by a.created_at desc limit 40`,
       therapists: await tx`select id, display_name from therapists order by display_name`,
+      // podsumowanie z materiału dołączone w quizie (przez zgłoszenie, z którego powstała sprawa)
+      attached: await loadAttached(tx, (await tx<{ attached_answers_id: string | null; attached_magnet_id: string | null }[]>`
+        select attached_answers_id, attached_magnet_id from leads where id = ${data.c.lead_id ?? null} or case_id = ${id} limit 1`)[0]),
     };
   });
   if (!d) notFound();
@@ -60,6 +64,7 @@ export default async function CasePage({ params }: { params: Promise<{ id: strin
       )}
       <div className="grid gap-6 xl:grid-cols-[1fr_360px]">
         <div className="space-y-6">
+          {d.attached && <AttachedSummary m={d.attached.m} groups={d.attached.groups} inCase />}
           {participants.map((p) => {
             const answered = d.progress.find((x) => x.participant_id === p.id)?.n ?? 0;
             const total = d.totals.find((x) => x.id === p.id)?.n ?? 0;

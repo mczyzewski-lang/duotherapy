@@ -140,7 +140,7 @@ test("formularz: jedna wymagana zgoda, uczciwy komunikat bez wysyłki, zapis w p
   await expect(page.locator("textarea[data-field]").first()).toHaveValue("Wieczorem po pracy, przy naczyniach.");
   await summarizeAnswers(page, /Podsumuj swoją pętlę konfliktu/);
   await expect(page.getByTestId("summary")).toContainText("Wieczorem po pracy, przy naczyniach.");
-  await page.getByRole("link", { name: /Przejdź do quizu/ }).click();
+  await page.getByRole("link", { name: /Rozszerz podsumowanie o Mapę Relacji/ }).click();
   await page.waitForURL(/\/start\?dolacz=petla-konfliktu/);
   await page.waitForLoadState("networkidle");
   for (const pick of ["Oddaliliśmy się", "Nie potrafimy spokojnie", "Tak, oboje chcemy", "Dlaczego ciągle", "Od ponad roku", "Samodzielnie"]) {

@@ -169,6 +169,8 @@ export const FUNNEL_EVENTS = [
   "article_cta_click",
   "lead_magnet_summary_view",
   "lead_magnet_phone_saved",
+  "lead_magnet_summary_email",
+  "lead_magnet_offer_click",
 ] as const;
 /** Zdarzenia zapisywane wyłącznie przez serwer (po faktycznym zapisie / potwierdzeniu operatora płatności). */
 export const SERVER_ONLY_EVENTS = ["lead_submitted", "checkout_started", "purchase_completed", "purchase_failed", "lead_magnet_submitted", "lead_magnet_delivery_success", "lead_magnet_delivery_error"] as const;

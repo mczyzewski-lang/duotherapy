@@ -37,6 +37,24 @@ export default async function FunnelPage({ searchParams }: { searchParams: Promi
       count(*) filter (where exists (select 1 from mail_contacts m where m.email_lc = p.e and m.purchased_at > p.first_at))::int as paid
     from p`);
 
+  // ta sama ścieżka krok po kroku (sesje przeglądarki, które weszły na stronę materiału w tym okresie)
+  const LM_STEPS: [string, string][] = [
+    ["lead_magnet_landing_view", "Wejście na stronę materiału"],
+    ["lead_magnet_form_started", "Rozpoczęty formularz"],
+    ["lead_magnet_submitted", "Ukończony formularz (zapis)"],
+    ["lead_magnet_summary_view", "Wygenerowane podsumowanie"],
+    ["lead_magnet_offer_click", "Przejście do oferty Mapy Relacji"],
+    ["checkout_started", "Rozpoczęta płatność"],
+    ["purchase_completed", "Zakup"],
+  ];
+  const lmSteps = await asStaff(s, (tx) => tx<{ event: string; n: number }[]>`
+    with cohort as (select distinct anon_id from funnel_events where event = 'lead_magnet_landing_view' and created_at >= ${since} and anon_id is not null)
+    select f.event, count(distinct f.anon_id)::int as n from funnel_events f join cohort c on c.anon_id = f.anon_id
+    where f.created_at >= ${since} and f.event in ${tx(LM_STEPS.map(([e]) => e))} group by 1`);
+  const stepN = (e: string) => lmSteps.find((x) => x.event === e)?.n ?? 0;
+  const drops = LM_STEPS.slice(1).map(([e], i) => ({ e, rate: stepN(LM_STEPS[i][0]) ? stepN(e) / stepN(LM_STEPS[i][0]) : 1 }));
+  const worst = stepN(LM_STEPS[0][0]) ? drops.reduce((a, b) => (b.rate < a.rate ? b : a), drops[0]).e : null;
+
   const count = (event: string, variant?: string) => d.ev.filter((e) => e.event === event && (!variant || e.variant === variant)).reduce((a, e) => a + e.n, 0);
   const reached = (stage: string, list = d.leads) => list.filter((l) => STAGE_RANK.indexOf(l.stage) >= STAGE_RANK.indexOf(stage)).length;
   const variants = ["A", "B"] as const;
@@ -153,6 +171,25 @@ export default async function FunnelPage({ searchParams }: { searchParams: Promi
           ))}
         </div>
         <p className="mt-3 text-xs text-muted">Podsumowanie → płatność: <strong>{pct(lm.paid, lm.summary)}</strong> · Sesje: otwarcia podsumowania {count("lead_magnet_summary_view")}, zapisy z numerem {count("lead_magnet_phone_saved")}.</p>
+      </Card>
+
+      <Card className="mb-6 overflow-x-auto p-6" data-testid="lm-steps">
+        <h2 className="font-display text-xl text-ink">Materiał – konwersja na każdym kroku</h2>
+        <p className="mt-1 text-xs text-muted">Sesje przeglądarki, które w tym okresie weszły na stronę materiału. Pokazuje, czy problemem jest pozyskanie, niedokończony formularz, czy decyzja o zakupie.</p>
+        <table className="mt-4 w-full min-w-[560px] text-sm">
+          <thead className="text-left text-xs text-muted"><tr><th className="py-2">Krok</th><th>Sesje</th><th>Z poprzedniego kroku</th><th>Od wejścia</th></tr></thead>
+          <tbody className="divide-y divide-sand/60">
+            {LM_STEPS.map(([e, label], i) => (
+              <tr key={e} className={worst === e ? "bg-alert-soft/40" : ""} data-step={e}>
+                <td className="py-2.5 text-ink">{i + 1}. {label}{worst === e && <span className="ml-2 rounded-full bg-alert-soft px-2 py-0.5 text-[11px] font-semibold text-alert">największy spadek</span>}</td>
+                <td className="font-medium">{stepN(e)}</td>
+                <td>{i === 0 ? "–" : pct(stepN(e), stepN(LM_STEPS[i - 1][0]))}</td>
+                <td>{i === 0 ? "–" : pct(stepN(e), stepN(LM_STEPS[0][0]))}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <p className="mt-2 text-xs text-muted">Podsumowanie wysłane e-mailem: {count("lead_magnet_summary_email")} · zapis z numerem: {count("lead_magnet_phone_saved")}.</p>
       </Card>
 
       <Card className="mb-6 overflow-x-auto p-6" data-testid="vsl-funnel">
