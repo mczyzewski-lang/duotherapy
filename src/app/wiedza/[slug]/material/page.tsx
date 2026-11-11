@@ -6,7 +6,7 @@ import { magnetBySlug } from "@/knowledge/registry";
 import { contentReader, ensureUnlockedMagnet, loadAnswers } from "@/lib/content-access";
 import { system } from "@/lib/db";
 import { maskPhone } from "@/lib/sms";
-import { visibleMagnets } from "@/lib/magnet-visibility";
+import { hiddenMagnets, visibleMagnets } from "@/lib/magnet-visibility";
 
 export const dynamic = "force-dynamic";
 
@@ -15,12 +15,14 @@ export const metadata: Metadata = { robots: { index: false, follow: false } };
 export default async function MaterialPage({ params, searchParams }: { params: Promise<{ slug: string }>; searchParams: Promise<{ witaj?: string; mail?: string }> }) {
   const m = magnetBySlug((await params).slug);
   const sp = await searchParams;
+  const hidden = (await hiddenMagnets()).has(m?.slug ?? "");
   if (!m || m.special) notFound();
   // odpowiedzi tylko dla osoby zapisanej na ten materiał (ciasteczko z formularza lub z linku w e-mailu)
   const d = await system(async (tx) => {
     const reader = await contentReader(tx);
     // potwierdzony numer = dostęp do wszystkich materiałów: zapis na ten materiał powstaje przy pierwszym otwarciu
-    const who = reader && (await ensureUnlockedMagnet(tx, reader, m));
+    // (materiał ukryty w panelu nie otwiera się w ten sposób – zostaje tylko dla osób, które odebrały go wcześniej)
+    const who = reader && (hidden ? reader : await ensureUnlockedMagnet(tx, reader, m));
     if (!who || !who.magnets.includes(m.id)) return null;
     const [p] = await tx<{ phone: string }[]>`select phone from content_leads where lower(email) = ${who.email} and phone_verified_at is not null and phone is not null limit 1`;
     // imię do powitania po odebraniu materiału (tylko z zapisu tej osoby)

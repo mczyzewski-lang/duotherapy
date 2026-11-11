@@ -45,6 +45,7 @@ export function LeadMagnetForm({
   const [f, setF] = useState({ name: "", email: "", relationship: "", children: "", consent: false, website: "" });
   const [err, setErr] = useState<{ text: string; field?: string } | null>(null);
   const [done, setDone] = useState<{ emailSent: boolean } | null>(null);
+  const [proof, setProof] = useState<{ emailSent: boolean } | null>(null);
   const [pending, start] = useTransition();
   const router = useRouter();
   const shownAt = useRef(Date.now());
@@ -97,7 +98,13 @@ export function LeadMagnetForm({
           startedAt: shownAt.current,
           website: f.website,
         });
-        if (r.ok) {
+        if (r.ok && r.next === "sms") {
+          // ten adres ma już zapisy i potwierdzony numer – najpierw kod SMS
+          router.push(`/wiedza/${slug}/potwierdz`);
+        } else if (r.ok && r.next === "mail") {
+          setProof({ emailSent: r.emailSent });
+          requestAnimationFrame(() => document.getElementById("lm-proof")?.focus());
+        } else if (r.ok) {
           setDone({ emailSent: r.emailSent });
           // od razu do materiału – tam krótka animacja „odblokowuję dla Ciebie” (imię bierzemy z zapisu, nie z adresu)
           router.push(`/wiedza/${slug}/material?witaj=1${r.emailSent ? "&mail=1" : ""}`);
@@ -108,6 +115,21 @@ export function LeadMagnetForm({
     });
   };
 
+  if (proof)
+    return (
+      <div id="lm-proof" tabIndex={-1} role="status" className="rounded-3xl bg-white p-6 text-center shadow-soft ring-1 ring-sand outline-none sm:p-8" data-testid="lm-proof">
+        <Mail className="mx-auto text-forest" size={36} aria-hidden />
+        <h3 className="mt-3 font-display text-[1.6rem] leading-tight text-ink">{proof.emailSent ? "Sprawdź swoją skrzynkę" : "Ten adres ma już materiały w DUO"}</h3>
+        <p className="mx-auto mt-2 max-w-md leading-relaxed text-ink-soft">
+          {proof.emailSent
+            ? "Ten adres e-mail ma już zapisane materiały. Żeby nikt poza Tobą nie zobaczył Twoich odpowiedzi, wysłaliśmy link na Twoją skrzynkę – otwórz materiał z tej wiadomości."
+            : "Żeby nikt poza Tobą nie zobaczył Twoich odpowiedzi, na nowym urządzeniu otwierasz materiały z linku w wiadomości od DUO. Nie udało się teraz wysłać nowej wiadomości – użyj wcześniejszego linku albo napisz do nas."}
+        </p>
+        <p className="mt-4 text-sm text-muted">
+          Masz zapisany numer telefonu? <Link href="/wiedza/zaloguj" className="font-medium text-forest underline">Zaloguj się kodem SMS</Link>.
+        </p>
+      </div>
+    );
   if (done)
     return (
       <div id="lm-done" tabIndex={-1} role="status" className="rounded-3xl bg-white p-6 text-center shadow-soft ring-1 ring-sand outline-none sm:p-8">

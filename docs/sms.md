@@ -44,3 +44,14 @@ a przy odpowiedziach zapisanych z numerem telefonu i tak wymagany jest kod SMS. 
   `{imie}`, `{liczba}`, `{link}`). Link prowadzi do /wiedza/zaloguj. Uruchamia się tylko przy pierwszym potwierdzeniu;
   wynik (wysłany / błąd / brak konfiguracji) trafia do dziennika i licznika w panelu.
 - Migracja `030_phone_unlock.sql` (status `unlocked`, indeks po numerze).
+
+## Prywatność: adres e-mail nie jest dowodem tożsamości
+
+Formularz odbioru materiału daje dostęp od razu tylko wtedy, gdy adres nie ma jeszcze żadnych zapisów albo przeglądarka jest
+już z nim powiązana. Znany adres na obcej przeglądarce:
+- z potwierdzonym numerem → kod SMS (`/wiedza/<materiał>/potwierdz`),
+- bez numeru → link do materiału wyłącznie na skrzynkę (wymaga skonfigurowanej poczty; maks. 3 wiadomości na godzinę na adres).
+Obca próba nie unieważnia dostępu pierwszego urządzenia. Test: `tests/e2e/privacy.spec.ts`.
+
+Znane ograniczenie: kto pierwszy wpisze dany adres, ten ma do niego dostęp (adres nie jest weryfikowany przy pierwszym zapisie).
+Pełne zamknięcie tego wymaga potwierdzania adresu linkiem z e-maila przy pierwszym zapisie (decyzja produktowa – dodaje krok).

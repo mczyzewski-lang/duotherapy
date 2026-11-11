@@ -9,7 +9,10 @@ import { system, type Tx } from "@/lib/db";
 import { env } from "@/lib/env";
 import { ATTRIBUTION_KEYS } from "@/lib/mapa-quiz";
 import { customerMailConfigured, notifyCustomer } from "@/lib/notify";
-import { setContentCookie } from "@/lib/content-access";
+import { cookies } from "next/headers";
+import { contentReader, setContentCookie, shortAccess } from "@/lib/content-access";
+import { CONTENT_PENDING_COOKIE, pendingCookieOpts } from "@/lib/content-phone";
+import type { LeadMagnet } from "@/knowledge/types";
 import { hit } from "@/lib/rate-limit";
 import { clientIp } from "@/lib/request";
 import { readSettings } from "@/lib/settings";
@@ -34,7 +37,8 @@ const Schema = z.object({
   website: z.string().max(0).optional(), // pułapka na boty
 });
 
-export type KnowledgeResult = { ok: true; emailSent: boolean } | { ok: false; error: string; field?: string };
+/** next: „sms” – ten e-mail ma już zapisy i potwierdzony numer → kod SMS; „mail” – dostęp tylko z linku wysłanego na skrzynkę. */
+export type KnowledgeResult = { ok: true; emailSent: boolean; next?: "sms" | "mail" } | { ok: false; error: string; field?: string };
 
 /** Krok dodatkowy (analityka, nurturing) w savepoincie: błąd jest logowany, a zapis materiału idzie dalej. */
 async function optional(tx: Tx, what: string, fn: (sp: Tx) => Promise<unknown>) {
@@ -76,18 +80,35 @@ async function submitKnowledgeLeadInner(input: z.input<typeof Schema>): Promise<
 
   const r = await system(async (tx) => {
     const s = await readSettings(tx);
+    // PRYWATNOŚĆ: sam adres e-mail nie jest dowodem tożsamości. Jeśli ten e-mail ma już zapisy, a ta przeglądarka nie jest
+    // z nim powiązana, nie dajemy dostępu od razu (ktoś mógłby wpisać cudzy adres i zobaczyć cudze odpowiedzi) –
+    // potrzebny jest kod SMS (gdy numer jest potwierdzony) albo link wysłany na skrzynkę.
+    const reader = await contentReader(tx);
+    const [prior] = await tx<{ n: number; verified: boolean }[]>`
+      select count(*)::int as n, coalesce(bool_or(phone_verified_at is not null), false) as verified from content_leads where lower(email) = ${d.email}`;
+    const foreign = prior.n > 0 && reader?.email !== d.email;
+    /** numer potwierdzony przy innym zapisie tej osoby przechodzi na ten zapis (kod SMS działa też dla niego) */
+    const inheritPhone = (id: string) => tx`
+      update content_leads c set phone = p.phone, phone_verified_at = p.phone_verified_at
+      from (select phone, phone_verified_at from content_leads where lower(email) = ${d.email} and phone_verified_at is not null and phone is not null order by phone_verified_at desc limit 1) p
+      where c.id = ${id} and c.phone_verified_at is null`;
+    const keepToken = (id: string) => tx`update content_leads set short_code = coalesce(short_code, ${newShortCode()}) where id = ${id}`;
     // idempotencja: ponowione żądanie z tym samym identyfikatorem
     const [same] = await tx`select id, delivery_status from content_leads where request_id = ${d.requestId}`;
     if (same) {
-      await tx`update content_leads set access_token_hash = ${hashToken(access)}, short_code = coalesce(short_code, ${newShortCode()}) where id = ${same.id}`;
-      return { id: same.id as string, status: same.delivery_status as string, send: false, s };
+      // ponowienie pierwszego zapisu tego adresu (jedyny wiersz) to wciąż ta sama osoba
+      const proof = foreign && prior.n > 1;
+      if (proof) { await keepToken(same.id); await inheritPhone(same.id); }
+      else await tx`update content_leads set access_token_hash = ${hashToken(access)}, short_code = coalesce(short_code, ${newShortCode()}) where id = ${same.id}`;
+      return { id: same.id as string, status: same.delivery_status as string, send: false, s, proof, verified: prior.verified };
     }
     // ta sama osoba i ten sam materiał w ciągu doby, już dostarczony – bez ponownej wysyłki
     const [recent] = await tx`select id, delivery_status from content_leads
       where lower(email) = ${d.email} and magnet_id = ${m.id} and created_at > now() - interval '24 hours' and delivery_status = 'sent' order by created_at desc limit 1`;
     if (recent) {
-      await tx`update content_leads set access_token_hash = ${hashToken(access)}, short_code = coalesce(short_code, ${newShortCode()}) where id = ${recent.id}`;
-      return { id: recent.id as string, status: "sent", send: false, s };
+      if (foreign) { await keepToken(recent.id); await inheritPhone(recent.id); }
+      else await tx`update content_leads set access_token_hash = ${hashToken(access)}, short_code = coalesce(short_code, ${newShortCode()}) where id = ${recent.id}`;
+      return { id: recent.id as string, status: "sent", send: false, s, proof: foreign, verified: prior.verified };
     }
     const series = m.slug === "7-dni-lepszych-rozmow"; // przy wyzwaniu zgoda obejmuje codzienne ćwiczenia
     const marketing = d.consent;
@@ -105,15 +126,17 @@ async function submitKnowledgeLeadInner(input: z.input<typeof Schema>): Promise<
     if (m.slug === "7-dni-lepszych-rozmow")
       await tx`insert into content_lead_consents (content_lead_id, kind, granted, text_version, text_snapshot) values (${row.id}, 'challenge_series', ${series}, ${v}, ${s.legal.contentSeriesConsent})`;
     await tx`update content_leads set access_token_hash = ${hashToken(access)}, short_code = ${newShortCode()} where id = ${row.id}`;
+    if (prior.verified) await inheritPhone(row.id);
     // analityka i nurturing są dodatkiem: ich błąd (np. ograniczenie w bazie) nie może zablokować odbioru materiału
     if (s.site.funnelTracking && anon)
       await optional(tx, "funnel lead_magnet_submitted", (sp) => sp`insert into funnel_events (event, anon_id, step, utm_source, utm_medium, utm_campaign, path)
                values ('lead_magnet_submitted', ${anon}, ${m.n}, ${attribution.utm_source ?? null}, ${attribution.utm_medium ?? null}, ${attribution.utm_campaign ?? null}, '/wiedza/*')`);
     // nurturing: kontakt z tagiem materiału (wiadomości marketingowe tylko przy zgodzie – pilnuje tego sekwencja)
     await optional(tx, "nurturing captureContact", (sp) => captureContact(sp as Tx, { email: d.email, name: d.name || null, tags: [`lm-${m.slug}`, ...(series ? ["seria-7-dni"] : []), d.relationship, d.children === "tak" ? "dzieci" : "bez-dzieci"], marketing }));
-    return { id: row.id, status: "pending", send: true, s };
+    return { id: row.id, status: "pending", send: true, s, proof: foreign, verified: prior.verified };
   });
 
+  if (r.proof) return proveOwnership(r.id, d.email, d.name || null, m, r.verified, r.s);
   await setContentCookie(access);
   if (!r.send) return { ok: true, emailSent: r.status === "sent" };
 
@@ -138,6 +161,33 @@ async function submitKnowledgeLeadInner(input: z.input<typeof Schema>): Promise<
   }
   revalidatePath("/app/wiedza");
   return { ok: true, emailSent: sent };
+}
+
+/**
+ * Adres ma już zapisy, a przeglądarka nie jest z nim powiązana: bez ciasteczka dostępu.
+ * Potwierdzony numer → kod SMS (/potwierdz); w innym razie link do materiału wyłącznie na skrzynkę e-mail.
+ */
+async function proveOwnership(id: string, email: string, name: string | null, m: LeadMagnet, verified: boolean, s: Awaited<ReturnType<typeof readSettings>>): Promise<KnowledgeResult> {
+  const [{ short_code }] = await system((tx) => tx<{ short_code: string }[]>`select short_code from content_leads where id = ${id}`);
+  if (verified) {
+    (await cookies()).set(CONTENT_PENDING_COOKIE, shortAccess(short_code), pendingCookieOpts);
+    return { ok: true, emailSent: false, next: "sms" };
+  }
+  let sent = false;
+  try {
+    // najwyżej kilka takich wiadomości na godzinę na adres – formularz nie może służyć do zasypywania cudzej skrzynki
+    if (customerMailConfigured() && (await hit(`klproof:${email}`, 3, 60 * 60))) {
+      const mail = deliveryMail(m, name, env.appUrl, { email: s.site.contactEmail, phone: s.site.contactPhone }, `${env.appUrl}/plan/${short_code}`);
+      sent = await notifyCustomer(email, mail.subject, mail.text);
+      await system(async (tx) => {
+        await tx`update content_leads set delivery_status = ${sent ? "sent" : "failed"}, delivered_at = ${sent ? new Date() : null} where id = ${id} and delivery_status <> 'sent'`;
+        await tx`insert into content_lead_messages (content_lead_id, kind, status, error) values (${id}, 'delivery', ${sent ? "sent" : "failed"}, ${sent ? null : "błąd wysyłki"})`;
+      });
+    }
+  } catch (e) {
+    console.error("[wiedza] link potwierdzający nie został wysłany:", e);
+  }
+  return { ok: true, emailSent: sent, next: "mail" };
 }
 
 /** Wypisanie z wiadomości (link w e-mailu). Wycofanie zgody zapisujemy w historii zgód. */

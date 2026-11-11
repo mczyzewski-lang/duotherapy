@@ -12,14 +12,14 @@ export async function GET(_: Request, { params }: { params: Promise<{ view: stri
   const { view } = await params;
   if (view !== "demo" && view !== "material") return new Response("Nie znaleziono", { status: 404 });
   const m = magnetBySlug("przykladowa-mapa-relacji")!;
-  const html = renderReportHtml(SAMPLE_REPORT, await getSettings(), {
+  const settings = await getSettings();
+  const html = renderReportHtml(SAMPLE_REPORT, settings, {
     fontCss: embeddedFontCss(),
     sample: true,
     intro: SAMPLE_INTRO,
     topTitle: view === "demo" ? "Podgląd materiału DUO · Przykładowa Mapa Relacji" : "Twój materiał DUO · Przykładowa Mapa Relacji",
-    pdfHref: `/wiedza/${m.slug}/pdf`,
     back: { href: `/wiedza/${m.slug}`, label: "← opis materiału" },
-    bottomCta: { text: "Własna Mapa Relacji z psychologiem – 670 zł", href: mapaHref(m, `report_${view}`), label: "Poznaj usługę →" },
+    bottomCta: { text: `Własna Mapa Relacji z psychologiem – ${settings.offer.pricePln} zł`, href: mapaHref(m, `report_${view}`), label: "Poznaj usługę →" },
   });
   return new Response(html, { headers: { "content-type": "text/html; charset=utf-8", "x-robots-tag": "noindex, nofollow", "cache-control": "no-store" } });
 }

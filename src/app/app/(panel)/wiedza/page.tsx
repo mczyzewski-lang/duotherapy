@@ -17,6 +17,7 @@ const DELIVERY: Record<string, [string, "ok" | "clay" | "alert" | "neutral"]> = 
   not_configured: ["wysyłka nieskonfigurowana", "clay"],
   failed: ["błąd wysyłki", "alert"],
   pending: ["w toku", "neutral"],
+  unlocked: ["otwarty po kodzie SMS", "ok"],
 };
 
 export default async function KnowledgeAdmin({ searchParams }: { searchParams: Promise<Record<string, string | undefined>> }) {
