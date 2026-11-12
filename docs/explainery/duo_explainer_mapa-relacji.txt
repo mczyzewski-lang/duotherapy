@@ -46,6 +46,19 @@ Do obojga:
 H9: Mieszkacie razem. Ale czy jeszcze jesteście razem?
 H10: Nie wiesz, czy to kryzys, czy już koniec?
 
+Dodatkowe hooki - typowe problemy par (każdy ma własny kadr otwierający):
+H11: Kłócisz się z mężem o wszystko?
+H12: Kłócisz się z żoną o wszystko?
+H14: Od dawna nie ma między Wami bliskości?
+H15: Ciche dni trwają u Was coraz dłużej?
+H16: Zostajesz w tym małżeństwie już tylko dla dzieci?
+H17: Po zdradzie nie wiesz, co dalej?
+
+Zdanie przejścia po hooku (zamiast "Niby nic się nie dzieje.", gdy hook mówi o otwartym konflikcie):
+- H6, H8, H11, H12: "Niby zwykłe sprawy."
+- H17: "Niby życie toczy się dalej."
+- pozostałe: "Niby nic się nie dzieje."
+
 Rekomendacja do pierwszego testu: H1 i H2 (ten sam film, dwa pierwsze zdania i dwie grupy odbiorców), jako trzeci H10.
 
 

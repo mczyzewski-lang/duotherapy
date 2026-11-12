@@ -22,16 +22,18 @@ const lerp=(a,b,x)=>a+(b-a)*x;
 const KB={s01:[1.0,1.04,0,0,0,-8],s02a:[1.05,1.16,0,0,0,-10],s02b:[1.16,1.05,0,-10,0,0],s02c:[1.05,1.16,0,0,0,-10],s03a:[1.04,1.2,0,0,-70,-20],s03:[1.04,1.34,0,0,0,-30],s03c:[1.14,1.04,-20,0,0,0],s04:[1.1,1.03,0,-16,0,0],s04a:[1.05,1.15,0,0,0,-10],s04b:[1.15,1.05,0,-10,0,0],s04c:[1.05,1.15,0,0,0,-10],s05b:[1.04,1.14,0,0,-20,-10],s11b:[1.12,1.03,0,-16,0,0],s11c:[1.04,1.12,0,0,0,-12],s05:[1.03,1.1,-10,0,-24,-10],
   s06:[1.16,1.04,0,-30,0,0],s07:[1.04,1.1,0,0,-12,-12],s08:[1.08,1.03,12,0,-6,0],s09:[1.04,1.12,0,0,0,-18],s10:[1.12,1.02,0,-26,0,0],
   s11:[1.03,1.09,0,0,0,-16],s12:[1.09,1.03,-14,0,10,0],s13:[1.03,1.0,0,0,0,0]};
-let PUNCH=0;function xf(name,p){const k=KB[name],e=ease(p),s=lerp(k[0],k[1],e)*1.5*(name==="s01"?1+0.22*PUNCH:1);return{s,x:W/2-360*s+lerp(k[2],k[4],e),y:H/2-640*s+lerp(k[3],k[5],e)}}
-let SHIFT={s01:120},SHIFTX={s01:-70},SPLIT=0;const DXS=d=>(d<0?50:44)*SPLIT;const zig=y=>470+16*Math.sin(y*0.071)+9*Math.sin(y*0.23+1.3)+5*Math.sin(y*0.61);
+let PUNCH=0,HSC=1;function xf(name,p){const k=KB[name],e=ease(p),s=lerp(k[0],k[1],e)*1.5*(name==="s01"?(1+0.22*PUNCH)*HSC:1);return{s,x:W/2-360*s+lerp(k[2],k[4],e),y:H/2-640*s+lerp(k[3],k[5],e)}}
+let SHIFT={s01:120},SHIFTX={s01:-70},SPLIT=0,ZC=470;const DXS=d=>(d<0?50:44)*SPLIT;const zig=y=>ZC+16*Math.sin(y*0.071)+9*Math.sin(y*0.23+1.3)+5*Math.sin(y*0.61);
 function drawShot(name,p,a){if(a<=0)return;const m=xf(name,p),sy=SHIFT[name]||0,img=FR[name]||IM[name];m.x+=SHIFTX[name]||0;
   const edge=(ex)=>{const eg=g.createLinearGradient(ex-150,0,ex,0);eg.addColorStop(0,"rgba(251,249,245,0)");eg.addColorStop(1,"rgba(251,249,245,1)");g.fillStyle=eg;g.fillRect(ex-150,0,150,H);g.fillStyle=C.ivory;g.fillRect(ex-1,0,W-ex+200,H)};
+  const vedge=(y0,y1)=>{if(HSC>=1)return;let vg=g.createLinearGradient(0,y1-200,0,y1);vg.addColorStop(0,"rgba(251,249,245,0)");vg.addColorStop(1,"rgba(251,249,245,1)");g.fillStyle=vg;g.fillRect(0,y1-200,W,200);g.fillStyle=C.ivory;g.fillRect(0,y1-1,W,H);
+    vg=g.createLinearGradient(0,y0,0,y0+160);vg.addColorStop(0,"rgba(251,249,245,1)");vg.addColorStop(1,"rgba(251,249,245,0)");g.fillStyle=vg;g.fillRect(0,y0,W,160);g.fillStyle=C.ivory;g.fillRect(0,0,W,Math.max(0,y0+1))};
   if(name==="s01"&&SPLIT>0.001){ // kadr rozrywa się na dwie połowy, które odjeżdżają od siebie
-    for(const d of [-1,1]){const dx=DXS(d);g.save();g.translate(470,1250);g.rotate(d*0.014*SPLIT);g.translate(-470,-1250);g.beginPath();g.moveTo(d*1400+540,-100);for(let y=-100;y<=H+100;y+=10)g.lineTo(zig(y)+d*dx,y);g.lineTo(d*1400+540,H+100);g.closePath();
+    for(const d of [-1,1]){const dx=DXS(d);g.save();g.translate(ZC,1250);g.rotate(d*0.014*SPLIT);g.translate(-ZC,-1250);g.beginPath();g.moveTo(d*1400+ZC,-100);for(let y=-100;y<=H+100;y+=10)g.lineTo(zig(y)+d*dx,y);g.lineTo(d*1400+ZC,H+100);g.closePath();
       g.save();g.clip();g.globalAlpha=a;g.drawImage(img,m.x+d*dx,m.y+sy,720*m.s,1280*m.s);if(d>0){g.globalAlpha=1;edge(m.x+d*dx+720*m.s)}g.restore();
       g.globalAlpha=a*SPLIT;g.beginPath();for(let y=300;y<=1500;y+=10)y===300?g.moveTo(zig(y)+d*dx,y):g.lineTo(zig(y)+d*dx,y);g.strokeStyle="rgba(255,255,255,.95)";g.lineWidth=7;g.stroke();g.strokeStyle="rgba(110,80,55,.28)";g.lineWidth=2;g.stroke();g.restore()}
-    g.globalAlpha=1;return}
-  g.globalAlpha=a;g.drawImage(img,m.x,m.y+sy,720*m.s,1280*m.s);g.globalAlpha=1;if(name==="s01")edge(m.x+720*m.s)}
+    g.globalAlpha=1;vedge(m.y+sy,m.y+sy+1280*m.s);return}
+  g.globalAlpha=a;g.drawImage(img,m.x,m.y+sy,720*m.s,1280*m.s);g.globalAlpha=1;if(name==="s01"){edge(m.x+720*m.s);vedge(m.y+sy,m.y+sy+1280*m.s)}}
 const pt=(name,p,fx,fy)=>{const m=xf(name,p);return[m.x+(SHIFTX[name]||0)+fx*720*m.s,m.y+(SHIFT[name]||0)+fy*1280*m.s]};
 
 function fog(t,amt,bandY=980,spread=620){ if(amt<=0.003)return;
@@ -67,8 +69,10 @@ function chip(x,y,lines,col,a){ if(a<=0)return;g.font='600 38px "Inter V"';g.tex
   g.shadowColor="rgba(60,45,30,.25)";g.shadowBlur=24;g.shadowOffsetY=8;g.fillStyle=col;rr(x-w/2,y-h/2+(1-a)*18,w,h,26);g.fill();g.shadowColor="transparent";g.shadowBlur=0;g.shadowOffsetY=0;
   g.fillStyle="#fff";lines.forEach((l,i)=>g.fillText(l,x,y-(lines.length-1)*23+i*46+2+(1-a)*18));g.globalAlpha=1;return h}
 
+const HKD={lines:["Żyjesz z mężem","jak ze","współlokatorem?"],pill:2,dur:2.5,rings:[[0.195,0.478],[0.83,0.482]]};
+function HK(){const h=TL.hook||HKD,n=h.lines.length,times=h.lines.map((_,i)=>i?0.2+h.dur*(i/n)*0.5:0);return{...h,times,tear:times[n-1]+0.45}}
 function render(t){
-  PUNCH=1-easeOut(t/0.75);{const x=clamp((t-(TL.ev.hook[0]+1.05))/0.6);SPLIT=x<=0?0:easeOut(x)+0.18*Math.sin(Math.PI*x)*(1-x)}
+  PUNCH=1-easeOut(t/0.75);{const x=clamp((t-HK().tear)/0.6);SPLIT=x<=0?0:easeOut(x)+0.18*Math.sin(Math.PI*x)*(1-x)}
   const E=TL.ev;g.setTransform(1,0,0,1,0,0);g.globalAlpha=1;g.fillStyle=C.ivory;g.fillRect(0,0,W,H);
   // ––– kadry z przenikaniem –––
   const XF=0.7;let cur=null;
@@ -84,22 +88,25 @@ function render(t){
   if(t>=s6[1]&&t<s6[2]+0.5){const p=(t-s6[1])/(s6[2]+0.7-s6[1]),[gx,gy]=pt("s06",p,0.5,0.385);glow(gx,gy,330,(0.3+0.12*Math.sin(t*3.1))*ease((t-s6[1])/0.8)*(1-ease((t-s6[2])/0.5)))}
 
   // ––– hook: nagłówek wchodzi słowo po słowie, ostatnie słowo w plakietce; na scenie – dystans między nimi –––
-  if(t<E.hook[1]+0.6){const out=1-ease((t-E.hook[1])/0.5),p1=(t-0)/(sh("s01")[2]+XF);
+  if(t<E.hook[1]+0.6&&t<sh("s01")[2]){const out=1-ease((t-E.hook[1])/0.5),p1=(t-0)/(sh("s01")[2]+XF);
     const hg=g.createLinearGradient(0,0,0,780);hg.addColorStop(0,`rgba(251,249,245,${out})`);hg.addColorStop(0.8,`rgba(251,249,245,${0.96*out})`);hg.addColorStop(1,"rgba(251,249,245,0)");g.fillStyle=hg;g.fillRect(0,0,W,780);
     const pop=(t0,d=0.38)=>{const x=clamp((t-t0)/d);return t0<=0?1+0.1*(1-easeOut(t/0.6)):x<=0?0:1+0.16*Math.sin(Math.PI*x)*(1-x)-(1-easeOut(x))*0.35};
-    g.textAlign="center";g.textBaseline="middle";
-    [["Żyjesz z mężem",0.0,372],["jak ze",0.42,470]].forEach(([txt,d,y])=>{const sc=pop(E.hook[0]-0.2+d);if(sc<=0)return;g.save();g.translate(CX,y);g.scale(sc,sc);g.globalAlpha=out*(d?clamp((t-(E.hook[0]-0.2+d))/0.15):1);g.font='600 88px "Fraunces V"';g.fillStyle=C.forest;g.fillText(txt,0,0);g.restore()});
-    {const t0=E.hook[0]+0.62,sc=pop(t0,0.45);if(sc>0){g.save();g.translate(CX,582);g.rotate(-0.035);g.scale(sc,sc);g.globalAlpha=out*clamp((t-t0)/0.12);g.font='600 72px "Fraunces V"';const w=g.measureText("współlokatorem?").width+64;
-      g.shadowColor="rgba(120,60,30,.3)";g.shadowBlur=30;g.shadowOffsetY=12;g.fillStyle=C.clay;rr(-w/2,-62,w,124,30);g.fill();g.shadowColor="transparent";g.shadowBlur=0;g.shadowOffsetY=0;g.fillStyle="#fff";g.fillText("współlokatorem?",0,4);g.restore()}}
+    g.textAlign="center";g.textBaseline="middle";const hk=HK();
+    {g.font='600 88px "Fraunces V"';const wmax=Math.max(1,...hk.lines.filter((_,i)=>i!==hk.pill).map(l=>g.measureText(l).width)),fs=Math.min(88,88*710/wmax);
+     g.font='600 72px "Fraunces V"';const pw=g.measureText(hk.lines[hk.pill]||"").width,ps=Math.min(72,72*610/Math.max(1,pw));let y=372;
+     hk.lines.forEach((txt,i)=>{const isP=i===hk.pill,t0=hk.times[i];if(isP&&i)y+=14;const yy=y;y+=isP?112:98;
+       if(!isP){const sc=pop(t0);if(sc<=0)return;g.save();g.translate(CX,yy);g.scale(sc,sc);g.globalAlpha=out*(i?clamp((t-t0)/0.15):1);g.font=`600 ${fs}px "Fraunces V"`;g.fillStyle=C.forest;g.fillText(txt,0,0);g.restore();return}
+       const sc=i?pop(t0,0.45):pop(0);if(sc<=0)return;g.save();g.translate(CX,yy);g.rotate(-0.035);g.scale(sc,sc);g.globalAlpha=out*(i?clamp((t-t0)/0.12):1);g.font=`600 ${ps}px "Fraunces V"`;const w=g.measureText(txt).width+64;
+       g.shadowColor="rgba(120,60,30,.3)";g.shadowBlur=30;g.shadowOffsetY=12;g.fillStyle=C.clay;rr(-w/2,-62,w,124,30);g.fill();g.shadowColor="transparent";g.shadowBlur=0;g.shadowOffsetY=0;g.fillStyle="#fff";g.fillText(txt,0,4);g.restore()})}
     g.globalAlpha=1;
     // dystans: przerywana linia przez środek sofy i strzałki rozchodzące się na boki
-    {const t0=E.hook[0]+1.05,a=easeOut((t-t0)/0.5)*out;if(a>0){const [mx,y1]=pt("s01",p1,0.5,0.46),[,y2]=pt("s01",p1,0.5,0.6),ym=(y1+y2)/2;
+    {const t0=hk.tear,a=easeOut((t-t0)/0.5)*out;if(a>0){const [,y1]=pt("s01",p1,0.5,0.46),[,y2]=pt("s01",p1,0.5,0.6),ym=(y1+y2)/2,mx=ZC;
       g.globalAlpha=a*0.95;g.lineCap="round";
       const push=22+16*(0.5+0.5*Math.sin(t*5.2));[-1,1].forEach(d=>{const x0=mx+d*(12+DXS(d)),x1=mx+d*((26+push*0.6)*a+12+DXS(d));g.strokeStyle="#fff";g.lineWidth=14;g.lineJoin="round";
         for(const [col,lw] of [["#fff",15],[C.clay,8]]){g.strokeStyle=col;g.lineWidth=lw;g.beginPath();g.moveTo(x0,ym);g.lineTo(x1,ym);g.moveTo(x1-d*26,ym-24);g.lineTo(x1,ym);g.lineTo(x1-d*26,ym+24);g.stroke()}});
       g.globalAlpha=1}}
     // telefony: pulsujące kręgi powiadomień
-    [[0.195,0.478,0],[0.83,0.482,0.45]].forEach(([fx,fy,ph])=>{let [px,py]=pt("s01",p1,fx,fy);px+=(fx<0.5?-1:1)*DXS(fx<0.5?-1:1);for(let k=0;k<2;k++){const c=((t*0.9+ph+k*0.5)%1);g.globalAlpha=(1-c)*0.75*out*clamp(t/0.3);g.strokeStyle="#fff";g.lineWidth=6*(1-c)+2;g.beginPath();g.arc(px,py,14+c*58,0,7);g.stroke()}});g.globalAlpha=1}
+    (hk.rings||[]).forEach(([fx,fy],ri)=>{const ph=ri*0.45;let [px,py]=pt("s01",p1,fx,fy);px+=(fx<0.5?-1:1)*DXS(fx<0.5?-1:1);for(let k=0;k<2;k++){const c=((t*0.9+ph+k*0.5)%1);g.globalAlpha=(1-c)*0.75*out*clamp(t/0.3);g.strokeStyle="#fff";g.lineWidth=6*(1-c)+2;g.beginPath();g.arc(px,py,14+c*58,0,7);g.stroke()}});g.globalAlpha=1}
 
   // ––– trzy drogi: etykiety nad krajobrazem –––
   if(t>=E.roads[0]-0.1&&t<E.roadsEnd+0.5&&cur){const out=1-ease((t-E.roadsEnd)/0.4),p=(t-s10[1])/(s10[2]+XF-s10[1]);
@@ -179,11 +186,11 @@ function render(t){
   // ––– napisy –––
   for(const [a,b,text] of TL.caps){ if(t<a-0.05||t>b+0.2)continue;const ain=easeOut((t-a)/0.16),aout=1-ease((t-b-0.02)/0.16);caption(text,Math.min(ain,aout),(1-ain)*14)}
 }
-window.setup=async(tl)=>{TL=tl;await Promise.all(tl.shots.map(([n])=>new Promise((res,rej)=>{const i=new Image();i.onload=()=>{IM[n]=i;res()};i.onerror=rej;i.src=n+".png"})));
+window.setup=async(tl)=>{TL=tl;await Promise.all(tl.shots.map(([n])=>new Promise((res,rej)=>{const i=new Image();i.onload=()=>{IM[n]=i;res()};i.onerror=rej;i.src=((n==="s01"&&tl.hook&&tl.hook.img)||n)+".png"})));if(tl.hook){HSC=tl.hook.scale??1;SHIFT.s01=tl.hook.shiftY??120;SHIFTX.s01=tl.hook.shiftX??-70;ZC=540+SHIFTX.s01+((tl.hook.tearX??0.5)-0.5)*1080*HSC}
   await Promise.all(['600 52px "Inter V"','600 92px "Fraunces V"','500 190px "Fraunces V"','400 27px "Inter V"','500 36px "Inter V"'].map(f=>document.fonts.load(f,"Żółć ąę DUO")));await document.fonts.ready;return true};
 window.renderAt=async(t)=>{ if(TL.clips){const jobs=[];for(const [name,a,b] of TL.shots){const c=TL.clips[name];if(!c||t<a-0.001||t>b+0.7)continue;
     let ph=Math.max(0,t-a)%(2*c.dur);if(ph>c.dur)ph=2*c.dur-ph;const idx=Math.max(1,Math.min(c.n,1+Math.floor(ph*c.fps)));
-    jobs.push(new Promise(res=>{const i=new Image();i.onload=()=>{FR[name]=i;res()};i.onerror=()=>{delete FR[name];res()};i.src=`clips/${name}/f${String(idx).padStart(4,"0")}.jpg`}))}
+    jobs.push(new Promise(res=>{const i=new Image();i.onload=()=>{FR[name]=i;res()};i.onerror=()=>{delete FR[name];res()};i.src=`clips/${(name==="s01"&&TL.hook&&TL.hook.img)||name}/f${String(idx).padStart(4,"0")}.jpg`}))}
     await Promise.all(jobs)} render(t)};
 window.guides=()=>{g.strokeStyle="rgba(255,0,80,.8)";g.lineWidth=3;g.setLineDash([14,10]);g.strokeRect(SAFE.l,SAFE.t,SAFE.r-SAFE.l,SAFE.b-SAFE.t);g.setLineDash([])};
 </script></body></html>

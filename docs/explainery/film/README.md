@@ -55,3 +55,14 @@ Podmiana hooka: nowy `v01.mp3` + tekst tytułu w `film.html` (sekcja „hook”)
   jest przesunięty (`SHIFTX`), a rozdarcie biegnie przez środek sofy między nimi.
 - Mapa: trzy punkty mają numerowane znaczniki z pulsującym kręgiem, reszta kadru jest przyciemniona
   z „reflektorami” na punktach, etykiety są większe i połączone z punktami pełną linią.
+
+## Warianty hooka (`variants.py`)
+
+- `python3 variants.py prep` – tnie ścieżkę głosu na części (hook, zdanie przejścia, reszta) i wyrównuje głośność.
+- `python3 variants.py build H05 H11 …` – dla każdego hooka buduje oś czasu (`timeline_HXX.json`), głos i miks,
+  renderuje tylko pierwsze ujęcie i dokleja wspólną resztę filmu (klatki od cięcia do sceny „PRACA”).
+- Konfiguracja w słowniku `HOOKS`: nagranie hooka, wersy nagłówka, który wers jest plakietką, kadr otwierający
+  (z pozycją rozdarcia i przesunięciem do strefy ochronnej) oraz zdanie przejścia.
+- Kadry otwierające: sofa (H1, H2, H9), rozmowa obok siebie (H3, H4), cisza przy stole (H5, H15), kłótnia
+  (H6, H11, H12), walizka i zdjęcie (H7), skorupki jajek (H8), więdnąca roślina (H10), ławka pod kocami (H14),
+  rodzice z dziećmi (H16), pęknięte zdjęcie (H17).
