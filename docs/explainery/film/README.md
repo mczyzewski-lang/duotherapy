@@ -69,9 +69,21 @@ Podmiana hooka: nowy `v01.mp3` + tekst tytułu w `film.html` (sekcja „hook”)
 
 ## Krótkie porady (`tips.html`, `tips.py`)
 
-- Format 15–19 s: hook (scena z problemem, nagłówek z plakietką) → porada (scena z rozwiązaniem, etykieta
-  „PORADA”, karta z kluczowym zdaniem, napisy) → wezwanie „Zapisz na później” albo „Wyślij dalej”.
-- Mini-logo w prawym górnym rogu pojawia się po chwili od wejścia porady; co kilka sekund postaci
-  „zamieniają dwa zdania” (dymek przy głowie, lekkie kiwnięcie), poza tym stoi spokojnie.
-- Treści 10 porad (zdania lektora, nagłówki, karty, typ wezwania, kadry) są w słowniku `TIPS` w `tips.py`.
+- Format 15–20 s: hook (scena z problemem, nagłówek z plakietką) → porada (scena z rozwiązaniem, napisy)
+  → wezwanie. T01–T10 kończą się „Zapisz na później” albo „Wyślij dalej”; T11–T20 prowadzą do bezpłatnego
+  materiału: „Jeżeli chcesz bezpłatnie X, skomentuj: SŁOWO” – okładka 3D materiału wjeżdża od dołu, a pod
+  nią pojawia się plakietka „Skomentuj: SŁOWO”. Wysyłkę materiału po komentarzu trzeba podpiąć osobno
+  (automat odpowiedzi na komentarze) – film tylko to zapowiada.
+- Logo na środku u góry, bez tła: symbol (co kilka sekund postaci „zamieniają dwa zdania”) i napis
+  „DUO.pl®” z przebłyskiem przechodzącym przez litery. Pojawia się po chwili od wejścia porady.
+- Napisy: aktualnie wypowiadane słowo podświetla się w kolorze marki. Czasy słów są szacowane
+  proporcjonalnie do długości słów w zdaniu (bez transkrypcji), więc mogą odbiegać o ułamek sekundy.
+- Cytat (tekst w „…”) pokazuje się w dymku wychodzącym od mówiącej postaci, a nie w napisach;
+  jednostkę z cytatem i punkt nad głową postaci podaje słownik `BUB` w `tips.py`.
+- Klip sceny z poradą odtwarza się raz, z wyhamowaniem i przenikaniem sąsiednich klatek – bez zapętlania
+  w tył. Sceny tB14, tB16, tB18 i tB20 to nieruchome ilustracje z powolnym zbliżeniem.
+- Dźwięk: lektor, muzyka, tło sceny (dom, kuchnia albo ptaki – słownik `AMB`), krótki motyw napięcia pod
+  hookiem, akcenty przy dymku, okładce i plakietce.
+- Treści porad (zdania lektora, nagłówki, karty, wezwania, kadry, okładki) są w słowniku `TIPS` w `tips.py`.
   `python3 tips.py plan` pokazuje wyrównanie zdań do nagrania, `python3 tips.py build T03` składa film.
+  Okładki (`covers/<slug>.png`) to zrzuty komponentu okładki ze stron `/wiedza/<slug>`.
