@@ -9,7 +9,7 @@ const { chromium } = require('playwright'); const fs = require('fs'); const path
   const mode = process.argv[2];
   if (mode === 'stills') {
     const times = process.argv.slice(3).map(Number);
-    for (const t of times) { await p.evaluate((x) => { window.renderAt(x); window.guides(); }, t); await p.screenshot({ path: `still-${String(t).replace('.', '_')}.jpg`, type: 'jpeg', quality: 80 }); }
+    for (const t of times) { await p.evaluate(async (x) => { await window.renderAt(x); window.guides(); }, t); await p.screenshot({ path: `still-${String(t).replace('.', '_')}.jpg`, type: 'jpeg', quality: 80 }); }
   } else {
     const fps = 30, from = Number(process.argv[3]), to = Number(process.argv[4]);
     for (let f = from; f < to; f++) { await p.evaluate((x) => window.renderAt(x), f / fps); await p.screenshot({ path: `frames/f${String(f).padStart(5, '0')}.jpg`, type: 'jpeg', quality: 93 }); }

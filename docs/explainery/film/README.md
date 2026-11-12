@@ -10,3 +10,15 @@ Do odtworzenia potrzebne są obok: kadry `s01.png`–`s13.png`, segmenty lektora
 `OtIWAuy1FmuND2I8ifh5`, model v4: hook osobno, reszta jako jedno nagranie `body_v4.mp3`, czasy słów z transkrypcji) i katalog `fonts/` z czcionkami Inter i Fraunces z `node_modules/@fontsource-variable`.
 
 Podmiana hooka: nowy `v01.mp3` + tekst tytułu w `film.html` (sekcja „hook”) + przeliczenie `timeline.json`.
+
+## Wersja v5 – ruchome kadry i dźwięk
+
+- Każdy kadr `sNN.png` ma klip 4–5 s (image-to-video, 9:16, 720p, bez dźwięku) rozłożony na klatki
+  `clips/sNN/f0001.jpg…` (30 kl./s). `timeline.json → clips` podaje liczbę klatek; gdy ujęcie jest
+  dłuższe niż klip, klatki odtwarzane są tam i z powrotem (ping-pong). Bez katalogu `clips/` film
+  renderuje się z nieruchomych obrazów.
+- Nakładki rysowane na kanwie: nagłówek hooka nad sceną, tagi PRACA · DZIECI · ZAKUPY, symbol DUO
+  nad wzgórzem przy „Dlatego w DUO…”, trzy warstwy mapy (Co Was trzyma · Gdzie najtrudniej ·
+  Wasz konflikt), trzy drogi, plansze końcowe – wszystko wyśrodkowane w osi kadru (x = 540).
+- `mix.sh` składa dźwięk: lektor + podkład muzyczny + tło mgły i łąki + akcenty (pop, dzwonek).
+  Pliki audio i klipy nie są trzymane w repozytorium.

@@ -10,21 +10,21 @@ html,body{margin:0;background:#000}canvas{display:block}
 <script>
 // Film DUO „Mgła” 1080×1920. Strefy bezpieczne Reels: góra 270 px, dół 480 px, lewa 90 px, prawa 180 px –
 // napisy i logo wyłącznie w polu x 90–900, y 270–1440; kadry mają tam też wszystkie postaci.
-const W=1080,H=1920,SAFE={l:90,r:900,t:270,b:1440},CX=(SAFE.l+SAFE.r)/2;
+const W=1080,H=1920,SAFE={l:90,r:900,t:270,b:1440},CX=540;
 const C={ivory:"#fbf9f5",forest:"#36493d",clay:"#a9512f",rose:"#e07f78",sage:"#97ac9c",ink:"#262b27",sand:"#eadccb",muted:"#6a605a"};
 const cv=document.getElementById("c"),g=cv.getContext("2d");
-let TL=null;const IM={};
+let TL=null;const IM={},FR={};
 const clamp=(x,a=0,b=1)=>Math.max(a,Math.min(b,x));
 const ease=x=>{x=clamp(x);return x*x*(3-2*x)};
 const easeOut=x=>1-Math.pow(1-clamp(x),3);
 const lerp=(a,b,x)=>a+(b-a)*x;
 // ruch kamery na kadr: [skala0, skala1, dx0, dy0, dx1, dy1] (dx,dy w px ekranu)
-const KB={s01:[1.02,1.09,0,0,0,-14],s02:[1.08,1.03,-18,0,14,0],s03:[1.03,1.1,0,0,0,-10],s04:[1.1,1.03,0,-16,0,0],s05:[1.03,1.1,-10,0,-24,-10],
+const KB={s01:[1.0,1.04,0,0,0,-8],s02:[1.08,1.03,-18,0,14,0],s03:[1.03,1.1,0,0,0,-10],s04:[1.1,1.03,0,-16,0,0],s05:[1.03,1.1,-10,0,-24,-10],
   s06:[1.16,1.04,0,-30,0,0],s07:[1.04,1.1,0,0,-12,-12],s08:[1.08,1.03,12,0,-6,0],s09:[1.04,1.12,0,0,0,-18],s10:[1.12,1.02,0,-26,0,0],
   s11:[1.03,1.09,0,0,0,-16],s12:[1.09,1.03,-14,0,10,0],s13:[1.03,1.0,0,0,0,0]};
 function xf(name,p){const k=KB[name],e=ease(p),s=lerp(k[0],k[1],e)*1.5;return{s,x:W/2-360*s+lerp(k[2],k[4],e),y:H/2-640*s+lerp(k[3],k[5],e)}}
-function drawShot(name,p,a){if(a<=0)return;const m=xf(name,p);g.globalAlpha=a;g.drawImage(IM[name],m.x,m.y,720*m.s,1280*m.s);g.globalAlpha=1}
-const pt=(name,p,fx,fy)=>{const m=xf(name,p);return[m.x+fx*720*m.s,m.y+fy*1280*m.s]};
+let SHIFT={s01:150};function drawShot(name,p,a){if(a<=0)return;const m=xf(name,p),sy=SHIFT[name]||0;g.globalAlpha=a;g.drawImage(FR[name]||IM[name],m.x,m.y+sy,720*m.s,1280*m.s);g.globalAlpha=1}
+const pt=(name,p,fx,fy)=>{const m=xf(name,p);return[m.x+fx*720*m.s,m.y+(SHIFT[name]||0)+fy*1280*m.s]};
 
 function fog(t,amt,bandY=980,spread=620){ if(amt<=0.003)return;
   for(let i=0;i<9;i++){const ph=i*1.7,x=W*(0.5+0.62*Math.sin(t*0.11+ph)*Math.cos(ph*0.7)),y=bandY+spread*0.55*Math.sin(t*0.07+ph*1.3),r=420+140*Math.sin(t*0.09+ph*2.1);
@@ -37,7 +37,7 @@ function wrap(text,maxW){const words=text.split(" ");const lines=[];let cur="";f
 
 function caption(text,a,dy){ if(a<=0)return;
   g.font='600 52px "Inter V"';g.textAlign="center";g.textBaseline="middle";
-  const lines=wrap(text,720),lh=68,w=Math.max(...lines.map(l=>g.measureText(l).width))+84,h=lines.length*lh+46,cy=1326+dy;
+  const lines=wrap(text,650),lh=68,w=Math.max(...lines.map(l=>g.measureText(l).width))+84,h=lines.length*lh+46,cy=1326+dy;
   g.globalAlpha=a;g.shadowColor="rgba(60,45,30,.22)";g.shadowBlur=34;g.shadowOffsetY=10;g.fillStyle="rgba(251,249,245,.96)";rr(CX-w/2,cy-h/2,w,h,36);g.fill();
   g.shadowColor="transparent";g.shadowBlur=0;g.shadowOffsetY=0;g.fillStyle=C.ink;lines.forEach((l,i)=>g.fillText(l,CX,cy-(lines.length-1)*lh/2+i*lh+2));g.globalAlpha=1}
 
@@ -74,17 +74,40 @@ function render(t){
   fog(t,amt);
   if(t>=s6[1]&&t<s6[2]+0.5){const p=(t-s6[1])/(s6[2]+0.7-s6[1]),[gx,gy]=pt("s06",p,0.5,0.385);glow(gx,gy,330,(0.3+0.12*Math.sin(t*3.1))*ease((t-s6[1])/0.8)*(1-ease((t-s6[2])/0.5)))}
 
-  // ——— hook (tytuł) ———
-  if(t<E.hook[1]+0.5){const out=1-ease((t-E.hook[1])/0.45);
-    const hg=g.createLinearGradient(0,0,0,720);hg.addColorStop(0,`rgba(251,249,245,${0.97*out})`);hg.addColorStop(0.72,`rgba(251,249,245,${0.9*out})`);hg.addColorStop(1,"rgba(251,249,245,0)");g.fillStyle=hg;g.fillRect(0,0,W,720);
-    title([["Żyjesz z mężem",C.forest,0],["jak ze",C.forest,0.18],["współlokatorem?",C.clay,0.36]],E.hook[0],t,{size:92,y:338,alpha:out})}
+  // ——— hook (tytuł): spokojne pole nad sceną, trzy wersy wchodzą po kolei ———
+  if(t<E.hook[1]+0.6){const out=1-ease((t-E.hook[1])/0.5);
+    const hg=g.createLinearGradient(0,0,0,760);hg.addColorStop(0,`rgba(251,249,245,${out})`);hg.addColorStop(0.8,`rgba(251,249,245,${0.96*out})`);hg.addColorStop(1,"rgba(251,249,245,0)");g.fillStyle=hg;g.fillRect(0,0,W,760);
+    g.globalAlpha=out*easeOut((t-E.hook[0])/0.5);g.fillStyle=C.clay;rr(CX-36,300,72,6,3);g.fill();g.globalAlpha=1;
+    title([["Żyjesz z mężem",C.forest,0.05],["jak ze",C.forest,0.5],["współlokatorem?",C.clay,0.95]],E.hook[0],t,{size:80,y:400,alpha:out})}
 
   // ——— trzy drogi: etykiety nad krajobrazem ———
   if(t>=E.roads[0]-0.1&&t<E.roadsEnd+0.5&&cur){const out=1-ease((t-E.roadsEnd)/0.4),p=(t-s10[1])/(s10[2]+XF-s10[1]);
-    const R=[[215,["Odbudowa"],C.rose,[0.175,0.325]],[495,["Czas","na decyzję"],C.clay,[0.5,0.315]],[775,["Rozstanie","z szacunkiem"],C.forest,[0.83,0.34]]];
+    const R=[[205,["Odbudowa"],C.rose,[0.175,0.325]],[462,["Czas","na decyzję"],C.clay,[0.5,0.315]],[748,["Rozstanie","z szacunkiem"],C.forest,[0.83,0.34]]];
     R.forEach(([x,lines,col,f],i)=>{const a=easeOut((t-E.roads[i])/0.5)*out;if(a<=0)return;const [tx,ty]=pt("s10",p,f[0],f[1]);
       g.globalAlpha=a*0.9;g.strokeStyle=col;g.lineWidth=5;g.lineCap="round";g.setLineDash([2,14]);g.beginPath();g.moveTo(x,468);g.lineTo(lerp(x,tx,a),lerp(468,ty-26,a));g.stroke();g.setLineDash([]);g.globalAlpha=1;
       g.fillStyle=col;g.globalAlpha=a;g.beginPath();g.arc(tx,ty-22,9,0,7);g.fill();g.globalAlpha=1;chip(x,400,lines,col,a)})}
+
+  // ——— akcenty: PRACA · DZIECI · ZAKUPY ———
+  if(E.daily&&t>=E.daily[0]-0.1&&t<E.dailyEnd+0.5){const s2=sh("s02"),p=(t-s2[1])/(s2[2]+XF-s2[1]),out=1-ease((t-E.dailyEnd)/0.4);
+    const A=[[300,470,"PRACA",C.forest,[0.385,0.555]],[735,470,"ZAKUPY",C.clay,[0.83,0.47]],[700,1190,"DZIECI",C.rose,[0.845,0.585]]],ord=[0,2,1];
+    ord.forEach((ix,k)=>{const [x,y,word,col,f]=A[ix],a=easeOut((t-E.daily[k])/0.4)*out;if(a<=0)return;const [tx,ty]=pt("s02",p,f[0],f[1]);
+      const dy=y<ty?48:-48;g.globalAlpha=a*0.9;g.strokeStyle=col;g.lineWidth=5;g.lineCap="round";g.setLineDash([2,14]);g.beginPath();g.moveTo(x,y+dy);g.lineTo(lerp(x,tx,a),lerp(y+dy,ty,a));g.stroke();g.setLineDash([]);
+      g.fillStyle=col;g.beginPath();g.arc(tx,ty,9,0,7);g.fill();g.globalAlpha=1;
+      const sc=1+0.18*Math.sin(Math.PI*clamp((t-E.daily[k])/0.35));g.save();g.translate(x,y);g.scale(sc,sc);g.font='700 50px "Inter V"';g.letterSpacing="5px";const w=g.measureText(word).width+64;
+      g.globalAlpha=a;g.shadowColor="rgba(60,45,30,.28)";g.shadowBlur=26;g.shadowOffsetY=9;g.fillStyle=col;rr(-w/2,-45,w,90,45);g.fill();g.shadowColor="transparent";g.shadowBlur=0;g.shadowOffsetY=0;
+      g.fillStyle="#fff";g.textAlign="center";g.textBaseline="middle";g.fillText(word,2,3);g.letterSpacing="0px";g.restore();g.globalAlpha=1})}
+
+  // ——— „Dlatego w DUO…”: symbol marki jak słońce nad wzgórzem ———
+  if(E.brandSun&&t>=E.brandSun-0.1&&t<s6[2]+0.7){const a=easeOut((t-E.brandSun)/0.8)*(1-ease((t-s6[2])/0.6)),sc=lerp(0.86,1,easeOut((t-E.brandSun)/1.1));
+    const hx=540,hy=452;const hgl=g.createRadialGradient(hx,hy,0,hx,hy,360);hgl.addColorStop(0,`rgba(255,244,214,${0.95*a})`);hgl.addColorStop(0.5,`rgba(255,236,196,${0.5*a})`);hgl.addColorStop(1,"rgba(255,236,196,0)");g.fillStyle=hgl;g.fillRect(hx-360,hy-360,720,720);
+    logo(hx,hy,400*sc,a*0.92)}
+
+  // ——— obraz relacji: trzy warstwy mapy ———
+  if(E.layers&&t>=E.layers[0]-0.1&&cur&&t<E.layersEnd+0.5){const s9=sh("s09"),p=(t-s9[1])/(s9[2]+XF-s9[1]),out=1-ease((t-E.layersEnd)/0.4);
+    const R=[[236,["Co Was","trzyma"],"#c58a2b",[0.33,0.428]],[540,["Gdzie","najtrudniej"],C.forest,[0.37,0.548]],[786,["Wasz","konflikt"],C.clay,[0.585,0.462]]];
+    R.forEach(([x,lines,col,f],i)=>{const a=easeOut((t-E.layers[i])/0.5)*out;if(a<=0)return;const [tx,ty]=pt("s09",p,f[0],f[1]);
+      g.globalAlpha=a*0.9;g.strokeStyle=col;g.lineWidth=5;g.lineCap="round";g.setLineDash([2,14]);g.beginPath();g.moveTo(x,488);g.lineTo(lerp(x,tx,a),lerp(488,ty,a));g.stroke();g.setLineDash([]);
+      const pr=22+8*Math.sin(t*4+i);g.strokeStyle=col;g.lineWidth=5;g.beginPath();g.arc(tx,ty,pr,0,7);g.stroke();g.fillStyle=col;g.beginPath();g.arc(tx,ty,9,0,7);g.fill();g.globalAlpha=1;chip(x,410,lines,col,a)})}
 
   // ——— puenta ———
   if(t>=E.punch[0]-0.05&&t<E.logo+0.6){const out=1-ease((t-E.logo+0.1)/0.5);
@@ -96,8 +119,8 @@ function render(t){
     const lw=lerp(640,430,ease((t-E.logo-0.5)/0.9))*lerp(1,0.62,shareK),ly=lerp(1010,640,ease((t-E.logo-0.5)/0.9))-shareK*150;
     const pa=d=>easeOut((t-E.logo-d)/0.6);logo(CX,ly,lw,1,[pa(0.15),pa(0.4),pa(0.25)]);
     const wa=easeOut((t-Math.max(E.logoWords[0],E.logo+1.05))/0.5)*(1-shareK);
-    if(wa>0){g.globalAlpha=wa;g.textAlign="center";g.textBaseline="middle";g.fillStyle=C.forest;g.font='500 190px "Fraunces V"';g.letterSpacing="8px";g.fillText("DUO",CX-18,930);
-      g.letterSpacing="0px";g.font='400 62px "Inter V"';g.fillText("®",CX+252,872);g.globalAlpha=1}
+    if(wa>0){g.globalAlpha=wa;g.textAlign="center";g.textBaseline="middle";g.fillStyle=C.forest;g.font='500 190px "Fraunces V"';g.letterSpacing="8px";g.fillText("DUO",CX+4,930);
+      g.letterSpacing="0px";g.font='400 62px "Inter V"';g.fillText("®",CX+262,872);g.globalAlpha=1}
     const ta=easeOut((t-Math.max(E.logoWords[1],E.logo+1.5))/0.5)*(1-shareK);
     if(ta>0){g.globalAlpha=ta;g.fillStyle=C.muted;g.font='500 36px "Inter V"';g.letterSpacing="12px";g.textAlign="center";g.fillText("TERAPIA MAŁŻEŃSTW",CX+6,1062);g.letterSpacing="0px";g.globalAlpha=1}
     const ua=easeOut((t-E.logoWords[2])/0.5)*(1-shareK);
@@ -106,17 +129,20 @@ function render(t){
     // ——— prośba o udostępnienie ———
     if(shareK>0){title([["Znasz kogoś,",C.forest,0],["kto żyje",C.forest,0.12],["w takiej mgle?",C.clay,0.24]],E.shareLines[0],t,{size:84,y:720});
       const sa=easeOut((t-E.shareLines[1])/0.5);
-      if(sa>0){g.globalAlpha=sa;g.font='600 50px "Inter V"';const txt="Wyślij tej osobie ten film",w=g.measureText(txt).width+190,y=1120+(1-sa)*20;g.fillStyle=C.forest;rr(CX-w/2,y,w,118,59);g.fill();
+      if(sa>0){g.globalAlpha=sa;g.font='600 44px "Inter V"';const txt="Wyślij tej osobie ten film",w=g.measureText(txt).width+170,y=1120+(1-sa)*20;g.fillStyle=C.forest;rr(CX-w/2,y,w,118,59);g.fill();
         g.fillStyle="#fff";g.textAlign="left";g.textBaseline="middle";g.fillText(txt,CX-w/2+58,y+61);
         const ax=CX+w/2-92,ay=y+59;g.strokeStyle="#fff";g.lineWidth=7;g.lineCap="round";g.lineJoin="round";g.beginPath();g.moveTo(ax-4,ay+18);g.lineTo(ax+34,ay-18);g.moveTo(ax+4,ay-20);g.lineTo(ax+36,ay-20);g.lineTo(ax+36,ay+12);g.stroke();g.globalAlpha=1}
       const da=easeOut((t-E.shareLines[0]-0.6)/0.6);g.globalAlpha=da*0.9;g.fillStyle=C.muted;g.font='400 30px "Inter V"';g.textAlign="center";
-      ["Mapa Relacji to proces z psychologiem zakończony","pisemnym podsumowaniem. Nie jest diagnozą ani terapią."].forEach((l,i)=>g.fillText(l,CX,1346+i*44));g.globalAlpha=1}
+      ["Mapa Relacji to proces z psychologiem","zakończony pisemnym podsumowaniem.","Nie jest diagnozą ani terapią."].forEach((l,i)=>g.fillText(l,CX,1318+i*42));g.globalAlpha=1}
   }
   // ——— napisy ———
   for(const [a,b,text] of TL.caps){ if(t<a-0.05||t>b+0.2)continue;const ain=easeOut((t-a)/0.16),aout=1-ease((t-b-0.02)/0.16);caption(text,Math.min(ain,aout),(1-ain)*14)}
 }
 window.setup=async(tl)=>{TL=tl;await Promise.all(tl.shots.map(([n])=>new Promise((res,rej)=>{const i=new Image();i.onload=()=>{IM[n]=i;res()};i.onerror=rej;i.src=n+".png"})));
   await Promise.all(['600 52px "Inter V"','600 92px "Fraunces V"','500 190px "Fraunces V"','400 27px "Inter V"','500 36px "Inter V"'].map(f=>document.fonts.load(f,"Żółć ąę DUO")));await document.fonts.ready;return true};
-window.renderAt=render;
+window.renderAt=async(t)=>{ if(TL.clips){const jobs=[];for(const [name,a,b] of TL.shots){const c=TL.clips[name];if(!c||t<a-0.001||t>b+0.7)continue;
+    let ph=Math.max(0,t-a)%(2*c.dur);if(ph>c.dur)ph=2*c.dur-ph;const idx=Math.max(1,Math.min(c.n,1+Math.floor(ph*c.fps)));
+    jobs.push(new Promise(res=>{const i=new Image();i.onload=()=>{FR[name]=i;res()};i.onerror=()=>{delete FR[name];res()};i.src=`clips/${name}/f${String(idx).padStart(4,"0")}.jpg`}))}
+    await Promise.all(jobs)} render(t)};
 window.guides=()=>{g.strokeStyle="rgba(255,0,80,.8)";g.lineWidth=3;g.setLineDash([14,10]);g.strokeRect(SAFE.l,SAFE.t,SAFE.r-SAFE.l,SAFE.b-SAFE.t);g.setLineDash([])};
 </script></body></html>
