@@ -13,13 +13,13 @@ html,body{margin:0;background:#000}canvas{display:block}
 const W=1080,H=1920,SAFE={l:90,r:900,t:270,b:1440},CX=540;
 const C={ivory:"#fbf9f5",forest:"#36493d",clay:"#a9512f",rose:"#e07f78",sage:"#97ac9c",ink:"#262b27",sand:"#eadccb",muted:"#6a605a"};
 const cv=document.getElementById("c"),G0=cv.getContext("2d");let g=G0;const OFF=new OffscreenCanvas(1080,1920),OG=OFF.getContext("2d");
-const HARD=new Set(["s02a","s02b","s02c"]);let TL=null;const IM={},FR={};
+const HARD=new Set(["s02a","s02b","s02c","s04a","s04b","s04c"]);let TL=null;const IM={},FR={};
 const clamp=(x,a=0,b=1)=>Math.max(a,Math.min(b,x));
 const ease=x=>{x=clamp(x);return x*x*(3-2*x)};
 const easeOut=x=>1-Math.pow(1-clamp(x),3);
 const lerp=(a,b,x)=>a+(b-a)*x;
 // ruch kamery na kadr: [skala0, skala1, dx0, dy0, dx1, dy1] (dx,dy w px ekranu)
-const KB={s01:[1.0,1.04,0,0,0,-8],s02a:[1.05,1.16,0,0,0,-10],s02b:[1.16,1.05,0,-10,0,0],s02c:[1.05,1.16,0,0,0,-10],s03a:[1.04,1.2,0,0,-70,-20],s03:[1.04,1.34,0,0,0,-30],s03c:[1.14,1.04,-20,0,0,0],s04:[1.1,1.03,0,-16,0,0],s05:[1.03,1.1,-10,0,-24,-10],
+const KB={s01:[1.0,1.04,0,0,0,-8],s02a:[1.05,1.16,0,0,0,-10],s02b:[1.16,1.05,0,-10,0,0],s02c:[1.05,1.16,0,0,0,-10],s03a:[1.04,1.2,0,0,-70,-20],s03:[1.04,1.34,0,0,0,-30],s03c:[1.14,1.04,-20,0,0,0],s04:[1.1,1.03,0,-16,0,0],s04a:[1.05,1.15,0,0,0,-10],s04b:[1.15,1.05,0,-10,0,0],s04c:[1.05,1.15,0,0,0,-10],s05b:[1.04,1.14,0,0,-20,-10],s11b:[1.12,1.03,0,-16,0,0],s11c:[1.04,1.12,0,0,0,-12],s05:[1.03,1.1,-10,0,-24,-10],
   s06:[1.16,1.04,0,-30,0,0],s07:[1.04,1.1,0,0,-12,-12],s08:[1.08,1.03,12,0,-6,0],s09:[1.04,1.12,0,0,0,-18],s10:[1.12,1.02,0,-26,0,0],
   s11:[1.03,1.09,0,0,0,-16],s12:[1.09,1.03,-14,0,10,0],s13:[1.03,1.0,0,0,0,0]};
 let PUNCH=0;function xf(name,p){const k=KB[name],e=ease(p),s=lerp(k[0],k[1],e)*1.5*(name==="s01"?1+0.22*PUNCH:1);return{s,x:W/2-360*s+lerp(k[2],k[4],e),y:H/2-640*s+lerp(k[3],k[5],e)}}
@@ -108,7 +108,7 @@ function render(t){
       g.fillStyle=col;g.globalAlpha=a;g.beginPath();g.arc(tx,ty-22,9,0,7);g.fill();g.globalAlpha=1;chip(x,400,lines,col,a)})}
 
   // ––– akcenty: PRACA · DZIECI · ZAKUPY –––
-  if(E.daily){[["s02a","PRACA",C.forest],["s02b","DZIECI",C.clay],["s02c","ZAKUPY",C.forest]].forEach(([n,word,col])=>{const q=sh(n);if(t<q[1]||t>=q[2])return;
+  if(E.daily){[["s02a","PRACA",C.forest],["s02b","DZIECI",C.clay],["s02c","ZAKUPY",C.forest],["s04a","ZOSTAĆ?",C.forest],["s04b","ODEJŚĆ?",C.clay],["s04c","CZEKAĆ?","#6f7f76"]].forEach(([n,word,col])=>{const q=sh(n);if(t<q[1]||t>=q[2])return;
       const x=clamp((t-q[1])/0.3),sc=0.7+0.3*easeOut(x)+0.14*Math.sin(Math.PI*x)*(1-x);g.save();g.translate(CX,432);g.rotate(-0.03);g.scale(sc,sc);g.font='700 82px "Inter V"';g.letterSpacing="9px";const w=g.measureText(word).width+96;
       g.globalAlpha=clamp(x*4);g.shadowColor="rgba(60,45,30,.3)";g.shadowBlur=34;g.shadowOffsetY=12;g.fillStyle=col;rr(-w/2,-74,w,148,38);g.fill();g.shadowColor="transparent";g.shadowBlur=0;g.shadowOffsetY=0;
       g.fillStyle="#fff";g.textAlign="center";g.textBaseline="middle";g.fillText(word,4,5);g.letterSpacing="0px";g.restore();g.globalAlpha=1})}

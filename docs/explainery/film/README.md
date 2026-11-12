@@ -40,3 +40,11 @@ Podmiana hooka: nowy `v01.mp3` + tekst tytułu w `film.html` (sekcja „hook”)
   każda z dużą plakietką i szelestem cięcia.
 - Sekwencja mgły: bezsenna noc (`s03a`) z myślami „kryzys?” / „koniec?”, pokój we mgle z mocnym
   najazdem (`s03`), zbliżenie ręki szukającej we mgle (`s03c`).
+
+## Wersja v8
+
+- „Zostać. Odejść. Czekać.” – trzy sceny we mgle na twardych cięciach (`s04a`–`s04c`) z plakietkami.
+- „U lekarza nikt nie zaczyna od leczenia…” – gabinet (`s05`: lekarz wstrzymuje leki) i lekarz
+  zamyślony nad zdjęciem RTG (`s05b`).
+- „Wierzymy, że każdy ma prawo do szczęścia. Ale na szczęście trzeba pracować.” – łąka, na której każdy
+  jest szczęśliwy po swojemu (`s11b`), i wspólne sadzenie drzewka (`s11c`).
