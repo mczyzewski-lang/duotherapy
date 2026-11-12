@@ -22,3 +22,13 @@ Podmiana hooka: nowy `v01.mp3` + tekst tytułu w `film.html` (sekcja „hook”)
   Wasz konflikt), trzy drogi, plansze końcowe – wszystko wyśrodkowane w osi kadru (x = 540).
 - `mix.sh` składa dźwięk: lektor + podkład muzyczny + tło mgły i łąki + akcenty (pop, dzwonek).
   Pliki audio i klipy nie są trzymane w repozytorium.
+
+## Wersja v6
+
+- Hook: kadr startuje zbliżony i odjeżdża, nagłówek wchodzi słowo po słowie (ostatnie słowo w plakietce),
+  na scenie linia i strzałki pokazują dystans, przy telefonach pulsują kręgi; klip otwierający ma małą
+  historię (jedna osoba próbuje zagadać, druga nie zauważa).
+- „Dlatego w DUO…”: symbol marki wschodzi zza linii wzgórz (maska `RIDGE`, mgiełka przy horyzoncie,
+  mieszanie `multiply`), więc jest częścią pejzażu, a nie naklejką.
+- Lektor: zdanie „Dlatego w DUO zaczynamy od Mapy Relacji.” nagrane ponownie spokojnym tonem i wklejone
+  w ścieżkę głosu (`voice2.m4a`) w miejsce poprzedniego.

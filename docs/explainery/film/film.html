@@ -12,7 +12,7 @@ html,body{margin:0;background:#000}canvas{display:block}
 // napisy i logo wyłącznie w polu x 90–900, y 270–1440; kadry mają tam też wszystkie postaci.
 const W=1080,H=1920,SAFE={l:90,r:900,t:270,b:1440},CX=540;
 const C={ivory:"#fbf9f5",forest:"#36493d",clay:"#a9512f",rose:"#e07f78",sage:"#97ac9c",ink:"#262b27",sand:"#eadccb",muted:"#6a605a"};
-const cv=document.getElementById("c"),g=cv.getContext("2d");
+const cv=document.getElementById("c"),G0=cv.getContext("2d");let g=G0;const OFF=new OffscreenCanvas(1080,1920),OG=OFF.getContext("2d");
 let TL=null;const IM={},FR={};
 const clamp=(x,a=0,b=1)=>Math.max(a,Math.min(b,x));
 const ease=x=>{x=clamp(x);return x*x*(3-2*x)};
@@ -22,7 +22,7 @@ const lerp=(a,b,x)=>a+(b-a)*x;
 const KB={s01:[1.0,1.04,0,0,0,-8],s02:[1.08,1.03,-18,0,14,0],s03:[1.03,1.1,0,0,0,-10],s04:[1.1,1.03,0,-16,0,0],s05:[1.03,1.1,-10,0,-24,-10],
   s06:[1.16,1.04,0,-30,0,0],s07:[1.04,1.1,0,0,-12,-12],s08:[1.08,1.03,12,0,-6,0],s09:[1.04,1.12,0,0,0,-18],s10:[1.12,1.02,0,-26,0,0],
   s11:[1.03,1.09,0,0,0,-16],s12:[1.09,1.03,-14,0,10,0],s13:[1.03,1.0,0,0,0,0]};
-function xf(name,p){const k=KB[name],e=ease(p),s=lerp(k[0],k[1],e)*1.5;return{s,x:W/2-360*s+lerp(k[2],k[4],e),y:H/2-640*s+lerp(k[3],k[5],e)}}
+let PUNCH=0;function xf(name,p){const k=KB[name],e=ease(p),s=lerp(k[0],k[1],e)*1.5*(name==="s01"?1+0.22*PUNCH:1);return{s,x:W/2-360*s+lerp(k[2],k[4],e),y:H/2-640*s+lerp(k[3],k[5],e)}}
 let SHIFT={s01:150};function drawShot(name,p,a){if(a<=0)return;const m=xf(name,p),sy=SHIFT[name]||0;g.globalAlpha=a;g.drawImage(FR[name]||IM[name],m.x,m.y+sy,720*m.s,1280*m.s);g.globalAlpha=1}
 const pt=(name,p,fx,fy)=>{const m=xf(name,p);return[m.x+fx*720*m.s,m.y+(SHIFT[name]||0)+fy*1280*m.s]};
 
@@ -60,6 +60,7 @@ function chip(x,y,lines,col,a){ if(a<=0)return;g.font='600 38px "Inter V"';g.tex
   g.fillStyle="#fff";lines.forEach((l,i)=>g.fillText(l,x,y-(lines.length-1)*23+i*46+2+(1-a)*18));g.globalAlpha=1;return h}
 
 function render(t){
+  PUNCH=1-easeOut(t/0.75);
   const E=TL.ev;g.setTransform(1,0,0,1,0,0);g.globalAlpha=1;g.fillStyle=C.ivory;g.fillRect(0,0,W,H);
   // ––– kadry z przenikaniem –––
   const XF=0.7;let cur=null;
@@ -74,11 +75,24 @@ function render(t){
   fog(t,amt);
   if(t>=s6[1]&&t<s6[2]+0.5){const p=(t-s6[1])/(s6[2]+0.7-s6[1]),[gx,gy]=pt("s06",p,0.5,0.385);glow(gx,gy,330,(0.3+0.12*Math.sin(t*3.1))*ease((t-s6[1])/0.8)*(1-ease((t-s6[2])/0.5)))}
 
-  // ––– hook (tytuł): spokojne pole nad sceną, trzy wersy wchodzą po kolei –––
-  if(t<E.hook[1]+0.6){const out=1-ease((t-E.hook[1])/0.5);
-    const hg=g.createLinearGradient(0,0,0,760);hg.addColorStop(0,`rgba(251,249,245,${out})`);hg.addColorStop(0.8,`rgba(251,249,245,${0.96*out})`);hg.addColorStop(1,"rgba(251,249,245,0)");g.fillStyle=hg;g.fillRect(0,0,W,760);
-    g.globalAlpha=out*easeOut((t-E.hook[0])/0.5);g.fillStyle=C.clay;rr(CX-36,300,72,6,3);g.fill();g.globalAlpha=1;
-    title([["Żyjesz z mężem",C.forest,0.05],["jak ze",C.forest,0.5],["współlokatorem?",C.clay,0.95]],E.hook[0],t,{size:80,y:400,alpha:out})}
+  // ––– hook: nagłówek wchodzi słowo po słowie, ostatnie słowo w plakietce; na scenie – dystans między nimi –––
+  if(t<E.hook[1]+0.6){const out=1-ease((t-E.hook[1])/0.5),p1=(t-0)/(sh("s01")[2]+XF);
+    const hg=g.createLinearGradient(0,0,0,780);hg.addColorStop(0,`rgba(251,249,245,${out})`);hg.addColorStop(0.8,`rgba(251,249,245,${0.96*out})`);hg.addColorStop(1,"rgba(251,249,245,0)");g.fillStyle=hg;g.fillRect(0,0,W,780);
+    const pop=(t0,d=0.38)=>{const x=clamp((t-t0)/d);return t0<=0?1+0.1*(1-easeOut(t/0.6)):x<=0?0:1+0.16*Math.sin(Math.PI*x)*(1-x)-(1-easeOut(x))*0.35};
+    g.textAlign="center";g.textBaseline="middle";
+    [["Żyjesz z mężem",0.0,372],["jak ze",0.42,470]].forEach(([txt,d,y])=>{const sc=pop(E.hook[0]-0.2+d);if(sc<=0)return;g.save();g.translate(CX,y);g.scale(sc,sc);g.globalAlpha=out*(d?clamp((t-(E.hook[0]-0.2+d))/0.15):1);g.font='600 88px "Fraunces V"';g.fillStyle=C.forest;g.fillText(txt,0,0);g.restore()});
+    {const t0=E.hook[0]+0.62,sc=pop(t0,0.45);if(sc>0){g.save();g.translate(CX,582);g.rotate(-0.035);g.scale(sc,sc);g.globalAlpha=out*clamp((t-t0)/0.12);g.font='600 72px "Fraunces V"';const w=g.measureText("współlokatorem?").width+64;
+      g.shadowColor="rgba(120,60,30,.3)";g.shadowBlur=30;g.shadowOffsetY=12;g.fillStyle=C.clay;rr(-w/2,-62,w,124,30);g.fill();g.shadowColor="transparent";g.shadowBlur=0;g.shadowOffsetY=0;g.fillStyle="#fff";g.fillText("współlokatorem?",0,4);g.restore()}}
+    g.globalAlpha=1;
+    // dystans: przerywana linia przez środek sofy i strzałki rozchodzące się na boki
+    {const t0=E.hook[0]+1.05,a=easeOut((t-t0)/0.5)*out;if(a>0){const [mx,y1]=pt("s01",p1,0.5,0.385),[,y2]=pt("s01",p1,0.5,0.545),ym=(y1+y2)/2+10;
+      g.globalAlpha=a*0.95;g.strokeStyle="#fff";g.lineWidth=12;g.lineCap="round";g.setLineDash([4,22]);g.lineDashOffset=-t*30;g.beginPath();g.moveTo(mx,y1);g.lineTo(mx,lerp(y1,y2,a));g.stroke();
+      g.strokeStyle=C.clay;g.lineWidth=7;g.beginPath();g.moveTo(mx,y1);g.lineTo(mx,lerp(y1,y2,a));g.stroke();g.setLineDash([]);
+      const push=22+16*(0.5+0.5*Math.sin(t*5.2));[-1,1].forEach(d=>{const x0=mx+d*34,x1=mx+d*(120+push)*a;g.strokeStyle="#fff";g.lineWidth=14;g.lineJoin="round";
+        for(const [col,lw] of [["#fff",15],[C.clay,8]]){g.strokeStyle=col;g.lineWidth=lw;g.beginPath();g.moveTo(x0,ym);g.lineTo(x1,ym);g.moveTo(x1-d*26,ym-24);g.lineTo(x1,ym);g.lineTo(x1-d*26,ym+24);g.stroke()}});
+      g.globalAlpha=1}}
+    // telefony: pulsujące kręgi powiadomień
+    [[0.125,0.452,0],[0.895,0.458,0.45]].forEach(([fx,fy,ph])=>{const [px,py]=pt("s01",p1,fx,fy);for(let k=0;k<2;k++){const c=((t*0.9+ph+k*0.5)%1);g.globalAlpha=(1-c)*0.75*out*clamp(t/0.3);g.strokeStyle="#fff";g.lineWidth=6*(1-c)+2;g.beginPath();g.arc(px,py,14+c*58,0,7);g.stroke()}});g.globalAlpha=1}
 
   // ––– trzy drogi: etykiety nad krajobrazem –––
   if(t>=E.roads[0]-0.1&&t<E.roadsEnd+0.5&&cur){const out=1-ease((t-E.roadsEnd)/0.4),p=(t-s10[1])/(s10[2]+XF-s10[1]);
@@ -98,9 +112,17 @@ function render(t){
       g.fillStyle="#fff";g.textAlign="center";g.textBaseline="middle";g.fillText(word,2,3);g.letterSpacing="0px";g.restore();g.globalAlpha=1})}
 
   // ––– „Dlatego w DUO…”: symbol marki jak słońce nad wzgórzem –––
-  if(E.brandSun&&t>=E.brandSun-0.1&&t<s6[2]+0.7){const a=easeOut((t-E.brandSun)/0.8)*(1-ease((t-s6[2])/0.6)),sc=lerp(0.86,1,easeOut((t-E.brandSun)/1.1));
-    const hx=540,hy=452;const hgl=g.createRadialGradient(hx,hy,0,hx,hy,360);hgl.addColorStop(0,`rgba(255,244,214,${0.95*a})`);hgl.addColorStop(0.5,`rgba(255,236,196,${0.5*a})`);hgl.addColorStop(1,"rgba(255,236,196,0)");g.fillStyle=hgl;g.fillRect(hx-360,hy-360,720,720);
-    logo(hx,hy,400*sc,a*0.92)}
+  if(E.brandSun&&t>=s6[1]-0.1&&t<s6[2]+0.7){const p=(t-s6[1])/(s6[2]+XF-s6[1]),rise=easeOut((t-s6[1]-0.4)/1.5),a=ease((t-s6[1]-0.35)/0.45)*(1-ease((t-s6[2])/0.6));
+    // linia grzbietów (ułamki kadru) – wszystko poniżej zasłania symbol, więc wschodzi on zza wzgórz
+    const RIDGE=[[0,.328],[.1,.322],[.2,.321],[.3,.316],[.37,.323],[.45,.326],[.55,.33],[.62,.336],[.7,.33],[.8,.333],[.9,.337],[1,.332]];
+    const [hx,hy]=pt("s06",p,0.47,0.325),w=600,sc=w/71,cy=hy-lerp(-150,118,rise);
+    OG.setTransform(1,0,0,1,0,0);OG.globalCompositeOperation="source-over";OG.globalAlpha=1;OG.filter="none";OG.clearRect(0,0,W,H);
+    OG.filter="blur(1.6px)";g=OG;logo(hx,cy,w,1);g=G0;OG.filter="none";
+    // mgiełka powietrza: im bliżej horyzontu, tym bardziej symbol rozpływa się w poświacie
+    OG.globalCompositeOperation="destination-out";const hz=OG.createLinearGradient(0,hy-330,0,hy+10);hz.addColorStop(0,"rgba(0,0,0,0)");hz.addColorStop(0.55,"rgba(0,0,0,0.12)");hz.addColorStop(1,"rgba(0,0,0,0.6)");OG.fillStyle=hz;OG.fillRect(0,hy-340,W,360);
+    OG.filter="blur(5px)";OG.fillStyle="#000";OG.beginPath();RIDGE.forEach(([fx,fy],i)=>{const [x,y]=pt("s06",p,fx,fy);i?OG.lineTo(x,y+3):OG.moveTo(x-40,y+3)});OG.lineTo(W+40,H);OG.lineTo(-40,H);OG.closePath();OG.fill();OG.filter="none";OG.globalCompositeOperation="source-over";
+    const hgl=g.createRadialGradient(hx,hy-40,0,hx,hy-40,520);hgl.addColorStop(0,`rgba(255,238,205,${0.6*a*rise})`);hgl.addColorStop(1,"rgba(255,238,205,0)");g.fillStyle=hgl;g.fillRect(0,hy-560,W,620);
+    g.globalAlpha=a*0.5;g.drawImage(OFF,0,0);g.globalCompositeOperation="multiply";g.globalAlpha=a*0.85;g.drawImage(OFF,0,0);g.globalCompositeOperation="source-over";g.globalAlpha=1}
 
   // ––– obraz relacji: trzy warstwy mapy –––
   if(E.layers&&t>=E.layers[0]-0.1&&cur&&t<E.layersEnd+0.5){const s9=sh("s09"),p=(t-s9[1])/(s9[2]+XF-s9[1]),out=1-ease((t-E.layersEnd)/0.4);
