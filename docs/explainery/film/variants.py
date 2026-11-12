@@ -30,10 +30,10 @@ HOOKS={
  'H10':('h10',['Nie wiesz,','czy to kryzys,','czy już koniec?'],2,F,'def'),
  'H11':('h11',['Kłócisz się','z mężem','o wszystko?'],2,E1,'zw'),
  'H12':('h12',['Kłócisz się','z żoną','o wszystko?'],2,E1,'zw'),
- 'H14':('h14',['Od dawna','nie ma między Wami','bliskości?'],2,G,'def'),
+ 'H14':('h14',['Od dawna nie ma','w Waszym małżeństwie','bliskości?'],2,G,'def'),
  'H15':('h15',['Ciche dni','trwają u Was','coraz dłużej?'],0,C,'def'),
  'H16':('h16',['Zostajesz','w tym małżeństwie','już tylko dla dzieci?'],2,Hc,'def'),
- 'H17':('h17',['Po zdradzie','nie wiesz,','co dalej?'],0,I,'zd'),
+ 'H17':('h17',['Po zdradzie małżeńskiej','nie wiesz,','co dalej?'],0,I,'zd'),
 }
 ACC=[('whoosh',4.62,.75),('pop',4.76,.34),('whoosh',5.57,.75),('pop',5.71,.34),('whoosh',6.37,.75),('pop',6.51,.34),('pop',9.45,.26),('pop',10.75,.26),
      ('whoosh',18.79,.7),('pop',18.93,.3),('whoosh',19.61,.7),('pop',19.75,.3),('whoosh',20.47,.7),('pop',20.61,.3),('chime',27.5,.4),

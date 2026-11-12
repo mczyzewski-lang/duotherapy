@@ -49,10 +49,10 @@ H10: Nie wiesz, czy to kryzys, czy już koniec?
 Dodatkowe hooki - typowe problemy par (każdy ma własny kadr otwierający):
 H11: Kłócisz się z mężem o wszystko?
 H12: Kłócisz się z żoną o wszystko?
-H14: Od dawna nie ma między Wami bliskości?
+H14: Od dawna nie ma w Waszym małżeństwie bliskości?
 H15: Ciche dni trwają u Was coraz dłużej?
 H16: Zostajesz w tym małżeństwie już tylko dla dzieci?
-H17: Po zdradzie nie wiesz, co dalej?
+H17: Po zdradzie małżeńskiej nie wiesz, co dalej?
 
 Zdanie przejścia po hooku (zamiast "Niby nic się nie dzieje.", gdy hook mówi o otwartym konflikcie):
 - H6, H8, H11, H12: "Niby zwykłe sprawy."
