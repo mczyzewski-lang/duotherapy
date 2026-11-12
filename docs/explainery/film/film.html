@@ -61,12 +61,12 @@ function chip(x,y,lines,col,a){ if(a<=0)return;g.font='600 38px "Inter V"';g.tex
 
 function render(t){
   const E=TL.ev;g.setTransform(1,0,0,1,0,0);g.globalAlpha=1;g.fillStyle=C.ivory;g.fillRect(0,0,W,H);
-  // ——— kadry z przenikaniem ———
+  // ––– kadry z przenikaniem –––
   const XF=0.7;let cur=null;
   for(const [name,a,b] of TL.shots){ if(t<a-0.001||t>b+XF)continue;const p=(t-a)/(b+XF-a);
     const fadeIn=name==="s01"?1:ease((t-a)/XF);drawShot(name,p,fadeIn);if(t<=b)cur=[name,p,a,b]}
   const sh=n=>TL.shots.find(s=>s[0]===n);
-  // ——— mgła ———
+  // ––– mgła –––
   let amt=0;const s3=sh("s03"),s4=sh("s04"),s5=sh("s05"),s6=sh("s06"),s10=sh("s10");
   if(t>=s3[1]-0.6&&t<s5[1]) amt=lerp(0,0.62,ease((t-(s3[1]-0.6))/3.2))*(1-ease((t-(s5[1]-0.5))/0.9));
   if(t>=s6[1]&&t<s6[2]+0.7) amt=Math.max(amt,lerp(0.55,0.2,ease((t-s6[1])/(s6[2]-s6[1])))*(1-ease((t-s6[2])/0.7)));
@@ -74,20 +74,20 @@ function render(t){
   fog(t,amt);
   if(t>=s6[1]&&t<s6[2]+0.5){const p=(t-s6[1])/(s6[2]+0.7-s6[1]),[gx,gy]=pt("s06",p,0.5,0.385);glow(gx,gy,330,(0.3+0.12*Math.sin(t*3.1))*ease((t-s6[1])/0.8)*(1-ease((t-s6[2])/0.5)))}
 
-  // ——— hook (tytuł): spokojne pole nad sceną, trzy wersy wchodzą po kolei ———
+  // ––– hook (tytuł): spokojne pole nad sceną, trzy wersy wchodzą po kolei –––
   if(t<E.hook[1]+0.6){const out=1-ease((t-E.hook[1])/0.5);
     const hg=g.createLinearGradient(0,0,0,760);hg.addColorStop(0,`rgba(251,249,245,${out})`);hg.addColorStop(0.8,`rgba(251,249,245,${0.96*out})`);hg.addColorStop(1,"rgba(251,249,245,0)");g.fillStyle=hg;g.fillRect(0,0,W,760);
     g.globalAlpha=out*easeOut((t-E.hook[0])/0.5);g.fillStyle=C.clay;rr(CX-36,300,72,6,3);g.fill();g.globalAlpha=1;
     title([["Żyjesz z mężem",C.forest,0.05],["jak ze",C.forest,0.5],["współlokatorem?",C.clay,0.95]],E.hook[0],t,{size:80,y:400,alpha:out})}
 
-  // ——— trzy drogi: etykiety nad krajobrazem ———
+  // ––– trzy drogi: etykiety nad krajobrazem –––
   if(t>=E.roads[0]-0.1&&t<E.roadsEnd+0.5&&cur){const out=1-ease((t-E.roadsEnd)/0.4),p=(t-s10[1])/(s10[2]+XF-s10[1]);
     const R=[[205,["Odbudowa"],C.rose,[0.175,0.325]],[462,["Czas","na decyzję"],C.clay,[0.5,0.315]],[748,["Rozstanie","z szacunkiem"],C.forest,[0.83,0.34]]];
     R.forEach(([x,lines,col,f],i)=>{const a=easeOut((t-E.roads[i])/0.5)*out;if(a<=0)return;const [tx,ty]=pt("s10",p,f[0],f[1]);
       g.globalAlpha=a*0.9;g.strokeStyle=col;g.lineWidth=5;g.lineCap="round";g.setLineDash([2,14]);g.beginPath();g.moveTo(x,468);g.lineTo(lerp(x,tx,a),lerp(468,ty-26,a));g.stroke();g.setLineDash([]);g.globalAlpha=1;
       g.fillStyle=col;g.globalAlpha=a;g.beginPath();g.arc(tx,ty-22,9,0,7);g.fill();g.globalAlpha=1;chip(x,400,lines,col,a)})}
 
-  // ——— akcenty: PRACA · DZIECI · ZAKUPY ———
+  // ––– akcenty: PRACA · DZIECI · ZAKUPY –––
   if(E.daily&&t>=E.daily[0]-0.1&&t<E.dailyEnd+0.5){const s2=sh("s02"),p=(t-s2[1])/(s2[2]+XF-s2[1]),out=1-ease((t-E.dailyEnd)/0.4);
     const A=[[300,470,"PRACA",C.forest,[0.385,0.555]],[735,470,"ZAKUPY",C.clay,[0.83,0.47]],[700,1190,"DZIECI",C.rose,[0.845,0.585]]],ord=[0,2,1];
     ord.forEach((ix,k)=>{const [x,y,word,col,f]=A[ix],a=easeOut((t-E.daily[k])/0.4)*out;if(a<=0)return;const [tx,ty]=pt("s02",p,f[0],f[1]);
@@ -97,23 +97,23 @@ function render(t){
       g.globalAlpha=a;g.shadowColor="rgba(60,45,30,.28)";g.shadowBlur=26;g.shadowOffsetY=9;g.fillStyle=col;rr(-w/2,-45,w,90,45);g.fill();g.shadowColor="transparent";g.shadowBlur=0;g.shadowOffsetY=0;
       g.fillStyle="#fff";g.textAlign="center";g.textBaseline="middle";g.fillText(word,2,3);g.letterSpacing="0px";g.restore();g.globalAlpha=1})}
 
-  // ——— „Dlatego w DUO…”: symbol marki jak słońce nad wzgórzem ———
+  // ––– „Dlatego w DUO…”: symbol marki jak słońce nad wzgórzem –––
   if(E.brandSun&&t>=E.brandSun-0.1&&t<s6[2]+0.7){const a=easeOut((t-E.brandSun)/0.8)*(1-ease((t-s6[2])/0.6)),sc=lerp(0.86,1,easeOut((t-E.brandSun)/1.1));
     const hx=540,hy=452;const hgl=g.createRadialGradient(hx,hy,0,hx,hy,360);hgl.addColorStop(0,`rgba(255,244,214,${0.95*a})`);hgl.addColorStop(0.5,`rgba(255,236,196,${0.5*a})`);hgl.addColorStop(1,"rgba(255,236,196,0)");g.fillStyle=hgl;g.fillRect(hx-360,hy-360,720,720);
     logo(hx,hy,400*sc,a*0.92)}
 
-  // ——— obraz relacji: trzy warstwy mapy ———
+  // ––– obraz relacji: trzy warstwy mapy –––
   if(E.layers&&t>=E.layers[0]-0.1&&cur&&t<E.layersEnd+0.5){const s9=sh("s09"),p=(t-s9[1])/(s9[2]+XF-s9[1]),out=1-ease((t-E.layersEnd)/0.4);
     const R=[[236,["Co Was","trzyma"],"#c58a2b",[0.33,0.428]],[540,["Gdzie","najtrudniej"],C.forest,[0.37,0.548]],[786,["Wasz","konflikt"],C.clay,[0.585,0.462]]];
     R.forEach(([x,lines,col,f],i)=>{const a=easeOut((t-E.layers[i])/0.5)*out;if(a<=0)return;const [tx,ty]=pt("s09",p,f[0],f[1]);
       g.globalAlpha=a*0.9;g.strokeStyle=col;g.lineWidth=5;g.lineCap="round";g.setLineDash([2,14]);g.beginPath();g.moveTo(x,488);g.lineTo(lerp(x,tx,a),lerp(488,ty,a));g.stroke();g.setLineDash([]);
       const pr=22+8*Math.sin(t*4+i);g.strokeStyle=col;g.lineWidth=5;g.beginPath();g.arc(tx,ty,pr,0,7);g.stroke();g.fillStyle=col;g.beginPath();g.arc(tx,ty,9,0,7);g.fill();g.globalAlpha=1;chip(x,410,lines,col,a)})}
 
-  // ——— puenta ———
+  // ––– puenta –––
   if(t>=E.punch[0]-0.05&&t<E.logo+0.6){const out=1-ease((t-E.logo+0.1)/0.5);
     title([["Najpierw mapa.",C.forest,0]],E.punch[0],t,{size:104,y:400,alpha:out});title([["Potem droga.",C.clay,0]],E.punch[1],t,{size:104,y:400+118,alpha:out})}
 
-  // ——— plansza marki: maskotki → logo ———
+  // ––– plansza marki: maskotki → logo –––
   if(t>=E.logo){const k=ease((t-E.logo)/1.0),shareK=ease((t-E.share)/0.8);
     g.fillStyle=`rgba(251,249,245,${k})`;g.fillRect(0,0,W,H);
     const lw=lerp(640,430,ease((t-E.logo-0.5)/0.9))*lerp(1,0.62,shareK),ly=lerp(1010,640,ease((t-E.logo-0.5)/0.9))-shareK*150;
@@ -126,7 +126,7 @@ function render(t){
     const ua=easeOut((t-E.logoWords[2])/0.5)*(1-shareK);
     if(ua>0){g.globalAlpha=ua;g.font='600 60px "Inter V"';const w=g.measureText("duo.pl").width+110;g.fillStyle=C.clay;rr(CX-w/2,1168+(1-ua)*20,w,112,56);g.fill();g.fillStyle="#fff";g.textAlign="center";g.textBaseline="middle";g.fillText("duo.pl",CX,1226+(1-ua)*20);
       g.font='500 38px "Inter V"';g.fillStyle=C.forest;g.fillText("Zaczynamy od Mapy Relacji",CX,1356);g.globalAlpha=1}
-    // ——— prośba o udostępnienie ———
+    // ––– prośba o udostępnienie –––
     if(shareK>0){title([["Znasz kogoś,",C.forest,0],["kto żyje",C.forest,0.12],["w takiej mgle?",C.clay,0.24]],E.shareLines[0],t,{size:84,y:720});
       const sa=easeOut((t-E.shareLines[1])/0.5);
       if(sa>0){g.globalAlpha=sa;g.font='600 44px "Inter V"';const txt="Wyślij tej osobie ten film",w=g.measureText(txt).width+170,y=1120+(1-sa)*20;g.fillStyle=C.forest;rr(CX-w/2,y,w,118,59);g.fill();
@@ -135,7 +135,7 @@ function render(t){
       const da=easeOut((t-E.shareLines[0]-0.6)/0.6);g.globalAlpha=da*0.9;g.fillStyle=C.muted;g.font='400 30px "Inter V"';g.textAlign="center";
       ["Mapa Relacji to proces z psychologiem","zakończony pisemnym podsumowaniem.","Nie jest diagnozą ani terapią."].forEach((l,i)=>g.fillText(l,CX,1318+i*42));g.globalAlpha=1}
   }
-  // ——— napisy ———
+  // ––– napisy –––
   for(const [a,b,text] of TL.caps){ if(t<a-0.05||t>b+0.2)continue;const ain=easeOut((t-a)/0.16),aout=1-ease((t-b-0.02)/0.16);caption(text,Math.min(ain,aout),(1-ain)*14)}
 }
 window.setup=async(tl)=>{TL=tl;await Promise.all(tl.shots.map(([n])=>new Promise((res,rej)=>{const i=new Image();i.onload=()=>{IM[n]=i;res()};i.onerror=rej;i.src=n+".png"})));
