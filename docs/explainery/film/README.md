@@ -32,3 +32,11 @@ Podmiana hooka: nowy `v01.mp3` + tekst tytułu w `film.html` (sekcja „hook”)
   mieszanie `multiply`), więc jest częścią pejzażu, a nie naklejką.
 - Lektor: zdanie „Dlatego w DUO zaczynamy od Mapy Relacji.” nagrane ponownie spokojnym tonem i wklejone
   w ścieżkę głosu (`voice2.m4a`) w miejsce poprzedniego.
+
+## Wersja v7
+
+- Hook: kadr rozrywa się na dwie połowy (`SPLIT` w `drawShot`), które odjeżdżają od siebie; dźwięk rozdarcia.
+- „Praca, dzieci, zakupy” to trzy osobne sceny na twardych cięciach (`s02a`–`s02c`, zbiór `HARD`),
+  każda z dużą plakietką i szelestem cięcia.
+- Sekwencja mgły: bezsenna noc (`s03a`) z myślami „kryzys?” / „koniec?”, pokój we mgle z mocnym
+  najazdem (`s03`), zbliżenie ręki szukającej we mgle (`s03c`).
