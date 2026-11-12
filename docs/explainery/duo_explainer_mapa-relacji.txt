@@ -1,0 +1,137 @@
+DUO - EXPLAINER
+Narracja i koncept filmu
+Marka: DUO® Terapia małżeństw i par (duo.pl)
+Cel: poznanie marki (brand awareness). Film nie sprzedaje terapii - tłumaczy, dlaczego w DUO zaczyna się od Mapy Relacji.
+
+Zasada filmu
+- Ludzie w kryzysie nie szukają "procesu terapeutycznego". Chcą przestać żyć w zawieszeniu.
+- Zwykle: od razu terapia albo od razu decyzja (zostać / odejść), bez zrozumienia, co się naprawdę dzieje.
+- W DUO: najpierw obraz sytuacji (Mapa Relacji), dopiero potem droga.
+- Puenta: najpierw zobacz, gdzie jesteście. Potem wybierz drogę.
+- DUO nie obiecuje uratowania związku. Trzy drogi są równoprawne: odbudowa, czas na decyzję, rozstanie z szacunkiem.
+- Przekonanie marki: każdy ma prawo do szczęścia - ale na szczęście trzeba pracować.
+- Mapa Relacji nie jest diagnozą medyczną. Porównanie do lekarza dotyczy wyłącznie kolejności (najpierw zrozumieć, potem działać), dlatego w narracji nie pada słowo "diagnoza".
+- Materiał edukacyjny. Przy przemocy, zastraszaniu albo strachu przed partnerem pierwszym krokiem jest bezpieczeństwo, nie wspólna praca nad relacją.
+
+Tagi lektora (ElevenLabs, model Eleven v3)
+Lektor ich nie czyta, tylko zmienia sposób mówienia. Użyte tagi:
+- [pause] - krótka pauza przed ważnym zdaniem
+- [slowly] - wolniej, z naciskiem na każde słowo
+- [softly] - ciszej i cieplej
+- [tired] - zmęczonym głosem (życie w zawieszeniu)
+- [sighing] - westchnienie na końcu zdania
+- [excited] - jaśniej, z energią (moment, w którym mgła opada)
+Tag emocji działa do końca generowanego fragmentu, dlatego każdy akapit narracji najlepiej generować osobno.
+
+
+============================================================
+01. MGŁA (ok. 55 s; wersja skrócona ok. 30 s na końcu)
+============================================================
+
+HOOKI (pierwsze zdanie filmu - do testu, reszta narracji bez zmian)
+
+Do kobiet:
+H1: Żyjesz z mężem jak ze współlokatorem?
+H3: Od miesięcy nie dogadujesz się z mężem?
+H5: Nie kłócicie się. Po prostu już ze sobą nie rozmawiacie?
+H7: Raz chcesz walczyć o to małżeństwo, a raz odejść?
+
+Do mężczyzn:
+H2: Żyjesz z żoną jak ze współlokatorką?
+H4: Od miesięcy nie dogadujesz się z żoną?
+H6: Każda rozmowa z żoną kończy się tak samo?
+H8: Masz wrażenie, że cokolwiek powiesz w domu, będzie źle?
+
+Do obojga:
+H9: Mieszkacie razem. Ale czy jeszcze jesteście razem?
+H10: Nie wiesz, czy to kryzys, czy już koniec?
+
+Rekomendacja do pierwszego testu: H1 i H2 (ten sam film, dwa pierwsze zdania i dwie grupy odbiorców), jako trzeci H10.
+
+
+NARRACJA (wersja z H1; w wersji dla mężczyzn: "z żoną", "współlokatorką")
+
+Żyjesz z mężem jak ze współlokatorem?
+
+[tired] Niby nic się nie dzieje. Praca, dzieci, zakupy. A Ty od miesięcy nie wiesz, czy to jeszcze kryzys... [sighing] czy już koniec.
+
+To jest jak mgła. Czujesz, że coś jest nie tak, ale nie widzisz co. A we mgle każda decyzja wygląda źle. Zostać. Odejść. Czekać.
+
+[pause] U lekarza nikt nie zaczyna od leczenia. Najpierw trzeba zobaczyć, co się naprawdę dzieje.
+
+[excited] Dlatego w DUO zaczynamy od Mapy Relacji.
+
+Najpierw pytania. Potem rozmowa z psychologiem. [slowly] A na końcu obraz Waszej relacji, na piśmie: co Was jeszcze trzyma, gdzie jest najtrudniej i jak naprawdę wygląda Wasz konflikt.
+
+Mgła opada. I widać drogi. Odbudowa. Czas na decyzję. Albo rozstanie z szacunkiem.
+
+Nie powiemy Ci, którą wybrać. [pause] Wierzymy, że każdy ma prawo do szczęścia. Ale na szczęście trzeba pracować. A żeby pracować, trzeba najpierw zobaczyć, gdzie się jest.
+
+[slowly] Najpierw mapa. Potem droga.
+
+[pause] DUO. Terapia małżeństw. [slowly] Duo kropka pe el.
+
+[softly] Znasz kogoś, kto żyje w takiej mgle? Wyślij tej osobie ten film.
+
+
+KONCEPT
+
+Jedno ciągłe ujęcie. Dwie proste sylwetki w kolorach DUO (zielona i terakotowa, bez twarzy), ciepłe beże, jeden motyw: mgła.
+- Hook jako napis na pustym kadrze. Pod nim mieszkanie w przekroju: dwie sylwetki w tym samym domu, każda w innym pokoju, mijają się w kuchni bez zatrzymania.
+- Na "praca, dzieci, zakupy": między sylwetkami przesuwają się trzy codzienne znaki (teczka, plecak, torba), jak taśma. Sylwetki podają je sobie, nie patrząc na siebie.
+- Na "kryzys czy już koniec": kadr powoli wypełnia się mgłą od krawędzi. Dom znika, zostają dwa niewyraźne kształty.
+- Na "każda decyzja wygląda źle": we mgle zapalają się trzy drogowskazy bez napisów, każdy wskazuje w biel. Słowa "ZOSTAĆ?", "ODEJŚĆ?", "CZEKAĆ?" pojawiają się i rozmywają.
+- Na zdaniu o lekarzu: krótka wstawka w tym samym stylu - stetoskop i karta badania stają PRZED receptą; recepta przesuwa się na koniec. Jedna sekunda, bez gabinetu i bez białego fartucha.
+- Na "zaczynamy od Mapy Relacji": w środku mgły pojawia się znak Mapy Relacji (serce - klepsydra - strzałki) i zaczyna świecić jak latarnia.
+- Trzy kroki rysują się jedną linią: karta z pytaniami -> dwa ekrany rozmowy (psycholog i osoba; w wersji dla pary trzy rozmowy: z każdym osobno i wspólna) -> dokument, który rozkłada się jak mapa.
+- Na "co Was trzyma / gdzie najtrudniej / jak wygląda konflikt": na mapie pojawiają się trzy warstwy - ciepłe punkty (zasoby), ciemniejsze pola (trudne obszary) i pętla (schemat konfliktu).
+- Na "mgła opada": mgła schodzi od środka na boki i odsłania krajobraz z trzema wyraźnymi drogami w kolorach marki: różowa (odbudowa), terakotowa (czas na decyzję), zielona (rozstanie z szacunkiem). Drogowskazy mają teraz napisy.
+- Na "nie powiemy Ci, którą wybrać": sylwetka stoi z mapą przed rozwidleniem; żadna droga nie jest podświetlona mocniej niż pozostałe.
+- Na "na szczęście trzeba pracować": sylwetka robi pierwszy krok. Druga sylwetka pojawia się obok albo zostaje w tle - nie pokazujemy, którą drogę wybrano.
+- Puenta na ekranie: "NAJPIERW MAPA. POTEM DROGA."
+
+Czego w obrazie NIE ma (żeby film różnił się od reklamy gabinetu online):
+- kanapy, gabinetu, notesu terapeuty, pary trzymającej się za ręce,
+- szczęśliwego zakończenia z pogodzoną parą - kończymy na jasności, nie na pogodzeniu,
+- słów "uratujemy", "naprawimy", "gwarancja".
+
+
+WERSJA SKRÓCONA (ok. 30 s, do rolek)
+
+Żyjesz z mężem jak ze współlokatorem?
+
+[tired] I od miesięcy nie wiesz, czy to jeszcze kryzys... [sighing] czy już koniec.
+
+To jest jak mgła. A we mgle każda decyzja wygląda źle.
+
+[excited] Dlatego w DUO zaczynamy od Mapy Relacji: pytania, rozmowa z psychologiem i obraz Waszej relacji na piśmie.
+
+Mgła opada. I widać drogi: odbudowa, czas na decyzję albo rozstanie z szacunkiem.
+
+[slowly] Najpierw mapa. Potem droga.
+
+[pause] DUO. [slowly] Duo kropka pe el.
+
+[softly] Znasz kogoś, kto żyje w takiej mgle? Wyślij tej osobie ten film.
+
+
+============================================================
+ZAKOŃCZENIE FILMU
+============================================================
+
+1. Puenta: "Najpierw mapa. Potem droga."
+2. Lektor: "DUO. Terapia małżeństw. Duo kropka pe el."
+   Na ekranie: logo DUO®, pod spodem "Zaczynamy od Mapy Relacji" i adres duo.pl.
+3. Lektor: "Znasz kogoś, kto żyje w takiej mgle? Wyślij tej osobie ten film."
+   Na ekranie: WYŚLIJ TEN FILM KOMUŚ, KTO ŻYJE W ZAWIESZENIU (ze strzałką udostępniania).
+4. Zastrzeżenie małym drukiem:
+   "Mapa Relacji to proces z psychologiem zakończony pisemnym podsumowaniem. Nie jest diagnozą ani terapią."
+
+Zakończenie dodaje około 6 sekund.
+
+
+DO SPRAWDZENIA PRZED PUBLIKACJĄ
+- Do akceptacji psycholożki: zdanie o lekarzu (czy porównanie nie sugeruje diagnozy medycznej) i zdanie "każdy ma prawo do szczęścia, ale na szczęście trzeba pracować".
+- Wersja dla pary: w narracji pada "rozmowa z psychologiem" (liczba pojedyncza). W Mapie Relacji dla Was są trzy spotkania - jeśli film ma promować ten wariant, zamienić na "rozmowy z psychologiem: z każdym z Was i wspólna".
+- Hooki H1-H8 mówią o mężu / żonie. Jeśli kampania ma objąć pary bez ślubu, dodać warianty "z partnerem / z partnerką".
+- W filmie nie padają liczby ani ceny - celowo. Cena pojawia się dopiero na stronie.
