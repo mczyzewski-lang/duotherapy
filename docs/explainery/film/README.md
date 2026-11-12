@@ -66,3 +66,12 @@ Podmiana hooka: nowy `v01.mp3` + tekst tytułu w `film.html` (sekcja „hook”)
 - Kadry otwierające: sofa (H1, H2, H9), rozmowa obok siebie (H3, H4), cisza przy stole (H5, H15), kłótnia
   (H6, H11, H12), walizka i zdjęcie (H7), skorupki jajek (H8), więdnąca roślina (H10), ławka pod kocami (H14),
   rodzice z dziećmi (H16), pęknięte zdjęcie (H17).
+
+## Krótkie porady (`tips.html`, `tips.py`)
+
+- Format 15–19 s: hook (scena z problemem, nagłówek z plakietką) → porada (scena z rozwiązaniem, etykieta
+  „PORADA”, karta z kluczowym zdaniem, napisy) → wezwanie „Zapisz na później” albo „Wyślij dalej”.
+- Mini-logo w prawym górnym rogu pojawia się po chwili od wejścia porady; co kilka sekund postaci
+  „zamieniają dwa zdania” (dymek przy głowie, lekkie kiwnięcie), poza tym stoi spokojnie.
+- Treści 10 porad (zdania lektora, nagłówki, karty, typ wezwania, kadry) są w słowniku `TIPS` w `tips.py`.
+  `python3 tips.py plan` pokazuje wyrównanie zdań do nagrania, `python3 tips.py build T03` składa film.

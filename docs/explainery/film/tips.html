@@ -1,0 +1,84 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<style>
+@font-face{font-family:"Inter V";font-weight:100 900;src:url("fonts/inter-latin-wght-normal.woff2") format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+20AC,U+2122,U+2190-2199}
+@font-face{font-family:"Inter V";font-weight:100 900;src:url("fonts/inter-latin-ext-wght-normal.woff2") format("woff2");unicode-range:U+0100-02AF,U+1E00-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0}
+@font-face{font-family:"Fraunces V";font-weight:100 900;src:url("fonts/fraunces-latin-wght-normal.woff2") format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+20AC,U+2122,U+2190-2199}
+@font-face{font-family:"Fraunces V";font-weight:100 900;src:url("fonts/fraunces-latin-ext-wght-normal.woff2") format("woff2");unicode-range:U+0100-02AF,U+1E00-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0}
+html,body{margin:0;background:#000}canvas{display:block}
+</style></head><body><canvas id="c" width="1080" height="1920"></canvas>
+<script>
+// DUO – krótkie porady (hook + porada + zapisz/wyślij), 1080×1920. Strefy bezpieczne Reels: x 90–900, y 270–1440.
+const W=1080,H=1920,SAFE={l:90,r:900,t:270,b:1440},CX=540;
+const C={ivory:"#fbf9f5",forest:"#36493d",clay:"#a9512f",rose:"#e07f78",sage:"#97ac9c",ink:"#262b27",sand:"#eadccb",muted:"#6a605a"};
+const cv=document.getElementById("c"),g=cv.getContext("2d");let TL=null;const IM={},FR={};
+const clamp=(x,a=0,b=1)=>Math.max(a,Math.min(b,x)),ease=x=>{x=clamp(x);return x*x*(3-2*x)},easeOut=x=>1-Math.pow(1-clamp(x),3),lerp=(a,b,x)=>a+(b-a)*x;
+function rr(x,y,w,h,r){g.beginPath();g.roundRect(x,y,w,h,r)}
+function wrap(text,maxW){const words=text.split(" ");const lines=[];let cur="";for(const w of words){const t=cur?cur+" "+w:w;if(g.measureText(t).width>maxW&&cur){lines.push(cur);cur=w}else cur=t}if(cur)lines.push(cur);return lines}
+function caption(text,a,dy){ if(a<=0)return;g.font='600 50px "Inter V"';g.textAlign="center";g.textBaseline="middle";
+  const lines=wrap(text,640),lh=66,w=Math.max(...lines.map(l=>g.measureText(l).width))+84,h=lines.length*lh+46,cy=1326+dy-(lines.length>2?30:0);
+  g.globalAlpha=a;g.shadowColor="rgba(60,45,30,.22)";g.shadowBlur=34;g.shadowOffsetY=10;g.fillStyle="rgba(251,249,245,.96)";rr(CX-w/2,cy-h/2,w,h,36);g.fill();
+  g.shadowColor="transparent";g.shadowBlur=0;g.shadowOffsetY=0;g.fillStyle=C.ink;lines.forEach((l,i)=>g.fillText(l,CX,cy-(lines.length-1)*lh/2+i*lh+2));g.globalAlpha=1}
+const pop=(t,t0,d=0.38)=>{const x=clamp((t-t0)/d);return t0<=0?1+0.1*(1-easeOut(t/0.6)):x<=0?0:1+0.16*Math.sin(Math.PI*x)*(1-x)-(1-easeOut(x))*0.35};
+// nagłówek: wersy w szeryfowym kroju, jeden z nich w plakietce
+function headline(lines,pill,times,t,alpha,y0){g.textAlign="center";g.textBaseline="middle";
+  g.font='600 84px "Fraunces V"';const wmax=Math.max(1,...lines.filter((_,i)=>i!==pill).map(l=>g.measureText(l).width)),fs=Math.min(84,84*700/wmax);
+  g.font='600 70px "Fraunces V"';const pw=g.measureText(lines[pill]||"").width,ps=Math.min(70,70*600/Math.max(1,pw));let y=y0;
+  lines.forEach((txt,i)=>{const isP=i===pill,t0=times[i];if(isP&&i)y+=14;const yy=y;y+=isP?112:96;const sc=pop(t,t0,isP?0.45:0.38);if(sc<=0)return;
+    g.save();g.translate(CX,yy);if(isP)g.rotate(-0.03);g.scale(sc,sc);g.globalAlpha=alpha*(t0>0?clamp((t-t0)/0.14):1);
+    if(!isP){g.font=`600 ${fs}px "Fraunces V"`;g.fillStyle=C.forest;g.fillText(txt,0,0)}
+    else{g.font=`600 ${ps}px "Fraunces V"`;const w=g.measureText(txt).width+64;g.shadowColor="rgba(120,60,30,.3)";g.shadowBlur=30;g.shadowOffsetY=12;g.fillStyle=C.clay;rr(-w/2,-60,w,120,30);g.fill();g.shadowColor="transparent";g.shadowBlur=0;g.shadowOffsetY=0;g.fillStyle="#fff";g.fillText(txt,0,4)}
+    g.restore()});g.globalAlpha=1}
+// kadr: obraz pomniejszony do strefy bezpiecznej, z wygaszonymi krawędziami
+function scene(key,t,a){const sc=TL[key];if(a<=0)return;const img=FR[key]||IM[key],p=clamp((t-sc.a)/(sc.b-sc.a)),z=(key==="A"?lerp(1.0,1.06,p):lerp(1.07,1.0,easeOut(p*1.6)))*0.86*1.5;
+  const w=720*z,h=1280*z,x=W/2-w/2+(sc.shiftX??-50),y=H/2-h/2+(sc.shiftY??60);g.globalAlpha=a;g.drawImage(img,x,y,w,h);g.globalAlpha=1;
+  const fade=(x0,y0,x1,y1,rx,ry,rw,rh)=>{const gr=g.createLinearGradient(x0,y0,x1,y1);gr.addColorStop(0,"rgba(251,249,245,1)");gr.addColorStop(1,"rgba(251,249,245,0)");g.fillStyle=gr;g.fillRect(rx,ry,rw,rh)};
+  g.globalAlpha=a;fade(x,0,x+110,0,x-2,0,112,H);fade(x+w,0,x+w-140,0,x+w-140,0,142,H);fade(0,y,0,y+170,0,y-2,W,172);fade(0,y+h,0,y+h-220,0,y+h-220,W,222);
+  g.fillStyle=C.ivory;g.fillRect(0,0,Math.max(0,x),H);g.fillRect(x+w,0,W,H);g.fillRect(0,0,W,Math.max(0,y));g.fillRect(0,y+h,W,H);g.globalAlpha=1}
+// mini-logo: dwie postaci przy stole; co kilka sekund „zamieniają dwa zdania”
+const BODY=new Path2D("M0.5 11.7H3.5C12 11.7 18.6 18.6 18.6 26.4C18.6 34.6 12.3 41 4.6 41H1.6A1.1 1.1 0 0 1 0.5 39.9Z"),BOWL=new Path2D("M20.6 26.7H49.6A14.5 14.3 0 0 1 20.6 26.7Z");
+function lg(a,b){const gr=g.createLinearGradient(0,0,71,42);gr.addColorStop(0,a);gr.addColorStop(1,b);return gr}
+function miniLogo(t,t0){const a=easeOut((t-t0)/0.45);if(a<=0)return;const cx=800,cy=340,w=132,s=w/71,sc=pop(t,t0,0.5)||1,u=(t-t0-0.9)%5.2;
+  const talk=(from,to)=>u>=from&&u<to?Math.sin(Math.PI*(u-from)/(to-from)):0,L=talk(0,1.15),R=talk(1.35,2.5);
+  g.save();g.translate(cx,cy);g.scale(sc,sc);g.globalAlpha=a;
+  g.shadowColor="rgba(60,45,30,.2)";g.shadowBlur=26;g.shadowOffsetY=8;g.fillStyle="rgba(251,249,245,.94)";rr(-96,-62,192,124,28);g.fill();g.shadowColor="transparent";g.shadowBlur=0;g.shadowOffsetY=0;
+  g.save();g.translate(-w/2,-21*s+4);g.scale(s,s);
+  const nodL=L*Math.abs(Math.sin(u*9))*1.3,nodR=R*Math.abs(Math.sin(u*9))*1.3;
+  g.fillStyle=lg("#D6845F","#A55536");g.beginPath();g.arc(7+L*1.2,4.9+nodL,4.8,0,7);g.fill();g.save();g.translate(0.5,41);g.rotate(L*0.035);g.translate(-0.5,-41);g.fillStyle=lg("#E2A07F","#A9512F");g.fill(BODY);g.restore();
+  g.fillStyle=lg("#ECDCCB","#B89B7F");g.fill(BOWL);
+  g.fillStyle=lg("#7A9686","#3B5A4A");g.beginPath();g.arc(64-R*1.2,4.9+nodR,4.8,0,7);g.fill();g.save();g.translate(70.5,41);g.rotate(-R*0.035);g.translate(-70.5,-41);g.transform(-1,0,0,1,71,0);g.fillStyle=lg("#97AC9C","#2D4939");g.fill(BODY);g.restore();
+  g.restore();
+  // dymki przy głowach
+  const bub=(x,y,k,col,dir)=>{if(k<=0.02)return;const b=Math.min(1,k*1.6)*1.45;g.save();g.translate(x,y);g.scale(b,b);g.fillStyle="#fff";g.strokeStyle="rgba(60,45,30,.18)";g.lineWidth=1.5;rr(-17,-12,34,22,10);g.fill();g.stroke();
+    g.beginPath();g.moveTo(-dir*6,9);g.lineTo(-dir*11,17);g.lineTo(-dir*1,9.5);g.closePath();g.fillStyle="#fff";g.fill();
+    for(let i=0;i<3;i++){g.fillStyle=col;g.globalAlpha=a*(0.35+0.65*Math.abs(Math.sin(u*7-i*0.9)));g.beginPath();g.arc(-8+i*8,-1,2.6,0,7);g.fill()}g.restore();g.globalAlpha=a};
+  bub(-w/2+7*s+26,-21*s+4+4.9*s-30,L,C.clay,1);bub(w/2-7*s-26,-21*s+4+4.9*s-30,R,C.forest,-1);
+  g.restore();g.globalAlpha=1}
+// CTA: zapisz / wyślij
+function cta(t){const c=TL.cta,a=easeOut((t-c.t0)/0.4);if(a<=0)return;const sc=(pop(t,c.t0,0.5)||1)*(1+0.025*Math.sin((t-c.t0)*5));g.save();g.translate(CX,1310);g.scale(sc,sc);g.globalAlpha=a;
+  g.font='700 50px "Inter V"';g.textAlign="left";g.textBaseline="middle";const tw=g.measureText(c.text).width,w=tw+176,h=124;
+  g.shadowColor="rgba(40,50,40,.32)";g.shadowBlur=34;g.shadowOffsetY=12;g.fillStyle=C.forest;rr(-w/2,-h/2,w,h,62);g.fill();g.shadowColor="transparent";g.shadowBlur=0;g.shadowOffsetY=0;
+  const ix=-w/2+70,k=clamp((t-c.t0-0.45)/0.35);g.strokeStyle="#fff";g.fillStyle="#fff";g.lineWidth=6;g.lineJoin="round";g.lineCap="round";
+  if(c.type==="save"){const b=1+0.25*Math.sin(Math.PI*k);g.save();g.translate(ix,0);g.scale(b,b);g.beginPath();g.moveTo(-17,-26);g.lineTo(17,-26);g.lineTo(17,26);g.lineTo(0,12);g.lineTo(-17,26);g.closePath();g.stroke();g.globalAlpha=a*k;g.fill();g.restore();g.globalAlpha=a}
+  else{const fly=6*Math.sin((t-c.t0)*4);g.save();g.translate(ix+fly,-fly*0.7);g.rotate(-0.1);g.beginPath();g.moveTo(-24,-4);g.lineTo(26,-24);g.lineTo(8,26);g.lineTo(0,6);g.closePath();g.stroke();g.beginPath();g.moveTo(0,6);g.lineTo(26,-24);g.stroke();g.restore()}
+  g.fillStyle="#fff";g.fillText(c.text,-w/2+118,3);g.restore();g.globalAlpha=1}
+function render(t){g.setTransform(1,0,0,1,0,0);g.globalAlpha=1;g.fillStyle=C.ivory;g.fillRect(0,0,W,H);
+  const tA=TL.A.b,XF=0.32;if(t<tA+XF)scene("A",t,1);if(t>=tA)scene("B",t,ease((t-tA)/XF));
+  const hg=g.createLinearGradient(0,0,0,790);hg.addColorStop(0,"rgba(251,249,245,1)");hg.addColorStop(0.78,"rgba(251,249,245,.95)");hg.addColorStop(1,"rgba(251,249,245,0)");g.fillStyle=hg;g.fillRect(0,0,W,790);
+  // hook
+  if(t<tA+0.1){const out=1-ease((t-(tA-0.22))/0.22);headline(TL.hook.lines,TL.hook.pill,TL.hook.times,t,out,372)}
+  // porada: etykieta + karta
+  if(t>=tA){const a=easeOut((t-tA-0.15)/0.4);g.save();g.translate(CX,322+(1-a)*-16);g.globalAlpha=a;g.font='700 30px "Inter V"';g.letterSpacing="7px";g.textAlign="center";g.textBaseline="middle";const lw=g.measureText("PORADA").width+56;
+    g.fillStyle=C.sage;rr(-lw/2,-27,lw,54,27);g.fill();g.fillStyle="#fff";g.fillText("PORADA",3,2);g.letterSpacing="0px";g.restore();g.globalAlpha=1;
+    const cd=TL.card;if(t>=cd.t0-0.05)headline(cd.lines,cd.pill,cd.lines.map((_,i)=>cd.t0+i*0.28),t,1,480);
+    miniLogo(t,TL.logoAt)}
+  // napisy i CTA
+  for(const [a,b,text] of TL.caps){ if(t<a-0.05||t>b+0.2)continue;const ain=easeOut((t-a)/0.16),aout=1-ease((t-b-0.02)/0.16);caption(text,Math.min(ain,aout),(1-ain)*14)}
+  cta(t)}
+window.setup=async(tl)=>{TL=tl;await Promise.all(["A","B"].map(k=>new Promise((res,rej)=>{const i=new Image();i.onload=()=>{IM[k]=i;res()};i.onerror=rej;i.src=`clips/${tl[k].img}/f0001.jpg`})));
+  await Promise.all(['600 50px "Inter V"','700 50px "Inter V"','600 84px "Fraunces V"','700 30px "Inter V"'].map(f=>document.fonts.load(f,"Żółć ąę DUO „”")));await document.fonts.ready;return true};
+window.renderAt=async(t)=>{const jobs=[];for(const k of ["A","B"]){const sc=TL[k],c=sc.clip;if(!c||t<sc.a-0.01||t>sc.b+0.4)continue;let ph=Math.max(0,t-sc.a)%(2*c.dur);if(ph>c.dur)ph=2*c.dur-ph;const idx=Math.max(1,Math.min(c.n,1+Math.floor(ph*c.fps)));
+    jobs.push(new Promise(res=>{const i=new Image();i.onload=()=>{FR[k]=i;res()};i.onerror=()=>{delete FR[k];res()};i.src=`clips/${sc.img}/f${String(idx).padStart(4,"0")}.jpg`}))}
+  await Promise.all(jobs);render(t)};
+window.guides=()=>{g.strokeStyle="rgba(255,0,80,.8)";g.lineWidth=3;g.setLineDash([14,10]);g.strokeRect(SAFE.l,SAFE.t,SAFE.r-SAFE.l,SAFE.b-SAFE.t);g.setLineDash([])};
+</script></body></html>

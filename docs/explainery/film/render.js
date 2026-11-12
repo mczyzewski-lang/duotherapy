@@ -5,7 +5,7 @@ const { chromium } = require('playwright'); const fs = require('fs'); const path
   const b = await chromium.launch({ args: ['--allow-file-access-from-files'] });
   const p = await b.newPage({ viewport: { width: 1080, height: 1920 }, deviceScaleFactor: 1 });
   p.on('pageerror', (e) => console.log('ERR', e.message));
-  await p.goto('file://' + path.resolve('film.html')); await p.evaluate((t) => window.setup(t), tl);
+  await p.goto('file://' + path.resolve(process.env.PAGE || 'film.html')); await p.evaluate((t) => window.setup(t), tl);
   const mode = process.argv[2];
   if (mode === 'stills') {
     const times = process.argv.slice(3).map(Number);
