@@ -7,6 +7,6 @@
 - `render.js` – renderuje klatki przez Playwright (`node render.js frames 0 2304`), potem `ffmpeg` składa je z lektorem.
 
 Do odtworzenia potrzebne są obok: kadry `s01.png`–`s13.png`, segmenty lektora `v01.mp3`–`v11.mp3` (głos ElevenLabs
-`OtIWAuy1FmuND2I8ifh5`, model v3) i katalog `fonts/` z czcionkami Inter i Fraunces z `node_modules/@fontsource-variable`.
+`OtIWAuy1FmuND2I8ifh5`, model v4: hook osobno, reszta jako jedno nagranie `body_v4.mp3`, czasy słów z transkrypcji) i katalog `fonts/` z czcionkami Inter i Fraunces z `node_modules/@fontsource-variable`.
 
 Podmiana hooka: nowy `v01.mp3` + tekst tytułu w `film.html` (sekcja „hook”) + przeliczenie `timeline.json`.
