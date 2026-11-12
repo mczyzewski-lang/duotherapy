@@ -48,3 +48,10 @@ Podmiana hooka: nowy `v01.mp3` + tekst tytułu w `film.html` (sekcja „hook”)
   zamyślony nad zdjęciem RTG (`s05b`).
 - „Wierzymy, że każdy ma prawo do szczęścia. Ale na szczęście trzeba pracować.” – łąka, na której każdy
   jest szczęśliwy po swojemu (`s11b`), i wspólne sadzenie drzewka (`s11c`).
+
+## Wersja v9
+
+- Otwarcie: nowy kadr `s01` – para siedzi bliżej siebie, w całości w strefie ochronnej rolki; kadr
+  jest przesunięty (`SHIFTX`), a rozdarcie biegnie przez środek sofy między nimi.
+- Mapa: trzy punkty mają numerowane znaczniki z pulsującym kręgiem, reszta kadru jest przyciemniona
+  z „reflektorami” na punktach, etykiety są większe i połączone z punktami pełną linią.
