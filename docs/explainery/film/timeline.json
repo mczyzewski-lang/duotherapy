@@ -1,0 +1,286 @@
+{
+ "seg": {
+  "1": 0.3,
+  "2": 2.744,
+  "3": 11.845,
+  "4": 22.616,
+  "5": 28.034,
+  "6": 31.26,
+  "7": 43.128,
+  "8": 51.495,
+  "9": 62.211,
+  "10": 65.95,
+  "11": 70.841
+ },
+ "dur": {
+  "1": 2.194,
+  "2": 8.751,
+  "3": 10.371,
+  "4": 5.068,
+  "5": 2.926,
+  "6": 11.468,
+  "7": 7.967,
+  "8": 10.266,
+  "9": 3.239,
+  "10": 4.441,
+  "11": 4.833
+ },
+ "caps": [
+  [
+   2.74,
+   4.29,
+   "Niby nic się nie dzieje."
+  ],
+  [
+   4.29,
+   5.71,
+   "Praca, dzieci, zakupy."
+  ],
+  [
+   5.71,
+   7.46,
+   "A Ty od miesięcy nie wiesz,"
+  ],
+  [
+   7.46,
+   8.88,
+   "czy to jeszcze kryzys…"
+  ],
+  [
+   10.17,
+   11.49,
+   "czy już koniec."
+  ],
+  [
+   11.85,
+   13.35,
+   "To jest jak mgła."
+  ],
+  [
+   13.75,
+   15.44,
+   "Czujesz, że coś jest nie tak,"
+  ],
+  [
+   15.44,
+   16.55,
+   "ale nie widzisz co."
+  ],
+  [
+   17.09,
+   19.45,
+   "A we mgle każda decyzja wygląda źle."
+  ],
+  [
+   19.95,
+   20.62,
+   "Zostać."
+  ],
+  [
+   20.62,
+   21.4,
+   "Odejść."
+  ],
+  [
+   21.59,
+   22.21,
+   "Czekać."
+  ],
+  [
+   22.62,
+   24.89,
+   "U lekarza nikt nie zaczyna od leczenia."
+  ],
+  [
+   24.89,
+   26.35,
+   "Najpierw trzeba zobaczyć,"
+  ],
+  [
+   26.35,
+   27.69,
+   "co się naprawdę dzieje."
+  ],
+  [
+   28.03,
+   30.96,
+   "Dlatego w DUO zaczynamy od Mapy Relacji."
+  ],
+  [
+   31.26,
+   32.51,
+   "Najpierw pytania."
+  ],
+  [
+   32.51,
+   33.96,
+   "Potem rozmowa z psychologiem."
+  ],
+  [
+   34.46,
+   37.51,
+   "A na końcu obraz Waszej relacji, na piśmie:"
+  ],
+  [
+   37.81,
+   39.15,
+   "co Was jeszcze trzyma,"
+  ],
+  [
+   39.15,
+   40.48,
+   "gdzie jest najtrudniej"
+  ],
+  [
+   40.48,
+   42.73,
+   "i jak naprawdę wygląda Wasz konflikt."
+  ],
+  [
+   43.13,
+   44.19,
+   "Mgła opada."
+  ],
+  [
+   44.19,
+   45.53,
+   "I widać drogi."
+  ],
+  [
+   45.81,
+   46.63,
+   "Odbudowa."
+  ],
+  [
+   47.18,
+   48.23,
+   "Czas na decyzję."
+  ],
+  [
+   48.63,
+   51.1,
+   "Albo rozstanie z szacunkiem."
+  ],
+  [
+   51.49,
+   52.99,
+   "Nie powiemy Ci, którą wybrać."
+  ],
+  [
+   53.38,
+   56.0,
+   "Wierzymy, że każdy ma prawo do szczęścia."
+  ],
+  [
+   56.0,
+   58.11,
+   "Ale na szczęście trzeba pracować."
+  ],
+  [
+   58.11,
+   60.8,
+   "A żeby pracować, trzeba najpierw zobaczyć,"
+  ],
+  [
+   60.8,
+   61.77,
+   "gdzie się jest."
+  ]
+ ],
+ "shots": [
+  [
+   "s01",
+   0,
+   4.64
+  ],
+  [
+   "s02",
+   4.64,
+   7.74
+  ],
+  [
+   "s03",
+   7.74,
+   16.75
+  ],
+  [
+   "s04",
+   16.75,
+   22.52
+  ],
+  [
+   "s05",
+   22.52,
+   27.93
+  ],
+  [
+   "s06",
+   27.93,
+   31.16
+  ],
+  [
+   "s07",
+   31.16,
+   32.51
+  ],
+  [
+   "s08",
+   32.51,
+   34.31
+  ],
+  [
+   "s09",
+   34.31,
+   42.98
+  ],
+  [
+   "s10",
+   42.98,
+   51.39
+  ],
+  [
+   "s11",
+   51.39,
+   57.7
+  ],
+  [
+   "s12",
+   57.7,
+   62.06
+  ],
+  [
+   "s13",
+   62.06,
+   76.77
+  ]
+ ],
+ "ev": {
+  "hook": [
+   0.2,
+   4.44
+  ],
+  "fogLift": 42.98,
+  "roads": [
+   45.81,
+   47.18,
+   48.63
+  ],
+  "roadsEnd": 51.2,
+  "punch": [
+   62.21,
+   63.81
+  ],
+  "logo": 65.15,
+  "logoWords": [
+   65.95,
+   66.8,
+   68.4
+  ],
+  "share": 70.64,
+  "shareLines": [
+   70.84,
+   74.04
+  ],
+  "total": 76.77
+ }
+}
