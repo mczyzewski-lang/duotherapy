@@ -5,9 +5,23 @@ import { BODY_LEFT, BOWL, BRAND, MAPA, MAPA_ARROW_LEFT, MAPA_ARROW_RIGHT, MAPA_G
 
 export { mapaSymbolSvg, symbolSvg } from "@/lib/brand-mark";
 
-export function BrandSymbol({ className, id = "duo", title }: { className?: string; id?: string; title?: string }) {
+/**
+ * `talk` – wersja „rozmawiająca” (nagłówek strony): co kilka sekund postaci na zmianę lekko się pochylają,
+ * a przy głowie pojawia się mały dymek z trzema kropkami. Sam CSS (globals.css, .duo-talk); bez ruchu przy
+ * prefers-reduced-motion.
+ */
+export function BrandSymbol({ className, id = "duo", title, talk }: { className?: string; id?: string; title?: string; talk?: boolean }) {
+  const bubble = (side: "l" | "r", cx: number, color: string) => (
+    <g className={`duo-bub duo-bub-${side}`} aria-hidden>
+      <rect x={cx - 8} y={-11.5} width={16} height={10.5} rx={5} fill="#fff" stroke="rgba(60,45,30,.22)" strokeWidth={0.7} />
+      <path d={side === "l" ? `M${cx + 2} -1.4 L${cx + 5} 2.2 L${cx + 5.5} -1.4Z` : `M${cx - 2} -1.4 L${cx - 5} 2.2 L${cx - 5.5} -1.4Z`} fill="#fff" />
+      {[-4, 0, 4].map((dx, i) => (
+        <circle key={dx} className={`duo-dot duo-dot-${i}`} cx={cx + dx} cy={-6.2} r={1.25} fill={color} />
+      ))}
+    </g>
+  );
   return (
-    <svg viewBox="0 0 71 42" className={className} role={title ? "img" : undefined} aria-label={title} aria-hidden={title ? undefined : true}>
+    <svg viewBox="0 0 71 42" className={clsx(className, talk && "duo-talk overflow-visible")} role={title ? "img" : undefined} aria-label={title} aria-hidden={title ? undefined : true}>
       <defs>
         {(
           [
@@ -24,20 +38,26 @@ export function BrandSymbol({ className, id = "duo", title }: { className?: stri
           </linearGradient>
         ))}
       </defs>
-      <circle cx="7" cy="4.9" r="4.8" fill={`url(#${id}-th)`} />
-      <path d={BODY_LEFT} fill={`url(#${id}-t)`} />
+      <g className={talk ? "duo-fig-l" : undefined}>
+        <circle className={talk ? "duo-head-l" : undefined} cx="7" cy="4.9" r="4.8" fill={`url(#${id}-th)`} />
+        <path d={BODY_LEFT} fill={`url(#${id}-t)`} />
+      </g>
       <path d={BOWL} fill={`url(#${id}-s)`} />
-      <circle cx="64" cy="4.9" r="4.8" fill={`url(#${id}-gh)`} />
-      <path d={BODY_LEFT} transform="matrix(-1 0 0 1 71 0)" fill={`url(#${id}-g)`} />
+      <g className={talk ? "duo-fig-r" : undefined}>
+        <circle className={talk ? "duo-head-r" : undefined} cx="64" cy="4.9" r="4.8" fill={`url(#${id}-gh)`} />
+        <path d={BODY_LEFT} transform="matrix(-1 0 0 1 71 0)" fill={`url(#${id}-g)`} />
+      </g>
+      {talk && bubble("l", -3, BRAND.terracotta[1])}
+      {talk && bubble("r", 74, BRAND.green[1])}
     </svg>
   );
 }
 
 /** Logo poziome: symbol + DUO® + „Terapia małżeństw”. */
-export function Logo({ className, light, compact, id = "logo" }: { className?: string; light?: boolean; compact?: boolean; id?: string }) {
+export function Logo({ className, light, compact, talk, id = "logo" }: { className?: string; light?: boolean; compact?: boolean; talk?: boolean; id?: string }) {
   return (
     <span className={clsx("inline-flex items-center gap-2.5", className)}>
-      <BrandSymbol id={id} className={compact ? "h-6 w-auto" : "h-8 w-auto"} />
+      <BrandSymbol id={id} talk={talk} className={compact ? "h-6 w-auto" : "h-8 w-auto"} />
       <span className="flex flex-col leading-none">
         <span className={clsx("font-wordmark font-medium", compact ? "text-xl" : "text-[1.65rem]", light ? "text-white" : "text-forest")}>
           DUO<sup className="ml-0.5 align-super font-sans text-[0.4em] font-normal">®</sup>

@@ -21,7 +21,7 @@ export async function SiteHeader({ variant = "default", cta }: { variant?: Varia
     <header className={hamburgerOnly ? "relative z-40 border-b border-sand/60 bg-ivory" : "sticky top-0 z-40 border-b border-sand/60 bg-ivory/90 backdrop-blur"}>
       <nav className="relative mx-auto flex max-w-6xl items-center justify-between gap-2 px-4 py-3 sm:gap-3 sm:px-5" aria-label="Główna">
         <div className="flex min-w-0 items-center gap-4">
-          <Link href="/" aria-label="DUO – strona główna" className="min-w-0"><Logo /></Link>
+          <Link href="/" aria-label="DUO – strona główna" className="min-w-0"><Logo talk /></Link>
           {variant === "mapa" && (
             <>
               <span className="hidden h-8 w-px bg-sand-dark xl:block" aria-hidden />

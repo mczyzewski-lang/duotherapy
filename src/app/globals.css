@@ -268,3 +268,26 @@ path.map-line[stroke-dasharray="6 7"] { stroke-dasharray: 6 7; stroke-dashoffset
 @media (prefers-reduced-motion: reduce) {
   .pv-sink, .pv-card { transform: none; opacity: 1; filter: none; }
 }
+
+/* Logo „rozmawiające” (nagłówek strony): co 9 s postaci zamieniają dwa zdania – lekki ruch i dymek przy głowie. */
+.duo-talk .duo-fig-l, .duo-talk .duo-fig-r, .duo-talk .duo-head-l, .duo-talk .duo-head-r, .duo-talk .duo-bub { transform-box: view-box; }
+.duo-talk .duo-fig-l { transform-origin: 0.5px 41px; animation: duo-lean-l 9s ease-in-out infinite; }
+.duo-talk .duo-fig-r { transform-origin: 70.5px 41px; animation: duo-lean-r 9s ease-in-out infinite; }
+.duo-talk .duo-head-l { animation: duo-nod-l 9s ease-in-out infinite; }
+.duo-talk .duo-head-r { animation: duo-nod-r 9s ease-in-out infinite; }
+.duo-talk .duo-bub { opacity: 0; }
+.duo-talk .duo-bub-l { transform-origin: 3px 2px; animation: duo-bub-l 9s ease-out infinite; }
+.duo-talk .duo-bub-r { transform-origin: 68px 2px; animation: duo-bub-r 9s ease-out infinite; }
+.duo-talk .duo-dot { animation: duo-dot 0.9s ease-in-out infinite; }
+.duo-talk .duo-dot-1 { animation-delay: 0.15s; }
+.duo-talk .duo-dot-2 { animation-delay: 0.3s; }
+@keyframes duo-lean-l { 0%, 12%, 30%, 100% { transform: rotate(0deg); } 16%, 26% { transform: rotate(2.4deg); } }
+@keyframes duo-lean-r { 0%, 32%, 50%, 100% { transform: rotate(0deg); } 36%, 46% { transform: rotate(-2.4deg); } }
+@keyframes duo-nod-l { 0%, 13%, 29%, 100% { transform: translate(0, 0); } 16%, 20%, 24% { transform: translate(0.9px, 1.1px); } 18%, 22%, 26% { transform: translate(0.9px, 0); } }
+@keyframes duo-nod-r { 0%, 33%, 49%, 100% { transform: translate(0, 0); } 36%, 40%, 44% { transform: translate(-0.9px, 1.1px); } 38%, 42%, 46% { transform: translate(-0.9px, 0); } }
+@keyframes duo-bub-l { 0%, 12% { opacity: 0; transform: scale(0.4); } 15%, 27% { opacity: 1; transform: scale(1); } 30%, 100% { opacity: 0; transform: scale(0.6); } }
+@keyframes duo-bub-r { 0%, 32% { opacity: 0; transform: scale(0.4); } 35%, 47% { opacity: 1; transform: scale(1); } 50%, 100% { opacity: 0; transform: scale(0.6); } }
+@keyframes duo-dot { 0%, 100% { opacity: 0.35; } 50% { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) {
+  .duo-talk .duo-fig-l, .duo-talk .duo-fig-r, .duo-talk .duo-head-l, .duo-talk .duo-head-r, .duo-talk .duo-bub, .duo-talk .duo-dot { animation: none; }
+}
