@@ -53,11 +53,11 @@ function bubble(t,alpha){const b=TL.bubble;if(!b||alpha<=0)return;const k=clamp(
   g.fillStyle=C.clay;g.globalAlpha*=0.9;rr(bx-w/2+34,top-7,84,14,7);g.fill();g.globalAlpha=alpha*clamp(k*3);
   drawWords(lines,bx,top+h/2,lh,t,C.forest,0.3,fs);g.restore();g.globalAlpha=1}
 // kadr: obraz pomniejszony do strefy bezpiecznej, z wygaszonymi krawędziami
-function scene(key,t,a){const sc=TL[key];if(a<=0)return;const fr=FR[key],p=clamp((t-sc.a)/(sc.b-sc.a)),z=(key==="A"?lerp(1.0,1.06,p):lerp(1.07,1.0,easeOut(p*1.6))+0.035*p)*1.04*1.5;
-  const w=720*z,h=1280*z,x=W/2-w/2+(sc.shiftX??-22),y=H/2-h/2+(sc.shiftY??100);g.globalAlpha=a;
+function scene(key,t,a){const sc=TL[key];if(a<=0)return;const fr=FR[key],p=clamp((t-sc.a)/(sc.b-sc.a)),z=(key==="A"?lerp(1.0,1.06,p):lerp(1.07,1.0,easeOut(p*1.6))+0.035*p)*(TL.full?1.0:1.04)*1.5;
+  const w=720*z,h=1280*z,x=W/2-w/2+(sc.shiftX??(TL.full?0:-22)),y=H/2-h/2+(sc.shiftY??(TL.full?130:100));g.globalAlpha=a;
   if(fr){g.drawImage(fr.i0,x,y,w,h);if(fr.i1&&fr.f>0.02){g.globalAlpha=a*fr.f;g.drawImage(fr.i1,x,y,w,h)}}else g.drawImage(IM[key],x,y,w,h);g.globalAlpha=1;
   const fade=(x0,y0,x1,y1,rx,ry,rw,rh)=>{const gr=g.createLinearGradient(x0,y0,x1,y1);gr.addColorStop(0,"rgba(251,249,245,1)");gr.addColorStop(1,"rgba(251,249,245,0)");g.fillStyle=gr;g.fillRect(rx,ry,rw,rh)};
-  g.globalAlpha=a;fade(0,0,36,0,0,0,36,H);fade(W,0,W-36,0,W-36,0,36,H);fade(0,y,0,y+170,0,y-2,W,172);fade(0,y+h,0,y+h-220,0,y+h-220,W,222);
+  g.globalAlpha=a;if(!TL.full){fade(0,0,36,0,0,0,36,H);fade(W,0,W-36,0,W-36,0,36,H)}fade(0,y,0,y+170,0,y-2,W,172);fade(0,y+h,0,y+h-220,0,y+h-220,W,222);
   g.fillStyle=C.ivory;g.fillRect(0,0,Math.max(0,x),H);g.fillRect(x+w,0,W,H);g.fillRect(0,0,W,Math.max(0,y));g.fillRect(0,y+h,W,H);g.globalAlpha=1}
 // logo u góry, na środku: dwie postaci przy stole (co kilka sekund „zamieniają dwa zdania”) + napis DUO.pl® z przebłyskiem
 const BODY=new Path2D("M0.5 11.7H3.5C12 11.7 18.6 18.6 18.6 26.4C18.6 34.6 12.3 41 4.6 41H1.6A1.1 1.1 0 0 1 0.5 39.9Z"),BOWL=new Path2D("M20.6 26.7H49.6A14.5 14.3 0 0 1 20.6 26.7Z");
@@ -122,7 +122,8 @@ function magnet(t){const c=TL.cta,u=t-c.t0;if(u<=0||!COVER)return;const a=ease(u
     g.font='800 46px "Inter V"';g.letterSpacing="2px";g.fillStyle="#fff";g.fillText(c.word,px+28,3);g.letterSpacing="0px";g.restore();g.globalAlpha=1}}
 function render(t){g.setTransform(1,0,0,1,0,0);g.globalAlpha=1;g.fillStyle=C.ivory;g.fillRect(0,0,W,H);
   const tA=TL.A.b,XF=0.32;if(t<tA+XF)scene("A",t,1);if(t>=tA)scene("B",t,ease((t-tA)/XF));
-  const hg=g.createLinearGradient(0,0,0,790);hg.addColorStop(0,"rgba(251,249,245,1)");hg.addColorStop(0.78,"rgba(251,249,245,.95)");hg.addColorStop(1,"rgba(251,249,245,0)");g.fillStyle=hg;g.fillRect(0,0,W,790);
+  // jasne tło pod nagłówek i logo; przy pełnoekranowych kadrach po hooku zwija się do samego logo (chyba że jest karta)
+  const hgH=TL.full&&!TL.card?lerp(790,520,ease((t-tA)/0.6)):790,hg=g.createLinearGradient(0,0,0,hgH);hg.addColorStop(0,"rgba(251,249,245,1)");hg.addColorStop(0.78,"rgba(251,249,245,.95)");hg.addColorStop(1,"rgba(251,249,245,0)");g.fillStyle=hg;g.fillRect(0,0,W,hgH);
   const mg=TL.cta.type==="magnet",mo=mg?1-ease((t-TL.cta.t0+0.1)/0.3):1;
   if(t<tA+0.1){const out=1-ease((t-(tA-0.22))/0.22);headline(TL.hook.lines,TL.hook.pill,TL.hook.times,t,out,372)}
   if(t>=tA){const cd=TL.card,bb=TL.bubble;

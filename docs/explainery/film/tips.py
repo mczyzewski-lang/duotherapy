@@ -48,17 +48,41 @@ TIPS={
    (H,'Zaczynasz trudną rozmowę w drzwiach?'),(T,'Moment ma znaczenie. Zapytaj najpierw:'),(T,'„Kiedy masz dziś 20 minut? Chcę porozmawiać o czymś ważnym.”'),(T,'Rozmowa umówiona to rozmowa, do której oboje jesteście gotowi.'),(C_,'Jeżeli chcesz bezpłatnie plan trudnej rozmowy, skomentuj: rozmowa.')]),
  'T20':dict(A='s03a',B='tB20',magnet=('mapa-trzech-drog','MAPA',['Mapa trzech dróg']),hook=(['Nie wiesz,','czy ratować,','czy odejść?'],2),card=(['Nie decyduj w nocy.','Zapisz. Wróć rano.'],1),cardAt=1,units=[
    (H,'Nie wiesz, czy ratować, czy odejść?'),(T,'Nie podejmuj tej decyzji w nocy ani w złości.'),(T,'Zapisz ją na kartce i wróć do niej rano.'),(T,'Najpierw sprawdź, w którym miejscu naprawdę jesteście.'),(C_,'Jeżeli chcesz bezpłatnie Mapę trzech dróg, skomentuj: mapa.')]),
+ # ––– pielęgnacja związku (P01–P10): pionowe, pełnoekranowe kadry, bez znacznika tematu –––
+ 'P01':dict(A='pA01',B='pB01',cta='save',hook=(['Rano wychodzicie','bez słowa?'],1),units=[
+   (H,'Rano wychodzicie z domu bez słowa?'),(T,'Zanim zamkniesz drzwi, zadaj jedno pytanie:'),(T,'„Co dziś przed Tobą?”'),(T,'A wieczorem do tego wróć. To znak: pamiętam o Twoim dniu.'),(C_,'Zapisz i wypróbuj jutro rano.')]),
+ 'P02':dict(A='pA02',B='pB02',cta='share',hook=(['Kiedy ostatnio','powiedziałeś jej coś miłego','bez okazji?'],2),units=[
+   (H,'Kiedy ostatnio powiedziałeś jej coś miłego bez okazji?'),(T,'Raz dziennie dokończ jedno zdanie:'),(T,'„Lubię w Tobie to, że…”'),(T,'Nie musi być wielkie. Ma być prawdziwe i powiedziane na głos.'),(C_,'Wyślij to osobie, której chcesz to dziś powiedzieć.')]),
+ 'P03':dict(A='pA03',B='pB03',cta='save',hook=(['Wiesz, o czym','teraz marzy','Twoja żona?'],2),units=[
+   (H,'Wiesz, o czym teraz marzy Twoja żona? A Twój mąż?'),(T,'Ludzie się zmieniają. Raz w miesiącu zapytaj:'),(T,'„O czym ostatnio myślisz najczęściej?”'),(T,'Nie zakładaj, że wiesz. Bądź ciekawy tak jak na początku.'),(C_,'Zapisz to pytanie na najbliższy spokojny wieczór.')]),
+ 'P04':dict(A='pA04',B='pB04',cta='share',hook=(['Siedzicie obok siebie,','każde','w swoim telefonie?'],2),card=(['30 minut','telefony w koszyku'],0),cardAt=1,units=[
+   (H,'Wieczorem siedzicie obok siebie, każde w swoim telefonie?'),(T,'Wystarczy jedna umowa: pierwsze pół godziny po kolacji telefony leżą w koszyku.'),(T,'Nie musicie rozmawiać o niczym ważnym.'),(T,'Wystarczy, że jesteście dla siebie dostępni.'),(C_,'Wyślij to mężowi albo żonie i zacznijcie dziś.')]),
+ 'P05':dict(A='pA05',B='pB05',magnet=('bliskosc-po-dziecku','BLISKOŚĆ',['10 małych rytuałów','bliskości']),hook=(['Dotykacie się','już tylko','przy okazji?'],2),card=(['Ręka na ramieniu.','Bez powodu.'],0),cardAt=1,units=[
+   (H,'Dotykacie się już tylko przy okazji?'),(T,'Kiedy przechodzisz obok, połóż na chwilę rękę na ramieniu.'),(T,'Bez powodu i bez oczekiwań.'),(T,'Taki gest mówi: widzę Cię. Nawet w najbardziej zabiegany dzień.'),(C_,'Jeżeli chcesz bezpłatnie dziesięć małych rytuałów bliskości, skomentuj: bliskość.')]),
+ 'P06':dict(A='pA06',B='pB06',magnet=('czas-we-dwoje','POMYSŁY',['30 pomysłów','na czas we dwoje']),hook=(['Kiedy ostatnio','zrobiliście coś razem','pierwszy raz?'],2),card=(['Raz w miesiącu','coś nowego','we dwoje'],1),cardAt=1,units=[
+   (H,'Kiedy ostatnio zrobiliście coś razem pierwszy raz?'),(T,'Raz w miesiącu jedna nowa rzecz. Nowa trasa spaceru, nowy przepis, nowa gra.'),(T,'Nie chodzi o atrakcje. Chodzi o to, żeby znów zobaczyć się w nowej sytuacji.'),(C_,'Jeżeli chcesz bezpłatnie trzydzieści pomysłów na czas we dwoje, skomentuj: pomysły.')]),
+ 'P07':dict(A='pA07',B='pB07',cta='save',hook=(['Wszystko','ustalacie','w biegu?'],2),card=(['20 minut w niedzielę','3 pytania'],1),cardAt=1,units=[
+   (H,'Wszystko ustalacie w biegu, między drzwiami a samochodem?'),(T,'Umówcie się na 20 minut w niedzielę. Trzy pytania:'),(T,'Co przed nami w tym tygodniu? Czego od siebie potrzebujemy? I co ostatnio było dobre?'),(T,'Mniej nieporozumień w tygodniu, więcej spokoju w domu.'),(C_,'Zapisz te trzy pytania na niedzielę.')]),
+ 'P08':dict(A='pA08',B='pB08',cta='share',hook=(['On mówi: „Udało mi się!”','A Ty:','„mhm”?'],2),units=[
+   (H,'On mówi: udało mi się! A Ty odpowiadasz: mhm?'),(T,'Radość też potrzebuje świadka. Nie tylko trudne chwile.'),(T,'Odłóż to, co robisz, i powiedz:'),(T,'„Opowiedz, jak to było!”'),(C_,'Wyślij to komuś, z kim lubisz dzielić dobre wiadomości.')]),
+ 'P09':dict(A='pA09',B='pB09',cta='save',hook=(['Zasypiacie','odwróceni','plecami do siebie?'],2),units=[
+   (H,'Zasypiacie odwróceni plecami do siebie?'),(T,'Zanim zgasicie światło, dokończcie jedno zdanie:'),(T,'„Dziś było mi z Tobą dobrze, kiedy…”'),(T,'Dzień zapamiętuje się po tym, jak się kończy.'),(C_,'Zapisz i wypróbujcie dziś wieczorem.')]),
+ 'P10':dict(A='pA10',B='pB10',magnet=('jezyk-potrzeb','POTRZEBY',['Ściąga: jak mówić','o swoich potrzebach']),hook=(['Ona opowiada','o trudnym dniu,','a Ty od razu radzisz?'],2),units=[
+   (H,'Ona opowiada o trudnym dniu, a Ty od razu radzisz?'),(T,'Często druga osoba nie szuka rozwiązania. Szuka obecności.'),(T,'Zanim cokolwiek doradzisz, zapytaj:'),(T,'„Chcesz, żebym posłuchał, czy żebym pomógł coś wymyślić?”'),(C_,'Jeżeli chcesz bezpłatnie ściągę zdań o potrzebach, skomentuj: potrzeby.')]),
 }
+# kadry pełnoekranowe: jednostka z cytatem i położenie głowy mówiącej postaci jako ułamek kadru (x, y czubka głowy)
+BUBF={'P01':(2,.75,.354),'P02':(2,.31,.35),'P03':(2,.29,.32),'P08':(3,.68,.34),'P09':(2,.61,.40),'P10':(3,.26,.32)}
+def ptf(fx,fy): return [round(540+(fx-.5)*1080*1.02),round(960+(fy-.5)*1958+130-16)]
 # dymek z cytatem: nr jednostki z cytatem i punkt (x,y) nad głową mówiącej postaci w kadrze B
 BUB={'T01':(2,750,850),'T02':(3,685,868),'T03':(3,722,884),'T04':(3,666,776),'T05':(3,285,765),'T06':(3,601,866),'T07':(3,648,846),'T08':(2,351,846),
      'T11':(2,694,846),'T12':(2,583,820),'T13':(3,648,832),'T14':(2,676,784),'T15':(2,648,836),'T17':(2,611,802),'T19':(2,652,886)}
 # karta-nagłówek zostaje tylko tam, gdzie nie powtarza cytatu z dymka
-CARD_KEEP={'T04':(['10 minut dziennie','bez telefonów'],0),'T09':None,'T10':None,'T13':None,'T16':None,'T18':None,'T20':None}
+CARD_KEEP={'T04':(['10 minut dziennie','bez telefonów'],0),'T09':None,'T10':None,'T13':None,'T16':None,'T18':None,'T20':None,'P04':None,'P05':None,'P06':None,'P07':None}
 TAGS=dict(T01='#kłótnia',T02='#komunikacja',T03='#cichedni',T04='#rozmowa',T05='#pokłótni',T06='#trudnarozmowa',T07='#wdzięczność',T08='#słuchanie',T09='#obowiązki',T10='#czaswedwoje',
   T11='#pieniądze',T12='#rodzina',T13='#dzieci',T14='#kłótnia',T15='#konflikt',T16='#bliskość',T17='#potrzeby',T18='#oddalenie',T19='#trudnarozmowa',T20='#decyzja')
 # punkty z BUB podane w układzie kadru 0,86 – przeliczenie na obecną skalę kadru (1,04; przesunięcie -22/+100)
 def pt(x,y): return [round((x-25.5)/928.8*1123.2-43.6),round((y-194.5)/1651.2*1996.8+61.6)]
-AMB={'T02':'kitchen','T09':'kitchen','T15':'kitchen','T10':'birds','T20':'birds'}
+AMB={'P02':'kitchen','P06':'kitchen','P03':'birds','T02':'kitchen','T09':'kitchen','T15':'kitchen','T10':'birds','T20':'birds'}
 CTA_TXT={'save':'Zapisz na później','share':'Wyślij dalej'}
 def align(k):
     x=load(f'tips/{k}.mp3');fr=np.array([np.sqrt((x[i:i+320]**2).mean()) for i in range(0,len(x)-320,320)]);sp=fr>0.012
@@ -96,13 +120,13 @@ def timeline(k):
         return dict(n=c,fps=30,dur=round((c-1)/30,3)) if c else None
     cB=clip(cfg['B'])
     tl=dict(dur=dur,A=dict(img=cfg['A'],a=0,b=tA,clip=clip(cfg['A'])),B=dict(img=cfg['B'],a=tA,b=dur,clip=cB,tau=round(max(cB['dur']*0.9,(dur-tA)/2.3),3)),
-      hook=dict(lines=hl,pill=hp,times=[0 if i==0 else round(0.25+hd*(i/n)*0.5,3) for i in range(n)]),logoAt=round(tA+0.9,3),tag=TAGS.get(k))
-    bq=BUB.get(k);caps=[]
+      hook=dict(lines=hl,pill=hp,times=[0 if i==0 else round(0.25+hd*(i/n)*0.5,3) for i in range(n)]),logoAt=round(tA+0.9,3),tag=TAGS.get(k),full=k[0]=='P')
+    bq=BUB.get(k) or BUBF.get(k);caps=[]
     for i in range(ft,ci):
         ws=words(units[i][1],seg[i][0],seg[i][1]+0.05)
         if bq and bq[0]==i:
             q0=next(j for j,w in enumerate(ws) if w[0].startswith('„'));q1=next(j for j in range(q0,len(ws)) if '”' in w_(ws[j]))
-            tl['bubble']=dict(t0=round(ws[q0][1]-0.12,3),words=ws[q0:q1+1],tail=pt(bq[1],bq[2]))
+            tl['bubble']=dict(t0=round(ws[q0][1]-0.12,3),words=ws[q0:q1+1],tail=(ptf if k in BUBF else pt)(bq[1],bq[2]))
             parts=[ws[:q0],ws[q1+1:]]
         else: parts=[ws]
         for p in parts:

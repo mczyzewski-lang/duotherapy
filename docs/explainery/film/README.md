@@ -101,4 +101,9 @@ Podmiana hooka: nowy `v01.mp3` + tekst tytułu w `film.html` (sekcja „hook”)
   Okładki (`covers/<slug>.png`) to zrzuty komponentu okładki ze stron `/wiedza/<slug>` (`covers.js`) –
   z przezroczystym tłem i z grafiką 2D; lokalna baza musi mieć wgrane grafiki okładek (tabela `cover_images`)
   i wybrany wariant „Grafika 2D”.
-- Scenariusze kolejnej serii (pielęgnacja związku, P01–P10): `../duo_porady_pielegnacja-zwiazku.md`.
+- Seria „pielęgnacja związku” (P01–P10, scenariusze: `../duo_porady_pielegnacja-zwiazku.md`) ma pionowe,
+  pełnoekranowe kadry (`full` w osi czasu): ilustracja wypełnia cały ekran 9:16, jasne tło zostaje tylko pod
+  nagłówkiem i logo, bez znacznika tematu. Punkt dymka podaje `BUBF` jako ułamek kadru.
+- Zasada na przyszłość: nowe ilustracje generujemy jako pionowe sceny 9:16 wypełniające kadr od krawędzi do
+  krawędzi (wysokie wnętrze, spokojna góra na nagłówek, postaci pośrodku, podłoga na dole) – nie jako poziomą
+  scenkę osadzoną na jasnym tle.
