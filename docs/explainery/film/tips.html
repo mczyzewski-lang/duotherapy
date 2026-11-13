@@ -99,7 +99,7 @@ function cta(t){const c=TL.cta,a=easeOut((t-c.t0)/0.4);if(a<=0)return;const sc=(
   g.fillStyle="#fff";g.fillText(c.text,-w/2+118,3);g.restore();g.globalAlpha=1}
 // CTA z materiałem: okładka 3D wjeżdża od dołu + „Skomentuj: SŁOWO”
 function magnet(t){const c=TL.cta,u=t-c.t0;if(u<=0||!COVER)return;const a=ease(u/0.35);
-  g.globalAlpha=0.9*a;g.fillStyle=C.ivory;g.fillRect(0,330,W,H);g.globalAlpha=1;
+  g.globalAlpha=0.9*a;g.fillStyle=C.ivory;g.fillRect(0,TL.full?0:330,W,H);g.globalAlpha=1;
   // tytuł
   g.textAlign="center";g.textBaseline="middle";const ta=easeOut((u-0.15)/0.4);g.save();g.translate(CX,410-(1-ta)*14);g.globalAlpha=ta;g.font='700 30px "Inter V"';g.letterSpacing="6px";const lw=g.measureText("BEZPŁATNIE").width+52;g.fillStyle=C.sage;rr(-lw/2,-26,lw,52,26);g.fill();g.fillStyle="#fff";g.fillText("BEZPŁATNIE",3,2);g.letterSpacing="0px";g.restore();
   g.font='600 62px "Fraunces V"';const wm=Math.max(...c.title.map(l=>g.measureText(l).width)),fs=Math.min(62,62*720/wm);g.font=`600 ${fs}px "Fraunces V"`;g.fillStyle=C.forest;
