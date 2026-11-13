@@ -76,14 +76,19 @@ Podmiana hooka: nowy `v01.mp3` + tekst tytułu w `film.html` (sekcja „hook”)
   (automat odpowiedzi na komentarze) – film tylko to zapowiada.
 - Logo na środku u góry, bez tła: symbol (co kilka sekund postaci „zamieniają dwa zdania”) i napis
   „DUO.pl®” z przebłyskiem przechodzącym przez litery. Pojawia się po chwili od wejścia porady.
+- Kadr wypełnia całą szerokość ekranu; ekran końcowy z okładką jest wyśrodkowany tak jak logo.
+- Na dole, na środku, stoi mały znacznik tematu (np. „#kłótnia”) – słownik `TAGS` w `tips.py`.
 - Napisy: aktualnie wypowiadane słowo podświetla się w kolorze marki. Czasy słów są szacowane
   proporcjonalnie do długości słów w zdaniu (bez transkrypcji), więc mogą odbiegać o ułamek sekundy.
 - Cytat (tekst w „…”) pokazuje się w dymku wychodzącym od mówiącej postaci, a nie w napisach;
   jednostkę z cytatem i punkt nad głową postaci podaje słownik `BUB` w `tips.py`.
 - Klip sceny z poradą odtwarza się raz, z wyhamowaniem i przenikaniem sąsiednich klatek – bez zapętlania
-  w tył. Sceny tB14, tB16, tB18 i tB20 to nieruchome ilustracje z powolnym zbliżeniem.
+  w tył.
 - Dźwięk: lektor, muzyka, tło sceny (dom, kuchnia albo ptaki – słownik `AMB`), krótki motyw napięcia pod
   hookiem, akcenty przy dymku, okładce i plakietce.
 - Treści porad (zdania lektora, nagłówki, karty, wezwania, kadry, okładki) są w słowniku `TIPS` w `tips.py`.
   `python3 tips.py plan` pokazuje wyrównanie zdań do nagrania, `python3 tips.py build T03` składa film.
-  Okładki (`covers/<slug>.png`) to zrzuty komponentu okładki ze stron `/wiedza/<slug>`.
+  Okładki (`covers/<slug>.png`) to zrzuty komponentu okładki ze stron `/wiedza/<slug>` (`covers.js`) –
+  z przezroczystym tłem i z grafiką 2D; lokalna baza musi mieć wgrane grafiki okładek (tabela `cover_images`)
+  i wybrany wariant „Grafika 2D”.
+- Scenariusze kolejnej serii (pielęgnacja związku, P01–P10): `../duo_porady_pielegnacja-zwiazku.md`.

@@ -29,7 +29,7 @@ function drawWords(lines,cx,cy,lh,t,base,dim,fs){g.textAlign="left";g.textBaseli
       else{g.fillStyle=base;if(!said&&dim<1)g.globalAlpha=ga*dim}
       g.fillText(o.w,x0+o.x,y+2);g.globalAlpha=ga}})}
 function caption(words,t,a,dy){ if(a<=0)return;g.font='600 50px "Inter V"';
-  const lines=layout(words,640),lh=68,w=Math.max(...lines.map(l=>l.width))+84,h=lines.length*lh+46,cy=1326+dy-(lines.length>2?30:0);
+  const lines=layout(words,640),lh=68,w=Math.max(...lines.map(l=>l.width))+84,h=lines.length*lh+46,cy=1262+dy-(lines.length>2?24:0);
   g.globalAlpha=a;g.shadowColor="rgba(60,45,30,.22)";g.shadowBlur=34;g.shadowOffsetY=10;g.fillStyle="rgba(251,249,245,.96)";rr(SX-w/2,cy-h/2,w,h,36);g.fill();
   g.shadowColor="transparent";g.shadowBlur=0;g.shadowOffsetY=0;drawWords(lines,SX,cy,lh,t,C.ink,1,50);g.globalAlpha=1}
 const pop=(t,t0,d=0.38)=>{const x=clamp((t-t0)/d);return t0<=0?1+0.1*(1-easeOut(t/0.6)):x<=0?0:1+0.16*Math.sin(Math.PI*x)*(1-x)-(1-easeOut(x))*0.35};
@@ -48,16 +48,16 @@ function bubble(t,alpha){const b=TL.bubble;if(!b||alpha<=0)return;const k=clamp(
   const [tx,ty]=b.tail,bx=clamp(SX,SAFE.l+w/2,SAFE.r-w/2),top=372,bot=top+h,ax=clamp(tx,bx-w/2+90,bx+w/2-90),fl=3*Math.sin((t-b.t0)*1.7);
   g.save();g.translate(tx,ty);g.scale(sc,sc);g.translate(-tx,-ty+fl);g.globalAlpha=alpha*clamp(k*3);
   g.shadowColor="rgba(60,45,30,.24)";g.shadowBlur=40;g.shadowOffsetY=14;g.fillStyle="#fffdfa";
-  g.beginPath();g.roundRect(bx-w/2,top,w,h,46);g.moveTo(ax-38,bot-2);g.quadraticCurveTo(lerp(ax,tx,0.4),lerp(bot,ty,0.55),tx,ty);g.quadraticCurveTo(lerp(ax,tx,0.75)+14,lerp(bot,ty,0.4),ax+38,bot-2);g.closePath();g.fill();
-  g.shadowColor="transparent";g.shadowBlur=0;g.shadowOffsetY=0;
+  const box=()=>{g.beginPath();g.roundRect(bx-w/2,top,w,h,46);g.fill()},tail=()=>{g.beginPath();g.moveTo(ax-38,bot-14);g.lineTo(ax-38,bot-1);g.quadraticCurveTo(lerp(ax,tx,0.4),lerp(bot,ty,0.55),tx,ty);g.quadraticCurveTo(lerp(ax,tx,0.75)+14,lerp(bot,ty,0.4),ax+38,bot-1);g.lineTo(ax+38,bot-14);g.closePath();g.fill()};
+  tail();box();g.shadowColor="transparent";g.shadowBlur=0;g.shadowOffsetY=0;tail();box();
   g.fillStyle=C.clay;g.globalAlpha*=0.9;rr(bx-w/2+34,top-7,84,14,7);g.fill();g.globalAlpha=alpha*clamp(k*3);
   drawWords(lines,bx,top+h/2,lh,t,C.forest,0.3,fs);g.restore();g.globalAlpha=1}
 // kadr: obraz pomniejszony do strefy bezpiecznej, z wygaszonymi krawędziami
-function scene(key,t,a){const sc=TL[key];if(a<=0)return;const fr=FR[key],p=clamp((t-sc.a)/(sc.b-sc.a)),z=(key==="A"?lerp(1.0,1.06,p):lerp(1.07,1.0,easeOut(p*1.6))+0.035*p)*0.86*1.5;
-  const w=720*z,h=1280*z,x=W/2-w/2+(sc.shiftX??-50),y=H/2-h/2+(sc.shiftY??60);g.globalAlpha=a;
+function scene(key,t,a){const sc=TL[key];if(a<=0)return;const fr=FR[key],p=clamp((t-sc.a)/(sc.b-sc.a)),z=(key==="A"?lerp(1.0,1.06,p):lerp(1.07,1.0,easeOut(p*1.6))+0.035*p)*1.04*1.5;
+  const w=720*z,h=1280*z,x=W/2-w/2+(sc.shiftX??-22),y=H/2-h/2+(sc.shiftY??100);g.globalAlpha=a;
   if(fr){g.drawImage(fr.i0,x,y,w,h);if(fr.i1&&fr.f>0.02){g.globalAlpha=a*fr.f;g.drawImage(fr.i1,x,y,w,h)}}else g.drawImage(IM[key],x,y,w,h);g.globalAlpha=1;
   const fade=(x0,y0,x1,y1,rx,ry,rw,rh)=>{const gr=g.createLinearGradient(x0,y0,x1,y1);gr.addColorStop(0,"rgba(251,249,245,1)");gr.addColorStop(1,"rgba(251,249,245,0)");g.fillStyle=gr;g.fillRect(rx,ry,rw,rh)};
-  g.globalAlpha=a;fade(x,0,x+110,0,x-2,0,112,H);fade(x+w,0,x+w-140,0,x+w-140,0,142,H);fade(0,y,0,y+170,0,y-2,W,172);fade(0,y+h,0,y+h-220,0,y+h-220,W,222);
+  g.globalAlpha=a;fade(0,0,36,0,0,0,36,H);fade(W,0,W-36,0,W-36,0,36,H);fade(0,y,0,y+170,0,y-2,W,172);fade(0,y+h,0,y+h-220,0,y+h-220,W,222);
   g.fillStyle=C.ivory;g.fillRect(0,0,Math.max(0,x),H);g.fillRect(x+w,0,W,H);g.fillRect(0,0,W,Math.max(0,y));g.fillRect(0,y+h,W,H);g.globalAlpha=1}
 // logo u góry, na środku: dwie postaci przy stole (co kilka sekund „zamieniają dwa zdania”) + napis DUO.pl® z przebłyskiem
 const BODY=new Path2D("M0.5 11.7H3.5C12 11.7 18.6 18.6 18.6 26.4C18.6 34.6 12.3 41 4.6 41H1.6A1.1 1.1 0 0 1 0.5 39.9Z"),BOWL=new Path2D("M20.6 26.7H49.6A14.5 14.3 0 0 1 20.6 26.7Z");
@@ -71,7 +71,6 @@ function wordmark(t,t0,cx,cy,a){const fs=58,WM_W=420,WM_H=110;OFF.width=WM_W;OFF
   const u=(t-t0-0.5)%3.4,gp=u>=0&&u<0.95?u/0.95:-1;
   if(gp>=0){const gx=lerp(x0-70,x0+tw+90,ease(gp));og.globalCompositeOperation="source-atop";og.save();og.translate(gx,WM_H/2);og.transform(1,0,-0.45,1,0,0);const gr=og.createLinearGradient(-46,0,46,0);gr.addColorStop(0,"rgba(232,170,92,0)");gr.addColorStop(0.5,"rgba(236,178,100,1)");gr.addColorStop(1,"rgba(232,170,92,0)");og.fillStyle=gr;og.fillRect(-46,-WM_H,92,WM_H*2);og.restore();og.globalCompositeOperation="source-over"}
   g.save();g.globalAlpha=a;const pulse=gp>=0?1+0.045*Math.sin(Math.PI*gp):1;g.translate(cx,cy);g.scale(pulse,pulse);g.drawImage(OFF,-WM_W/2,-WM_H/2);
-  if(gp>=0.55)star(tw/2+20,-26,17,Math.sin(Math.PI*(gp-0.55)/0.45));
   g.restore();g.globalAlpha=1}
 function logo(t,t0){const a=easeOut((t-t0)/0.45);if(a<=0)return;const cx=CX,cy=178,w=158,s=w/71,sc=pop(t,t0,0.5)||1,u=(t-t0-0.9)%5.2;
   const talk=(from,to)=>u>=from&&u<to?Math.sin(Math.PI*(u-from)/(to-from)):0,L=talk(0,1.15),R=talk(1.35,2.5);
@@ -87,8 +86,11 @@ function logo(t,t0){const a=easeOut((t-t0)/0.45);if(a<=0)return;const cx=CX,cy=1
     for(let i=0;i<3;i++){g.fillStyle=col;g.globalAlpha=a*(0.35+0.65*Math.abs(Math.sin(u*7-i*0.9)));g.beginPath();g.arc(-8+i*8,-1,2.6,0,7);g.fill()}g.restore();g.globalAlpha=a};
   bub(-w/2+7*s-34,-21*s+4.9*s-26,L,C.clay,-1);bub(w/2-7*s+34,-21*s+4.9*s-26,R,C.forest,1);
   g.restore();g.globalAlpha=1;wordmark(t,t0,cx,cy+96,a)}
+// znacznik tematu na dole, na środku (np. #kłótnia)
+function tag(t){if(!TL.tag)return;const a=easeOut((t-0.35)/0.5);if(a<=0)return;g.save();g.font='600 36px "Inter V"';g.textAlign="center";g.textBaseline="middle";const w=g.measureText(TL.tag).width+56;
+  g.translate(CX,1412+(1-a)*10);g.globalAlpha=a*0.92;g.fillStyle="rgba(251,249,245,.9)";g.strokeStyle="rgba(151,172,156,.9)";g.lineWidth=2;rr(-w/2,-27,w,54,27);g.fill();g.stroke();g.fillStyle=C.forest;g.fillText(TL.tag,0,2);g.restore();g.globalAlpha=1}
 // CTA: zapisz / wyślij
-function cta(t){const c=TL.cta,a=easeOut((t-c.t0)/0.4);if(a<=0)return;const sc=(pop(t,c.t0,0.5)||1)*(1+0.025*Math.sin((t-c.t0)*5));g.save();g.translate(SX,1310);g.scale(sc,sc);g.globalAlpha=a;
+function cta(t){const c=TL.cta,a=easeOut((t-c.t0)/0.4);if(a<=0)return;const sc=(pop(t,c.t0,0.5)||1)*(1+0.025*Math.sin((t-c.t0)*5));g.save();g.translate(SX,1292);g.scale(sc,sc);g.globalAlpha=a;
   g.font='700 50px "Inter V"';g.textAlign="left";g.textBaseline="middle";const tw=g.measureText(c.text).width,w=tw+176,h=124;
   g.shadowColor="rgba(40,50,40,.32)";g.shadowBlur=34;g.shadowOffsetY=12;g.fillStyle=C.forest;rr(-w/2,-h/2,w,h,62);g.fill();g.shadowColor="transparent";g.shadowBlur=0;g.shadowOffsetY=0;
   const ix=-w/2+70,k=clamp((t-c.t0-0.45)/0.35);g.strokeStyle="#fff";g.fillStyle="#fff";g.lineWidth=6;g.lineJoin="round";g.lineCap="round";
@@ -99,19 +101,19 @@ function cta(t){const c=TL.cta,a=easeOut((t-c.t0)/0.4);if(a<=0)return;const sc=(
 function magnet(t){const c=TL.cta,u=t-c.t0;if(u<=0||!COVER)return;const a=ease(u/0.35);
   g.globalAlpha=0.9*a;g.fillStyle=C.ivory;g.fillRect(0,330,W,H);g.globalAlpha=1;
   // tytuł
-  g.textAlign="center";g.textBaseline="middle";const ta=easeOut((u-0.15)/0.4);g.save();g.translate(SX,410-(1-ta)*14);g.globalAlpha=ta;g.font='700 30px "Inter V"';g.letterSpacing="6px";const lw=g.measureText("BEZPŁATNIE").width+52;g.fillStyle=C.sage;rr(-lw/2,-26,lw,52,26);g.fill();g.fillStyle="#fff";g.fillText("BEZPŁATNIE",3,2);g.letterSpacing="0px";g.restore();
+  g.textAlign="center";g.textBaseline="middle";const ta=easeOut((u-0.15)/0.4);g.save();g.translate(CX,410-(1-ta)*14);g.globalAlpha=ta;g.font='700 30px "Inter V"';g.letterSpacing="6px";const lw=g.measureText("BEZPŁATNIE").width+52;g.fillStyle=C.sage;rr(-lw/2,-26,lw,52,26);g.fill();g.fillStyle="#fff";g.fillText("BEZPŁATNIE",3,2);g.letterSpacing="0px";g.restore();
   g.font='600 62px "Fraunces V"';const wm=Math.max(...c.title.map(l=>g.measureText(l).width)),fs=Math.min(62,62*720/wm);g.font=`600 ${fs}px "Fraunces V"`;g.fillStyle=C.forest;
-  c.title.forEach((l,i)=>{const k=easeOut((u-0.25-i*0.12)/0.4);g.globalAlpha=k;g.fillText(l,SX,494+i*74+(1-k)*16)});g.globalAlpha=1;
+  c.title.forEach((l,i)=>{const k=easeOut((u-0.25-i*0.12)/0.4);g.globalAlpha=k;g.fillText(l,CX,494+i*74+(1-k)*16)});g.globalAlpha=1;
   // okładka
-  const p=clamp((u-0.1)/0.85),e=back(p),cw=540,ch=cw*COVER.height/COVER.width,cy0=566+(c.title.length>1?46:0),fl=p>=1?Math.sin((u-0.95)*1.6):0;
-  const cx=SX+8,cy=cy0+ch/2+(1-e)*1250+fl*7,rot=lerp(0.2,-0.035,easeOut(p))+fl*0.008,sx=lerp(0.7,1,easeOut(p));
+  const p=clamp((u-0.1)/0.85),e=back(p),cw=520,ch=cw*COVER.height/COVER.width,cy0=560+(c.title.length>1?50:0),fl=p>=1?Math.sin((u-0.95)*1.6):0;
+  const cx=CX+6,cy=cy0+ch/2+(1-e)*1250+fl*7,rot=lerp(0.2,-0.035,easeOut(p))+fl*0.008,sx=lerp(0.7,1,easeOut(p));
   g.save();g.translate(cx,cy);g.rotate(rot);g.transform(sx,lerp(-0.12,0,easeOut(p)),0,1,0,0);
   g.globalAlpha=0.22*clamp(p*1.5);g.fillStyle="#3c2d1e";g.filter="blur(26px)";g.beginPath();g.ellipse(6,ch/2-18,cw*0.4,26,0,0,7);g.fill();g.filter="none";g.globalAlpha=1;
   g.drawImage(COVER,-cw/2,-ch/2,cw,ch);
   const gu=(u-1.05)%3.2;if(gu>=0&&gu<0.8&&u>1){OFF.width=cw;OFF.height=Math.round(ch);og.clearRect(0,0,cw,ch);og.drawImage(COVER,0,0,cw,ch);og.globalCompositeOperation="source-in";og.save();og.translate(lerp(-120,cw+120,ease(gu/0.8)),ch/2);og.transform(1,0,-0.5,1,0,0);const gr=og.createLinearGradient(-70,0,70,0);gr.addColorStop(0,"rgba(255,255,255,0)");gr.addColorStop(0.5,"rgba(255,255,255,.42)");gr.addColorStop(1,"rgba(255,255,255,0)");og.fillStyle=gr;og.fillRect(-70,-ch,140,ch*2);og.restore();og.globalCompositeOperation="source-over";g.drawImage(OFF,-cw/2,-ch/2)}
   g.restore();
   // plakietka „Skomentuj: SŁOWO”
-  const t1=c.chipAt-c.t0,ka=easeOut((u-t1)/0.4);if(ka>0){const sc=(pop(u,t1,0.5)||1)*(1+0.022*Math.sin((u-t1)*5));g.save();g.translate(SX,1322);g.scale(sc,sc);g.globalAlpha=ka;
+  const t1=c.chipAt-c.t0,ka=easeOut((u-t1)/0.4);if(ka>0){const sc=(pop(u,t1,0.5)||1)*(1+0.022*Math.sin((u-t1)*5));g.save();g.translate(CX,1296);g.scale(sc,sc);g.globalAlpha=ka;
     g.font='700 46px "Inter V"';g.textAlign="left";const l1="Skomentuj:",w1=g.measureText(l1).width;g.font='800 46px "Inter V"';g.letterSpacing="2px";const w2=g.measureText(c.word).width+2;g.letterSpacing="0px";
     const w=92+w1+22+w2+56+26,h=128;g.shadowColor="rgba(40,50,40,.32)";g.shadowBlur=34;g.shadowOffsetY=12;g.fillStyle=C.forest;rr(-w/2,-h/2,w,h,64);g.fill();g.shadowColor="transparent";g.shadowBlur=0;g.shadowOffsetY=0;
     // ikona komentarza
@@ -128,10 +130,10 @@ function render(t){g.setTransform(1,0,0,1,0,0);g.globalAlpha=1;g.fillStyle=C.ivo
     bubble(t,mo)}
   for(const cp of TL.caps){ if(t<cp.a-0.05||t>cp.b+0.2)continue;const ain=easeOut((t-cp.a)/0.16),aout=1-ease((t-cp.b-0.02)/0.16);caption(cp.words,t,Math.min(ain,aout)*mo,(1-ain)*14)}
   if(mg)magnet(t);else cta(t);
-  if(t>=tA)logo(t,TL.logoAt)}
+  if(t>=tA)logo(t,TL.logoAt);tag(t)}
 const loadImg=src=>new Promise((res,rej)=>{const i=new Image();i.onload=()=>res(i);i.onerror=rej;i.src=src});
 window.setup=async(tl)=>{TL=tl;for(const k of ["A","B"])IM[k]=await loadImg(`clips/${tl[k].img}/f0001.jpg`);if(tl.cta.cover)COVER=await loadImg(`covers/${tl.cta.cover}.png`);
-  await Promise.all(['600 50px "Inter V"','700 50px "Inter V"','800 46px "Inter V"','500 24px "Inter V"','600 84px "Fraunces V"','700 30px "Inter V"'].map(f=>document.fonts.load(f,"Żółć ąę DUO.pl® „”")));await document.fonts.ready;return true};
+  await Promise.all(['600 50px "Inter V"','700 50px "Inter V"','800 46px "Inter V"','500 24px "Inter V"','600 84px "Fraunces V"','700 30px "Inter V"','600 32px "Inter V"'].map(f=>document.fonts.load(f,"Żółć ąę DUO.pl® „”")));await document.fonts.ready;return true};
 // klatki klipu: A – liniowo; B – jeden przebieg z wyhamowaniem (bez zapętlania), z przenikaniem sąsiednich klatek
 window.renderAt=async(t)=>{for(const k of ["A","B"]){const sc=TL[k],c=sc.clip;if(!c||c.n<2||t<sc.a-0.01||t>sc.b+0.4)continue;const u=Math.max(0,t-sc.a);
     let ph=k==="A"?Math.min(u,c.dur):c.dur*(1-Math.exp(-u/sc.tau));const pos=Math.min(c.n-1,ph*c.fps),i=Math.floor(pos),f=pos-i;

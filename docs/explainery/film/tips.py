@@ -54,6 +54,10 @@ BUB={'T01':(2,750,850),'T02':(3,685,868),'T03':(3,722,884),'T04':(3,666,776),'T0
      'T11':(2,694,846),'T12':(2,583,820),'T13':(3,648,832),'T14':(2,676,784),'T15':(2,648,836),'T17':(2,611,802),'T19':(2,652,886)}
 # karta-nagłówek zostaje tylko tam, gdzie nie powtarza cytatu z dymka
 CARD_KEEP={'T04':(['10 minut dziennie','bez telefonów'],0),'T09':None,'T10':None,'T13':None,'T16':None,'T18':None,'T20':None}
+TAGS=dict(T01='#kłótnia',T02='#komunikacja',T03='#cichedni',T04='#rozmowa',T05='#pokłótni',T06='#trudnarozmowa',T07='#wdzięczność',T08='#słuchanie',T09='#obowiązki',T10='#czaswedwoje',
+  T11='#pieniądze',T12='#rodzina',T13='#dzieci',T14='#kłótnia',T15='#konflikt',T16='#bliskość',T17='#potrzeby',T18='#oddalenie',T19='#trudnarozmowa',T20='#decyzja')
+# punkty z BUB podane w układzie kadru 0,86 – przeliczenie na obecną skalę kadru (1,04; przesunięcie -22/+100)
+def pt(x,y): return [round((x-25.5)/928.8*1123.2-43.6),round((y-194.5)/1651.2*1996.8+61.6)]
 AMB={'T02':'kitchen','T09':'kitchen','T15':'kitchen','T10':'birds','T20':'birds'}
 CTA_TXT={'save':'Zapisz na później','share':'Wyślij dalej'}
 def align(k):
@@ -92,13 +96,13 @@ def timeline(k):
         return dict(n=c,fps=30,dur=round((c-1)/30,3)) if c else None
     cB=clip(cfg['B'])
     tl=dict(dur=dur,A=dict(img=cfg['A'],a=0,b=tA,clip=clip(cfg['A'])),B=dict(img=cfg['B'],a=tA,b=dur,clip=cB,tau=round(max(cB['dur']*0.9,(dur-tA)/2.3),3)),
-      hook=dict(lines=hl,pill=hp,times=[0 if i==0 else round(0.25+hd*(i/n)*0.5,3) for i in range(n)]),logoAt=round(tA+0.9,3))
+      hook=dict(lines=hl,pill=hp,times=[0 if i==0 else round(0.25+hd*(i/n)*0.5,3) for i in range(n)]),logoAt=round(tA+0.9,3),tag=TAGS.get(k))
     bq=BUB.get(k);caps=[]
     for i in range(ft,ci):
         ws=words(units[i][1],seg[i][0],seg[i][1]+0.05)
         if bq and bq[0]==i:
             q0=next(j for j,w in enumerate(ws) if w[0].startswith('„'));q1=next(j for j in range(q0,len(ws)) if '”' in w_(ws[j]))
-            tl['bubble']=dict(t0=round(ws[q0][1]-0.12,3),words=ws[q0:q1+1],tail=[bq[1],bq[2]])
+            tl['bubble']=dict(t0=round(ws[q0][1]-0.12,3),words=ws[q0:q1+1],tail=pt(bq[1],bq[2]))
             parts=[ws[:q0],ws[q1+1:]]
         else: parts=[ws]
         for p in parts:
