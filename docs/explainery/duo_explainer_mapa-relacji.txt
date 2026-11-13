@@ -68,7 +68,7 @@ NARRACJA (wersja z H1; w wersji dla mężczyzn: "z żoną", "współlokatorką")
 
 [tired] Niby nic się nie dzieje. Praca, dzieci, zakupy. A Ty od miesięcy nie wiesz, czy to jeszcze kryzys... [sighing] czy już koniec.
 
-To jest jak mgła. Czujesz, że coś jest nie tak, ale nie widzisz co. A we mgle każda decyzja wygląda źle. Zostać. Odejść. Czekać.
+To jest jak mgła. Czujesz, że coś jest nie tak, ale nie widzisz co. A we mgle każda decyzja wygląda źle. Naprawiać. Odejść. Czekać.
 
 [pause] U lekarza nikt nie zaczyna od leczenia. Najpierw trzeba zobaczyć, co się naprawdę dzieje.
 
@@ -93,7 +93,7 @@ Jedno ciągłe ujęcie. Dwie proste sylwetki w kolorach DUO (zielona i terakotow
 - Hook jako napis na pustym kadrze. Pod nim mieszkanie w przekroju: dwie sylwetki w tym samym domu, każda w innym pokoju, mijają się w kuchni bez zatrzymania.
 - Na "praca, dzieci, zakupy": między sylwetkami przesuwają się trzy codzienne znaki (teczka, plecak, torba), jak taśma. Sylwetki podają je sobie, nie patrząc na siebie.
 - Na "kryzys czy już koniec": kadr powoli wypełnia się mgłą od krawędzi. Dom znika, zostają dwa niewyraźne kształty.
-- Na "każda decyzja wygląda źle": we mgle zapalają się trzy drogowskazy bez napisów, każdy wskazuje w biel. Słowa "ZOSTAĆ?", "ODEJŚĆ?", "CZEKAĆ?" pojawiają się i rozmywają.
+- Na "każda decyzja wygląda źle": we mgle zapalają się trzy drogowskazy bez napisów, każdy wskazuje w biel. Słowa "NAPRAWIAĆ?", "ODEJŚĆ?", "CZEKAĆ?" pojawiają się i rozmywają.
 - Na zdaniu o lekarzu: krótka wstawka w tym samym stylu - stetoskop i karta badania stają PRZED receptą; recepta przesuwa się na koniec. Jedna sekunda, bez gabinetu i bez białego fartucha.
 - Na "zaczynamy od Mapy Relacji": w środku mgły pojawia się znak Mapy Relacji (serce - klepsydra - strzałki) i zaczyna świecić jak latarnia.
 - Trzy kroki rysują się jedną linią: karta z pytaniami -> dwa ekrany rozmowy (psycholog i osoba; w wersji dla pary trzy rozmowy: z każdym osobno i wspólna) -> dokument, który rozkłada się jak mapa.

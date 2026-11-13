@@ -4,7 +4,7 @@ renderuje tylko pierwsze ujęcie (hook + zdanie przejścia) i dokleja wspólną 
 Użycie: python3 variants.py prep | python3 variants.py build H05 [H06 ...] | python3 variants.py list"""
 import json,os,subprocess,sys,shutil
 import numpy as np
-FPS=30;CUT=4.73;BASE='timeline_v9.json'
+FPS=30;CUT=4.73;BASE='timeline_v10.json'
 def sh(cmd): subprocess.run(cmd,shell=True,check=True)
 def load(f,a=None,b=None):
     cmd=['ffmpeg','-nostdin','-v','error']+(['-ss',str(a),'-t',str(b-a)] if a is not None else [])+['-i',f,'-ac','1','-ar','16000','-f','f32le','-']
@@ -36,12 +36,12 @@ HOOKS={
  'H17':('h17',['Po zdradzie małżeńskiej','nie wiesz,','co dalej?'],0,I,'zd'),
 }
 ACC=[('whoosh',4.62,.75),('pop',4.76,.34),('whoosh',5.57,.75),('pop',5.71,.34),('whoosh',6.37,.75),('pop',6.51,.34),('pop',9.45,.26),('pop',10.75,.26),
-     ('whoosh',18.79,.7),('pop',18.93,.3),('whoosh',19.61,.7),('pop',19.75,.3),('whoosh',20.47,.7),('pop',20.61,.3),('chime',27.5,.4),
+     ('whoosh',18.67,.7),('pop',18.81,.3),('whoosh',19.61,.7),('pop',19.75,.3),('whoosh',20.47,.7),('pop',20.61,.3),('chime',27.5,.4),
      ('pop',36.21,.2),('pop',37.53,.2),('pop',38.73,.2),('pop',43.61,.22),('pop',44.53,.22),('pop',45.81,.22),('chime',60.7,.5)]
 def prep():
-    sh(f"ffmpeg -nostdin -v error -y -ss {CUT} -i voice2.m4a -ar 48000 -ac 1 body_tail.wav")
-    sh(f"ffmpeg -nostdin -v error -y -ss 0 -t 2.97 -i voice2.m4a -ar 48000 -ac 1 hooks/h01n.wav")
-    sh(f"ffmpeg -nostdin -v error -y -ss 2.97 -t {CUT-2.97} -i voice2.m4a -ar 48000 -ac 1 bridge_def.wav")
+    sh(f"ffmpeg -nostdin -v error -y -ss {CUT} -i voice3.m4a -ar 48000 -ac 1 body_tail.wav")
+    sh(f"ffmpeg -nostdin -v error -y -ss 0 -t 2.97 -i voice3.m4a -ar 48000 -ac 1 hooks/h01n.wav")
+    sh(f"ffmpeg -nostdin -v error -y -ss 2.97 -t {CUT-2.97} -i voice3.m4a -ar 48000 -ac 1 bridge_def.wav")
     ref=act(load('bridge_def.wav'))[0]
     for key,src,end,total in (('zw','hooks/brZ.mp3',1.60,1.90),('zd','hooks/brD.mp3',1.82,2.12)):
         g=ref-act(load(src,0,end))[0]

@@ -30,10 +30,10 @@ function drawShot(name,p,a){if(a<=0)return;const m=xf(name,p),sy=SHIFT[name]||0,
     vg=g.createLinearGradient(0,y0,0,y0+160);vg.addColorStop(0,"rgba(251,249,245,1)");vg.addColorStop(1,"rgba(251,249,245,0)");g.fillStyle=vg;g.fillRect(0,y0,W,160);g.fillStyle=C.ivory;g.fillRect(0,0,W,Math.max(0,y0+1))};
   if(name==="s01"&&SPLIT>0.001){ // kadr rozrywa się na dwie połowy, które odjeżdżają od siebie
     for(const d of [-1,1]){const dx=DXS(d);g.save();g.translate(ZC,1250);g.rotate(d*0.014*SPLIT);g.translate(-ZC,-1250);g.beginPath();g.moveTo(d*1400+ZC,-100);for(let y=-100;y<=H+100;y+=10)g.lineTo(zig(y)+d*dx,y);g.lineTo(d*1400+ZC,H+100);g.closePath();
-      g.save();g.clip();g.globalAlpha=a;g.drawImage(img,m.x+d*dx,m.y+sy,720*m.s,1280*m.s);if(d>0){g.globalAlpha=1;edge(m.x+d*dx+720*m.s)}g.restore();
+      g.save();g.clip();g.globalAlpha=a;g.drawImage(img,m.x+d*dx,m.y+sy,720*m.s,1280*m.s);g.restore();
       g.globalAlpha=a*SPLIT;g.beginPath();for(let y=300;y<=1500;y+=10)y===300?g.moveTo(zig(y)+d*dx,y):g.lineTo(zig(y)+d*dx,y);g.strokeStyle="rgba(255,255,255,.95)";g.lineWidth=7;g.stroke();g.strokeStyle="rgba(110,80,55,.28)";g.lineWidth=2;g.stroke();g.restore()}
-    g.globalAlpha=1;vedge(m.y+sy,m.y+sy+1280*m.s);return}
-  g.globalAlpha=a;g.drawImage(img,m.x,m.y+sy,720*m.s,1280*m.s);g.globalAlpha=1;if(name==="s01"){edge(m.x+720*m.s);vedge(m.y+sy,m.y+sy+1280*m.s)}}
+    g.globalAlpha=1;return}
+  g.globalAlpha=a;g.drawImage(img,m.x,m.y+sy,720*m.s,1280*m.s);g.globalAlpha=1}
 const pt=(name,p,fx,fy)=>{const m=xf(name,p);return[m.x+(SHIFTX[name]||0)+fx*720*m.s,m.y+(SHIFT[name]||0)+fy*1280*m.s]};
 
 function fog(t,amt,bandY=980,spread=620){ if(amt<=0.003)return;
@@ -45,11 +45,18 @@ function glow(x,y,r,a){const gr=g.createRadialGradient(x,y,0,x,y,r);gr.addColorS
 function rr(x,y,w,h,r){g.beginPath();g.roundRect(x,y,w,h,r)}
 function wrap(text,maxW){const words=text.split(" ");const lines=[];let cur="";for(const w of words){const t=cur?cur+" "+w:w;if(g.measureText(t).width>maxW&&cur){lines.push(cur);cur=w}else cur=t}if(cur)lines.push(cur);return lines}
 
-function caption(text,a,dy){ if(a<=0)return;
-  g.font='600 52px "Inter V"';g.textAlign="center";g.textBaseline="middle";
-  const lines=wrap(text,650),lh=68,w=Math.max(...lines.map(l=>g.measureText(l).width))+84,h=lines.length*lh+46,cy=1326+dy;
-  g.globalAlpha=a;g.shadowColor="rgba(60,45,30,.22)";g.shadowBlur=34;g.shadowOffsetY=10;g.fillStyle="rgba(251,249,245,.96)";rr(CX-w/2,cy-h/2,w,h,36);g.fill();
-  g.shadowColor="transparent";g.shadowBlur=0;g.shadowOffsetY=0;g.fillStyle=C.ink;lines.forEach((l,i)=>g.fillText(l,CX,cy-(lines.length-1)*lh/2+i*lh+2));g.globalAlpha=1}
+// napisy: aktualnie wypowiadane słowo podświetla się w kolorze marki (czasy słów szacowane z długości słów)
+const SX=495;
+function capWords(text,a,b){const ws=text.split(" "),wt=ws.map(w=>w.replace(/[^a-ząćęłńóśźż0-9]/gi,"").length+1.5),sum=wt.reduce((x,y)=>x+y,0);let c=0;return ws.map((w,i)=>{const t0=a+(b-a)*c/sum;c+=wt[i];return{w,t0,t1:a+(b-a)*c/sum}})}
+function caption(text,a,dy,t,ca,cb){ if(a<=0)return;
+  g.font='600 52px "Inter V"';g.textBaseline="middle";const fs=52,sp=g.measureText(" ").width,lines=[];let cur={words:[],width:0};
+  for(const o of capWords(text,ca+0.03,cb-0.08)){o.ww=g.measureText(o.w).width;if(cur.words.length&&cur.width+sp+o.ww>650){lines.push(cur);cur={words:[],width:0}}o.x=cur.words.length?cur.width+sp:0;cur.words.push(o);cur.width=o.x+o.ww}
+  if(cur.words.length)lines.push(cur);const lh=68,w=Math.max(...lines.map(l=>l.width))+84,h=lines.length*lh+46,cy=1326+dy;
+  g.globalAlpha=a;g.shadowColor="rgba(60,45,30,.22)";g.shadowBlur=34;g.shadowOffsetY=10;g.fillStyle="rgba(251,249,245,.96)";rr(SX-w/2,cy-h/2,w,h,36);g.fill();
+  g.shadowColor="transparent";g.shadowBlur=0;g.shadowOffsetY=0;g.textAlign="left";
+  lines.forEach((ln,i)=>{const y=cy-(lines.length-1)*lh/2+i*lh,x0=SX-ln.width/2;for(const o of ln.words){const on=t>=o.t0&&t<o.t1;
+    if(on){const k=easeOut((t-o.t0)/0.1);g.globalAlpha=a*0.2*k;g.fillStyle=C.rose;rr(x0+o.x-fs*0.16,y-fs*0.62,o.ww+fs*0.32,fs*1.22,fs*0.3);g.fill();g.globalAlpha=a;g.fillStyle=C.clay}else g.fillStyle=C.ink;
+    g.fillText(o.w,x0+o.x,y+2)}});g.globalAlpha=1}
 
 function title(lines,t0,t,opts={}){ // duży tytuł w górnej części pola bezpiecznego
   const size=opts.size||88,lh=size*1.12,y0=opts.y||330;g.textAlign="center";g.textBaseline="middle";
@@ -64,6 +71,15 @@ function logo(cx,cy,w,a,parts=[1,1,1]){ if(a<=0)return;const s=w/71;g.save();g.t
   g.globalAlpha=a*parts[2];g.fillStyle=lg("#7A9686","#3B5A4A");g.beginPath();g.arc(64,4.9,4.8,0,7);g.fill();g.save();g.transform(-1,0,0,1,71,0);g.fillStyle=lg("#97AC9C","#2D4939");g.fill(BODY);g.restore();
   g.restore();g.globalAlpha=1}
 
+// napis DUO.pl® z przebłyskiem przechodzącym przez litery
+const WMC=document.createElement("canvas"),og=WMC.getContext("2d");
+function wordmark(t,t0,cx,cy,a){const fs=58,WM_W=420,WM_H=110;WMC.width=WM_W;WMC.height=WM_H;og.clearRect(0,0,WM_W,WM_H);
+  og.font=`600 ${fs}px "Fraunces V"`;og.letterSpacing="2px";og.textBaseline="middle";og.textAlign="left";const tw=og.measureText("DUO.pl").width,x0=(WM_W-tw-20)/2;
+  og.fillStyle=C.forest;og.fillText("DUO",x0,WM_H/2);const dw=og.measureText("DUO").width;og.fillStyle=C.clay;og.fillText(".pl",x0+dw,WM_H/2);og.letterSpacing="0px";
+  og.font='500 24px "Inter V"';og.fillStyle=C.forest;og.fillText("®",x0+tw+3,WM_H/2-17);
+  const u=(t-t0-0.5)%3.4,gp=u>=0&&u<0.95?u/0.95:-1;
+  if(gp>=0){const gx=lerp(x0-70,x0+tw+90,ease(gp));og.globalCompositeOperation="source-atop";og.save();og.translate(gx,WM_H/2);og.transform(1,0,-0.45,1,0,0);const gr=og.createLinearGradient(-46,0,46,0);gr.addColorStop(0,"rgba(232,170,92,0)");gr.addColorStop(0.5,"rgba(236,178,100,1)");gr.addColorStop(1,"rgba(232,170,92,0)");og.fillStyle=gr;og.fillRect(-46,-WM_H,92,WM_H*2);og.restore();og.globalCompositeOperation="source-over"}
+  g.save();g.globalAlpha=a;const pulse=gp>=0?1+0.045*Math.sin(Math.PI*gp):1;g.translate(cx,cy);g.scale(pulse,pulse);g.drawImage(WMC,-WM_W/2,-WM_H/2);g.restore();g.globalAlpha=1}
 function chip(x,y,lines,col,a){ if(a<=0)return;g.font='600 38px "Inter V"';g.textAlign="center";g.textBaseline="middle";
   const w=Math.max(...lines.map(l=>g.measureText(l).width))+50,h=lines.length*46+32;g.globalAlpha=a;
   g.shadowColor="rgba(60,45,30,.25)";g.shadowBlur=24;g.shadowOffsetY=8;g.fillStyle=col;rr(x-w/2,y-h/2+(1-a)*18,w,h,26);g.fill();g.shadowColor="transparent";g.shadowBlur=0;g.shadowOffsetY=0;
@@ -116,7 +132,7 @@ function render(t){
       g.fillStyle=col;g.globalAlpha=a;g.beginPath();g.arc(tx,ty-22,9,0,7);g.fill();g.globalAlpha=1;chip(x,400,lines,col,a)})}
 
   // ––– akcenty: PRACA · DZIECI · ZAKUPY –––
-  if(E.daily){[["s02a","PRACA",C.forest],["s02b","DZIECI",C.clay],["s02c","ZAKUPY",C.forest],["s04a","ZOSTAĆ?",C.forest],["s04b","ODEJŚĆ?",C.clay],["s04c","CZEKAĆ?","#6f7f76"]].forEach(([n,word,col])=>{const q=sh(n);if(t<q[1]||t>=q[2])return;
+  if(E.daily){[["s02a","PRACA",C.forest],["s02b","DZIECI",C.clay],["s02c","ZAKUPY",C.forest],["s04a","NAPRAWIAĆ?",C.forest],["s04b","ODEJŚĆ?",C.clay],["s04c","CZEKAĆ?","#6f7f76"]].forEach(([n,word,col])=>{const q=sh(n);if(t<q[1]||t>=q[2])return;
       const x=clamp((t-q[1])/0.3),sc=0.7+0.3*easeOut(x)+0.14*Math.sin(Math.PI*x)*(1-x);g.save();g.translate(CX,432);g.rotate(-0.03);g.scale(sc,sc);g.font='700 82px "Inter V"';g.letterSpacing="9px";const w=g.measureText(word).width+96;
       g.globalAlpha=clamp(x*4);g.shadowColor="rgba(60,45,30,.3)";g.shadowBlur=34;g.shadowOffsetY=12;g.fillStyle=col;rr(-w/2,-74,w,148,38);g.fill();g.shadowColor="transparent";g.shadowBlur=0;g.shadowOffsetY=0;
       g.fillStyle="#fff";g.textAlign="center";g.textBaseline="middle";g.fillText(word,4,5);g.letterSpacing="0px";g.restore();g.globalAlpha=1})}
@@ -183,11 +199,14 @@ function render(t){
       const da=easeOut((t-E.shareLines[0]-0.6)/0.6);g.globalAlpha=da*0.9;g.fillStyle=C.muted;g.font='400 30px "Inter V"';g.textAlign="center";
       ["Mapa Relacji to proces z psychologiem","zakończony pisemnym podsumowaniem.","Nie jest diagnozą ani terapią."].forEach((l,i)=>g.fillText(l,CX,1318+i*42));g.globalAlpha=1}
   }
+  // ––– logo u góry (po hooku, do planszy marki) –––
+  {const t0=sh("s01")[2]+0.35,la=easeOut((t-t0)/0.5)*(1-ease((t-E.logo+0.5)/0.45));if(la>0){const tg=g.createLinearGradient(0,0,0,400);tg.addColorStop(0,`rgba(251,249,245,${0.94*la})`);tg.addColorStop(0.62,`rgba(251,249,245,${0.8*la})`);tg.addColorStop(1,"rgba(251,249,245,0)");g.fillStyle=tg;g.fillRect(0,0,W,400);
+    logo(CX,178,158,la);wordmark(t,t0,CX,274,la)}}
   // ––– napisy –––
-  for(const [a,b,text] of TL.caps){ if(t<a-0.05||t>b+0.2)continue;const ain=easeOut((t-a)/0.16),aout=1-ease((t-b-0.02)/0.16);caption(text,Math.min(ain,aout),(1-ain)*14)}
+  for(const [a,b,text] of TL.caps){ if(t<a-0.05||t>b+0.2)continue;const ain=easeOut((t-a)/0.16),aout=1-ease((t-b-0.02)/0.16);caption(text,Math.min(ain,aout),(1-ain)*14,t,a,b)}
 }
-window.setup=async(tl)=>{TL=tl;await Promise.all(tl.shots.map(([n])=>new Promise((res,rej)=>{const i=new Image();i.onload=()=>{IM[n]=i;res()};i.onerror=rej;i.src=((n==="s01"&&tl.hook&&tl.hook.img)||n)+".png"})));if(tl.hook){HSC=tl.hook.scale??1;SHIFT.s01=tl.hook.shiftY??120;SHIFTX.s01=tl.hook.shiftX??-70;ZC=540+SHIFTX.s01+((tl.hook.tearX??0.5)-0.5)*1080*HSC}
-  await Promise.all(['600 52px "Inter V"','600 92px "Fraunces V"','500 190px "Fraunces V"','400 27px "Inter V"','500 36px "Inter V"'].map(f=>document.fonts.load(f,"Żółć ąę DUO")));await document.fonts.ready;return true};
+window.setup=async(tl)=>{TL=tl;await Promise.all(tl.shots.map(([n])=>new Promise((res,rej)=>{const i=new Image();i.onload=()=>{IM[n]=i;res()};i.onerror=rej;i.src=((n==="s01"&&tl.hook&&tl.hook.img)||n)+".png"})));if(tl.hook){SHIFT.s01=tl.hook.shiftY??120;SHIFTX.s01=tl.hook.shiftX??-70;}HSC=(540+Math.abs(SHIFTX.s01)+4)/540;if(tl.hook){ZC=540+SHIFTX.s01+((tl.hook.tearX??0.5)-0.5)*1080*HSC}
+  await Promise.all(['600 52px "Inter V"','500 24px "Inter V"','600 58px "Fraunces V"','600 92px "Fraunces V"','500 190px "Fraunces V"','400 27px "Inter V"','500 36px "Inter V"'].map(f=>document.fonts.load(f,"Żółć ąę DUO")));await document.fonts.ready;return true};
 window.renderAt=async(t)=>{ if(TL.clips){const jobs=[];for(const [name,a,b] of TL.shots){const c=TL.clips[name];if(!c||t<a-0.001||t>b+0.7)continue;
     let ph=Math.max(0,t-a)%(2*c.dur);if(ph>c.dur)ph=2*c.dur-ph;const idx=Math.max(1,Math.min(c.n,1+Math.floor(ph*c.fps)));
     jobs.push(new Promise(res=>{const i=new Image();i.onload=()=>{FR[name]=i;res()};i.onerror=()=>{delete FR[name];res()};i.src=`clips/${(name==="s01"&&TL.hook&&TL.hook.img)||name}/f${String(idx).padStart(4,"0")}.jpg`}))}

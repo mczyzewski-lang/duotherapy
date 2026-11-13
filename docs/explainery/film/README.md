@@ -56,6 +56,15 @@ Podmiana hooka: nowy `v01.mp3` + tekst tytułu w `film.html` (sekcja „hook”)
 - Mapa: trzy punkty mają numerowane znaczniki z pulsującym kręgiem, reszta kadru jest przyciemniona
   z „reflektorami” na punktach, etykiety są większe i połączone z punktami pełną linią.
 
+## Wersja v10
+
+- Kadr hooka wypełnia całą szerokość ekranu (bez wygaszonych boków) – także we wszystkich wariantach hooka.
+- Po hooku u góry, na środku, stoi logo: symbol i napis „DUO.pl®” z przebłyskiem (jak w krótkich poradach);
+  znika przed planszą marki.
+- Napisy: aktualnie wypowiadane słowo podświetla się w kolorze marki (czasy słów szacowane z długości słów).
+- „ZOSTAĆ?” → „NAPRAWIAĆ?”: plakietka i lektor („Naprawiać. Odejść. Czekać.” – słowo dograne i wklejone
+  do ścieżki `voice3.m4a`); ujęcie s04a zaczyna się 0,12 s wcześniej.
+
 ## Warianty hooka (`variants.py`)
 
 - `python3 variants.py prep` – tnie ścieżkę głosu na części (hook, zdanie przejścia, reszta) i wyrównuje głośność.
