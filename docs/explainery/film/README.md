@@ -86,7 +86,8 @@ Podmiana hooka: nowy `v01.mp3` + tekst tytułu w `film.html` (sekcja „hook”)
 - Logo na środku u góry, bez tła: symbol (co kilka sekund postaci „zamieniają dwa zdania”) i napis
   „DUO.pl®” z przebłyskiem przechodzącym przez litery. Pojawia się po chwili od wejścia porady.
 - Kadr wypełnia całą szerokość ekranu; ekran końcowy z okładką jest wyśrodkowany tak jak logo.
-- Na dole, na środku, stoi mały znacznik tematu (np. „#kłótnia”) – słownik `TAGS` w `tips.py`.
+- Znacznik tematu to dyskretny tekst u góry po lewej (np. „#kłótnia #duo”) – słownik `TAGS` w `tips.py`;
+  nie pokazuje się w trakcie hooka ani na ekranie końcowym. Napisy stoją nisko, żeby nie zasłaniać środka kadru.
 - Napisy: aktualnie wypowiadane słowo podświetla się w kolorze marki. Czasy słów są szacowane
   proporcjonalnie do długości słów w zdaniu (bez transkrypcji), więc mogą odbiegać o ułamek sekundy.
 - Cytat (tekst w „…”) pokazuje się w dymku wychodzącym od mówiącej postaci, a nie w napisach;
