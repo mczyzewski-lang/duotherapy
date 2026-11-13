@@ -38,7 +38,7 @@ function headline(lines,pill,times,t,alpha,y0){if(alpha<=0)return;g.textAlign="c
   g.font='600 84px "Fraunces V"';const wmax=Math.max(1,...lines.filter((_,i)=>i!==pill).map(l=>g.measureText(l).width)),fs=Math.min(84,84*700/wmax);
   g.font='600 70px "Fraunces V"';const pw=g.measureText(lines[pill]||"").width,ps=Math.min(70,70*600/Math.max(1,pw));let y=y0;
   lines.forEach((txt,i)=>{const isP=i===pill,t0=times[i];if(isP&&i)y+=14;const yy=y;y+=isP?112:96;const sc=pop(t,t0,isP?0.45:0.38);if(sc<=0)return;
-    g.save();g.translate(SX,yy);if(isP)g.rotate(-0.03);g.scale(sc,sc);g.globalAlpha=alpha*(t0>0?clamp((t-t0)/0.14):1);
+    g.save();g.translate(CX,yy);if(isP)g.rotate(-0.03);g.scale(sc,sc);g.globalAlpha=alpha*(t0>0?clamp((t-t0)/0.14):1);
     if(!isP){g.font=`600 ${fs}px "Fraunces V"`;g.fillStyle=C.forest;g.fillText(txt,0,0)}
     else{g.font=`600 ${ps}px "Fraunces V"`;const w=g.measureText(txt).width+64;g.shadowColor="rgba(120,60,30,.3)";g.shadowBlur=30;g.shadowOffsetY=12;g.fillStyle=C.clay;rr(-w/2,-60,w,120,30);g.fill();g.shadowColor="transparent";g.shadowBlur=0;g.shadowOffsetY=0;g.fillStyle="#fff";g.fillText(txt,0,4)}
     g.restore()});g.globalAlpha=1}
@@ -122,8 +122,10 @@ function magnet(t){const c=TL.cta,u=t-c.t0;if(u<=0||!COVER)return;const a=ease(u
     g.font='800 46px "Inter V"';g.letterSpacing="2px";g.fillStyle="#fff";g.fillText(c.word,px+28,3);g.letterSpacing="0px";g.restore();g.globalAlpha=1}}
 function render(t){g.setTransform(1,0,0,1,0,0);g.globalAlpha=1;g.fillStyle=C.ivory;g.fillRect(0,0,W,H);
   const tA=TL.A.b,XF=0.32;if(t<tA+XF)scene("A",t,1);if(t>=tA)scene("B",t,ease((t-tA)/XF));
-  // jasne tło pod nagłówek i logo; przy pełnoekranowych kadrach po hooku zwija się do samego logo (chyba że jest karta)
-  const hgH=TL.full&&!TL.card?lerp(790,520,ease((t-tA)/0.6)):790,hg=g.createLinearGradient(0,0,0,hgH);hg.addColorStop(0,"rgba(251,249,245,1)");hg.addColorStop(0.78,"rgba(251,249,245,.95)");hg.addColorStop(1,"rgba(251,249,245,0)");g.fillStyle=hg;g.fillRect(0,0,W,hgH);
+  // jasne tło pod nagłówek i logo. Przy pełnoekranowych kadrach: szerokie, półprzezroczyste i łagodnie wygaszane
+  // (obraz ma prześwitywać), po hooku zwija się do okolic logo – chyba że na ekranie jest karta z nagłówkiem
+  {const F=TL.full,k=F&&!TL.card?ease((t-tA)/0.6):0,hgH=F?lerp(1040,640,k):790,a0=F?lerp(0.9,0.72,k):1,hg=g.createLinearGradient(0,0,0,hgH);
+   const st=F?[[0,1],[0.3,0.94],[0.5,0.74],[0.68,0.44],[0.84,0.17],[1,0]]:[[0,1],[0.78,0.95],[1,0]];st.forEach(([o,v])=>hg.addColorStop(o,`rgba(251,249,245,${a0*v})`));g.fillStyle=hg;g.fillRect(0,0,W,hgH)}
   const mg=TL.cta.type==="magnet",mo=mg?1-ease((t-TL.cta.t0+0.1)/0.3):1;
   if(t<tA+0.1){const out=1-ease((t-(tA-0.22))/0.22);headline(TL.hook.lines,TL.hook.pill,TL.hook.times,t,out,372)}
   if(t>=tA){const cd=TL.card,bb=TL.bubble;

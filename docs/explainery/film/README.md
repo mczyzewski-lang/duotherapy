@@ -107,3 +107,9 @@ Podmiana hooka: nowy `v01.mp3` + tekst tytułu w `film.html` (sekcja „hook”)
 - Zasada na przyszłość: nowe ilustracje generujemy jako pionowe sceny 9:16 wypełniające kadr od krawędzi do
   krawędzi (wysokie wnętrze, spokojna góra na nagłówek, postaci pośrodku, podłoga na dole) – nie jako poziomą
   scenkę osadzoną na jasnym tle.
+  Górne ok. 30% kadru ma być miejscem na logo już w samej ilustracji: jasne, rozproszone światło rozchodzące
+  się ku górze (okno, niebo, jasna ściana), bez ważnych przedmiotów – tak, żeby nie trzeba było zakrywać
+  obrazu mocnym gradientem. W filmie tło pod logo jest tylko lekkie: szerokie, półprzezroczyste i łagodnie
+  wygaszane; logo nie musi stać na idealnie gładkim tle.
+- Nagłówki (hook, karta) są wyśrodkowane względem logo (oś 540 px); napisy i przyciski zostają w osi strefy
+  bezpiecznej (495 px), bo po prawej stronie ekranu są ikony Reels.
