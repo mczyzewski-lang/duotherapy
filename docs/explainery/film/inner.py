@@ -4,7 +4,7 @@
 Korzysta z renderera tips.html (TL.inner / TL.full) i funkcji z tips.py."""
 import json,os,subprocess,sys,shutil
 import numpy as np
-from tips import load,words,sh,lvl,FPS,ptf
+from tips import load,words,sh,lvl,FPS,ptf,stt
 INNER={
  'W01':('Wolałabym się wygadać, niż żeby mi doradzał, kiedy opowiadam mu o swoim problemie.',.40,.41),
  'W02':('Nie chcę, żeby pomagał mi w domu. Chcę, żeby to był też jego dom.',.45,.39),
@@ -35,14 +35,17 @@ def span(f):
     return i[0]*0.02,(i[-1]+1)*0.02,float(20*np.log10(np.sqrt((fr[sp]**2).mean())))
 def timeline(k):
     text,fx,fy=INNER[k];g=k[0];et,chip,label,col=END[g];s1,e1,l1=span(f'tips/in_{k}.mp3');s2,e2,l2=span(f'tips/in_end{g}.mp3')
-    t1a=LEAD;t1b=LEAD+(e1-s1);t2a=t1b+GAP;t2b=t2a+(e2-s2);dur=round((t2b+1.7)*FPS)/FPS
+    t1a=LEAD;t1b=LEAD+(e1-s1);t2a=t1b+GAP;t2b=t2a+(e2-s2);dur=round((t2b+2.5)*FPS)/FPS
     d=f'clips/i{k}';n=len(os.listdir(d));clip=dict(n=n,fps=30,dur=round((n-1)/30,3))
-    ew=words(et,t2a,t2b);c1=next(i for i,w in enumerate(ew) if w[0].endswith(','))+1;cut=next(i for i,w in enumerate(ew) if w[0].endswith('.'))+1;tw=next(w[1] for w in ew if w[0].lower().startswith('wyślij'))
+    ew=(stt(f'in_end{g}',[et],t2a-s2) or [words(et,t2a,t2b)])[0];bw=(stt(f'in_{k}',[text],t1a-s1) or [words(text,t1a,t1b+0.05)])[0]
+    # napisy i przycisk zawsze pod twarzą bohatera (głowa: fy), nigdy jednocześnie: przycisk wchodzi po ostatnim napisie
+    cy=1375  # dolna krawędź strefy bezpiecznej (1440) – poniżej twarzy we wszystkich scenach serii
+    c1=next(i for i,w in enumerate(ew) if w[0].endswith(','))+1;cut=next(i for i,w in enumerate(ew) if w[0].endswith('.'))+1
     tl=dict(dur=dur,full=True,inner=True,A=dict(img='i'+k,a=-0.02,b=-0.01,clip=clip),B=dict(img='i'+k,a=-0.01,b=dur,clip=clip,tau=round(max(clip['dur']*0.9,dur/2.3),3)),
       hook=dict(lines=[],pill=-1,times=[]),logoAt=-0.6,tag=None,
-      bubble=dict(t0=-0.6,words=words(text,t1a,t1b+0.05),tail=ptf(fx,fy),think=True,label=label,labelColor=col,top=404,cx=540),
-      caps=[dict(a=round(p[0][1]-0.03,3),b=round(p[-1][2]+0.06,3),words=p) for p in (ew[:c1],ew[c1:cut],ew[cut:]) if p],
-      cta=dict(type='share',text=chip,t0=round(tw-0.1,3),y=1416,cx=540,scale=0.86),capY=1286,capX=540)
+      bubble=dict(t0=-0.6,words=bw,tail=ptf(fx,fy),think=True,label=label,labelColor=col,top=404,cx=540),
+      caps=[dict(a=round(p[0][1]-0.03,3),b=round(p[-1][2]+0.12,3),words=p) for p in (ew[:c1],ew[c1:cut],ew[cut:]) if p],
+      cta=dict(type='share',text=chip,t0=round(ew[-1][2]+0.3,3),y=cy+8,cx=540,scale=0.92),capY=cy,capX=540)
     return tl,dict(off1=t1a-s1,off2=t2a-s2,l1=l1,l2=l2)
 def t1a_ms(tl): return tl['bubble']['words'][0][1]*1000-80
 def audio(k,tl,a,out):

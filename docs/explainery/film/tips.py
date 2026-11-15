@@ -112,8 +112,31 @@ def align(k):
 def words(text,s,e):
     ws=text.split();w=[len(re.sub(r'[^a-ząćęłńóśźż0-9]','',x.lower()))+1.5 for x in ws];c=np.concatenate([[0],np.cumsum(w)])/sum(w)
     return [[x,round(s+(e-s)*c[i],3),round(s+(e-s)*c[i+1],3)] for i,x in enumerate(ws)]
+_STT={}
+def stt(key,texts,off,lead=0.04):
+    """Rzeczywiste czasy słów z transkrypcji (stt_words.json): lista słów [tekst,start,koniec] dla każdego z tekstów;
+    None, gdy brak transkrypcji albo liczba słów się nie zgadza (wtedy czasy szacujemy funkcją words)."""
+    if not _STT and os.path.exists('stt_words.json'): _STT.update(json.load(open('stt_words.json')))
+    sw=_STT.get(key);nz=lambda x: re.sub(r'[^a-ząćęłńóśźż0-9]','',x.lower())
+    toks=[t.split() for t in texts]
+    if not sw or sum(1 for t in toks for x in t if nz(x))!=len(sw): return None
+    out=[];i=0
+    for t in toks:
+        r=[]
+        for x in t:
+            if nz(x): r.append([x,round(sw[i][1]+off-lead,3),round(sw[i][2]+off,3)]);i+=1
+            else: r.append([x,None,None])
+        for j,w in enumerate(r):
+            if w[1] is None:
+                nx=next((q for q in r[j+1:] if q[1] is not None),None);pv=next((q for q in reversed(r[:j]) if q[1] is not None),None)
+                w[1]=w[2]=nx[1] if nx else pv[2]
+        for j in range(len(r)-1): r[j][2]=max(r[j][2],r[j+1][1]) if r[j+1][1]-r[j][2]<0.35 else r[j][2]
+        out.append(r)
+    return out
 def timeline(k):
-    cfg=TIPS[k];seg,lv,ns=align(k);units=cfg['units'];ft=next(i for i,u in enumerate(units) if u[0]==T);ci=len(units)-1
+    cfg=TIPS[k];seg,lv,ns=align(k);units=cfg['units'];RW=stt(k,[u[1] for u in units],LEAD)
+    if RW: seg=[(r[0][1]+0.04,r[-1][2]) for r in RW]
+    ft=next(i for i,u in enumerate(units) if u[0]==T);ci=len(units)-1
     mg=cfg.get('magnet');tA=round(seg[ft][0]-0.12,3);dur=round((seg[-1][1]+(2.0 if mg else 1.3))*FPS)/FPS;hl,hp=cfg['hook'];hd=seg[0][1]-seg[0][0];n=len(hl)
     def clip(name):
         d=f'clips/{name}';c=len(os.listdir(d)) if os.path.isdir(d) else 0
@@ -123,7 +146,7 @@ def timeline(k):
       hook=dict(lines=hl,pill=hp,times=[0 if i==0 else round(0.25+hd*(i/n)*0.5,3) for i in range(n)]),logoAt=round(tA+0.9,3),tag=TAGS.get(k),full=k[0]=='P')
     bq=BUB.get(k) or BUBF.get(k);caps=[]
     for i in range(ft,ci):
-        ws=words(units[i][1],seg[i][0],seg[i][1]+0.05)
+        ws=RW[i] if RW else words(units[i][1],seg[i][0],seg[i][1]+0.05)
         if bq and bq[0]==i:
             q0=next(j for j,w in enumerate(ws) if w[0].startswith('„'));q1=next(j for j in range(q0,len(ws)) if '”' in w_(ws[j]))
             tl['bubble']=dict(t0=round(ws[q0][1]-0.12,3),words=ws[q0:q1+1],tail=(ptf if k in BUBF else pt)(bq[1],bq[2]))
@@ -136,7 +159,7 @@ def timeline(k):
     if k in CARD_KEEP and card is None: card=cfg.get('card')
     if card: tl['card']=dict(lines=card[0],pill=card[1],t0=round(seg[cfg['cardAt']][0],3))
     if mg:
-        cw=words(units[ci][1],seg[ci][0],seg[ci][1]);chip=next(w[1] for w in cw if w[0].lower().startswith('skomentuj'))
+        cw=RW[ci] if RW else words(units[ci][1],seg[ci][0],seg[ci][1]);chip=next(w[1] for w in cw if w[0].lower().startswith('skomentuj'))
         tl['cta']=dict(type='magnet',cover=mg[0],word=mg[1],title=mg[2],t0=round(seg[ci][0]-0.1,3),chipAt=round(chip-0.1,3))
     else: tl['cta']=dict(type=cfg['cta'],text=CTA_TXT[cfg['cta']],t0=round(seg[ci][0]-0.05,3))
     return tl,lv,seg,ns

@@ -113,3 +113,16 @@ Podmiana hooka: nowy `v01.mp3` + tekst tytułu w `film.html` (sekcja „hook”)
   wygaszane; logo nie musi stać na idealnie gładkim tle.
 - Nagłówki (hook, karta) są wyśrodkowane względem logo (oś 540 px); napisy i przyciski zostają w osi strefy
   bezpiecznej (495 px), bo po prawej stronie ekranu są ikony Reels.
+
+## Synchronizacja napisów i twarze postaci
+
+- Czasy słów w napisach i dymkach pochodzą z transkrypcji nagrania lektora (ElevenLabs Scribe, znaczniki
+  początku i końca każdego słowa), zapisanej w `stt_words.json` (klucz = nazwa nagrania, np. `T01`, `in_W01`,
+  `in_endM`). Funkcja `stt()` w `tips.py` dopasowuje słowa scenariusza do transkrypcji po kolei; jeżeli liczba
+  słów się nie zgadza albo transkrypcji brak, czasy są szacowane proporcjonalnie do długości słów (`words()`),
+  co potrafi rozjechać się z głosem nawet o pół sekundy – dlatego po każdym nowym nagraniu robimy transkrypcję.
+- Podświetlenie słowa zaczyna się 0,04 s przed jego początkiem w nagraniu (lepiej minimalnie za wcześnie niż za późno).
+- Napisy, przyciski i dymki nie mogą zasłaniać twarzy postaci. W serii „wewnętrzny dialog” napisy końcówki stoją
+  przy dolnej krawędzi strefy bezpiecznej (środek 1375 px), a przycisk „Wyślij…” pojawia się dopiero po ostatnim
+  napisie, w tym samym miejscu – nigdy oba naraz. Przed wysyłką każdego filmu sprawdzamy kadr z napisem
+  i kadr z przyciskiem (`node render.js stills <t>`).
