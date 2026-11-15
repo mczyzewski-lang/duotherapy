@@ -38,19 +38,20 @@ def timeline(k):
     t1a=LEAD;t1b=LEAD+(e1-s1);t2a=t1b+GAP;t2b=t2a+(e2-s2);dur=round((t2b+1.7)*FPS)/FPS
     d=f'clips/i{k}';n=len(os.listdir(d));clip=dict(n=n,fps=30,dur=round((n-1)/30,3))
     ew=words(et,t2a,t2b);c1=next(i for i,w in enumerate(ew) if w[0].endswith(','))+1;cut=next(i for i,w in enumerate(ew) if w[0].endswith('.'))+1;tw=next(w[1] for w in ew if w[0].lower().startswith('wyślij'))
-    tl=dict(dur=dur,full=True,inner=True,A=dict(img='i'+k,a=0,b=0,clip=clip),B=dict(img='i'+k,a=0,b=dur,clip=clip,tau=round(max(clip['dur']*0.9,dur/2.3),3)),
-      hook=dict(lines=[],pill=-1,times=[]),logoAt=0.35,tag=None,
-      bubble=dict(t0=round(t1a-0.3,3),words=words(text,t1a,t1b+0.05),tail=ptf(fx,fy),think=True,label=label,labelColor=col,top=404,cx=540),
+    tl=dict(dur=dur,full=True,inner=True,A=dict(img='i'+k,a=-0.02,b=-0.01,clip=clip),B=dict(img='i'+k,a=-0.01,b=dur,clip=clip,tau=round(max(clip['dur']*0.9,dur/2.3),3)),
+      hook=dict(lines=[],pill=-1,times=[]),logoAt=-0.6,tag=None,
+      bubble=dict(t0=-0.6,words=words(text,t1a,t1b+0.05),tail=ptf(fx,fy),think=True,label=label,labelColor=col,top=404,cx=540),
       caps=[dict(a=round(p[0][1]-0.03,3),b=round(p[-1][2]+0.06,3),words=p) for p in (ew[:c1],ew[c1:cut],ew[cut:]) if p],
       cta=dict(type='share',text=chip,t0=round(tw-0.1,3),y=1416,cx=540,scale=0.86),capY=1286,capX=540)
     return tl,dict(off1=t1a-s1,off2=t2a-s2,l1=l1,l2=l2)
+def t1a_ms(tl): return tl['bubble']['words'][0][1]*1000-80
 def audio(k,tl,a,out):
     D=tl['dur'];g=k[0];c=tl['cta'];ga=-37-lvl('sfx_home.mp3')
     ins=f"-i tips/in_{k}.mp3 -i tips/in_end{g}.mp3 -ss 42 -i music.mp3 -stream_loop -1 -i sfx_home.mp3 -i sfx_pop.mp3 -i sfx_chime.mp3 -i sfx_pop.mp3"
     f=(f"[0:a]volume={-17.0-a['l1']:.2f}dB,adelay={int(max(0,a['off1'])*1000)}:all=1[v1];[1:a]volume={-15.0-a['l2']:.2f}dB,adelay={int(a['off2']*1000)}:all=1[v2];"
        f"[2:a]atrim=0:{D:.2f},asetpts=PTS-STARTPTS,volume=0.10,afade=t=in:d=0.8,afade=t=out:st={D-1.4:.2f}:d=1.4[m];"
        f"[3:a]atrim=0:{D:.2f},asetpts=PTS-STARTPTS,volume={ga:.2f}dB,afade=t=in:d=1.0,afade=t=out:st={D-1.2:.2f}:d=1.2[amb];"
-       f"[4:a]volume=0.26,adelay={int(tl['bubble']['t0']*1000+60)}:all=1[p1];[5:a]volume=0.3,adelay={int(c['t0']*1000)}:all=1[ch];[6:a]volume=0.32,adelay={int(c['t0']*1000+80)}:all=1[p2];"
+       f"[4:a]volume=0.26,adelay={int(max(0,t1a_ms(tl)))}:all=1[p1];[5:a]volume=0.3,adelay={int(c['t0']*1000)}:all=1[ch];[6:a]volume=0.32,adelay={int(c['t0']*1000+80)}:all=1[p2];"
        f"[v1][v2][m][amb][p1][ch][p2]amix=inputs=7:normalize=0:duration=longest,alimiter=limit=0.95[out]")
     sh(f"ffmpeg -nostdin -v error -y {ins} -filter_complex \"{f}\" -map \"[out]\" -t {D:.3f} -c:a aac -b:a 192k -ar 48000 {out}")
 def build(k):
