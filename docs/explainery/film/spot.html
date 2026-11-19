@@ -122,7 +122,7 @@ function card(u){const k=ease(u/0.7);g.fillStyle=`rgba(251,249,245,${0.84*k})`;g
 function vignette(){const gr=g.createRadialGradient(CX,H/2,700,CX,H/2,1250);gr.addColorStop(0,"rgba(0,0,0,0)");gr.addColorStop(1,"rgba(0,0,0,.26)");g.fillStyle=gr;g.fillRect(0,0,W,H)}
 const XF=0.16;
 function drawShot(s,t,a){const u=t-s.a+(s.off||0);
-  if(s.kind==="phone"){g.save();g.globalAlpha=a;phone(t-s.a,s.bg,t-s.bgA);g.restore();return}
+  if(s.kind==="phone"){g.save();g.globalAlpha=a;phone((t-s.a)*(s.ts||1),s.bg,t-s.bgA);g.restore();return}
   shot(s.id,u,a,s.zoom??0.03,s.card!=null?22*ease((t-s.card)/0.7):0);if(a>=0.99){vignette();if(s.kind==="call")call(t-s.a,s.pip,t-s.a)}}
 function needs(s,t){const out=[];if(s.kind==="phone")out.push(frameSrc(s.bg,t-s.bgA));else out.push(frameSrc(s.id,t-s.a+(s.off||0)));if(s.kind==="call")out.push(frameSrc(s.pip,t-s.a));return out}
 function render(t){g.fillStyle="#000";g.fillRect(0,0,W,H);const i=Math.max(0,TL.shots.findIndex(s=>t>=s.a&&t<s.b)),s=TL.shots[i],p=TL.shots[i-1];
