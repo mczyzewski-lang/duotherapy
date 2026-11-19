@@ -5,6 +5,8 @@
 @font-face{font-family:"Inter V";font-weight:100 900;src:url("fonts/inter-latin-ext-wght-normal.woff2") format("woff2");unicode-range:U+0100-02AF,U+1E00-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0}
 @font-face{font-family:"Fraunces V";font-weight:100 900;src:url("fonts/fraunces-latin-wght-normal.woff2") format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+20AC,U+2122,U+2190-2199}
 @font-face{font-family:"Fraunces V";font-weight:100 900;src:url("fonts/fraunces-latin-ext-wght-normal.woff2") format("woff2");unicode-range:U+0100-02AF,U+1E00-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0}
+@font-face{font-family:"Patrick Hand";font-weight:400;src:url("fonts/patrick-hand-latin-400-normal.woff2") format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+20AC,U+2122}
+@font-face{font-family:"Patrick Hand";font-weight:400;src:url("fonts/patrick-hand-latin-ext-400-normal.woff2") format("woff2");unicode-range:U+0100-02AF,U+1E00-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0}
 html,body{margin:0;background:#000}canvas{display:block}
 </style></head><body><canvas id="c" width="1080" height="1920"></canvas>
 <script>
@@ -99,16 +101,16 @@ function call(u,pipId,pipU){const a=ease(u/0.3);
   g.fillStyle="rgba(20,24,22,.55)";rr(90,286,470,76,38);g.fill();g.fillStyle="#4ad07d";g.beginPath();g.arc(128,324,11,0,7);g.fill();g.fillStyle="#fff";g.font='600 32px "Inter V"';g.fillText("Konsultacja online",154,326);
   const sec=14+Math.floor(u);g.fillStyle="rgba(255,255,255,.85)";g.font='500 30px "Inter V"';g.fillText("00:"+sec,474,326);
   // okno pary (podgląd własny)
-  const pw=330,ph=228,px=0,py=968,im=NEED[frameSrc(pipId,pipU)];
+  const pw=330,ph=228,px=0,py=852,im=NEED[frameSrc(pipId,pipU)];
   const ox=W-180-pw-10; // wewnątrz strefy bezpiecznej (prawa krawędź 900)
   g.shadowColor="rgba(0,0,0,.45)";g.shadowBlur=30;g.shadowOffsetY=10;g.fillStyle="#222";rr(ox,py,pw,ph,26);g.fill();g.shadowColor="transparent";g.shadowBlur=0;g.shadowOffsetY=0;
   if(im){g.save();rr(ox,py,pw,ph,26);g.clip();const c=TL.pip;g.drawImage(im,c[0],c[1],c[2],c[3],ox,py,pw,ph);g.restore()}
   g.strokeStyle="rgba(255,255,255,.85)";g.lineWidth=4;rr(ox,py,pw,ph,26);g.stroke();
   g.fillStyle="rgba(20,24,22,.6)";rr(ox+12,py+ph-50,74,38,19);g.fill();g.fillStyle="#fff";g.font='600 24px "Inter V"';g.fillText("Wy",ox+30,py+ph-30);
   // podpis rozmówcy
-  g.fillStyle="rgba(20,24,22,.55)";rr(90,1196,330,68,34);g.fill();g.fillStyle="#fff";g.font='600 30px "Inter V"';g.fillText("Psycholog DUO",122,1231);
+  g.fillStyle="rgba(20,24,22,.55)";rr(90,1092,330,68,34);g.fill();g.fillStyle="#fff";g.font='600 30px "Inter V"';g.fillText("Psycholog DUO",122,1127);
   g.restore();
-  icon("mic",CX-190,1360,a);icon("cam",CX-45,1360,a);icon("end",CX+120,1360,a)}
+  icon("mic",CX-190,1236,a);icon("cam",CX-45,1236,a);icon("end",CX+120,1236,a)}
 // ───── plansza końcowa
 function card(u){const k=ease(u/0.7);g.fillStyle=`rgba(251,249,245,${0.84*k})`;g.fillRect(0,0,W,H);
   const gr=g.createRadialGradient(CX,860,80,CX,860,900);gr.addColorStop(0,`rgba(255,255,255,${0.55*k})`);gr.addColorStop(1,"rgba(255,255,255,0)");g.fillStyle=gr;g.fillRect(0,0,W,H);
@@ -119,6 +121,15 @@ function card(u){const k=ease(u/0.7);g.fillStyle=`rgba(251,249,245,${0.84*k})`;g
   g.save();g.globalAlpha=s3;g.fillStyle=C.forest;g.font='600 56px "Inter V"';g.fillText("Terapia małżeńska online",CX,1062+(1-s3)*14);g.restore();
   g.save();g.globalAlpha=s3*0.9;g.fillStyle=C.clay;rr(CX-46,1124,92,5,3);g.fill();g.restore();
   g.save();g.globalAlpha=s4;g.fillStyle=C.muted;g.font='italic 500 46px "Fraunces V"';g.fillText("Pomagamy znów usłyszeć",CX,1206+(1-s4)*12);g.fillText("siebie nawzajem.",CX,1268+(1-s4)*12);g.restore()}
+// ───── napisy: odręczna czcionka, aktualnie wypowiadane słowo delikatnie podświetlone
+function caption(t){const c=(TL.caps||[]).find(c=>t>=c.a&&t<c.b);if(!c)return;const a=Math.min(ease((t-c.a)/0.14),ease((c.b-t)/0.16));if(a<=0)return;
+  g.save();g.font='400 62px "Patrick Hand"';g.textBaseline="middle";g.textAlign="left";const sp=g.measureText(" ").width,maxW=780,lines=[];let cur={ws:[],w:0};
+  for(const [w,t0,t1] of c.words){const ww=g.measureText(w).width;if(cur.ws.length&&cur.w+sp+ww>maxW){lines.push(cur);cur={ws:[],w:0}}const x=cur.ws.length?cur.w+sp:0;cur.ws.push({w,t0,t1,x});cur.w=x+ww}
+  lines.push(cur);const lh=74,yb=1392,bw=Math.max(...lines.map(l=>l.w))+72,bh=lines.length*lh+26,by=yb-(lines.length-1)*lh-lh/2-13;
+  g.globalAlpha=a;g.fillStyle="rgba(18,22,20,.36)";rr(495-bw/2,by,bw,bh,30);g.fill();
+  g.shadowColor="rgba(0,0,0,.55)";g.shadowBlur=10;g.shadowOffsetY=2;
+  lines.forEach((l,i)=>{const y=yb-(lines.length-1-i)*lh,x0=495-l.w/2;for(const k of l.ws){const on=t>=k.t0-0.03&&t<k.t1;g.fillStyle=on?"#ffd9a0":"rgba(255,255,255,.94)";g.fillText(k.w,x0+k.x,y)}});
+  g.restore()}
 function vignette(){const gr=g.createRadialGradient(CX,H/2,700,CX,H/2,1250);gr.addColorStop(0,"rgba(0,0,0,0)");gr.addColorStop(1,"rgba(0,0,0,.26)");g.fillStyle=gr;g.fillRect(0,0,W,H)}
 const XF=0.16;
 function drawShot(s,t,a){const u=t-s.a+(s.off||0);
@@ -128,9 +139,10 @@ function needs(s,t){const out=[];if(s.kind==="phone")out.push(frameSrc(s.bg,t-s.
 function render(t){g.fillStyle="#000";g.fillRect(0,0,W,H);const i=Math.max(0,TL.shots.findIndex(s=>t>=s.a&&t<s.b)),s=TL.shots[i],p=TL.shots[i-1];
   if(p&&t-s.a<XF&&!s.hard){drawShot(p,t,1);drawShot(s,t,ease((t-s.a)/XF));if(s.kind==="call"&&false)call(0,s.pip,0)}else drawShot(s,t,1);
   if(TL.card!=null&&t>=TL.card)card(t-TL.card);
+  caption(t);
   // delikatne wejście z czerni
   if(t<0.24){g.fillStyle=`rgba(0,0,0,${1-ease(t/0.24)})`;g.fillRect(0,0,W,H)}}
-window.setup=async(tl)=>{TL=tl;await document.fonts.load('600 60px "Fraunces V"');await document.fonts.load('italic 500 46px "Fraunces V"');await document.fonts.load('600 40px "Inter V"');await document.fonts.load('400 30px "Inter V"');await document.fonts.load('700 50px "Inter V"');await document.fonts.load('500 30px "Inter V"');await document.fonts.ready};
+window.setup=async(tl)=>{TL=tl;await document.fonts.load('600 60px "Fraunces V"');await document.fonts.load('italic 500 46px "Fraunces V"');await document.fonts.load('600 40px "Inter V"');await document.fonts.load('400 30px "Inter V"');await document.fonts.load('700 50px "Inter V"');await document.fonts.load('500 30px "Inter V"');await document.fonts.load('400 62px "Patrick Hand"','ąęłńśź');await document.fonts.ready};
 window.renderAt=async(t)=>{const i=Math.max(0,TL.shots.findIndex(s=>t>=s.a&&t<s.b)),list=needs(TL.shots[i],t);if(i>0&&t-TL.shots[i].a<XF)list.push(...needs(TL.shots[i-1],t));
   NEED={};await Promise.all(list.map(async src=>{try{NEED[src]=await loadImg(src)}catch(e){}}));render(t)};
 window.guides=()=>{g.strokeStyle="rgba(255,0,80,.8)";g.lineWidth=3;g.setLineDash([14,10]);g.strokeRect(90,270,810,1170);g.setLineDash([])};
