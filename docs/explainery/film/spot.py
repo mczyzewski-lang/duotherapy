@@ -16,11 +16,11 @@ def vo():
     sh(f"ffmpeg -nostdin -v error -y -i {VO} -filter_complex \"{f}\" -map \"[o]\" -ar 48000 -ac 2 -c:a pcm_s16le {OUT}/{N}_voiceover.wav")
 def timeline():
     n=lambda k: len(os.listdir(f'clips/sp_{k}'))
-    tl=dict(dur=DUR,card=12.5,pip=[160,590,600,415],clips={k:n(k) for k in ['s1','s2','s3','s4a','s4b','s5']},shots=[
+    tl=dict(dur=DUR,card=12.5,pip=[185,662,530,366],clips={k:n(k) for k in ['s1','s2','s3','s4a','s4b','s5']},shots=[
       dict(id='s1',a=0,b=2.86,off=0.0),
       dict(id='s2',a=2.86,b=5.5,off=0.9),
-      dict(id='s3',a=5.5,b=6.12,off=0.6),
-      dict(kind='phone',bg='s3',bgA=5.5-0.6,a=6.12,b=7.62),
+      dict(id='s3',a=5.5,b=6.12,off=2.3),
+      dict(kind='phone',bg='s3',bgA=5.5-2.3,a=6.12,b=7.62),
       dict(kind='call',id='s4a',pip='s4b',a=7.62,b=9.0,off=1.7,zoom=0.0),
       dict(id='s4b',a=9.0,b=11.12,off=0.9),
       dict(id='s5',a=11.12,b=DUR+0.2,off=0.0,card=12.5)])

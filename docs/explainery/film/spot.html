@@ -90,6 +90,11 @@ function call(u,pipId,pipU){const a=ease(u/0.3);
   let gr=g.createLinearGradient(0,0,0,360);gr.addColorStop(0,"rgba(12,16,14,.62)");gr.addColorStop(1,"rgba(12,16,14,0)");g.fillStyle=gr;g.fillRect(0,0,W,360);
   gr=g.createLinearGradient(0,H-560,0,H);gr.addColorStop(0,"rgba(12,16,14,0)");gr.addColorStop(1,"rgba(12,16,14,.72)");g.fillStyle=gr;g.fillRect(0,H-560,W,560);
   g.save();g.globalAlpha=a;g.textBaseline="middle";g.textAlign="left";
+  // pasek przeglądarki (rozmowa odbywa się na duo.pl)
+  g.fillStyle="rgba(20,24,22,.82)";g.fillRect(0,0,W,250);g.fillStyle="rgba(255,255,255,.14)";rr(90,150,W-180,76,38);g.fill();
+  g.strokeStyle="rgba(255,255,255,.9)";g.fillStyle="rgba(255,255,255,.9)";g.lineWidth=4;rr(366,180,26,22,5);g.fill();g.beginPath();g.arc(379,180,9,Math.PI,0);g.stroke();
+  g.fillStyle="#fff";g.font='500 32px "Inter V"';g.fillText("duo.pl/rozmowa",408,190);
+  g.strokeStyle="rgba(255,255,255,.75)";g.lineWidth=4;g.beginPath();g.arc(930,188,13,0.3,Math.PI*1.75);g.stroke();
   // pasek u góry
   g.fillStyle="rgba(20,24,22,.55)";rr(90,286,470,76,38);g.fill();g.fillStyle="#4ad07d";g.beginPath();g.arc(128,324,11,0,7);g.fill();g.fillStyle="#fff";g.font='600 32px "Inter V"';g.fillText("Konsultacja online",154,326);
   const sec=14+Math.floor(u);g.fillStyle="rgba(255,255,255,.85)";g.font='500 30px "Inter V"';g.fillText("00:"+sec,474,326);
