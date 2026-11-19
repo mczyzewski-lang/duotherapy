@@ -1,0 +1,132 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<style>
+@font-face{font-family:"Inter V";font-weight:100 900;src:url("fonts/inter-latin-wght-normal.woff2") format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+20AC,U+2122,U+2190-2199}
+@font-face{font-family:"Inter V";font-weight:100 900;src:url("fonts/inter-latin-ext-wght-normal.woff2") format("woff2");unicode-range:U+0100-02AF,U+1E00-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0}
+@font-face{font-family:"Fraunces V";font-weight:100 900;src:url("fonts/fraunces-latin-wght-normal.woff2") format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+20AC,U+2122,U+2190-2199}
+@font-face{font-family:"Fraunces V";font-weight:100 900;src:url("fonts/fraunces-latin-ext-wght-normal.woff2") format("woff2");unicode-range:U+0100-02AF,U+1E00-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0}
+html,body{margin:0;background:#000}canvas{display:block}
+</style></head><body><canvas id="c" width="1080" height="1920"></canvas>
+<script>
+// DUO – spot 15 s „terapia małżeńska online”, 1080×1920, 25 kl./s. Ujęcia: clips/sp_<id>/fNNNN.jpg (25 kl./s).
+// Oś czasu (TL) podaje spot.py: shots[{id,a,b,kind}], card (początek planszy końcowej), dur.
+const W=1080,H=1920,CX=540,FPS=25;
+const C={ivory:"#fbf9f5",forest:"#36493d",clay:"#a9512f",rose:"#e07f78",sage:"#97ac9c",ink:"#262b27",sand:"#eadccb",muted:"#6a605a"};
+const cv=document.getElementById("c"),g=cv.getContext("2d");let TL=null;const CACHE={};
+const OFF=document.createElement("canvas"),og=OFF.getContext("2d");
+const clamp=(x,a=0,b=1)=>Math.max(a,Math.min(b,x)),ease=x=>{x=clamp(x);return x*x*(3-2*x)},easeOut=x=>1-Math.pow(1-clamp(x),3),lerp=(a,b,x)=>a+(b-a)*x;
+function rr(x,y,w,h,r){g.beginPath();g.roundRect(x,y,w,h,r)}
+const loadImg=src=>CACHE[src]||(CACHE[src]=new Promise((res,rej)=>{const i=new Image();i.onload=()=>res(i);i.onerror=rej;i.src=src}));
+const frameSrc=(id,u)=>{const n=TL.clips[id],i=clamp(Math.round(u*FPS)+1,1,n);return `clips/sp_${id}/f${String(i).padStart(4,"0")}.jpg`};
+let NEED={};
+// klatka ujęcia na cały kadr, z bardzo lekkim najazdem
+function shot(id,u,a=1,zoom=0.03,blur=0){const im=NEED[frameSrc(id,u)];if(!im||a<=0)return;const s=1+zoom*clamp(u/4);g.save();g.globalAlpha=a;if(blur>0.3)g.filter=`blur(${blur.toFixed(1)}px)`;
+  const w=W*s,h=H*s;g.drawImage(im,(W-w)/2,(H-h)/2,w,h);g.restore()}
+// ───── logo
+const BODY=new Path2D("M0.5 11.7H3.5C12 11.7 18.6 18.6 18.6 26.4C18.6 34.6 12.3 41 4.6 41H1.6A1.1 1.1 0 0 1 0.5 39.9Z"),BOWL=new Path2D("M20.6 26.7H49.6A14.5 14.3 0 0 1 20.6 26.7Z");
+function lg(a,b){const gr=g.createLinearGradient(0,0,71,42);gr.addColorStop(0,a);gr.addColorStop(1,b);return gr}
+function symbol(cx,cy,w,a){if(a<=0)return;const s=w/71;g.save();g.globalAlpha=a;g.translate(cx-w/2,cy-21*s);g.scale(s,s);
+  g.fillStyle=lg("#D6845F","#A55536");g.beginPath();g.arc(7,4.9,4.8,0,7);g.fill();g.fillStyle=lg("#E2A07F","#A9512F");g.fill(BODY);
+  g.fillStyle=lg("#ECDCCB","#B89B7F");g.fill(BOWL);
+  g.fillStyle=lg("#7A9686","#3B5A4A");g.beginPath();g.arc(64,4.9,4.8,0,7);g.fill();g.save();g.transform(-1,0,0,1,71,0);g.fillStyle=lg("#97AC9C","#2D4939");g.fill(BODY);g.restore();g.restore()}
+function wordmark(cx,cy,fs,a,glare=-1){if(a<=0)return;const WM_W=fs*8,WM_H=fs*2;OFF.width=WM_W;OFF.height=WM_H;og.clearRect(0,0,WM_W,WM_H);
+  og.font=`600 ${fs}px "Fraunces V"`;og.letterSpacing=(fs*0.035)+"px";og.textBaseline="middle";og.textAlign="left";const tw=og.measureText("DUO.pl").width,x0=(WM_W-tw-fs*0.3)/2;
+  og.fillStyle=C.forest;og.fillText("DUO",x0,WM_H/2);const dw=og.measureText("DUO").width;og.fillStyle=C.clay;og.fillText(".pl",x0+dw,WM_H/2);og.letterSpacing="0px";
+  og.font=`500 ${fs*0.4}px "Inter V"`;og.fillStyle=C.forest;og.fillText("®",x0+tw+fs*0.05,WM_H/2-fs*0.3);
+  if(glare>=0&&glare<=1){const gx=lerp(x0-fs,x0+tw+fs*1.4,ease(glare));og.globalCompositeOperation="source-atop";og.save();og.translate(gx,WM_H/2);og.transform(1,0,-0.45,1,0,0);const hw=fs*0.8,gr=og.createLinearGradient(-hw,0,hw,0);gr.addColorStop(0,"rgba(232,170,92,0)");gr.addColorStop(0.5,"rgba(236,178,100,1)");gr.addColorStop(1,"rgba(232,170,92,0)");og.fillStyle=gr;og.fillRect(-hw,-WM_H,hw*2,WM_H*2);og.restore();og.globalCompositeOperation="source-over"}
+  g.save();g.globalAlpha=a;g.drawImage(OFF,cx-WM_W/2,cy-WM_H/2);g.restore()}
+// ───── telefon: wyszukiwanie → wynik duo.pl → strona → „Umów rozmowę”
+function ripple(x,y,u,col="rgba(54,73,61,"){if(u<0||u>0.45)return;const k=u/0.45;g.save();g.fillStyle=col+(0.28*(1-k))+")";g.beginPath();g.arc(x,y,30+110*easeOut(k),0,7);g.fill();g.fillStyle=col+(0.5*(1-k))+")";g.beginPath();g.arc(x,y,26,0,7);g.fill();g.restore()}
+function phone(u,bgId,bgU){shot(bgId,bgU,1,0.03,26);g.fillStyle="rgba(20,24,22,.42)";g.fillRect(0,0,W,H);
+  const k=easeOut(u/0.22),sc=lerp(0.9,1,k),pw=820,ph=1600,px=CX-pw/2,py=170;
+  g.save();g.globalAlpha=k;g.translate(CX,py+ph/2);g.scale(sc,sc);g.translate(-CX,-(py+ph/2));
+  g.shadowColor="rgba(0,0,0,.5)";g.shadowBlur=70;g.shadowOffsetY=30;g.fillStyle="#141615";rr(px,py,pw,ph,104);g.fill();g.shadowColor="transparent";g.shadowBlur=0;g.shadowOffsetY=0;
+  const sx=px+18,sy=py+18,sw=pw-36,sh=ph-36;g.save();rr(sx,sy,sw,sh,88);g.clip();
+  const pageK=ease((u-0.8)/0.2);
+  // ── ekran 1: wyszukiwarka
+  if(pageK<1){g.save();g.translate(-sw*0.25*pageK,0);g.globalAlpha=k*(1-pageK*0.6);g.fillStyle="#fff";g.fillRect(sx,sy,sw,sh);
+    g.fillStyle="#1f2421";g.font='600 30px "Inter V"';g.textAlign="left";g.textBaseline="middle";g.fillText("7:42",sx+62,sy+66);
+    g.fillStyle="#1f2421";rr(sx+sw/2-70,sy+40,140,40,20);g.fill();
+    const bx=sx+40,by=sy+140,bw=sw-80,bh=108;g.fillStyle="#f1f3f2";g.strokeStyle="#d9dedb";g.lineWidth=2;rr(bx,by,bw,bh,54);g.fill();g.stroke();
+    g.strokeStyle="#5d6762";g.lineWidth=6;g.lineCap="round";g.beginPath();g.arc(bx+62,by+50,17,0,7);g.stroke();g.beginPath();g.moveTo(bx+75,by+63);g.lineTo(bx+88,by+76);g.stroke();
+    const q="terapia małżeństw",n=Math.round(lerp(9,q.length,clamp(u/0.3)));g.fillStyle="#1f2421";g.font='500 44px "Inter V"';const txt=q.slice(0,n);g.fillText(txt,bx+112,by+bh/2+2);
+    if(u<0.45&&Math.floor(u*8)%2===0){const tw=g.measureText(txt).width;g.fillStyle=C.clay;g.fillRect(bx+112+tw+4,by+28,4,52)}
+    const ra=ease((u-0.3)/0.2);g.globalAlpha=k*(1-pageK*0.6)*ra;
+    // wynik 1: duo.pl
+    const ry=by+bh+56+(1-ra)*16,rh=330,tap=u>=0.6;g.fillStyle=tap?"#eef3ef":"#fff";g.strokeStyle=tap?C.sage:"#e4e8e5";g.lineWidth=tap?4:2;rr(bx,ry,bw,rh,34);g.fill();g.stroke();
+    g.fillStyle=C.ivory;g.strokeStyle="#e3ddd2";g.lineWidth=2;g.beginPath();g.arc(bx+72,ry+72,40,0,7);g.fill();g.stroke();symbol(bx+72,ry+72,48,g.globalAlpha);
+    g.fillStyle="#1f2421";g.font='600 34px "Inter V"';g.fillText("DUO",bx+130,ry+56);g.fillStyle="#5d6762";g.font='500 30px "Inter V"';g.fillText("https://duo.pl",bx+130,ry+96);
+    g.fillStyle="#1d55b8";g.font='600 46px "Inter V"';g.fillText("duo.pl – terapia małżeńska",bx+34,ry+176);g.fillText("online",bx+34,ry+232);
+    g.fillStyle="#4a524e";g.font='400 31px "Inter V"';g.fillText("Rozmowa z psychologiem dla par. Z domu.",bx+34,ry+290);
+    // pozostałe wyniki – szkic
+    for(let i=0;i<2;i++){const y=ry+rh+44+i*250;g.fillStyle="#eef0ef";g.beginPath();g.arc(bx+60,y+40,30,0,7);g.fill();rr(bx+110,y+20,260,22,11);g.fill();rr(bx+20,y+96,bw-140,34,17);g.fill();rr(bx+20,y+152,bw-60,22,11);g.fill();rr(bx+20,y+190,bw-220,22,11);g.fill()}
+    g.globalAlpha=k;ripple(bx+bw*0.42,ry+190,u-0.6);g.restore()}
+  // ── ekran 2: strona duo.pl
+  if(pageK>0){g.save();g.translate(sw*(1-pageK),0);g.fillStyle=C.ivory;g.fillRect(sx,sy,sw,sh);
+    const gr=g.createLinearGradient(0,sy,0,sy+sh);gr.addColorStop(0,"rgba(234,220,203,.75)");gr.addColorStop(0.55,"rgba(251,249,245,0)");g.fillStyle=gr;g.fillRect(sx,sy,sw,sh);
+    g.fillStyle="#1f2421";g.font='600 30px "Inter V"';g.textAlign="left";g.textBaseline="middle";g.fillText("7:42",sx+62,sy+66);rr(sx+sw/2-70,sy+40,140,40,20);g.fill();
+    g.fillStyle="#fff";g.strokeStyle="#e3ddd2";g.lineWidth=2;rr(sx+40,sy+124,sw-80,76,38);g.fill();g.stroke();g.fillStyle="#5d6762";g.font='500 30px "Inter V"';g.textAlign="center";g.fillText("duo.pl",sx+sw/2,sy+164);
+    symbol(CX,sy+330,150,1);wordmark(CX,sy+450,74,1);
+    g.textAlign="center";g.fillStyle=C.forest;g.font='600 66px "Fraunces V"';g.fillText("Znów usłyszcie",CX,sy+640);g.fillText("siebie nawzajem",CX,sy+726);
+    g.fillStyle=C.muted;g.font='500 38px "Inter V"';g.fillText("Terapia małżeńska online",CX,sy+826);
+    const bu=u-1.12,press=bu>=0&&bu<0.16?1-0.05*Math.sin(Math.PI*bu/0.16):1,bwid=sw-150,bhei=136,bcy=sy+1010;
+    g.save();g.translate(CX,bcy);g.scale(press,press);g.shadowColor="rgba(120,50,20,.35)";g.shadowBlur=36;g.shadowOffsetY=14;g.fillStyle=bu>=0?"#963f22":C.clay;rr(-bwid/2,-bhei/2,bwid,bhei,68);g.fill();g.shadowColor="transparent";g.shadowBlur=0;g.shadowOffsetY=0;
+    g.fillStyle="#fff";g.font='700 50px "Inter V"';
+    if(bu<0.22)g.fillText("Umów rozmowę",0,3);else{g.fillText("Łączenie",-34,3);for(let i=0;i<3;i++){g.globalAlpha=0.35+0.65*Math.abs(Math.sin((bu-0.22)*9-i*0.9));g.beginPath();g.arc(98+i*26,6,7,0,7);g.fill()}g.globalAlpha=1}
+    g.restore();
+    g.fillStyle=C.muted;g.font='400 30px "Inter V"';g.fillText("Pierwsza rozmowa z psychologiem",CX,sy+1136);
+    for(let i=0;i<3;i++){g.fillStyle="rgba(54,73,61,.08)";rr(sx+60,sy+1230+i*108,sw-120,84,24);g.fill()}
+    ripple(CX+40,bcy+6,bu,"rgba(255,255,255,");g.restore()}
+  g.restore();g.restore()}
+// ───── wideorozmowa z psychologiem
+function icon(kind,x,y,a){g.save();g.globalAlpha=a;g.translate(x,y);const red=kind==="end";g.fillStyle=red?"#e5484d":"rgba(255,255,255,.22)";g.beginPath();g.arc(0,0,red?64:56,0,7);g.fill();
+  if(!red){g.strokeStyle="rgba(255,255,255,.35)";g.lineWidth=2;g.stroke()}
+  g.strokeStyle="#fff";g.fillStyle="#fff";g.lineWidth=6;g.lineCap="round";g.lineJoin="round";
+  if(kind==="mic"){rr(-11,-26,22,36,11);g.fill();g.beginPath();g.arc(0,-2,20,0.15*Math.PI,0.85*Math.PI);g.stroke();g.beginPath();g.moveTo(0,19);g.lineTo(0,29);g.moveTo(-11,29);g.lineTo(11,29);g.stroke()}
+  else if(kind==="cam"){rr(-27,-17,36,34,8);g.fill();g.beginPath();g.moveTo(13,-3);g.lineTo(28,-15);g.lineTo(28,15);g.lineTo(13,3);g.closePath();g.fill()}
+  else{g.rotate(Math.PI*0.75);g.lineWidth=13;g.beginPath();g.arc(0,8,30,Math.PI*1.18,Math.PI*1.82);g.stroke();g.lineWidth=17;g.beginPath();g.arc(0,8,30,Math.PI*1.15,Math.PI*1.24);g.stroke();g.beginPath();g.arc(0,8,30,Math.PI*1.76,Math.PI*1.85);g.stroke()}
+  g.restore()}
+function call(u,pipId,pipU){const a=ease(u/0.3);
+  let gr=g.createLinearGradient(0,0,0,360);gr.addColorStop(0,"rgba(12,16,14,.62)");gr.addColorStop(1,"rgba(12,16,14,0)");g.fillStyle=gr;g.fillRect(0,0,W,360);
+  gr=g.createLinearGradient(0,H-560,0,H);gr.addColorStop(0,"rgba(12,16,14,0)");gr.addColorStop(1,"rgba(12,16,14,.72)");g.fillStyle=gr;g.fillRect(0,H-560,W,560);
+  g.save();g.globalAlpha=a;g.textBaseline="middle";g.textAlign="left";
+  // pasek u góry
+  g.fillStyle="rgba(20,24,22,.55)";rr(90,286,470,76,38);g.fill();g.fillStyle="#4ad07d";g.beginPath();g.arc(128,324,11,0,7);g.fill();g.fillStyle="#fff";g.font='600 32px "Inter V"';g.fillText("Konsultacja online",154,326);
+  const sec=14+Math.floor(u);g.fillStyle="rgba(255,255,255,.85)";g.font='500 30px "Inter V"';g.fillText("00:"+sec,474,326);
+  // okno pary (podgląd własny)
+  const pw=330,ph=228,px=0,py=968,im=NEED[frameSrc(pipId,pipU)];
+  const ox=W-180-pw-10; // wewnątrz strefy bezpiecznej (prawa krawędź 900)
+  g.shadowColor="rgba(0,0,0,.45)";g.shadowBlur=30;g.shadowOffsetY=10;g.fillStyle="#222";rr(ox,py,pw,ph,26);g.fill();g.shadowColor="transparent";g.shadowBlur=0;g.shadowOffsetY=0;
+  if(im){g.save();rr(ox,py,pw,ph,26);g.clip();const c=TL.pip;g.drawImage(im,c[0],c[1],c[2],c[3],ox,py,pw,ph);g.restore()}
+  g.strokeStyle="rgba(255,255,255,.85)";g.lineWidth=4;rr(ox,py,pw,ph,26);g.stroke();
+  g.fillStyle="rgba(20,24,22,.6)";rr(ox+12,py+ph-50,74,38,19);g.fill();g.fillStyle="#fff";g.font='600 24px "Inter V"';g.fillText("Wy",ox+30,py+ph-30);
+  // podpis rozmówcy
+  g.fillStyle="rgba(20,24,22,.55)";rr(90,1196,330,68,34);g.fill();g.fillStyle="#fff";g.font='600 30px "Inter V"';g.fillText("Psycholog DUO",122,1231);
+  g.restore();
+  icon("mic",CX-190,1360,a);icon("cam",CX-45,1360,a);icon("end",CX+120,1360,a)}
+// ───── plansza końcowa
+function card(u){const k=ease(u/0.7);g.fillStyle=`rgba(251,249,245,${0.84*k})`;g.fillRect(0,0,W,H);
+  const gr=g.createRadialGradient(CX,860,80,CX,860,900);gr.addColorStop(0,`rgba(255,255,255,${0.55*k})`);gr.addColorStop(1,"rgba(255,255,255,0)");g.fillStyle=gr;g.fillRect(0,0,W,H);
+  const s1=easeOut((u-0.12)/0.5),s2=easeOut((u-0.28)/0.5),s3=easeOut((u-0.5)/0.5),s4=easeOut((u-0.85)/0.6);
+  symbol(CX,690-(1-s1)*18,300,s1);
+  wordmark(CX,900-(1-s2)*16,168,s2,(u-0.75)/0.9);
+  g.textAlign="center";g.textBaseline="middle";
+  g.save();g.globalAlpha=s3;g.fillStyle=C.forest;g.font='600 56px "Inter V"';g.fillText("Terapia małżeńska online",CX,1062+(1-s3)*14);g.restore();
+  g.save();g.globalAlpha=s3*0.9;g.fillStyle=C.clay;rr(CX-46,1124,92,5,3);g.fill();g.restore();
+  g.save();g.globalAlpha=s4;g.fillStyle=C.muted;g.font='italic 500 46px "Fraunces V"';g.fillText("Pomagamy znów usłyszeć",CX,1206+(1-s4)*12);g.fillText("siebie nawzajem.",CX,1268+(1-s4)*12);g.restore()}
+function vignette(){const gr=g.createRadialGradient(CX,H/2,700,CX,H/2,1250);gr.addColorStop(0,"rgba(0,0,0,0)");gr.addColorStop(1,"rgba(0,0,0,.26)");g.fillStyle=gr;g.fillRect(0,0,W,H)}
+const XF=0.16;
+function drawShot(s,t,a){const u=t-s.a+(s.off||0);
+  if(s.kind==="phone"){g.save();g.globalAlpha=a;phone(t-s.a,s.bg,t-s.bgA);g.restore();return}
+  shot(s.id,u,a,s.zoom??0.03,s.card!=null?22*ease((t-s.card)/0.7):0);if(a>=0.99){vignette();if(s.kind==="call")call(t-s.a,s.pip,t-s.a)}}
+function needs(s,t){const out=[];if(s.kind==="phone")out.push(frameSrc(s.bg,t-s.bgA));else out.push(frameSrc(s.id,t-s.a+(s.off||0)));if(s.kind==="call")out.push(frameSrc(s.pip,t-s.a));return out}
+function render(t){g.fillStyle="#000";g.fillRect(0,0,W,H);const i=Math.max(0,TL.shots.findIndex(s=>t>=s.a&&t<s.b)),s=TL.shots[i],p=TL.shots[i-1];
+  if(p&&t-s.a<XF&&!s.hard){drawShot(p,t,1);drawShot(s,t,ease((t-s.a)/XF));if(s.kind==="call"&&false)call(0,s.pip,0)}else drawShot(s,t,1);
+  if(TL.card!=null&&t>=TL.card)card(t-TL.card);
+  // delikatne wejście z czerni
+  if(t<0.24){g.fillStyle=`rgba(0,0,0,${1-ease(t/0.24)})`;g.fillRect(0,0,W,H)}}
+window.setup=async(tl)=>{TL=tl;await document.fonts.load('600 60px "Fraunces V"');await document.fonts.load('italic 500 46px "Fraunces V"');await document.fonts.load('600 40px "Inter V"');await document.fonts.load('400 30px "Inter V"');await document.fonts.load('700 50px "Inter V"');await document.fonts.load('500 30px "Inter V"');await document.fonts.ready};
+window.renderAt=async(t)=>{const i=Math.max(0,TL.shots.findIndex(s=>t>=s.a&&t<s.b)),list=needs(TL.shots[i],t);if(i>0&&t-TL.shots[i].a<XF)list.push(...needs(TL.shots[i-1],t));
+  NEED={};await Promise.all(list.map(async src=>{try{NEED[src]=await loadImg(src)}catch(e){}}));render(t)};
+window.guides=()=>{g.strokeStyle="rgba(255,0,80,.8)";g.lineWidth=3;g.setLineDash([14,10]);g.strokeRect(90,270,810,1170);g.setLineDash([])};
+</script></body></html>

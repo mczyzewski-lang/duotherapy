@@ -126,3 +126,15 @@ Podmiana hooka: nowy `v01.mp3` + tekst tytułu w `film.html` (sekcja „hook”)
   przy dolnej krawędzi strefy bezpiecznej (środek 1375 px), a przycisk „Wyślij…” pojawia się dopiero po ostatnim
   napisie, w tym samym miejscu – nigdy oba naraz. Przed wysyłką każdego filmu sprawdzamy kadr z napisem
   i kadr z przyciskiem (`node render.js stills <t>`).
+
+## Spot 15 s „terapia małżeńska online” (`spot.html`, `spot.py`)
+
+- Fotorealistyczny spot 9:16, 1080×1920, 25 kl./s, dokładnie 15,00 s: kłótnia → oddalenie → wyszukiwanie i wejście
+  na duo.pl → wideorozmowa z psychologiem → wspólna kuchnia → plansza „DUO.pl® / Terapia małżeńska online /
+  Pomagamy znów usłyszeć siebie nawzajem.”
+- Ujęcia: kadry kluczowe (obraz) z jedną referencją pary i zdjęciem psycholożki ze strony duo.pl, potem animacja
+  każdego kadru (4 s, 720p, skalowane do 1080×1920). Ekran telefonu, interfejs wideorozmowy i plansza końcowa są
+  rysowane w `spot.html` – tekst nigdy nie pochodzi z generatora obrazu.
+- Lektor: jedno nagranie, frazy wycięte i ustawione na osi czasu (`PHR` w `spot.py`), pauzy skrócone, tempo ×1,12.
+  Ostatnia fraza kończy się ok. 12,9 s, czyli na wejściu planszy końcowej.
+- `python3 spot.py build` → `spot/output/duo_terapia_malzenska_15s_v1.mp4`, `…_voiceover.wav`, `…_finalframe.png`.
