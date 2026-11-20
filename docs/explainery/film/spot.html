@@ -147,6 +147,12 @@ function hook(t){const k=TL.hook;if(!k||t>k.b+0.4)return;const out=1-ease((t-k.b
     if(i===k.pill){const w=g.measureText(ln).width+64;g.shadowColor="rgba(0,0,0,.35)";g.shadowBlur=24;g.shadowOffsetY=8;g.fillStyle=C.clay;rr(CX-w/2,y-lh/2+4,w,lh-6,22);g.fill();g.shadowColor="transparent";g.shadowBlur=0;g.shadowOffsetY=0;g.fillStyle="#fff";g.fillText(ln,CX,y+3)}
     else{g.shadowColor="rgba(0,0,0,.65)";g.shadowBlur=22;g.shadowOffsetY=4;g.fillStyle="#fff";g.fillText(ln,CX,y+3)}});
   g.restore()}
+// ───── stała informacja prawna na dole kadru (scena inscenizowana, postaci i głos z AI)
+function legal(t){const L=TL.legal;if(!L)return;const onCard=TL.card!=null?ease((t-TL.card-0.2)/0.5):0;g.save();g.textAlign="center";g.textBaseline="middle";g.font='500 25px "Inter V"';
+  if(onCard<1){const bw=Math.max(...L.map(l=>g.measureText(l).width))+44;g.globalAlpha=1-onCard;g.fillStyle="rgba(14,18,16,.34)";rr(CX-bw/2,1518,bw,L.length*33+12,16);g.fill()}
+  L.forEach((ln,i)=>{const y=1540+i*33;if(onCard<1){g.globalAlpha=0.84*(1-onCard);g.shadowColor="rgba(0,0,0,.85)";g.shadowBlur=8;g.shadowOffsetY=1;g.fillStyle="#fff";g.fillText(ln,CX,y)}
+    if(onCard>0){g.globalAlpha=0.78*onCard;g.shadowColor="transparent";g.shadowBlur=0;g.shadowOffsetY=0;g.fillStyle=C.forest;g.fillText(ln,CX,y)}});
+  g.restore()}
 function vignette(){const gr=g.createRadialGradient(CX,H/2,700,CX,H/2,1250);gr.addColorStop(0,"rgba(0,0,0,0)");gr.addColorStop(1,"rgba(0,0,0,.26)");g.fillStyle=gr;g.fillRect(0,0,W,H)}
 const XF=0.16;
 function drawShot(s,t,a){const u=t-s.a+(s.off||0);
@@ -156,16 +162,16 @@ function needs(s,t){const out=[];if(s.kind==="phone")out.push(frameSrc(s.bg,t-s.
 function render(t){g.fillStyle="#000";g.fillRect(0,0,W,H);const i=Math.max(0,TL.shots.findIndex(s=>t>=s.a&&t<s.b)),s=TL.shots[i],p=TL.shots[i-1];
   if(p&&t-s.a<XF&&!s.hard){drawShot(p,t,1);drawShot(s,t,ease((t-s.a)/XF));if(s.kind==="call"&&false)call(0,s.pip,0)}else drawShot(s,t,1);
   if(TL.card!=null&&t>=TL.card)card(t-TL.card);
-  hook(t);caption(t);
+  hook(t);caption(t);legal(t);
   // delikatne wejście z czerni
   if(t<0.24){g.fillStyle=`rgba(0,0,0,${1-ease(t/0.24)})`;g.fillRect(0,0,W,H)}}
 window.setup=async(tl)=>{TL=tl;
   // wszystkie kroje i odmiany wczytujemy od razu razem z podzbiorem polskich znaków (inaczej pierwsza klatka z „ś/ą/ł” rysuje się czcionką zastępczą i tekst skacze)
   const PL="AaĄąĆćĘęŁłŃńÓóŚśŹźŻż 0123…–„”®?.,:";
-  for(const f of ['600 96px "Fraunces V"','500 46px "Fraunces V"','italic 500 46px "Fraunces V"','400 30px "Inter V"','500 32px "Inter V"','600 46px "Inter V"','700 50px "Inter V"'])await document.fonts.load(f,PL);
+  for(const f of ['600 96px "Fraunces V"','500 46px "Fraunces V"','italic 500 46px "Fraunces V"','400 30px "Inter V"','500 25px "Inter V"','500 32px "Inter V"','600 46px "Inter V"','700 50px "Inter V"'])await document.fonts.load(f,PL);
   await document.fonts.ready;
   // rozgrzewka: narysuj każdy krój raz poza kadrem
-  g.save();g.globalAlpha=0.01;for(const f of ['600 96px "Fraunces V"','italic 500 46px "Fraunces V"','400 30px "Inter V"','500 32px "Inter V"','600 46px "Inter V"','700 50px "Inter V"']){g.font=f;g.fillText(PL,-5000,-5000)}g.restore();
+  g.save();g.globalAlpha=0.01;for(const f of ['600 96px "Fraunces V"','italic 500 46px "Fraunces V"','400 30px "Inter V"','500 25px "Inter V"','500 32px "Inter V"','600 46px "Inter V"','700 50px "Inter V"']){g.font=f;g.fillText(PL,-5000,-5000)}g.restore();
   og.font='600 96px "Fraunces V"';og.fillText(PL,-5000,-5000);og.font='500 40px "Inter V"';og.fillText(PL,-5000,-5000)};
 window.renderAt=async(t)=>{const i=Math.max(0,TL.shots.findIndex(s=>t>=s.a&&t<s.b)),list=needs(TL.shots[i],t);if(i>0&&t-TL.shots[i].a<XF)list.push(...needs(TL.shots[i-1],t));
   NEED={};await Promise.all(list.map(async src=>{try{NEED[src]=await loadImg(src)}catch(e){}}));render(t)};

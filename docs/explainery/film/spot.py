@@ -28,6 +28,8 @@ TIMES={'F':[(.08,.32),(.36,.8),(.88,.96),(1.04,1.52),(1.56,1.68),(1.72,1.76),(1.
   (15.58,15.6),(15.64,16.0),(16.08,16.24),(16.32,16.64),(16.72,17.25),(17.31,17.44),(17.52,18.32)]}
 VOICE={'F':dict(vo='spot/raw/vo1.mp3',tag='spot/raw/tag.mp3',s3='s3',s3off=2.1,name='ona'),'M':dict(vo='spot/raw/voM.mp3',tag='spot/raw/tagM.mp3',s3='s3m',s3off=1.2,name='on')}[G]
 W=[(w,a,b) for w,(a,b) in zip(TXT,TIMES[G])];assert len(W)==40
+# informacja prawna widoczna przez cały film (fikcyjna para, obraz i głos z AI) – nie pisać „na podstawie opinii”, jeśli nie ma udokumentowanych opinii
+LEGAL=["Scena inscenizowana. Para i jej historia są fikcyjne,","obraz i głos wygenerowane przez AI."]
 CUT=[4,8,11,16,21,24,28,33,36,40];LINK=dict(enter=4.25,click=5.25);MUSIC='spot/raw/music2.mp3'
 g25=lambda x: round(x*FPS)/FPS
 def sh(c): subprocess.run(c,shell=True,check=True)
@@ -59,7 +61,7 @@ def timeline():
        dict(kind='call',id='s4a',pip='s4b',a=C4+T,b=C5+T,off=2.3,zoom=0.0),dict(id='s4b',a=C5+T,b=C6+T,off=0.3),dict(id='s5',a=C6+T,b=DUR+0.2,off=0.0,card=CARD)]
     ids=['s1','s2',s3,'s4a','s4b','s5']
     if H: S.insert(0,dict(id=H.lower(),a=0,b=T,off=0.0,dy=HOOKS[H][4]));ids.append(H.lower())
-    tl=dict(dur=DUR,card=CARD,pip=[225,722,449,310],clips={k:n(k) for k in ids},shots=S,caps=caps(),link=LINK)
+    tl=dict(dur=DUR,card=CARD,pip=[225,722,449,310],clips={k:n(k) for k in ids},shots=S,caps=caps(),link=LINK,legal=LEGAL)
     if H: tl['hook']=dict(lines=HOOKS[H][0],pill=HOOKS[H][1],b=T-0.3,fs=96 if max(len(x) for x in HOOKS[H][0])<=15 else 84,y=455 if len(HOOKS[H][0])>2 else 520)
     json.dump(tl,open('spot/tl.json','w'),ensure_ascii=False,indent=1);return tl
 def vo():
