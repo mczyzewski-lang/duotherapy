@@ -149,8 +149,8 @@ function hook(t){const k=TL.hook;if(!k||t>k.b+0.4)return;const out=1-ease((t-k.b
   g.restore()}
 // ───── stała informacja prawna na dole kadru (scena inscenizowana, postaci i głos z AI)
 function legal(t){const L=TL.legal;if(!L)return;const onCard=TL.card!=null?ease((t-TL.card-0.2)/0.5):0;g.save();g.textAlign="center";g.textBaseline="middle";g.font='500 25px "Inter V"';
-  if(onCard<1){const bw=Math.max(...L.map(l=>g.measureText(l).width))+44;g.globalAlpha=1-onCard;g.fillStyle="rgba(14,18,16,.34)";rr(CX-bw/2,1518,bw,L.length*33+12,16);g.fill()}
-  L.forEach((ln,i)=>{const y=1540+i*33;if(onCard<1){g.globalAlpha=0.84*(1-onCard);g.shadowColor="rgba(0,0,0,.85)";g.shadowBlur=8;g.shadowOffsetY=1;g.fillStyle="#fff";g.fillText(ln,CX,y)}
+  if(onCard<1){const bw=Math.max(...L.map(l=>g.measureText(l).width))+44;g.globalAlpha=1-onCard;g.fillStyle="rgba(14,18,16,.34)";rr(CX-bw/2,1814,bw,L.length*33+12,16);g.fill()}
+  L.forEach((ln,i)=>{const y=1836+i*33;if(onCard<1){g.globalAlpha=0.84*(1-onCard);g.shadowColor="rgba(0,0,0,.85)";g.shadowBlur=8;g.shadowOffsetY=1;g.fillStyle="#fff";g.fillText(ln,CX,y)}
     if(onCard>0){g.globalAlpha=0.78*onCard;g.shadowColor="transparent";g.shadowBlur=0;g.shadowOffsetY=0;g.fillStyle=C.forest;g.fillText(ln,CX,y)}});
   g.restore()}
 function vignette(){const gr=g.createRadialGradient(CX,H/2,700,CX,H/2,1250);gr.addColorStop(0,"rgba(0,0,0,0)");gr.addColorStop(1,"rgba(0,0,0,.26)");g.fillStyle=gr;g.fillRect(0,0,W,H)}
