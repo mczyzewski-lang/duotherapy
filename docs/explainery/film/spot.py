@@ -6,7 +6,7 @@ FPS=25;V=os.environ.get('V','2');OUT='spot/output'
 if V=='1':  # wersja 15 s: skrócony tekst, pauzy ścięte, tempo ×1,12
     DUR=15.0;N='duo_terapia_malzenska_15s_v1';MUSIC='spot/raw/music.mp3';CARD=12.5;TAG=None
 else:       # wersja pełna: cały tekst z naturalnymi pauzami + czytane zakończenie na planszy
-    DUR=22.2;N='duo_terapia_malzenska_22s_v2';MUSIC='spot/raw/music2.mp3';CARD=17.75;TAG=('spot/raw/tag.mp3',CARD+0.45)
+    DUR=24.0;N='duo_terapia_malzenska_24s_v3';MUSIC='spot/raw/music2.mp3';CARD=17.75;TAG=('spot/raw/tag.mp3',CARD+0.45);LINK=dict(enter=4.25,click=5.25)
 def sh(c): subprocess.run(c,shell=True,check=True)
 PHR=[(0.00,3.05,0.08),(3.56,4.85,2.92),(5.29,6.59,4.27),(7.20,9.40,5.55),(9.79,10.92,7.66),(11.21,13.77,8.78),(14.13,15.99,11.16)]
 def vo():
@@ -44,7 +44,7 @@ def timeline():
     else: S=[dict(id='s1',a=0,b=3.4,off=0.0),dict(id='s2',a=3.4,b=7.2,off=0.0),dict(id='s3',a=7.2,b=8.05,off=2.1),dict(kind='phone',bg='s3',bgA=7.2-2.1,a=8.05,b=10.1,ts=0.75),
         dict(kind='call',id='s4a',pip='s4b',a=10.1,b=11.65,off=2.3,zoom=0.0),dict(id='s4b',a=11.65,b=14.75,off=0.3),dict(id='s5',a=14.75,b=DUR+0.2,off=0.0,card=CARD)]
     tl=dict(dur=DUR,card=CARD,pip=[185,662,530,366],clips={k:n(k) for k in ['s1','s2','s3','s4a','s4b','s5']},shots=S)
-    if V!='1': tl['caps']=caps()
+    if V!='1': tl['caps']=caps();tl['link']=LINK
     json.dump(tl,open('spot/tl.json','w'),ensure_ascii=False,indent=1);return tl
 def lvl(f,d=None):
     r=subprocess.run(f"ffmpeg -nostdin -i {f} {'-t %s'%d if d else ''} -af volumedetect -f null -",shell=True,capture_output=True,text=True).stderr
@@ -59,13 +59,17 @@ def audio():
        ('sfx_pop.mp3',ph['a']+0.6/ts,0.4,-27,0,0.05),('sfx_pop.mp3',ph['a']+1.12/ts,0.4,-26,0,0.05), # dotknięcia ekranu
        ('spot/raw/sfx_call.mp3',call['a']+0.05,1.45,-27,0.01,0.3),            # połączenie wideo
        ('spot/raw/sfx_simmer.mp3' if V!='1' else 'spot/raw/sfx_chop.mp3',s5['a']+0.05,min(3.6,CARD-s5['a']+0.6),-31,0.4,1.0), # kuchnia wieczorem: cicho gotujący się garnek
-       ('sfx_chime.mp3',CARD+0.1,2.5,-27,0.01,0.8)]                            # miękki znak dźwiękowy na planszy
+       ('sfx_chime.mp3',CARD+0.1,2.5,-27,0.01,0.8) if V=='1' else ('sfx_pop.mp3',CARD+LINK['click'],0.4,-24,0,0.05)]  # v1: znak dźwiękowy; v3: kliknięcie w adres
     ins=f"-i {OUT}/{N}_voiceover.wav -i {MUSIC} "+' '.join(f"-i {x[0]}" for x in L)
-    f=(f"[0:a]asplit[v][vs];[1:a]atrim=0:{DUR},afade=t=in:d=0.5,afade=t=out:st={DUR-1.1}:d=1.1,volume=0.5[m0];[m0][vs]sidechaincompress=threshold=0.03:ratio=5:attack=40:release=450[m];")
+    f=(f"[0:a]{'asplit[v][vs]' if V=='1' else 'asplit=3[v][vs][vj]'};[1:a]atrim=0:{DUR},afade=t=in:d=0.5,afade=t=out:st={(CARD-0.5) if V!='1' else DUR-1.1}:d={1.3 if V!='1' else 1.1},volume=0.5[m0];[m0][vs]sidechaincompress=threshold=0.03:ratio=5:attack=40:release=450[m];")
     for n,(fn,t0,d,db,fi,fo) in enumerate(L):
         g=db-lvl(fn,d);t0=max(0,t0)
         f+=f"[{n+2}:a]atrim=0:{d:.2f},asetpts=PTS-STARTPTS,volume={g:.1f}dB,afade=t=in:d={max(fi,0.005)},afade=t=out:st={max(0,d-fo):.2f}:d={fo},adelay={int(t0*1000)}:all=1[x{n}];"
-    f+="[v][m]"+''.join(f"[x{n}]" for n in range(len(L)))+f"amix=inputs={len(L)+2}:normalize=0:duration=longest,alimiter=limit=0.94,apad,atrim=0:{DUR}[o]"
+    J=''
+    if V!='1':
+        ins+=" -i spot/raw/jingle.mp3";k=len(L)+2;J='[jg]'
+        f+=f"[{k}:a]volume=-2dB,afade=t=out:st=5.6:d=1.2,adelay={int(CARD*1000)}:all=1[j0];[j0][vj]sidechaincompress=threshold=0.03:ratio=4:attack=30:release=400[jg];"
+    f+="[v][m]"+J+''.join(f"[x{n}]" for n in range(len(L)))+f"amix=inputs={len(L)+2+(1 if J else 0)}:normalize=0:duration=longest,alimiter=limit=0.94,apad,atrim=0:{DUR}[o]"
     sh(f"ffmpeg -nostdin -v error -y {ins} -filter_complex \"{f}\" -map \"[o]\" -c:a aac -b:a 256k -ar 48000 spot/mix.m4a")
 def build():
     tl=timeline();vo();audio();Nf=round(DUR*FPS);fd='spot/frames';shutil.rmtree(fd,ignore_errors=True);os.makedirs(fd);q=[0,Nf//3,2*Nf//3,Nf]

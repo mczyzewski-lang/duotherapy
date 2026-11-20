@@ -120,7 +120,18 @@ function card(u){const k=ease(u/0.7);g.fillStyle=`rgba(251,249,245,${0.84*k})`;g
   g.textAlign="center";g.textBaseline="middle";
   g.save();g.globalAlpha=s3;g.fillStyle=C.forest;g.font='600 56px "Inter V"';g.fillText("Terapia małżeńska online",CX,1062+(1-s3)*14);g.restore();
   g.save();g.globalAlpha=s3*0.9;g.fillStyle=C.clay;rr(CX-46,1124,92,5,3);g.fill();g.restore();
-  g.save();g.globalAlpha=s4;g.fillStyle=C.muted;g.font='italic 500 46px "Fraunces V"';g.fillText("Pomagamy znów usłyszeć",CX,1206+(1-s4)*12);g.fillText("siebie nawzajem.",CX,1268+(1-s4)*12);g.restore()}
+  g.save();g.globalAlpha=s4;g.fillStyle=C.muted;g.font='italic 500 46px "Fraunces V"';g.fillText("Pomagamy znów usłyszeć",CX,1206+(1-s4)*12);g.fillText("siebie nawzajem.",CX,1268+(1-s4)*12);g.restore();
+  // adres jako link + kursor, który pod koniec jingla wjeżdża i klika
+  const L=TL.link;if(!L)return;const s5=easeOut((u-1.1)/0.6),ck=u-L.click,hov=u>=L.click-0.25,ly=1410;
+  g.save();g.globalAlpha=s5;g.font='600 54px "Inter V"';const lw=g.measureText("www.duo.pl").width,pr=ck>=0&&ck<0.18?1-0.05*Math.sin(Math.PI*ck/0.18):1;
+  g.translate(CX,ly+(1-s5)*12);g.scale(pr,pr);
+  g.fillStyle=ck>=0?"rgba(169,81,47,.16)":hov?"rgba(169,81,47,.09)":"rgba(169,81,47,0)";rr(-lw/2-38,-50,lw+76,100,50);g.fill();
+  g.fillStyle=ck>=0?"#8a3d20":C.clay;g.fillText("www.duo.pl",0,0);g.fillRect(-lw/2,34,lw,ck>=0||hov?5:3);g.restore();
+  if(ck>=0&&ck<0.5){const k=ck/0.5;g.save();g.strokeStyle=`rgba(169,81,47,${0.5*(1-k)})`;g.lineWidth=5;g.beginPath();g.arc(CX+lw*0.18,ly+8,22+70*easeOut(k),0,7);g.stroke();g.restore()}
+  const cu=(u-L.enter)/(L.click-0.12-L.enter);if(cu>0){const e=ease(cu),cx=lerp(930,CX+lw*0.18,e),cy=lerp(1790,ly+10,e)+(1-e)*e*-120,dn=ck>=0&&ck<0.14?0.9:1;
+    g.save();g.translate(cx,cy);g.scale(2.6*dn,2.6*dn);g.shadowColor="rgba(0,0,0,.35)";g.shadowBlur=6;g.shadowOffsetY=2;
+    g.beginPath();g.moveTo(0,0);g.lineTo(0,23);g.lineTo(6.2,17.6);g.lineTo(10.2,26.6);g.lineTo(13.6,25);g.lineTo(9.7,16.3);g.lineTo(17.2,16.3);g.closePath();
+    g.fillStyle="#1f2421";g.fill();g.shadowColor="transparent";g.strokeStyle="#fff";g.lineWidth=1.6;g.lineJoin="round";g.stroke();g.restore()}}
 // ───── napisy: odręczna czcionka, aktualnie wypowiadane słowo delikatnie podświetlone
 function caption(t){const c=(TL.caps||[]).find(c=>t>=c.a&&t<c.b);if(!c)return;const a=Math.min(ease((t-c.a)/0.14),ease((c.b-t)/0.16));if(a<=0)return;
   g.save();g.font='600 46px "Inter V"';g.textBaseline="middle";g.textAlign="left";const sp=g.measureText(" ").width,maxW=720,lines=[];let cur={ws:[],w:0};
