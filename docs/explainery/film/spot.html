@@ -159,7 +159,14 @@ function render(t){g.fillStyle="#000";g.fillRect(0,0,W,H);const i=Math.max(0,TL.
   hook(t);caption(t);
   // delikatne wejście z czerni
   if(t<0.24){g.fillStyle=`rgba(0,0,0,${1-ease(t/0.24)})`;g.fillRect(0,0,W,H)}}
-window.setup=async(tl)=>{TL=tl;await document.fonts.load('600 60px "Fraunces V"');await document.fonts.load('italic 500 46px "Fraunces V"');await document.fonts.load('600 40px "Inter V"');await document.fonts.load('400 30px "Inter V"');await document.fonts.load('700 50px "Inter V"');await document.fonts.load('500 30px "Inter V"');await document.fonts.load('400 62px "Patrick Hand"','ąęłńśź');await document.fonts.ready};
+window.setup=async(tl)=>{TL=tl;
+  // wszystkie kroje i odmiany wczytujemy od razu razem z podzbiorem polskich znaków (inaczej pierwsza klatka z „ś/ą/ł” rysuje się czcionką zastępczą i tekst skacze)
+  const PL="AaĄąĆćĘęŁłŃńÓóŚśŹźŻż 0123…–„”®?.,:";
+  for(const f of ['600 96px "Fraunces V"','500 46px "Fraunces V"','italic 500 46px "Fraunces V"','400 30px "Inter V"','500 32px "Inter V"','600 46px "Inter V"','700 50px "Inter V"'])await document.fonts.load(f,PL);
+  await document.fonts.ready;
+  // rozgrzewka: narysuj każdy krój raz poza kadrem
+  g.save();g.globalAlpha=0.01;for(const f of ['600 96px "Fraunces V"','italic 500 46px "Fraunces V"','400 30px "Inter V"','500 32px "Inter V"','600 46px "Inter V"','700 50px "Inter V"']){g.font=f;g.fillText(PL,-5000,-5000)}g.restore();
+  og.font='600 96px "Fraunces V"';og.fillText(PL,-5000,-5000);og.font='500 40px "Inter V"';og.fillText(PL,-5000,-5000)};
 window.renderAt=async(t)=>{const i=Math.max(0,TL.shots.findIndex(s=>t>=s.a&&t<s.b)),list=needs(TL.shots[i],t);if(i>0&&t-TL.shots[i].a<XF)list.push(...needs(TL.shots[i-1],t));
   NEED={};await Promise.all(list.map(async src=>{try{NEED[src]=await loadImg(src)}catch(e){}}));render(t)};
 window.guides=()=>{g.strokeStyle="rgba(255,0,80,.8)";g.lineWidth=3;g.setLineDash([14,10]);g.strokeRect(90,270,810,1170);g.setLineDash([])};
