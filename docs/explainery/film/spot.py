@@ -58,7 +58,7 @@ def audio():
        ('spot/raw/sfx_kettle.mp3',s3['a']-0.1,min(3.9,ph['b']-s3['a']),-32,0.4,0.9), # poranek: czajnik, ptaki
        ('sfx_pop.mp3',ph['a']+0.6/ts,0.4,-27,0,0.05),('sfx_pop.mp3',ph['a']+1.12/ts,0.4,-26,0,0.05), # dotknięcia ekranu
        ('spot/raw/sfx_call.mp3',call['a']+0.05,1.45,-27,0.01,0.3),            # połączenie wideo
-       ('spot/raw/sfx_chop.mp3',s5['a']+0.05,min(3.4,CARD-s5['a']+0.5),-30,0.3,0.9), # kuchnia: krojenie, garnek
+       ('spot/raw/sfx_simmer.mp3' if V!='1' else 'spot/raw/sfx_chop.mp3',s5['a']+0.05,min(3.6,CARD-s5['a']+0.6),-31,0.4,1.0), # kuchnia wieczorem: cicho gotujący się garnek
        ('sfx_chime.mp3',CARD+0.1,2.5,-27,0.01,0.8)]                            # miękki znak dźwiękowy na planszy
     ins=f"-i {OUT}/{N}_voiceover.wav -i {MUSIC} "+' '.join(f"-i {x[0]}" for x in L)
     f=(f"[0:a]asplit[v][vs];[1:a]atrim=0:{DUR},afade=t=in:d=0.5,afade=t=out:st={DUR-1.1}:d=1.1,volume=0.5[m0];[m0][vs]sidechaincompress=threshold=0.03:ratio=5:attack=40:release=450[m];")

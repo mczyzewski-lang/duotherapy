@@ -101,16 +101,16 @@ function call(u,pipId,pipU){const a=ease(u/0.3);
   g.fillStyle="rgba(20,24,22,.55)";rr(90,286,470,76,38);g.fill();g.fillStyle="#4ad07d";g.beginPath();g.arc(128,324,11,0,7);g.fill();g.fillStyle="#fff";g.font='600 32px "Inter V"';g.fillText("Konsultacja online",154,326);
   const sec=14+Math.floor(u);g.fillStyle="rgba(255,255,255,.85)";g.font='500 30px "Inter V"';g.fillText("00:"+sec,474,326);
   // okno pary (podgląd własny)
-  const pw=330,ph=228,px=0,py=852,im=NEED[frameSrc(pipId,pipU)];
+  const pw=330,ph=228,px=0,py=900,im=NEED[frameSrc(pipId,pipU)];
   const ox=W-180-pw-10; // wewnątrz strefy bezpiecznej (prawa krawędź 900)
   g.shadowColor="rgba(0,0,0,.45)";g.shadowBlur=30;g.shadowOffsetY=10;g.fillStyle="#222";rr(ox,py,pw,ph,26);g.fill();g.shadowColor="transparent";g.shadowBlur=0;g.shadowOffsetY=0;
   if(im){g.save();rr(ox,py,pw,ph,26);g.clip();const c=TL.pip;g.drawImage(im,c[0],c[1],c[2],c[3],ox,py,pw,ph);g.restore()}
   g.strokeStyle="rgba(255,255,255,.85)";g.lineWidth=4;rr(ox,py,pw,ph,26);g.stroke();
   g.fillStyle="rgba(20,24,22,.6)";rr(ox+12,py+ph-50,74,38,19);g.fill();g.fillStyle="#fff";g.font='600 24px "Inter V"';g.fillText("Wy",ox+30,py+ph-30);
   // podpis rozmówcy
-  g.fillStyle="rgba(20,24,22,.55)";rr(90,1092,330,68,34);g.fill();g.fillStyle="#fff";g.font='600 30px "Inter V"';g.fillText("Psycholog DUO",122,1127);
+  g.fillStyle="rgba(20,24,22,.55)";rr(90,1136,330,68,34);g.fill();g.fillStyle="#fff";g.font='600 30px "Inter V"';g.fillText("Psycholog DUO",122,1171);
   g.restore();
-  icon("mic",CX-190,1236,a);icon("cam",CX-45,1236,a);icon("end",CX+120,1236,a)}
+  icon("mic",CX-190,1280,a);icon("cam",CX-45,1280,a);icon("end",CX+120,1280,a)}
 // ───── plansza końcowa
 function card(u){const k=ease(u/0.7);g.fillStyle=`rgba(251,249,245,${0.84*k})`;g.fillRect(0,0,W,H);
   const gr=g.createRadialGradient(CX,860,80,CX,860,900);gr.addColorStop(0,`rgba(255,255,255,${0.55*k})`);gr.addColorStop(1,"rgba(255,255,255,0)");g.fillStyle=gr;g.fillRect(0,0,W,H);
@@ -123,12 +123,12 @@ function card(u){const k=ease(u/0.7);g.fillStyle=`rgba(251,249,245,${0.84*k})`;g
   g.save();g.globalAlpha=s4;g.fillStyle=C.muted;g.font='italic 500 46px "Fraunces V"';g.fillText("Pomagamy znów usłyszeć",CX,1206+(1-s4)*12);g.fillText("siebie nawzajem.",CX,1268+(1-s4)*12);g.restore()}
 // ───── napisy: odręczna czcionka, aktualnie wypowiadane słowo delikatnie podświetlone
 function caption(t){const c=(TL.caps||[]).find(c=>t>=c.a&&t<c.b);if(!c)return;const a=Math.min(ease((t-c.a)/0.14),ease((c.b-t)/0.16));if(a<=0)return;
-  g.save();g.font='400 62px "Patrick Hand"';g.textBaseline="middle";g.textAlign="left";const sp=g.measureText(" ").width,maxW=780,lines=[];let cur={ws:[],w:0};
+  g.save();g.font='600 46px "Inter V"';g.textBaseline="middle";g.textAlign="left";const sp=g.measureText(" ").width,maxW=720,lines=[];let cur={ws:[],w:0};
   for(const [w,t0,t1] of c.words){const ww=g.measureText(w).width;if(cur.ws.length&&cur.w+sp+ww>maxW){lines.push(cur);cur={ws:[],w:0}}const x=cur.ws.length?cur.w+sp:0;cur.ws.push({w,t0,t1,x});cur.w=x+ww}
-  lines.push(cur);const lh=74,yb=1392,bw=Math.max(...lines.map(l=>l.w))+72,bh=lines.length*lh+26,by=yb-(lines.length-1)*lh-lh/2-13;
-  g.globalAlpha=a;g.fillStyle="rgba(18,22,20,.36)";rr(495-bw/2,by,bw,bh,30);g.fill();
+  lines.push(cur);const lh=62,yb=1462,bw=Math.max(...lines.map(l=>l.w))+72,bh=lines.length*lh+26,by=yb-(lines.length-1)*lh-lh/2-13;
+  g.globalAlpha=a;g.fillStyle="rgba(18,22,20,.36)";rr(CX-bw/2,by,bw,bh,26);g.fill();
   g.shadowColor="rgba(0,0,0,.55)";g.shadowBlur=10;g.shadowOffsetY=2;
-  lines.forEach((l,i)=>{const y=yb-(lines.length-1-i)*lh,x0=495-l.w/2;for(const k of l.ws){const on=t>=k.t0-0.03&&t<k.t1;g.fillStyle=on?"#ffd9a0":"rgba(255,255,255,.94)";g.fillText(k.w,x0+k.x,y)}});
+  lines.forEach((l,i)=>{const y=yb-(lines.length-1-i)*lh,x0=CX-l.w/2;for(const k of l.ws){const on=t>=k.t0-0.03&&t<k.t1;g.fillStyle=on?"#ffd9a0":"rgba(255,255,255,.94)";g.fillText(k.w,x0+k.x,y)}});
   g.restore()}
 function vignette(){const gr=g.createRadialGradient(CX,H/2,700,CX,H/2,1250);gr.addColorStop(0,"rgba(0,0,0,0)");gr.addColorStop(1,"rgba(0,0,0,.26)");g.fillStyle=gr;g.fillRect(0,0,W,H)}
 const XF=0.16;
