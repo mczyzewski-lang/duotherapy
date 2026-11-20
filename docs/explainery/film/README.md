@@ -138,3 +138,9 @@ Podmiana hooka: nowy `v01.mp3` + tekst tytułu w `film.html` (sekcja „hook”)
 - Lektor: jedno nagranie, frazy wycięte i ustawione na osi czasu (`PHR` w `spot.py`), pauzy skrócone, tempo ×1,12.
   Ostatnia fraza kończy się ok. 12,9 s, czyli na wejściu planszy końcowej.
 - `python3 spot.py build` → `spot/output/duo_terapia_malzenska_15s_v1.mp4`, `…_voiceover.wav`, `…_finalframe.png`.
+
+### Warianty spotu z hookami (H01–H10)
+
+`H=H01 V=2 python3 spot.py build` podmienia tylko pierwsze ujęcie (0–3,4 s) i dodaje nagłówek-hook na ekranie;
+reszta klatek pochodzi z wersji bazowej (`spot/frames_base`), więc najpierw trzeba zbudować bazę (`V=2 python3 spot.py build`).
+Lektor i muzyka są wspólne, zmienia się tylko tło dźwiękowe pierwszego ujęcia. Lista hooków: słownik `HOOKS` w `spot.py`.

@@ -22,8 +22,8 @@ const loadImg=src=>CACHE[src]||(CACHE[src]=new Promise((res,rej)=>{const i=new I
 const frameSrc=(id,u)=>{const n=TL.clips[id],i=clamp(Math.round(u*FPS)+1,1,n);return `clips/sp_${id}/f${String(i).padStart(4,"0")}.jpg`};
 let NEED={};
 // klatka ujęcia na cały kadr, z bardzo lekkim najazdem
-function shot(id,u,a=1,zoom=0.03,blur=0){const im=NEED[frameSrc(id,u)];if(!im||a<=0)return;const s=1+zoom*clamp(u/4);g.save();g.globalAlpha=a;if(blur>0.3)g.filter=`blur(${blur.toFixed(1)}px)`;
-  const w=W*s,h=H*s;g.drawImage(im,(W-w)/2,(H-h)/2,w,h);g.restore()}
+function shot(id,u,a=1,zoom=0.03,blur=0,dy=0){const im=NEED[frameSrc(id,u)];if(!im||a<=0)return;const s=1+zoom*clamp(u/4);g.save();g.globalAlpha=a;if(blur>0.3)g.filter=`blur(${blur.toFixed(1)}px)`;
+  const w=W*s,h=H*s,y=(H-h)/2+dy;g.drawImage(im,(W-w)/2,y,w,h);if(y>0)g.drawImage(im,0,0,im.width,4,(W-w)/2,0,w,y+2);g.restore()}
 // ───── logo
 const BODY=new Path2D("M0.5 11.7H3.5C12 11.7 18.6 18.6 18.6 26.4C18.6 34.6 12.3 41 4.6 41H1.6A1.1 1.1 0 0 1 0.5 39.9Z"),BOWL=new Path2D("M20.6 26.7H49.6A14.5 14.3 0 0 1 20.6 26.7Z");
 function lg(a,b){const gr=g.createLinearGradient(0,0,71,42);gr.addColorStop(0,a);gr.addColorStop(1,b);return gr}
@@ -107,8 +107,6 @@ function call(u,pipId,pipU){const a=ease(u/0.3);
   if(im){g.save();rr(ox,py,pw,ph,26);g.clip();const c=TL.pip;g.drawImage(im,c[0],c[1],c[2],c[3],ox,py,pw,ph);g.restore()}
   g.strokeStyle="rgba(255,255,255,.85)";g.lineWidth=4;rr(ox,py,pw,ph,26);g.stroke();
   g.fillStyle="rgba(20,24,22,.6)";rr(ox+12,py+ph-50,74,38,19);g.fill();g.fillStyle="#fff";g.font='600 24px "Inter V"';g.fillText("Wy",ox+30,py+ph-30);
-  // podpis rozmówcy
-  g.fillStyle="rgba(20,24,22,.55)";rr(90,1136,330,68,34);g.fill();g.fillStyle="#fff";g.font='600 30px "Inter V"';g.fillText("Psycholog DUO",122,1171);
   g.restore();
   icon("mic",CX-190,1280,a);icon("cam",CX-45,1280,a);icon("end",CX+120,1280,a)}
 // ───── plansza końcowa
@@ -141,16 +139,24 @@ function caption(t){const c=(TL.caps||[]).find(c=>t>=c.a&&t<c.b);if(!c)return;co
   g.shadowColor="rgba(0,0,0,.55)";g.shadowBlur=10;g.shadowOffsetY=2;
   lines.forEach((l,i)=>{const y=yb-(lines.length-1-i)*lh,x0=CX-l.w/2;for(const k of l.ws){const on=t>=k.t0-0.03&&t<k.t1;g.fillStyle=on?"#ffd9a0":"rgba(255,255,255,.94)";g.fillText(k.w,x0+k.x,y)}});
   g.restore()}
+// ───── hook: nagłówek na pierwszym ujęciu (wersje H01–H10)
+function hook(t){const k=TL.hook;if(!k||t>k.b+0.4)return;const out=1-ease((t-k.b)/0.35);if(out<=0)return;
+  const gr=g.createLinearGradient(0,0,0,980);gr.addColorStop(0,"rgba(8,12,14,.72)");gr.addColorStop(0.6,"rgba(8,12,14,.38)");gr.addColorStop(1,"rgba(8,12,14,0)");g.save();g.globalAlpha=out*ease(t/0.3);g.fillStyle=gr;g.fillRect(0,0,W,980);g.restore();
+  g.save();g.textAlign="center";g.textBaseline="middle";const fs=k.fs||92,lh=fs*1.16,y0=(k.y||520)-(k.lines.length-1)*lh/2;
+  k.lines.forEach((ln,i)=>{const a=easeOut((t-0.12-i*0.22)/0.45)*out;if(a<=0)return;const y=y0+i*lh+(1-easeOut((t-0.12-i*0.22)/0.45))*26;g.globalAlpha=a;g.font=`600 ${fs}px "Fraunces V"`;
+    if(i===k.pill){const w=g.measureText(ln).width+64;g.shadowColor="rgba(0,0,0,.35)";g.shadowBlur=24;g.shadowOffsetY=8;g.fillStyle=C.clay;rr(CX-w/2,y-lh/2+4,w,lh-6,22);g.fill();g.shadowColor="transparent";g.shadowBlur=0;g.shadowOffsetY=0;g.fillStyle="#fff";g.fillText(ln,CX,y+3)}
+    else{g.shadowColor="rgba(0,0,0,.65)";g.shadowBlur=22;g.shadowOffsetY=4;g.fillStyle="#fff";g.fillText(ln,CX,y+3)}});
+  g.restore()}
 function vignette(){const gr=g.createRadialGradient(CX,H/2,700,CX,H/2,1250);gr.addColorStop(0,"rgba(0,0,0,0)");gr.addColorStop(1,"rgba(0,0,0,.26)");g.fillStyle=gr;g.fillRect(0,0,W,H)}
 const XF=0.16;
 function drawShot(s,t,a){const u=t-s.a+(s.off||0);
   if(s.kind==="phone"){g.save();g.globalAlpha=a;phone((t-s.a)*(s.ts||1),s.bg,t-s.bgA);g.restore();return}
-  shot(s.id,u,a,s.zoom??0.03,s.card!=null?22*ease((t-s.card)/0.7):0);if(a>=0.99){vignette();if(s.kind==="call")call(t-s.a,s.pip,t-s.a)}}
+  shot(s.id,u,a,s.zoom??0.03,s.card!=null?22*ease((t-s.card)/0.7):0,s.dy||0);if(a>=0.99){vignette();if(s.kind==="call")call(t-s.a,s.pip,t-s.a)}}
 function needs(s,t){const out=[];if(s.kind==="phone")out.push(frameSrc(s.bg,t-s.bgA));else out.push(frameSrc(s.id,t-s.a+(s.off||0)));if(s.kind==="call")out.push(frameSrc(s.pip,t-s.a));return out}
 function render(t){g.fillStyle="#000";g.fillRect(0,0,W,H);const i=Math.max(0,TL.shots.findIndex(s=>t>=s.a&&t<s.b)),s=TL.shots[i],p=TL.shots[i-1];
   if(p&&t-s.a<XF&&!s.hard){drawShot(p,t,1);drawShot(s,t,ease((t-s.a)/XF));if(s.kind==="call"&&false)call(0,s.pip,0)}else drawShot(s,t,1);
   if(TL.card!=null&&t>=TL.card)card(t-TL.card);
-  caption(t);
+  hook(t);caption(t);
   // delikatne wejście z czerni
   if(t<0.24){g.fillStyle=`rgba(0,0,0,${1-ease(t/0.24)})`;g.fillRect(0,0,W,H)}}
 window.setup=async(tl)=>{TL=tl;await document.fonts.load('600 60px "Fraunces V"');await document.fonts.load('italic 500 46px "Fraunces V"');await document.fonts.load('600 40px "Inter V"');await document.fonts.load('400 30px "Inter V"');await document.fonts.load('700 50px "Inter V"');await document.fonts.load('500 30px "Inter V"');await document.fonts.load('400 62px "Patrick Hand"','ąęłńśź');await document.fonts.ready};

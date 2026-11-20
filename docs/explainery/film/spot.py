@@ -7,6 +7,18 @@ if V=='1':  # wersja 15 s: skrócony tekst, pauzy ścięte, tempo ×1,12
     DUR=15.0;N='duo_terapia_malzenska_15s_v1';MUSIC='spot/raw/music.mp3';CARD=12.5;TAG=None
 else:       # wersja pełna: cały tekst z naturalnymi pauzami + czytane zakończenie na planszy
     DUR=24.0;N='duo_terapia_malzenska_24s_v3';MUSIC='spot/raw/music2.mp3';CARD=17.75;TAG=('spot/raw/tag.mp3',CARD+0.45);LINK=dict(enter=4.25,click=5.25)
+H=os.environ.get('H')   # wariant pierwszego ujęcia z hookiem na ekranie (H01–H10); bez H – wersja bazowa
+HOOKS={ # klucz: (linie nagłówka, indeks linii w plakietce, tło dźwiękowe pierwszego ujęcia)
+ 'H01':(["Zostać","czy się rozstać?"],1,'sfx_home.mp3'),
+ 'H02':(["Kiedy ostatnio","naprawdę","rozmawialiście?"],1,'spot/raw/sfx_kitchen.mp3'),
+ 'H03':(["Mieszkacie razem.","Żyjecie osobno."],1,'sfx_home.mp3'),
+ 'H04':(["Znowu kłótnia","o to samo?"],1,'sfx_home.mp3'),
+ 'H05':(["Jedno łóżko.","Dwa osobne światy."],1,'sfx_home.mp3'),
+ 'H06':(["On milczy.","Ona już nie pyta."],1,'spot/raw/sfx_car.mp3'),
+ 'H07':(["Jeszcze para","czy już tylko","rodzice?"],2,'spot/raw/sfx_kitchen.mp3'),
+ 'H08':(["Myślisz","o rozwodzie?"],1,'spot/raw/sfx_city.mp3'),
+ 'H09':(["Kiedy ostatnio","się przytuliliście?"],1,'spot/raw/sfx_tv.mp3'),
+ 'H10':(["To jeszcze kryzys","czy już koniec?"],1,'spot/raw/sfx_city.mp3')}
 def sh(c): subprocess.run(c,shell=True,check=True)
 PHR=[(0.00,3.05,0.08),(3.56,4.85,2.92),(5.29,6.59,4.27),(7.20,9.40,5.55),(9.79,10.92,7.66),(11.21,13.77,8.78),(14.13,15.99,11.16)]
 def vo():
@@ -43,7 +55,11 @@ def timeline():
         dict(kind='call',id='s4a',pip='s4b',a=7.62,b=9.0,off=1.7,zoom=0.0),dict(id='s4b',a=9.0,b=11.12,off=0.9),dict(id='s5',a=11.12,b=DUR+0.2,off=0.0,card=CARD)]
     else: S=[dict(id='s1',a=0,b=3.4,off=0.0),dict(id='s2',a=3.4,b=7.2,off=0.0),dict(id='s3',a=7.2,b=8.05,off=2.1),dict(kind='phone',bg='s3',bgA=7.2-2.1,a=8.05,b=10.1,ts=0.75),
         dict(kind='call',id='s4a',pip='s4b',a=10.1,b=11.65,off=2.3,zoom=0.0),dict(id='s4b',a=11.65,b=14.75,off=0.3),dict(id='s5',a=14.75,b=DUR+0.2,off=0.0,card=CARD)]
-    tl=dict(dur=DUR,card=CARD,pip=[185,662,530,366],clips={k:n(k) for k in ['s1','s2','s3','s4a','s4b','s5']},shots=S)
+    ids=['s1','s2','s3','s4a','s4b','s5']
+    DY={'H03':130,'H04':250,'H07':150,'H08':70,'H09':160}   # kadr niżej tam, gdzie nagłówek nachodziłby na głowy
+    if H: S[0]=dict(id=H.lower(),a=0,b=S[0]['b'],off=0.0,dy=DY.get(H,0));ids.append(H.lower())
+    tl=dict(dur=DUR,card=CARD,pip=[225,722,449,310],clips={k:n(k) for k in ids},shots=S)
+    if H: tl['hook']=dict(lines=HOOKS[H][0],pill=HOOKS[H][1],b=S[0]['b']-0.25,fs=96 if max(len(x) for x in HOOKS[H][0])<=15 else 84,y=455 if len(HOOKS[H][0])>2 else 520)
     if V!='1': tl['caps']=caps();tl['link']=LINK
     json.dump(tl,open('spot/tl.json','w'),ensure_ascii=False,indent=1);return tl
 def lvl(f,d=None):
@@ -51,9 +67,9 @@ def lvl(f,d=None):
     return float(r.split('mean_volume:')[1].split('dB')[0])
 def audio():
     tl=json.load(open('spot/tl.json'));S=tl['shots'];ph=next(x for x in S if x.get('kind')=='phone');ts=ph.get('ts',1)
-    by=lambda k: next(x for x in S if x.get('id')==k);s1,s2,s3,s5=by('s1'),by('s2'),by('s3'),by('s5');call=next(x for x in S if x.get('kind')=='call')
+    by=lambda k: next(x for x in S if x.get('id')==k);s1,s2,s3,s5=S[0],by('s2'),by('s3'),by('s5');call=next(x for x in S if x.get('kind')=='call')
     # tło i smaczki: (plik, początek, długość, docelowy średni poziom dB, narastanie, wygaszanie)
-    L=[('spot/raw/sfx_kitchen.mp3',0.0,s1['b']+0.3,-33,0.3,0.5),          # kuchnia wieczorem: lodówka, zegar
+    L=[(HOOKS[H][2] if H else 'spot/raw/sfx_kitchen.mp3',0.0,s1['b']+0.3,-33,0.3,0.5),          # kuchnia wieczorem: lodówka, zegar
        ('spot/raw/sfx_tv.mp3',s2['a']-0.15,s2['b']-s2['a']+0.4,-31,0.4,0.6), # telewizor przy kanapie
        ('spot/raw/sfx_kettle.mp3',s3['a']-0.1,min(3.9,ph['b']-s3['a']),-32,0.4,0.9), # poranek: czajnik, ptaki
        ('sfx_pop.mp3',ph['a']+0.6/ts,0.4,-27,0,0.05),('sfx_pop.mp3',ph['a']+1.12/ts,0.4,-26,0,0.05), # dotknięcia ekranu
@@ -71,14 +87,22 @@ def audio():
         f+=f"[{k}:a]volume=-2dB,afade=t=out:st=5.6:d=1.2,adelay={int(CARD*1000)}:all=1[j0];[j0][vj]sidechaincompress=threshold=0.03:ratio=4:attack=30:release=400[jg];"
     f+="[v][m]"+J+''.join(f"[x{n}]" for n in range(len(L)))+f"amix=inputs={len(L)+2+(1 if J else 0)}:normalize=0:duration=longest,alimiter=limit=0.94,apad,atrim=0:{DUR}[o]"
     sh(f"ffmpeg -nostdin -v error -y {ins} -filter_complex \"{f}\" -map \"[o]\" -c:a aac -b:a 256k -ar 48000 spot/mix.m4a")
-def build():
-    tl=timeline();vo();audio();Nf=round(DUR*FPS);fd='spot/frames';shutil.rmtree(fd,ignore_errors=True);os.makedirs(fd);q=[0,Nf//3,2*Nf//3,Nf]
+def render(fd,a,b):
+    q=[a+(b-a)*i//3 for i in range(4)]
     pr=[subprocess.Popen(f"PAGE=spot.html TL=spot/tl.json OUT={fd} FPS={FPS} node render.js frames {q[i]} {q[i+1]}",shell=True,stdout=subprocess.DEVNULL) for i in range(3)]
     for x in pr: x.wait()
+def build():
+    tl=timeline();vo();audio();Nf=round(DUR*FPS);base='spot/frames_base'
+    if H and V!='1':   # wariant: renderujemy tylko pierwsze ujęcie (z przenikaniem), resztę klatek bierzemy z wersji bazowej
+        assert len(os.listdir(base))==Nf,'najpierw zbuduj wersję bazową'
+        n0=round((tl['shots'][0]['b']+0.24)*FPS);fd='spot/frames_h';shutil.rmtree(fd,ignore_errors=True);os.makedirs(fd);render(fd,0,n0)
+        for i in range(n0,Nf): os.symlink(os.path.abspath(f'{base}/f{i:05d}.jpg'),f'{fd}/f{i:05d}.jpg')
+        o=f'{OUT}/duo_spot_24s_{H}.mp4'
+    else:
+        fd=base if V!='1' else 'spot/frames';shutil.rmtree(fd,ignore_errors=True);os.makedirs(fd);render(fd,0,Nf);o=f'{OUT}/{N}.mp4'
     assert len(os.listdir(fd))==Nf,len(os.listdir(fd))
-    o=f'{OUT}/{N}.mp4'
     sh(f"ffmpeg -nostdin -v error -y -framerate {FPS} -i {fd}/f%05d.jpg -i spot/mix.m4a -t {DUR} -c:v libx264 -preset slow -crf 17 -maxrate 14M -bufsize 28M -pix_fmt yuv420p -profile:v high -r {FPS} -movflags +faststart -c:a copy {o}")
-    sh(f"cp {fd}/f{Nf-1:05d}.jpg /tmp/_ff.jpg && ffmpeg -nostdin -v error -y -i /tmp/_ff.jpg {OUT}/{N}_finalframe.png && rm /tmp/_ff.jpg")
+    if not H: sh(f"cp {fd}/f{Nf-1:05d}.jpg /tmp/_ff.jpg && ffmpeg -nostdin -v error -y -i /tmp/_ff.jpg {OUT}/{N}_finalframe.png && rm /tmp/_ff.jpg")
     print(o)
 if __name__=='__main__':
     m=sys.argv[1]
